@@ -1,3 +1,7 @@
 EventFlowAPI/.vs
 EventFlowAPI/EventFlowAPI/bin
 EventFlowAPI/EventFlowAPI/obj
+EventFlowAPI/EventFlowAPI.DB/bin
+EventFlowAPI/EventFlowAPI.DB/obj
+EventFlowAPI/EventFlowAPI.Logic/bin
+EventFlowAPI/EventFlowAPI.Logic/obj
