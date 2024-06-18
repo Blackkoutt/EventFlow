@@ -11,6 +11,6 @@ namespace EventFlowAPI.DB.Models
         [MaxLength(30)]
         public string? Name { get; set; }
 
-        public ICollection<Festival_MediaPatron> Festivals { get; set; } = new List<Festival_MediaPatron>();
+        public ICollection<Festival_MediaPatron> Festivals { get; set; } = [];
     }
 }

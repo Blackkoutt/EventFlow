@@ -4,9 +4,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace EventFlowAPI.DB.Context
 {
-    public class APIContext : DbContext
+    public class APIContext(DbContextOptions<APIContext> options) : DbContext(options)
     {
-        public APIContext(DbContextOptions<APIContext> options) : base(options) { }
         public DbSet<AdditionalServices> AdditionalServices { get; set; }
         public DbSet<Equipment> Equipment{ get; set; }
         public DbSet<Event> Event { get; set; }

@@ -16,6 +16,6 @@ namespace EventFlowAPI.DB.Models
          Column(TypeName = "NUMERIC(6,2)")]
         public double Price {  get; set; }
 
-        public ICollection<HallRent_AdditionalServices> Rents { get; set; } = new List<HallRent_AdditionalServices>();
+        public ICollection<HallRent_AdditionalServices> Rents { get; set; } = [];
     }
 }

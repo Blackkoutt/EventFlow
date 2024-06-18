@@ -24,6 +24,6 @@ namespace EventFlowAPI.DB.Models
 
         public SeatType? SeatType { get; set; }
         public Hall? Hall { get; set; }
-        public ICollection<Reservation_Seat> Reservations { get; set; } = new List<Reservation_Seat>();
+        public ICollection<Reservation_Seat> Reservations { get; set; } = [];
     }
 }

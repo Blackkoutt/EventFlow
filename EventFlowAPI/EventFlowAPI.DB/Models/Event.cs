@@ -20,7 +20,7 @@ namespace EventFlowAPI.DB.Models
         public EventCategory? Category { get; set; } 
         public EventDetails? Details { get; set; }
         public Hall? Hall { get; set; }
-        public ICollection<Festival_Event> Festivals { get; set; } = new List<Festival_Event>();
-        public ICollection<EventTicket> Tickets { get; set; } = new List<EventTicket>();
+        public ICollection<Festival_Event> Festivals { get; set; } = [];
+        public ICollection<EventTicket> Tickets { get; set; } = [];
     }
 }

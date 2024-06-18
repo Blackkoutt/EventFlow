@@ -14,6 +14,6 @@ namespace EventFlowAPI.DB.Models
         public int TicketTypeId { get; set; }
         public Event? Event { get; set; }
         public TicketType? TicketType { get; set; }
-        public ICollection<Reservation> Reservations { get; set; } = new List<Reservation>();
+        public ICollection<Reservation> Reservations { get; set; } = [];
     }
 }

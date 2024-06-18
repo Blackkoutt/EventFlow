@@ -22,8 +22,8 @@ namespace EventFlowAPI.DB.Models
         public DateTime DateOfBirth { get; set; }
         public UserData? UserData { get; set; }
 
-        public ICollection<Reservation> Reservations { get; set; } = new List<Reservation>();
-        public ICollection<EventPass> EventPasses { get; set; } = new List<EventPass>();
-        public ICollection<HallRent> HallRents { get; set; } = new List<HallRent>();
+        public ICollection<Reservation> Reservations { get; set; } = [];
+        public ICollection<EventPass> EventPasses { get; set; } = [];
+        public ICollection<HallRent> HallRents { get; set; } = [];
     }
 }

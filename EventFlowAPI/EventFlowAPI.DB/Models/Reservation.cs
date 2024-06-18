@@ -17,6 +17,6 @@ namespace EventFlowAPI.DB.Models
         public User? User { get; set; }
         public PaymentType? PaymentType { get; set; }
         public EventTicket? Ticket { get; set; }
-        public ICollection<Reservation_Seat> Seats { get; set; } = new List<Reservation_Seat>();
+        public ICollection<Reservation_Seat> Seats { get; set; } = [];
     }
 }

@@ -14,6 +14,6 @@ namespace EventFlowAPI.DB.Models
         [MaxLength(200)]
         public string? Description { get; set; }
 
-        public ICollection<HallType_Equipment> HallTypes { get; set; } = new List<HallType_Equipment>();
+        public ICollection<HallType_Equipment> HallTypes { get; set; } = [];
     }
 }

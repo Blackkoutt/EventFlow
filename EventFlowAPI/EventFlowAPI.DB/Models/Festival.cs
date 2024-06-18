@@ -14,9 +14,9 @@ namespace EventFlowAPI.DB.Models
         public DateTime EndDate { get; set; }
 
         public FestivalDetails? Details { get; set; }
-        public ICollection<Festival_Event> Events { get; set; } = new List<Festival_Event>();
-        public ICollection<Festival_MediaPatron> MediaPatrons { get; set; } = new List<Festival_MediaPatron>();
-        public ICollection<Festival_Organizer> Organizers { get; set; } = new List<Festival_Organizer>();
-        public ICollection<Festival_Sponsor> Sponsors { get; set; } = new List<Festival_Sponsor>();
+        public ICollection<Festival_Event> Events { get; set; } = [];
+        public ICollection<Festival_MediaPatron> MediaPatrons { get; set; } = [];
+        public ICollection<Festival_Organizer> Organizers { get; set; } = [];
+        public ICollection<Festival_Sponsor> Sponsors { get; set; } = [];
     }
 }

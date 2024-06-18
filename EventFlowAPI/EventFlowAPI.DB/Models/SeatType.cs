@@ -19,6 +19,6 @@ namespace EventFlowAPI.DB.Models
          Column(TypeName = "NUMERIC(4,2)")]
         public double AddtionalPaymentPercentage { get; set; }
 
-        public ICollection<Seat> Seats { get; set; } = new List<Seat>();
+        public ICollection<Seat> Seats { get; set; } = [];
     }
 }

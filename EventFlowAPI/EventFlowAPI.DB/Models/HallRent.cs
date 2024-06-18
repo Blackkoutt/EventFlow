@@ -20,7 +20,7 @@ namespace EventFlowAPI.DB.Models
         public PaymentType? PaymentType { get; set; }
         public Hall? Hall { get; set; }  
         public User? User { get; set; }
-        public ICollection<HallRent_AdditionalServices> AdditionalServices { get; set; } = new List<HallRent_AdditionalServices>();
+        public ICollection<HallRent_AdditionalServices> AdditionalServices { get; set; } = [];
 
     }
 }
