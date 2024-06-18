@@ -1,4 +1,13 @@
+using Microsoft.EntityFrameworkCore;
+using EventFlowAPI.DB.Context;
+
 var builder = WebApplication.CreateBuilder(args);
+
+// Add API context options
+builder.Services.AddDbContext<APIContext>(options =>
+{
+    options.UseSqlServer(builder.Configuration.GetConnectionString("EventFlowDB"));
+});
 
 // Add services to the container.
 

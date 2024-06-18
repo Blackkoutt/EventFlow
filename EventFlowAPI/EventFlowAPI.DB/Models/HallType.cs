@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.CodeAnalysis;
 
 namespace EventFlowAPI.DB.Models
 {
@@ -6,6 +7,7 @@ namespace EventFlowAPI.DB.Models
     {
         public int Id { get; set; }
 
+        [NotNull]
         [MaxLength(30)]
         public string? Name { get; set; }
 
@@ -13,6 +15,6 @@ namespace EventFlowAPI.DB.Models
         public string? Description { get; set; }
 
         public ICollection<Hall> Halls { get; set; } = new List<Hall>();
-        public ICollection<HallType_Equipment> Equipment { get; set; } = new List<HallType_Equipment>();
+        public ICollection<HallType_Equipment> Equipments { get; set; } = new List<HallType_Equipment>();
     }
 }

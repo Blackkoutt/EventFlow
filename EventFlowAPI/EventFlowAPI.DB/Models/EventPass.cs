@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace EventFlowAPI.DB.Models
 {
@@ -10,7 +11,8 @@ namespace EventFlowAPI.DB.Models
         public DateTime EndDate { get; set; }
         public DateTime PaymentDate { get; set; }
 
-        [Range(0.00, 9999.99)]
+        [Range(0.00, 9999.99),
+         Column(TypeName = "NUMERIC(6,2)")]
         public double PaymentAmount { get; set; }
         public int PassTypeId { get; set; }
         public int UserId {  get; set; }

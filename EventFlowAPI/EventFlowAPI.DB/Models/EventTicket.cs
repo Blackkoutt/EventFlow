@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace EventFlowAPI.DB.Models
 {
@@ -6,7 +7,8 @@ namespace EventFlowAPI.DB.Models
     {
         public int Id { get; set; }
 
-        [Range(0.00, 999.99)]
+        [Range(0.00, 999.99),
+         Column(TypeName = "NUMERIC(5,2)")]
         public double Price { get; set; }
         public int EventId { get; set; }
         public int TicketTypeId { get; set; }
