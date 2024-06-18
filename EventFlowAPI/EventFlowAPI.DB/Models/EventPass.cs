@@ -7,7 +7,7 @@ namespace EventFlowAPI.DB.Models
     {
         public int Id { get; set; }
         public DateTime StartDate { get; set; }
-        public DateTime RenewalDate { get; set; }
+        public DateTime? RenewalDate { get; set; }
         public DateTime EndDate { get; set; }
         public DateTime PaymentDate { get; set; }
 

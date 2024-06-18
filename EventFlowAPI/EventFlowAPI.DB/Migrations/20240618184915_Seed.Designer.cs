@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EventFlowAPI.DB.Migrations
 {
     [DbContext(typeof(APIContext))]
-    [Migration("20240618135941_Initial")]
-    partial class Initial
+    [Migration("20240618184915_Seed")]
+    partial class Seed
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -44,6 +44,38 @@ namespace EventFlowAPI.DB.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("AdditionalServices");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Name = "DJ",
+                            Price = 400m
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Name = "Obsługa oświetlenia",
+                            Price = 340m
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Name = "Obsługa nagłośnienia",
+                            Price = 250m
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Name = "Fotograf",
+                            Price = 200m
+                        },
+                        new
+                        {
+                            Id = 5,
+                            Name = "Promocja wydarzenia",
+                            Price = 140m
+                        });
                 });
 
             modelBuilder.Entity("EventFlowAPI.DB.Models.Equipment", b =>
@@ -66,6 +98,32 @@ namespace EventFlowAPI.DB.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Equipment");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Description = "Nowoczesny projektor",
+                            Name = "Projektor multimedialny"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Description = "Wysokiej klasy oświetlenie",
+                            Name = "Oświetlenie"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Description = "Głośniki przeznaczone do odtwrzania filmów",
+                            Name = "Nagłośnienie kinowe"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Description = "Głośniki przeznaczone do koncertów",
+                            Name = "Nagłośnienie koncertowe"
+                        });
                 });
 
             modelBuilder.Entity("EventFlowAPI.DB.Models.Event", b =>
@@ -97,6 +155,71 @@ namespace EventFlowAPI.DB.Migrations
                     b.HasIndex("HallNr");
 
                     b.ToTable("Event");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            CategoryId = 1,
+                            EndDate = new DateTime(2024, 7, 19, 1, 0, 0, 0, DateTimeKind.Unspecified),
+                            HallNr = 2,
+                            Name = "Koncert: Mystic Waves",
+                            StartDate = new DateTime(2024, 7, 19, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                        },
+                        new
+                        {
+                            Id = 2,
+                            CategoryId = 3,
+                            EndDate = new DateTime(2024, 7, 20, 3, 0, 0, 0, DateTimeKind.Unspecified),
+                            HallNr = 3,
+                            Name = "Cień Przeszłość",
+                            StartDate = new DateTime(2024, 7, 20, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                        },
+                        new
+                        {
+                            Id = 3,
+                            CategoryId = 2,
+                            EndDate = new DateTime(2024, 7, 21, 2, 0, 0, 0, DateTimeKind.Unspecified),
+                            HallNr = 1,
+                            Name = "Królestwo planety małp",
+                            StartDate = new DateTime(2024, 7, 21, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                        },
+                        new
+                        {
+                            Id = 4,
+                            CategoryId = 4,
+                            EndDate = new DateTime(2024, 7, 22, 3, 0, 0, 0, DateTimeKind.Unspecified),
+                            HallNr = 4,
+                            Name = "Nowe inspiracje",
+                            StartDate = new DateTime(2024, 7, 22, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                        },
+                        new
+                        {
+                            Id = 5,
+                            CategoryId = 1,
+                            EndDate = new DateTime(2024, 8, 19, 1, 0, 0, 0, DateTimeKind.Unspecified),
+                            HallNr = 2,
+                            Name = "Koncert: New Era",
+                            StartDate = new DateTime(2024, 8, 19, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                        },
+                        new
+                        {
+                            Id = 6,
+                            CategoryId = 2,
+                            EndDate = new DateTime(2024, 8, 21, 2, 0, 0, 0, DateTimeKind.Unspecified),
+                            HallNr = 1,
+                            Name = "Gladiator",
+                            StartDate = new DateTime(2024, 8, 21, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                        },
+                        new
+                        {
+                            Id = 7,
+                            CategoryId = 4,
+                            EndDate = new DateTime(2024, 8, 22, 3, 0, 0, 0, DateTimeKind.Unspecified),
+                            HallNr = 4,
+                            Name = "Nowa sztuka",
+                            StartDate = new DateTime(2024, 8, 22, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                        });
                 });
 
             modelBuilder.Entity("EventFlowAPI.DB.Models.EventCategory", b =>
@@ -115,6 +238,28 @@ namespace EventFlowAPI.DB.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("EventCategory");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Name = "Koncert"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Name = "Film"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Name = "Spektakl"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Name = "Wystawa"
+                        });
                 });
 
             modelBuilder.Entity("EventFlowAPI.DB.Models.EventDetails", b =>
@@ -132,6 +277,43 @@ namespace EventFlowAPI.DB.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("EventDetails");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Description = "Krótki opis wydarzenia Koncert: Mystic Waves"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Description = "Krótki opis wydarzenia Spektakl: Cień Przeszłość"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Description = "Krótki opis wydarzenia Film: Królestwo planety małp"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Description = "Krótki opis wydarzenia Wystawa: Nowe inspiracje"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            Description = "Krótki opis wydarzenia Koncert: New Era"
+                        },
+                        new
+                        {
+                            Id = 6,
+                            Description = "Krótki opis wydarzenia Film: Gladiator"
+                        },
+                        new
+                        {
+                            Id = 7,
+                            Description = "Krótki opis wydarzenia Wystawa: Nowa sztuka"
+                        });
                 });
 
             modelBuilder.Entity("EventFlowAPI.DB.Models.EventPass", b =>
@@ -157,7 +339,7 @@ namespace EventFlowAPI.DB.Migrations
                     b.Property<int>("PaymentTypeId")
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("RenewalDate")
+                    b.Property<DateTime?>("RenewalDate")
                         .HasColumnType("datetime2");
 
                     b.Property<DateTime>("StartDate")
@@ -175,6 +357,41 @@ namespace EventFlowAPI.DB.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("EventPass");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            EndDate = new DateTime(2024, 12, 18, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            PassTypeId = 3,
+                            PaymentAmount = 499.99m,
+                            PaymentDate = new DateTime(2024, 6, 18, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            PaymentTypeId = 1,
+                            StartDate = new DateTime(2024, 6, 18, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            UserId = 1
+                        },
+                        new
+                        {
+                            Id = 2,
+                            EndDate = new DateTime(2025, 6, 18, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            PassTypeId = 4,
+                            PaymentAmount = 999.99m,
+                            PaymentDate = new DateTime(2024, 6, 18, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            PaymentTypeId = 2,
+                            StartDate = new DateTime(2024, 6, 18, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            UserId = 2
+                        },
+                        new
+                        {
+                            Id = 3,
+                            EndDate = new DateTime(2024, 9, 18, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            PassTypeId = 2,
+                            PaymentAmount = 235.99m,
+                            PaymentDate = new DateTime(2024, 6, 18, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            PaymentTypeId = 1,
+                            StartDate = new DateTime(2024, 6, 18, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            UserId = 3
+                        });
                 });
 
             modelBuilder.Entity("EventFlowAPI.DB.Models.EventPassType", b =>
@@ -196,6 +413,32 @@ namespace EventFlowAPI.DB.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("EventPassType");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Name = "Karnet miesięczny",
+                            Price = 89.99m
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Name = "Karnet kwartalny",
+                            Price = 235.99m
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Name = "Karnet półroczny",
+                            Price = 499.99m
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Name = "Karnet roczny",
+                            Price = 999.99m
+                        });
                 });
 
             modelBuilder.Entity("EventFlowAPI.DB.Models.EventTicket", b =>
@@ -222,6 +465,36 @@ namespace EventFlowAPI.DB.Migrations
                     b.HasIndex("TicketTypeId");
 
                     b.ToTable("EventTicket");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            EventId = 1,
+                            Price = 24.99m,
+                            TicketTypeId = 1
+                        },
+                        new
+                        {
+                            Id = 2,
+                            EventId = 2,
+                            Price = 34.99m,
+                            TicketTypeId = 2
+                        },
+                        new
+                        {
+                            Id = 3,
+                            EventId = 3,
+                            Price = 29.99m,
+                            TicketTypeId = 3
+                        },
+                        new
+                        {
+                            Id = 4,
+                            EventId = 4,
+                            Price = 19.99m,
+                            TicketTypeId = 3
+                        });
                 });
 
             modelBuilder.Entity("EventFlowAPI.DB.Models.Festival", b =>
@@ -243,6 +516,29 @@ namespace EventFlowAPI.DB.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Festival");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            EndDate = new DateTime(2024, 7, 22, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Name = "Festiwal muzyki współczesnej",
+                            StartDate = new DateTime(2024, 7, 18, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                        },
+                        new
+                        {
+                            Id = 2,
+                            EndDate = new DateTime(2024, 9, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Name = "Festiwal filmowy",
+                            StartDate = new DateTime(2024, 9, 18, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                        },
+                        new
+                        {
+                            Id = 3,
+                            EndDate = new DateTime(2024, 11, 19, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Name = "Festiwal sztuki abstrakcyjnej",
+                            StartDate = new DateTime(2024, 11, 18, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                        });
                 });
 
             modelBuilder.Entity("EventFlowAPI.DB.Models.FestivalDetails", b =>
@@ -260,6 +556,23 @@ namespace EventFlowAPI.DB.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("FestivalDetails");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Description = "Opis festiwalu muzyki współczesnej"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Description = "Opis festiwalu filmowego"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Description = "Opis festiwalu sztuki abstrakcyjnej"
+                        });
                 });
 
             modelBuilder.Entity("EventFlowAPI.DB.Models.Festival_Event", b =>
@@ -275,6 +588,38 @@ namespace EventFlowAPI.DB.Migrations
                     b.HasIndex("EventId");
 
                     b.ToTable("Festival_Event");
+
+                    b.HasData(
+                        new
+                        {
+                            FestivalId = 1,
+                            EventId = 1
+                        },
+                        new
+                        {
+                            FestivalId = 1,
+                            EventId = 5
+                        },
+                        new
+                        {
+                            FestivalId = 2,
+                            EventId = 2
+                        },
+                        new
+                        {
+                            FestivalId = 2,
+                            EventId = 6
+                        },
+                        new
+                        {
+                            FestivalId = 3,
+                            EventId = 4
+                        },
+                        new
+                        {
+                            FestivalId = 3,
+                            EventId = 7
+                        });
                 });
 
             modelBuilder.Entity("EventFlowAPI.DB.Models.Festival_MediaPatron", b =>
@@ -290,6 +635,38 @@ namespace EventFlowAPI.DB.Migrations
                     b.HasIndex("MediaPatronId");
 
                     b.ToTable("Festival_MediaPatron");
+
+                    b.HasData(
+                        new
+                        {
+                            FestivalId = 1,
+                            MediaPatronId = 1
+                        },
+                        new
+                        {
+                            FestivalId = 1,
+                            MediaPatronId = 2
+                        },
+                        new
+                        {
+                            FestivalId = 2,
+                            MediaPatronId = 1
+                        },
+                        new
+                        {
+                            FestivalId = 2,
+                            MediaPatronId = 3
+                        },
+                        new
+                        {
+                            FestivalId = 3,
+                            MediaPatronId = 2
+                        },
+                        new
+                        {
+                            FestivalId = 3,
+                            MediaPatronId = 3
+                        });
                 });
 
             modelBuilder.Entity("EventFlowAPI.DB.Models.Festival_Organizer", b =>
@@ -305,6 +682,38 @@ namespace EventFlowAPI.DB.Migrations
                     b.HasIndex("OrganizerId");
 
                     b.ToTable("Festival_Organizer");
+
+                    b.HasData(
+                        new
+                        {
+                            FestivalId = 1,
+                            OrganizerId = 1
+                        },
+                        new
+                        {
+                            FestivalId = 1,
+                            OrganizerId = 2
+                        },
+                        new
+                        {
+                            FestivalId = 2,
+                            OrganizerId = 1
+                        },
+                        new
+                        {
+                            FestivalId = 2,
+                            OrganizerId = 3
+                        },
+                        new
+                        {
+                            FestivalId = 3,
+                            OrganizerId = 2
+                        },
+                        new
+                        {
+                            FestivalId = 3,
+                            OrganizerId = 3
+                        });
                 });
 
             modelBuilder.Entity("EventFlowAPI.DB.Models.Festival_Sponsor", b =>
@@ -320,6 +729,38 @@ namespace EventFlowAPI.DB.Migrations
                     b.HasIndex("SponsorId");
 
                     b.ToTable("Festival_Sponsor");
+
+                    b.HasData(
+                        new
+                        {
+                            FestivalId = 1,
+                            SponsorId = 1
+                        },
+                        new
+                        {
+                            FestivalId = 1,
+                            SponsorId = 2
+                        },
+                        new
+                        {
+                            FestivalId = 2,
+                            SponsorId = 1
+                        },
+                        new
+                        {
+                            FestivalId = 2,
+                            SponsorId = 3
+                        },
+                        new
+                        {
+                            FestivalId = 3,
+                            SponsorId = 2
+                        },
+                        new
+                        {
+                            FestivalId = 3,
+                            SponsorId = 3
+                        });
                 });
 
             modelBuilder.Entity("EventFlowAPI.DB.Models.Hall", b =>
@@ -356,6 +797,52 @@ namespace EventFlowAPI.DB.Migrations
                     b.HasIndex("HallTypeId");
 
                     b.ToTable("Hall");
+
+                    b.HasData(
+                        new
+                        {
+                            HallNr = 1,
+                            Area = 50.45m,
+                            HallTypeId = 1,
+                            MaxNumberOfSeats = 100m,
+                            NumberOfSeatsColumns = 10m,
+                            NumberOfSeatsRows = 10m,
+                            RentalPricePerHour = 120.99m,
+                            floor = 2m
+                        },
+                        new
+                        {
+                            HallNr = 2,
+                            Area = 68.85m,
+                            HallTypeId = 2,
+                            MaxNumberOfSeats = 96m,
+                            NumberOfSeatsColumns = 12m,
+                            NumberOfSeatsRows = 8m,
+                            RentalPricePerHour = 89.99m,
+                            floor = 1m
+                        },
+                        new
+                        {
+                            HallNr = 3,
+                            Area = 75.3m,
+                            HallTypeId = 3,
+                            MaxNumberOfSeats = 98m,
+                            NumberOfSeatsColumns = 14m,
+                            NumberOfSeatsRows = 7m,
+                            RentalPricePerHour = 179.99m,
+                            floor = 2m
+                        },
+                        new
+                        {
+                            HallNr = 4,
+                            Area = 55.2m,
+                            HallTypeId = 4,
+                            MaxNumberOfSeats = 120m,
+                            NumberOfSeatsColumns = 15m,
+                            NumberOfSeatsRows = 8m,
+                            RentalPricePerHour = 199.99m,
+                            floor = 1m
+                        });
                 });
 
             modelBuilder.Entity("EventFlowAPI.DB.Models.HallRent", b =>
@@ -396,6 +883,52 @@ namespace EventFlowAPI.DB.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("HallRent");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            EndDate = new DateTime(2024, 7, 19, 8, 0, 0, 0, DateTimeKind.Unspecified),
+                            HallNr = 1,
+                            PaymentAmount = 899.99m,
+                            PaymentDate = new DateTime(2024, 6, 17, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            PaymentTypeId = 1,
+                            StartDate = new DateTime(2024, 7, 19, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            UserId = 1
+                        },
+                        new
+                        {
+                            Id = 2,
+                            EndDate = new DateTime(2024, 7, 20, 4, 0, 0, 0, DateTimeKind.Unspecified),
+                            HallNr = 3,
+                            PaymentAmount = 699.99m,
+                            PaymentDate = new DateTime(2024, 6, 16, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            PaymentTypeId = 2,
+                            StartDate = new DateTime(2024, 7, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            UserId = 3
+                        },
+                        new
+                        {
+                            Id = 3,
+                            EndDate = new DateTime(2024, 7, 21, 2, 0, 0, 0, DateTimeKind.Unspecified),
+                            HallNr = 3,
+                            PaymentAmount = 399.99m,
+                            PaymentDate = new DateTime(2024, 6, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            PaymentTypeId = 3,
+                            StartDate = new DateTime(2024, 7, 21, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            UserId = 3
+                        },
+                        new
+                        {
+                            Id = 4,
+                            EndDate = new DateTime(2024, 7, 22, 1, 0, 0, 0, DateTimeKind.Unspecified),
+                            HallNr = 4,
+                            PaymentAmount = 150.99m,
+                            PaymentDate = new DateTime(2024, 6, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            PaymentTypeId = 2,
+                            StartDate = new DateTime(2024, 7, 22, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            UserId = 2
+                        });
                 });
 
             modelBuilder.Entity("EventFlowAPI.DB.Models.HallRent_AdditionalServices", b =>
@@ -411,6 +944,38 @@ namespace EventFlowAPI.DB.Migrations
                     b.HasIndex("AdditionalServiceId");
 
                     b.ToTable("HallRent_AdditionalServices");
+
+                    b.HasData(
+                        new
+                        {
+                            HallRentId = 2,
+                            AdditionalServiceId = 1
+                        },
+                        new
+                        {
+                            HallRentId = 2,
+                            AdditionalServiceId = 2
+                        },
+                        new
+                        {
+                            HallRentId = 2,
+                            AdditionalServiceId = 3
+                        },
+                        new
+                        {
+                            HallRentId = 3,
+                            AdditionalServiceId = 2
+                        },
+                        new
+                        {
+                            HallRentId = 4,
+                            AdditionalServiceId = 4
+                        },
+                        new
+                        {
+                            HallRentId = 4,
+                            AdditionalServiceId = 5
+                        });
                 });
 
             modelBuilder.Entity("EventFlowAPI.DB.Models.HallType", b =>
@@ -433,6 +998,32 @@ namespace EventFlowAPI.DB.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("HallType");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Description = "Nowa sala kinowa wyposażona w nowoczesne nagłośnienie i ekran",
+                            Name = "Sala filmowa"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Description = "Nowa sala koncertowa wyposażona w najwyższej klasy nagłośnienie",
+                            Name = "Sala koncertowa"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Description = "Opis sali teatralnej",
+                            Name = "Sala teatralna"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Description = "Opis sali wystawowa",
+                            Name = "Sala wystawowa"
+                        });
                 });
 
             modelBuilder.Entity("EventFlowAPI.DB.Models.HallType_Equipment", b =>
@@ -448,6 +1039,33 @@ namespace EventFlowAPI.DB.Migrations
                     b.HasIndex("HallTypeId");
 
                     b.ToTable("HallType_Equipment");
+
+                    b.HasData(
+                        new
+                        {
+                            EquipmentId = 1,
+                            HallTypeId = 1
+                        },
+                        new
+                        {
+                            EquipmentId = 3,
+                            HallTypeId = 1
+                        },
+                        new
+                        {
+                            EquipmentId = 2,
+                            HallTypeId = 2
+                        },
+                        new
+                        {
+                            EquipmentId = 4,
+                            HallTypeId = 2
+                        },
+                        new
+                        {
+                            EquipmentId = 2,
+                            HallTypeId = 3
+                        });
                 });
 
             modelBuilder.Entity("EventFlowAPI.DB.Models.MediaPatron", b =>
@@ -466,6 +1084,23 @@ namespace EventFlowAPI.DB.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("MediaPatron");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Name = "Gazeta Nowoczesna"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Name = "Nowy świat TV"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Name = "Tygodnik Nowiny"
+                        });
                 });
 
             modelBuilder.Entity("EventFlowAPI.DB.Models.Organizer", b =>
@@ -484,6 +1119,23 @@ namespace EventFlowAPI.DB.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Organizer");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Name = "EventFlow"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Name = "Snowflake"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Name = "Aura"
+                        });
                 });
 
             modelBuilder.Entity("EventFlowAPI.DB.Models.PaymentType", b =>
@@ -502,6 +1154,28 @@ namespace EventFlowAPI.DB.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("PaymentType");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Name = "Karta kredytowa"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Name = "Przelew"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Name = "BLIK"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Name = "Zapłać później"
+                        });
                 });
 
             modelBuilder.Entity("EventFlowAPI.DB.Models.Reservation", b =>
@@ -536,6 +1210,44 @@ namespace EventFlowAPI.DB.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Reservation");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            EventTicketId = 1,
+                            PaymentAmount = 24.99m,
+                            PaymentTypeId = 1,
+                            ReservationDate = new DateTime(2024, 6, 28, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            UserId = 1
+                        },
+                        new
+                        {
+                            Id = 2,
+                            EventTicketId = 2,
+                            PaymentAmount = 34.99m,
+                            PaymentTypeId = 2,
+                            ReservationDate = new DateTime(2024, 7, 4, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            UserId = 2
+                        },
+                        new
+                        {
+                            Id = 3,
+                            EventTicketId = 3,
+                            PaymentAmount = 29.99m,
+                            PaymentTypeId = 3,
+                            ReservationDate = new DateTime(2024, 7, 5, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            UserId = 3
+                        },
+                        new
+                        {
+                            Id = 4,
+                            EventTicketId = 4,
+                            PaymentAmount = 19.99m,
+                            PaymentTypeId = 2,
+                            ReservationDate = new DateTime(2024, 7, 6, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            UserId = 3
+                        });
                 });
 
             modelBuilder.Entity("EventFlowAPI.DB.Models.Reservation_Seat", b =>
@@ -551,6 +1263,28 @@ namespace EventFlowAPI.DB.Migrations
                     b.HasIndex("SeatId");
 
                     b.ToTable("Reservation_Seat");
+
+                    b.HasData(
+                        new
+                        {
+                            ReservationId = 1,
+                            SeatId = 4
+                        },
+                        new
+                        {
+                            ReservationId = 2,
+                            SeatId = 8
+                        },
+                        new
+                        {
+                            ReservationId = 3,
+                            SeatId = 10
+                        },
+                        new
+                        {
+                            ReservationId = 4,
+                            SeatId = 13
+                        });
                 });
 
             modelBuilder.Entity("EventFlowAPI.DB.Models.Seat", b =>
@@ -583,6 +1317,125 @@ namespace EventFlowAPI.DB.Migrations
                     b.HasIndex("SeatTypeId");
 
                     b.ToTable("Seat");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Column = 1m,
+                            HallNr = 1,
+                            Row = 1m,
+                            SeatNr = 1m,
+                            SeatTypeId = 1
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Column = 2m,
+                            HallNr = 1,
+                            Row = 1m,
+                            SeatNr = 2m,
+                            SeatTypeId = 1
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Column = 3m,
+                            HallNr = 1,
+                            Row = 1m,
+                            SeatNr = 3m,
+                            SeatTypeId = 1
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Column = 4m,
+                            HallNr = 1,
+                            Row = 1m,
+                            SeatNr = 4m,
+                            SeatTypeId = 1
+                        },
+                        new
+                        {
+                            Id = 5,
+                            Column = 1m,
+                            HallNr = 2,
+                            Row = 1m,
+                            SeatNr = 1m,
+                            SeatTypeId = 2
+                        },
+                        new
+                        {
+                            Id = 6,
+                            Column = 2m,
+                            HallNr = 2,
+                            Row = 1m,
+                            SeatNr = 2m,
+                            SeatTypeId = 2
+                        },
+                        new
+                        {
+                            Id = 7,
+                            Column = 3m,
+                            HallNr = 2,
+                            Row = 1m,
+                            SeatNr = 3m,
+                            SeatTypeId = 2
+                        },
+                        new
+                        {
+                            Id = 8,
+                            Column = 4m,
+                            HallNr = 2,
+                            Row = 1m,
+                            SeatNr = 4m,
+                            SeatTypeId = 2
+                        },
+                        new
+                        {
+                            Id = 9,
+                            Column = 1m,
+                            HallNr = 3,
+                            Row = 1m,
+                            SeatNr = 1m,
+                            SeatTypeId = 3
+                        },
+                        new
+                        {
+                            Id = 10,
+                            Column = 2m,
+                            HallNr = 3,
+                            Row = 1m,
+                            SeatNr = 2m,
+                            SeatTypeId = 3
+                        },
+                        new
+                        {
+                            Id = 11,
+                            Column = 3m,
+                            HallNr = 3,
+                            Row = 1m,
+                            SeatNr = 3m,
+                            SeatTypeId = 3
+                        },
+                        new
+                        {
+                            Id = 12,
+                            Column = 4m,
+                            HallNr = 3,
+                            Row = 1m,
+                            SeatNr = 4m,
+                            SeatTypeId = 3
+                        },
+                        new
+                        {
+                            Id = 13,
+                            Column = 1m,
+                            HallNr = 4,
+                            Row = 1m,
+                            SeatNr = 1m,
+                            SeatTypeId = 3
+                        });
                 });
 
             modelBuilder.Entity("EventFlowAPI.DB.Models.SeatType", b =>
@@ -608,6 +1461,29 @@ namespace EventFlowAPI.DB.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("SeatType");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            AddtionalPaymentPercentage = 25m,
+                            Description = "Opis miejsca VIP",
+                            Name = "Miejsce VIP"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            AddtionalPaymentPercentage = 10m,
+                            Description = "Opis miejsca klasy premium",
+                            Name = "Miejsce klasy premium"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            AddtionalPaymentPercentage = 0m,
+                            Description = "Opis miejsca zwykłego",
+                            Name = "Miejsce zwykłe"
+                        });
                 });
 
             modelBuilder.Entity("EventFlowAPI.DB.Models.Sponsor", b =>
@@ -626,6 +1502,23 @@ namespace EventFlowAPI.DB.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Sponsor");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Name = "Basel"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Name = "Vision"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Name = "Waveless"
+                        });
                 });
 
             modelBuilder.Entity("EventFlowAPI.DB.Models.TicketType", b =>
@@ -644,6 +1537,23 @@ namespace EventFlowAPI.DB.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("TicketType");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Name = "Bilet normalny"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Name = "Bilet ulgowy"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Name = "Bilet rodzinny"
+                        });
                 });
 
             modelBuilder.Entity("EventFlowAPI.DB.Models.User", b =>
@@ -672,6 +1582,32 @@ namespace EventFlowAPI.DB.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("User");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            DateOfBirth = new DateTime(2000, 4, 3, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Email = "p.nowicki@gmail.com",
+                            Name = "Piotr",
+                            Surname = "Nowicki"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            DateOfBirth = new DateTime(1985, 2, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Email = "a.nowak@gmail.com",
+                            Name = "Adam",
+                            Surname = "Nowak"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            DateOfBirth = new DateTime(1979, 12, 11, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Email = "a.kowalska@gmail.com",
+                            Name = "Anna",
+                            Surname = "Kowalska"
+                        });
                 });
 
             modelBuilder.Entity("EventFlowAPI.DB.Models.UserData", b =>
@@ -711,6 +1647,38 @@ namespace EventFlowAPI.DB.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("UserData");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            City = "Warszawa",
+                            FlatNumber = 14m,
+                            HouseNumber = 12m,
+                            PhoneNumber = "789456123",
+                            Street = "Wesoła",
+                            ZipCode = "15-264"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            City = "Poznań",
+                            FlatNumber = 31m,
+                            HouseNumber = 10m,
+                            PhoneNumber = "123456789",
+                            Street = "Wiejska",
+                            ZipCode = "01-342"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            City = "Białystok",
+                            FlatNumber = 21m,
+                            HouseNumber = 7m,
+                            PhoneNumber = "147852369",
+                            Street = "Pogodna",
+                            ZipCode = "14-453"
+                        });
                 });
 
             modelBuilder.Entity("EventFlowAPI.DB.Models.Event", b =>

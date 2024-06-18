@@ -436,7 +436,7 @@ namespace EventFlowAPI.DB.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     StartDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    RenewalDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    RenewalDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     EndDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     PaymentDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     PaymentAmount = table.Column<decimal>(type: "NUMERIC(6,2)", nullable: false),
