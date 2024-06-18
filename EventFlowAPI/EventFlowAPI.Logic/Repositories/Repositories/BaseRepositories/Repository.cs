@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace EventFlowAPI.Logic.Repositories.Repositories.BaseRepositories
 {
-    public class Repository<T> : IRepository<T> where T : class
+    public abstract class Repository<T> : IRepository<T> where T : class
     {
         protected readonly APIContext _context;
         private readonly DbSet<T> _table;
