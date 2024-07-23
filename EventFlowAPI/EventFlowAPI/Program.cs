@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using EventFlowAPI.DB.Context;
 using EventFlowAPI.Logic.Repositories.Repositories;
 using EventFlowAPI.Logic.Repositories.Interfaces;
+using EventFlowAPI.Logic.UnitOfWork;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,7 +15,9 @@ builder.Services.AddDbContext<APIContext>(options =>
 // Add services to the container.
 
 // Repositories
-builder.Services.AddScoped<IAdditionalServicesRepository, AdditionalServicesRepository>();
+builder.Services.AddTransient<IUnitOfWork, UnitOfWork>();
+
+/*builder.Services.AddScoped<IAdditionalServicesRepository, AdditionalServicesRepository>();
 builder.Services.AddScoped<IEquipmentRepository, EquipmentRepository>();
 builder.Services.AddScoped<IEventCategoryRepository, EventCategoryRepository>();
 builder.Services.AddScoped<IEventDetailsRepository, EventDetailsRepository>();
@@ -43,7 +46,7 @@ builder.Services.AddScoped<ISeatTypeRepository, SeatTypeRepository>();
 builder.Services.AddScoped<ISponsorRepository, SponsorRepository>();
 builder.Services.AddScoped<ITicketTypeRepository, TicketTypeRepository>();
 builder.Services.AddScoped<IUserDataRepository, UserDataRepository>();
-builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();*/
 
 // Services
 

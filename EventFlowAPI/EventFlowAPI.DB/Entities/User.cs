@@ -1,7 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.Diagnostics.CodeAnalysis;
 
-namespace EventFlowAPI.DB.Models
+namespace EventFlowAPI.DB.Entities
 {
     public class User
     {

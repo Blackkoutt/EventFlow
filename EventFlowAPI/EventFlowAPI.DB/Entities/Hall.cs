@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace EventFlowAPI.DB.Models
+namespace EventFlowAPI.DB.Entities
 {
     public class Hall
     {

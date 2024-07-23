@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace EventFlowAPI.DB.Models
+namespace EventFlowAPI.DB.Entities
 {
     public class FestivalDetails
     {

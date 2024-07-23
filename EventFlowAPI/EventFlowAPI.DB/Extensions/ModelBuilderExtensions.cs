@@ -1,4 +1,4 @@
-﻿using EventFlowAPI.DB.Models;
+﻿using EventFlowAPI.DB.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace EventFlowAPI.DB.Extensions

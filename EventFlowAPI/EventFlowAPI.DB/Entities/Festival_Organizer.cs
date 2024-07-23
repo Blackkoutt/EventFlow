@@ -1,4 +1,4 @@
-﻿namespace EventFlowAPI.DB.Models
+﻿namespace EventFlowAPI.DB.Entities
 {
     public class Festival_Organizer
     {
