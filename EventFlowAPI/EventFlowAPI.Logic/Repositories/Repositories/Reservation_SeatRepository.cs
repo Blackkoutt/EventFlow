@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace EventFlowAPI.Logic.Repositories.Repositories
 {
-    public class Reservation_SeatRepository(APIContext context) : Repository<Reservation_Seat>(context), IReservation_SeatRepository
+    public class Reservation_SeatRepository(APIContext context) : GenericRepository<Reservation_Seat>(context), IReservation_SeatRepository
     {
         public override sealed async Task<IEnumerable<Reservation_Seat>> GetAll()
         {
@@ -53,7 +53,7 @@ namespace EventFlowAPI.Logic.Repositories.Repositories
 
             _context.Reservation_Seat.Remove(record);
 
-            await _context.SaveChangesAsync();
+            //await _context.SaveChangesAsync();
         }
 
     }

@@ -3,7 +3,7 @@ using EventFlowAPI.Logic.Repositories.Interfaces.BaseInterfaces;
 
 namespace EventFlowAPI.Logic.Repositories.Interfaces
 {
-    public interface IFestivalRepository : IRepository<Festival>
+    public interface IFestivalRepository : IGenericRepository<Festival>
     {
     }
 }

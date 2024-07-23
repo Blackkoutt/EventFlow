@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace EventFlowAPI.Logic.Repositories.Repositories
 {
-    public class Festival_OrganizerRepository(APIContext context) : Repository<Festival_Organizer>(context), IFestival_OrganizerRepository
+    public class Festival_OrganizerRepository(APIContext context) : GenericRepository<Festival_Organizer>(context), IFestival_OrganizerRepository
     {
         public override sealed async Task<IEnumerable<Festival_Organizer>> GetAll()
         {
@@ -53,7 +53,7 @@ namespace EventFlowAPI.Logic.Repositories.Repositories
 
             _context.Festival_Organizer.Remove(record);
 
-            await _context.SaveChangesAsync();
+           // await _context.SaveChangesAsync();
         }
     }
 }

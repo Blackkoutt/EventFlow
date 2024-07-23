@@ -5,7 +5,7 @@ using EventFlowAPI.Logic.Repositories.Repositories.BaseRepositories;
 
 namespace EventFlowAPI.Logic.Repositories.Repositories
 {
-    public class SeatTypeRepository(APIContext context) : Repository<SeatType>(context), ISeatTypeRepository
+    public class SeatTypeRepository(APIContext context) : GenericRepository<SeatType>(context), ISeatTypeRepository
     {
     }
 }

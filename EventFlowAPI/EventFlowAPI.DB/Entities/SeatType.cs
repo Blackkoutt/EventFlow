@@ -8,9 +8,8 @@ namespace EventFlowAPI.DB.Models
     {
         public int Id { get; set; }
 
-        [NotNull]
         [MaxLength(30)]
-        public string? Name { get; set; }
+        public string Name { get; set; } = string.Empty;
 
         [MaxLength(400)]
         public string? Description { get; set; }

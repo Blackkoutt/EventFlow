@@ -5,7 +5,7 @@ using EventFlowAPI.Logic.Repositories.Repositories.BaseRepositories;
 
 namespace EventFlowAPI.Logic.Repositories.Repositories
 {
-    public class EventCategoryRepository(APIContext context) : Repository<EventCategory>(context), IEventCategoryRepository
+    public class EventCategoryRepository(APIContext context) : GenericRepository<EventCategory>(context), IEventCategoryRepository
     {
     }
 }

@@ -3,7 +3,7 @@ using EventFlowAPI.Logic.Repositories.Interfaces.BaseInterfaces;
 
 namespace EventFlowAPI.Logic.Repositories.Interfaces
 {
-    public interface ISeatRepository : IRepository<Seat>
+    public interface ISeatRepository : IGenericRepository<Seat>
     {
     }
 }

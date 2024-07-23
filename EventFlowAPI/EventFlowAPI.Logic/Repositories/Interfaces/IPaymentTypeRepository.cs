@@ -3,7 +3,7 @@ using EventFlowAPI.Logic.Repositories.Interfaces.BaseInterfaces;
 
 namespace EventFlowAPI.Logic.Repositories.Interfaces
 {
-    public interface IPaymentTypeRepository : IRepository<PaymentType>
+    public interface IPaymentTypeRepository : IGenericRepository<PaymentType>
     {
     }
 }

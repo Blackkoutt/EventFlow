@@ -7,9 +7,8 @@ namespace EventFlowAPI.DB.Models
     {
         public int Id { get; set; }
 
-        [NotNull]
         [MaxLength(40)]
-        public string? Name { get; set; }
+        public string Name { get; set; } = string.Empty;
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
 

@@ -7,17 +7,14 @@ namespace EventFlowAPI.DB.Models
     {
         public int Id { get; set; }
 
-        [NotNull]
         [MaxLength(30)]
-        public string? Name { get; set; }
+        public string Name { get; set; } = string.Empty;
 
-        [NotNull]
         [MaxLength(40)]
-        public string? Surname { get; set; }
+        public string Surname { get; set; } = string.Empty;
 
-        [NotNull]
         [MaxLength(255)]
-        public string? Email { get; set; }
+        public string Email { get; set; } = string.Empty;
 
         public DateTime DateOfBirth { get; set; }
         public UserData? UserData { get; set; }

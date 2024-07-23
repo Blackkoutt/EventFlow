@@ -10,8 +10,7 @@ using System.Threading.Tasks;
 
 namespace EventFlowAPI.Logic.Repositories.Repositories
 {
-    public class EventDetailsRepository : Repository<EventDetails>, IEventDetailsRepository
+    public class EventDetailsRepository(APIContext context) : GenericRepository<EventDetails>(context), IEventDetailsRepository
     {
-        public EventDetailsRepository(APIContext context) : base(context) { }
     }
 }

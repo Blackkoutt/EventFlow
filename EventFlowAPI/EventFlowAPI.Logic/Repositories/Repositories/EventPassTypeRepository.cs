@@ -5,7 +5,7 @@ using EventFlowAPI.Logic.Repositories.Repositories.BaseRepositories;
 
 namespace EventFlowAPI.Logic.Repositories.Repositories
 {
-    public class EventPassTypeRepository(APIContext context) : Repository<EventPassType>(context), IEventPassTypeRepository
+    public class EventPassTypeRepository(APIContext context) : GenericRepository<EventPassType>(context), IEventPassTypeRepository
     {
     }
 }

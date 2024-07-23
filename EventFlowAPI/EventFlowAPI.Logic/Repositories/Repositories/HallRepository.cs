@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace EventFlowAPI.Logic.Repositories.Repositories
 {
-    public class HallRepository(APIContext context) : Repository<Hall>(context), IHallRepository
+    public class HallRepository(APIContext context) : GenericRepository<Hall>(context), IHallRepository
     {
         public override sealed async Task<IEnumerable<Hall>> GetAll()
         {

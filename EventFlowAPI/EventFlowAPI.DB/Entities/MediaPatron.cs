@@ -3,14 +3,13 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace EventFlowAPI.DB.Models
 {
-    public class EventCategory
+    public class MediaPatron
     {
         public int Id { get; set; }
 
-        [NotNull]
         [MaxLength(30)]
-        public string? Name { get; set; }
+        public string Name { get; set; } = string.Empty;
 
-        public ICollection<Event> Events { get; set; } = [];
+        public ICollection<Festival_MediaPatron> Festivals { get; set; } = [];
     }
 }

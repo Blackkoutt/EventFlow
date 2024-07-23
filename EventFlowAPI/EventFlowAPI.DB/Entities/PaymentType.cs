@@ -7,9 +7,8 @@ namespace EventFlowAPI.DB.Models
     {
         public int Id { get; set; }
 
-        [NotNull]
         [MaxLength(30)]
-        public string? Name { get; set; }
+        public string Name { get; set; } = string.Empty;
         public ICollection<HallRent> HallRents { get; set; } = [];
         public ICollection<EventPass> EventPasses { get; set; } = [];
         public ICollection<Reservation> Reservations { get; set; } = [];

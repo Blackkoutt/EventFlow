@@ -5,7 +5,7 @@ using EventFlowAPI.Logic.Repositories.Repositories.BaseRepositories;
 
 namespace EventFlowAPI.Logic.Repositories.Repositories
 {
-    public class TicketTypeRepository(APIContext context) : Repository<TicketType>(context), ITicketTypeRepository
+    public class TicketTypeRepository(APIContext context) : GenericRepository<TicketType>(context), ITicketTypeRepository
     {
     }
 }

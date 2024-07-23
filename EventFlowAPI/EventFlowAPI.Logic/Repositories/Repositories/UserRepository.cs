@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace EventFlowAPI.Logic.Repositories.Repositories
 {
-    public class UserRepository(APIContext context) : Repository<User>(context), IUserRepository
+    public class UserRepository(APIContext context) : GenericRepository<User>(context), IUserRepository
     {
         public override sealed async Task<IEnumerable<User>> GetAll()
         {

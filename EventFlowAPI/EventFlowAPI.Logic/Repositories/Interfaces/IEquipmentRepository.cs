@@ -3,7 +3,7 @@ using EventFlowAPI.Logic.Repositories.Interfaces.BaseInterfaces;
 
 namespace EventFlowAPI.Logic.Repositories.Interfaces
 {
-    public interface IEquipmentRepository : IRepository<Equipment>
+    public interface IEquipmentRepository : IGenericRepository<Equipment>
     {
     }
 }

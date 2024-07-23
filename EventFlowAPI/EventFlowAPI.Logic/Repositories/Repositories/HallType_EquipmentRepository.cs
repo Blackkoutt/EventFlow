@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace EventFlowAPI.Logic.Repositories.Repositories
 {
-    public class HallType_EquipmentRepository(APIContext context) : Repository<HallType_Equipment>(context), IHallType_EquipmentRepository
+    public class HallType_EquipmentRepository(APIContext context) : GenericRepository<HallType_Equipment>(context), IHallType_EquipmentRepository
     {
         public override sealed async Task<IEnumerable<HallType_Equipment>> GetAll()
         {
@@ -53,7 +53,7 @@ namespace EventFlowAPI.Logic.Repositories.Repositories
 
             _context.HallType_Equipment.Remove(record);
 
-            await _context.SaveChangesAsync();
+           // await _context.SaveChangesAsync();
         }
     }
 }

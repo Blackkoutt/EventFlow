@@ -5,7 +5,7 @@ using EventFlowAPI.Logic.Repositories.Repositories.BaseRepositories;
 
 namespace EventFlowAPI.Logic.Repositories.Repositories
 {
-    public class MediaPatronRepository(APIContext context) : Repository<MediaPatron>(context), IMediaPatronRepository
+    public class MediaPatronRepository(APIContext context) : GenericRepository<MediaPatron>(context), IMediaPatronRepository
     {
     }
 }

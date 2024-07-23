@@ -4,12 +4,12 @@ using Microsoft.EntityFrameworkCore;
 
 namespace EventFlowAPI.Logic.Repositories.Repositories.BaseRepositories
 {
-    public abstract class Repository<T> : IRepository<T> where T : class
+    public abstract class GenericRepository<T> : IGenericRepository<T> where T : class
     {
         protected readonly APIContext _context;
         private readonly DbSet<T> _table;
 
-        public Repository(APIContext context) 
+        public GenericRepository(APIContext context) 
         {
             _context = context;
             _table = _context.Set<T>();
@@ -20,7 +20,7 @@ namespace EventFlowAPI.Logic.Repositories.Repositories.BaseRepositories
             ArgumentNullException.ThrowIfNull(entity, nameof(entity));
 
             await _table.AddAsync(entity);
-            await _context.SaveChangesAsync();
+            //await _context.SaveChangesAsync();
         }
         public virtual async Task<IEnumerable<T>> GetAll()
         {
@@ -39,12 +39,12 @@ namespace EventFlowAPI.Logic.Repositories.Repositories.BaseRepositories
 
             return record;
         }
-        public async Task Update(T entity)
+        public void Update(T entity)
         {
             ArgumentNullException.ThrowIfNull(entity);
 
             _table.Update(entity);
-            await _context.SaveChangesAsync();
+            //await _context.SaveChangesAsync();
         }
         public async Task Delete(int id)
         {
@@ -58,7 +58,7 @@ namespace EventFlowAPI.Logic.Repositories.Repositories.BaseRepositories
 
             _table.Remove(record);
 
-            await _context.SaveChangesAsync();
+            //await _context.SaveChangesAsync();
         }
 
     }

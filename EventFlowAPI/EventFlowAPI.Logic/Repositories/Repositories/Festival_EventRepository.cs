@@ -7,7 +7,7 @@ using Microsoft.Extensions.Logging;
 
 namespace EventFlowAPI.Logic.Repositories.Repositories
 {
-    public class Festival_EventRepository(APIContext context) : Repository<Festival_Event>(context), IFestival_EventRepository
+    public class Festival_EventRepository(APIContext context) : GenericRepository<Festival_Event>(context), IFestival_EventRepository
     {
         public override sealed async Task<IEnumerable<Festival_Event>> GetAll()
         {
@@ -54,7 +54,7 @@ namespace EventFlowAPI.Logic.Repositories.Repositories
 
             _context.Festival_Event.Remove(record);
 
-            await _context.SaveChangesAsync();
+            //await _context.SaveChangesAsync();
         }
     }
 }

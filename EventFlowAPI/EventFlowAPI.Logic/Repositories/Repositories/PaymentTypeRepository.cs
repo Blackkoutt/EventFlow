@@ -5,7 +5,7 @@ using EventFlowAPI.Logic.Repositories.Repositories.BaseRepositories;
 
 namespace EventFlowAPI.Logic.Repositories.Repositories
 {
-    public class PaymentTypeRepository(APIContext context) : Repository<PaymentType>(context), IPaymentTypeRepository
+    public class PaymentTypeRepository(APIContext context) : GenericRepository<PaymentType>(context), IPaymentTypeRepository
     {
     }
 }

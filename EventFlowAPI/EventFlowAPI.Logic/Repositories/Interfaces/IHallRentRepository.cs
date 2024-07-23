@@ -3,7 +3,7 @@ using EventFlowAPI.Logic.Repositories.Interfaces.BaseInterfaces;
 
 namespace EventFlowAPI.Logic.Repositories.Interfaces
 {
-    public interface IHallRentRepository : IRepository<HallRent>
+    public interface IHallRentRepository : IGenericRepository<HallRent>
     {
     }
 }
