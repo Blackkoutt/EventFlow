@@ -9,9 +9,13 @@ namespace EventFlowAPI.DB.Entities
         [MaxLength(60)]
         public string Name { get; set; } = string.Empty;
 
+        [MaxLength(300)]
+        public string ShortDescription { get; set; } = string.Empty;
+
         public DateTime StartDate { get; set; } 
 
         public DateTime EndDate { get; set; }
+        public TimeSpan Duration { get; set; }
         public int CategoryId { get; set; } 
         public int HallNr { get; set; }
 

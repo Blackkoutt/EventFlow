@@ -15,7 +15,7 @@ namespace EventFlowAPI.DB.Entities
 
         [Range(0.00, 99.99),
          Column(TypeName = "NUMERIC(4,2)")]
-        public double AddtionalPaymentPercentage { get; set; }
+        public decimal AddtionalPaymentPercentage { get; set; }
 
         public ICollection<Seat> Seats { get; set; } = [];
     }

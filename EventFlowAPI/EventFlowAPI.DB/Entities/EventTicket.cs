@@ -9,7 +9,7 @@ namespace EventFlowAPI.DB.Entities
 
         [Range(0.00, 999.99),
          Column(TypeName = "NUMERIC(5,2)")]
-        public double Price { get; set; }
+        public decimal Price { get; set; }
         public int EventId { get; set; }
         public int TicketTypeId { get; set; }
         public Event? Event { get; set; }

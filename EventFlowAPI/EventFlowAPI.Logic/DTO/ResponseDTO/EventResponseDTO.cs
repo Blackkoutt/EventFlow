@@ -1,4 +1,4 @@
-﻿namespace EventFlowAPI.Logic.DTO.ResponseDTO
+﻿namespace EventFlowAPI.Logic.DTO.RequestDTO
 {
     public class EventResponseDTO
     {

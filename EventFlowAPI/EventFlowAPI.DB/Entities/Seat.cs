@@ -17,7 +17,15 @@ namespace EventFlowAPI.DB.Entities
 
         [Range(0, 99),
          Column(TypeName = "NUMERIC(2)")]
+        public int GridRow { get; set; }
+
+        [Range(0, 99),
+         Column(TypeName = "NUMERIC(2)")]
         public int Column { get; set; }
+
+        [Range(0, 99),
+         Column(TypeName = "NUMERIC(2)")]
+        public int GridColumn { get; set; }
 
         public int SeatTypeId { get; set; }
         public int HallNr { get; set; } 

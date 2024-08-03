@@ -6,7 +6,7 @@ namespace EventFlowAPI.DB.Entities
     {
         public int Id { get; set; }
 
-        [MaxLength(30)]
+        [MaxLength(40)]
         public string Name { get; set; } = string.Empty;
 
         public ICollection<EventTicket> Tickets { get; set; } = [];

@@ -10,13 +10,13 @@ namespace EventFlowAPI.DB.Entities
         [MaxLength(50)]
         public string Street { get; set; } = string.Empty;
 
-        [Range(0, 9999),
-         Column(TypeName = "NUMERIC(4)")]
+        [Range(0, 999),
+         Column(TypeName = "NUMERIC(3)")]
         public int HouseNumber { get; set; }
 
-        [Range(0, 9999),
-         Column(TypeName = "NUMERIC(4)")]
-        public int FlatNumber { get; set; }
+        [Range(0, 999),
+         Column(TypeName = "NUMERIC(3)")]
+        public int? FlatNumber { get; set; }
 
         [MaxLength(50)]
         public string City { get; set; } = string.Empty;

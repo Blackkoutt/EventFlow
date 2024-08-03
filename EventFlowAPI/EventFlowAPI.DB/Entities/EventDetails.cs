@@ -7,7 +7,7 @@ namespace EventFlowAPI.DB.Entities
         public int Id { get; set; }
 
         [MaxLength(2000)]
-        public string? Description { get; set; }
+        public string? LongDescription { get; set; }
 
         public Event? Event { get; set; }
     }

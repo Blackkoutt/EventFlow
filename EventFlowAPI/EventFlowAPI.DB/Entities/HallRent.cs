@@ -12,7 +12,7 @@ namespace EventFlowAPI.DB.Entities
 
         [Range(0.00, 99999.99),
          Column(TypeName = "NUMERIC(7,2)")]
-        public double PaymentAmount { get; set; }   
+        public decimal PaymentAmount { get; set; }   
         public int PaymentTypeId { get; set; }   
         public int HallNr { get; set; }   
         public int UserId { get; set; }   

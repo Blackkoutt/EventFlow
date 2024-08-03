@@ -12,7 +12,7 @@ namespace EventFlowAPI.DB.Entities
 
         [Range(0.00, 9999.99),
          Column(TypeName = "NUMERIC(6,2)")]
-        public double Price {  get; set; }
+        public decimal Price {  get; set; }
 
         public ICollection<HallRent_AdditionalServices> Rents { get; set; } = [];
     }

@@ -9,15 +9,26 @@ namespace EventFlowAPI.DB.Entities
 
         [Range(0.00, 999.99),
          Column(TypeName = "NUMERIC(5,2)")]
-        public double RentalPricePerHour { get; set; }
+        public decimal RentalPricePerHour { get; set; }
 
         [Range(0,4),
          Column(TypeName = "NUMERIC(1)")]
-        public int floor { get; set; }
+        public int Floor { get; set; }
+
+        [Range(0.00, 99.99), 
+         Column(TypeName ="NUMERIC(4,2)")]
+        public decimal TotalLength { get; set; }
+
+        [Range(0.00, 99.99),
+         Column(TypeName = "NUMERIC(4,2)")]
+        public decimal TotalWidth { get; set; }
 
         [Range(0.00, 999.99),
          Column(TypeName = "NUMERIC(5,2)")]
-        public double Area { get; set; }
+        public decimal TotalArea { get; set; }
+
+        [Range(10.00, 400.00, ErrorMessage = "Powierzchnia sceny nie może być mniejsza niż 10 m2 lub większa niż 400 m2.")]
+        public decimal? StageArea { get; set; }
 
         [Range(0, 99),
          Column(TypeName = "NUMERIC(2)")]
@@ -25,7 +36,19 @@ namespace EventFlowAPI.DB.Entities
 
         [Range(0, 99),
          Column(TypeName = "NUMERIC(2)")]
+        public int MaxNumberOfSeatsRows { get; set; }
+
+        [Range(0, 99),
+         Column(TypeName = "NUMERIC(2)")]
         public int NumberOfSeatsColumns { get; set; }
+
+        [Range(0, 99),
+         Column(TypeName = "NUMERIC(2)")]
+        public int MaxNumberOfSeatsColumns { get; set; }
+
+        [Range(0,999),
+            Column(TypeName ="NUMERIC(3)")]
+        public int NumberOfSeats { get; set; }
 
         [Range(0, 999),
          Column(TypeName = "NUMERIC(3)")]
