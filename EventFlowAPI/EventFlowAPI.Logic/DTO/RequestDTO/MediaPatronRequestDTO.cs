@@ -1,8 +1,9 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using EventFlowAPI.Logic.DTO.Interfaces;
+using System.ComponentModel.DataAnnotations;
 
-namespace EventFlowAPI.Logic.DTO.RequestDTO
+namespace EventFlowAPI.Logic.DTO.RequestDto
 {
-    public class MediaPatronRequestDTO
+    public class MediaPatronRequestDto : IRequestDto
     {
 
         [Required(ErrorMessage = "Nazwa patrona medialnego jest wymagana.")]

@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace EventFlowAPI.DB.Extensions
 {
-    public static class ModelBuilderExtensions
+    public static class ModelBuilderSeedExtensions
     {
         public static void Seed(this ModelBuilder modelBuilder)
         {
@@ -14,7 +14,7 @@ namespace EventFlowAPI.DB.Extensions
                 {
                     Id = 1,
                     Name = "DJ",
-                    Price = 400.00
+                    Price = 400.00m
                 },
                 new AdditionalServices
                 {

@@ -1,8 +1,9 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using EventFlowAPI.Logic.DTO.Interfaces;
+using System.ComponentModel.DataAnnotations;
 
-namespace EventFlowAPI.Logic.DTO.RequestDTO
+namespace EventFlowAPI.Logic.DTO.RequestDto
 {
-    public class UserDataRequestDTO
+    public class UserDataRequestDto : IRequestDto
     {
         [Required(ErrorMessage = "Nazwa ulicy jest wymagana.")]
         [Length(2, 50, ErrorMessage = "Nazwa ulicy powinna zawierać od 2 do 50 znaków.")]

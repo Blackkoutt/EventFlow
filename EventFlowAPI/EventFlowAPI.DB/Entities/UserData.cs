@@ -1,11 +1,11 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using EventFlowAPI.DB.Entities.Abstract;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace EventFlowAPI.DB.Entities
 {
-    public class UserData
+    public class UserData : BaseEntity
     {
-        public int Id { get; set; }
 
         [MaxLength(50)]
         public string Street { get; set; } = string.Empty;

@@ -5,7 +5,7 @@ namespace EventFlowAPI.Logic.Repositories.Interfaces
 {
     public interface IReservation_SeatRepository : IGenericRepository<Reservation_Seat>
     {
-        Task Delete(int reservationId, int seatId);
-        Task<Reservation_Seat> GetOne(int reservationId, int seatId);
+        Task DeleteAsync(int reservationId, int seatId);
+        Task<Reservation_Seat> GetOneAsync(int reservationId, int seatId);
     }
 }

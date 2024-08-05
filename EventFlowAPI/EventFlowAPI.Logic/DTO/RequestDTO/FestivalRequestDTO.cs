@@ -1,9 +1,10 @@
 ﻿using EventFlowAPI.Logic.DTO.Abstract;
+using EventFlowAPI.Logic.DTO.Interfaces;
 using System.ComponentModel.DataAnnotations;
 
-namespace EventFlowAPI.Logic.DTO.RequestDTO
+namespace EventFlowAPI.Logic.DTO.RequestDto
 {
-    public class FestivalRequestDTO : StartEndDateAbstract
+    public class FestivalRequestDto : StartEndDateAbstract, IRequestDto
     {
         [Required(ErrorMessage = "Nazwa festiwalu jest wymagana.")]
         [Length(2, 60, ErrorMessage = "Nazwa powinna zawierać od 2 do 60 znaków.")]

@@ -1,8 +1,9 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using EventFlowAPI.Logic.DTO.Interfaces;
+using System.ComponentModel.DataAnnotations;
 
-namespace EventFlowAPI.Logic.DTO.RequestDTO
+namespace EventFlowAPI.Logic.DTO.RequestDto
 {
-    public class SponsorRequestDTO
+    public class SponsorRequestDto : IRequestDto
     {
 
         [Required(ErrorMessage = "Nazwa sponsora jest wymagana.")]

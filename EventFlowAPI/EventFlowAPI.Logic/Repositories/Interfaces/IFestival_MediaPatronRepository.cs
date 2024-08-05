@@ -5,7 +5,7 @@ namespace EventFlowAPI.Logic.Repositories.Interfaces
 {
     public interface IFestival_MediaPatronRepository : IGenericRepository<Festival_MediaPatron>
     {
-        Task<Festival_MediaPatron> GetOne(int festiwalId, int mediaPatronId);
-        Task Delete(int festiwalId, int mediaPatronId);
+        Task<Festival_MediaPatron> GetOneAsync(int festiwalId, int mediaPatronId);
+        Task DeleteAsync(int festiwalId, int mediaPatronId);
     }
 }

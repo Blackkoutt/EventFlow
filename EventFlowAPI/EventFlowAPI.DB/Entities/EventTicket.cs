@@ -1,11 +1,11 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using EventFlowAPI.DB.Entities.Abstract;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace EventFlowAPI.DB.Entities
 {
-    public class EventTicket
+    public class EventTicket : BaseEntity
     {
-        public int Id { get; set; }
 
         [Range(0.00, 999.99),
          Column(TypeName = "NUMERIC(5,2)")]

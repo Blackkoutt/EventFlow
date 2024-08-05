@@ -9,7 +9,7 @@ namespace EventFlowAPI.Logic.Repositories.Repositories
 {
     public class Festival_EventRepository(APIContext context) : GenericRepository<Festival_Event>(context), IFestival_EventRepository
     {
-        public override sealed async Task<IEnumerable<Festival_Event>> GetAll()
+        public override sealed async Task<IEnumerable<Festival_Event>> GetAllAsync()
         {
             var records = await _context.Festival_Event
                                 .Include(fe => fe.Festival)
@@ -19,7 +19,7 @@ namespace EventFlowAPI.Logic.Repositories.Repositories
 
             return records;
         }
-        public async Task<Festival_Event> GetOne(int festiwalId, int eventId)
+        public async Task<Festival_Event> GetOneAsync(int festiwalId, int eventId)
         {
             if (festiwalId <= 0 || eventId <= 0)
             {
@@ -38,7 +38,7 @@ namespace EventFlowAPI.Logic.Repositories.Repositories
 
             return record;
         }
-        public async Task Delete(int festiwalId, int eventId)
+        public async Task DeleteAsync(int festiwalId, int eventId)
         {
             if (festiwalId <= 0 || eventId <= 0)
             {

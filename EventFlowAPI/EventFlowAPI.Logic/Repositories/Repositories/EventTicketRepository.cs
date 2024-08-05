@@ -8,7 +8,7 @@ namespace EventFlowAPI.Logic.Repositories.Repositories
 {
     public class EventTicketRepository(APIContext context) : GenericRepository<EventTicket>(context), IEventTicketRepository
     {
-        public override sealed async Task<IEnumerable<EventTicket>> GetAll()
+        public override sealed async Task<IEnumerable<EventTicket>> GetAllAsync()
         {
             var records = await _context.EventTicket
                                 .Include(et => et.TicketType)
@@ -18,7 +18,7 @@ namespace EventFlowAPI.Logic.Repositories.Repositories
 
             return records;
         }
-        public override sealed async Task<EventTicket> GetOne(int id)
+        public override sealed async Task<EventTicket> GetOneAsync(int id)
         {
             if (id <= 0)
             {

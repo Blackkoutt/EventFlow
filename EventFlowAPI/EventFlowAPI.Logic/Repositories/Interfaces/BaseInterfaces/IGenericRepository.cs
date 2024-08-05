@@ -3,9 +3,9 @@
     public interface IGenericRepository<T> where T : class
     {
         Task AddAsync(T entity);
-        Task<IEnumerable<T>> GetAll();
-        Task<T> GetOne(int id);
+        Task<IEnumerable<T>> GetAllAsync();
+        Task<T> GetOneAsync(int id);
         void Update(T entity);
-        Task Delete(int id);
+        Task DeleteAsync(int id);
     }
 }

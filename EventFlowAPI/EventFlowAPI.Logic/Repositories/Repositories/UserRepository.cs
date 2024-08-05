@@ -8,7 +8,7 @@ namespace EventFlowAPI.Logic.Repositories.Repositories
 {
     public class UserRepository(APIContext context) : GenericRepository<User>(context), IUserRepository
     {
-        public override sealed async Task<IEnumerable<User>> GetAll()
+        public override sealed async Task<IEnumerable<User>> GetAllAsync()
         {
             var records = await _context.User
                                 .Include(u => u.UserData)
@@ -17,7 +17,7 @@ namespace EventFlowAPI.Logic.Repositories.Repositories
 
             return records;
         }
-        public override sealed async Task<User> GetOne(int id)
+        public override sealed async Task<User> GetOneAsync(int id)
         {
             if (id <= 0)
             {

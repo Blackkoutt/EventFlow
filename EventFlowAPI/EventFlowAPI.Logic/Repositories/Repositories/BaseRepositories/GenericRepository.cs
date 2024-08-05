@@ -22,12 +22,12 @@ namespace EventFlowAPI.Logic.Repositories.Repositories.BaseRepositories
             await _table.AddAsync(entity);
             //await _context.SaveChangesAsync();
         }
-        public virtual async Task<IEnumerable<T>> GetAll()
+        public virtual async Task<IEnumerable<T>> GetAllAsync()
         {
             var records = await _table.ToListAsync();
             return records;
         }
-        public virtual async Task<T> GetOne(int id)
+        public virtual async Task<T> GetOneAsync(int id)
         {
             if(id <= 0)
             {
@@ -46,7 +46,7 @@ namespace EventFlowAPI.Logic.Repositories.Repositories.BaseRepositories
             _table.Update(entity);
             //await _context.SaveChangesAsync();
         }
-        public async Task Delete(int id)
+        public async Task DeleteAsync(int id)
         {
             if (id <= 0)
             {

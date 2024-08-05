@@ -1,10 +1,10 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using EventFlowAPI.DB.Entities.Abstract;
+using System.ComponentModel.DataAnnotations;
 
 namespace EventFlowAPI.DB.Entities
 {
-    public class FestivalDetails
+    public class FestivalDetails : BaseEntity
     {
-        public int Id { get; set; }
 
         [MaxLength(2000)]
         public string? LongDescription { get; set; }

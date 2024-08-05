@@ -8,7 +8,7 @@ namespace EventFlowAPI.Logic.Repositories.Repositories
 {
     public class HallType_EquipmentRepository(APIContext context) : GenericRepository<HallType_Equipment>(context), IHallType_EquipmentRepository
     {
-        public override sealed async Task<IEnumerable<HallType_Equipment>> GetAll()
+        public override sealed async Task<IEnumerable<HallType_Equipment>> GetAllAsync()
         {
             var records = await _context.HallType_Equipment
                                 .Include(hte => hte.HallType)
@@ -18,7 +18,7 @@ namespace EventFlowAPI.Logic.Repositories.Repositories
 
             return records;
         }
-        public async Task<HallType_Equipment> GetOne(int typeId, int equipmentId)
+        public async Task<HallType_Equipment> GetOneAsync(int typeId, int equipmentId)
         {
             if (typeId <= 0 || equipmentId <= 0)
             {
@@ -37,7 +37,7 @@ namespace EventFlowAPI.Logic.Repositories.Repositories
 
             return record;
         }
-        public async Task Delete(int typeId, int equipmentId)
+        public async Task DeleteAsync(int typeId, int equipmentId)
         {
             if (typeId <= 0 || equipmentId <= 0)
             {

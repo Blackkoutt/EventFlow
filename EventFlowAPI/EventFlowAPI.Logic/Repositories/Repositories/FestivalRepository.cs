@@ -8,7 +8,7 @@ namespace EventFlowAPI.Logic.Repositories.Repositories
 {
     public class FestivalRepository(APIContext context) : GenericRepository<Festival>(context), IFestivalRepository
     {
-        public override sealed async Task<IEnumerable<Festival>> GetAll()
+        public override sealed async Task<IEnumerable<Festival>> GetAllAsync()
         {
             var records = await _context.Festival
                                 .Include(f => f.Details)
@@ -25,7 +25,7 @@ namespace EventFlowAPI.Logic.Repositories.Repositories
 
             return records;
         }
-        public override sealed async Task<Festival> GetOne(int id)
+        public override sealed async Task<Festival> GetOneAsync(int id)
         {
             if (id <= 0)
             {

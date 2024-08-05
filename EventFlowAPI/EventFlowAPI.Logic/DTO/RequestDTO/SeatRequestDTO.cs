@@ -1,8 +1,9 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using EventFlowAPI.Logic.DTO.Interfaces;
+using System.ComponentModel.DataAnnotations;
 
-namespace EventFlowAPI.Logic.DTO.RequestDTO
+namespace EventFlowAPI.Logic.DTO.RequestDto
 {
-    public class SeatRequestDTO
+    public class SeatRequestDto : IRequestDto
     {
         // Check if such seat number does not already exist in given room 
 
@@ -29,7 +30,7 @@ namespace EventFlowAPI.Logic.DTO.RequestDTO
         [Required(ErrorMessage = "Należy podać typ miejsca.")]
         public int SeatTypeId { get; set; }
 
-        [Required(ErrorMessage = "Należy podać numer sali.")]
-        public int HallNr { get; set; } 
+        [Required(ErrorMessage = "Należy wybrać salę.")]
+        public int HallId { get; set; } 
     }
 }

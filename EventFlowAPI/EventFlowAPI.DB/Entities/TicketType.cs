@@ -1,10 +1,10 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using EventFlowAPI.DB.Entities.Abstract;
+using System.ComponentModel.DataAnnotations;
 
 namespace EventFlowAPI.DB.Entities
 {
-    public class TicketType
+    public class TicketType : BaseEntity
     {
-        public int Id { get; set; }
 
         [MaxLength(40)]
         public string Name { get; set; } = string.Empty;

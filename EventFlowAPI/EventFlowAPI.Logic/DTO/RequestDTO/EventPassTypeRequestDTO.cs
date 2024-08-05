@@ -1,8 +1,9 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using EventFlowAPI.Logic.DTO.Interfaces;
+using System.ComponentModel.DataAnnotations;
 
-namespace EventFlowAPI.Logic.DTO.RequestDTO
+namespace EventFlowAPI.Logic.DTO.RequestDto
 {
-    public class EventPassTypeRequestDTO
+    public class EventPassTypeRequestDto : IRequestDto
     {
         [Required(ErrorMessage = "Nazwa typu karnetu jest wymagana.")]
         [Length(2, 40, ErrorMessage = "Nazwa powinna zawierać od 2 do 40 znaków.")]     

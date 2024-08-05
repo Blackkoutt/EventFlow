@@ -1,9 +1,10 @@
-﻿using EventFlowAPI.Logic.DTO.Validators;
+﻿using EventFlowAPI.Logic.DTO.Interfaces;
+using EventFlowAPI.Logic.DTO.Validators;
 using System.ComponentModel.DataAnnotations;
 
-namespace EventFlowAPI.Logic.DTO.RequestDTO
+namespace EventFlowAPI.Logic.DTO.RequestDto
 {
-    public class UserRequestDTO
+    public class UserRequestDto : IRequestDto
     {
 
         [Required(ErrorMessage = "Imię jest wymagane.")]

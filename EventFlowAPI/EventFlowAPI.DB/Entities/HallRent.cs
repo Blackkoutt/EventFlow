@@ -1,11 +1,11 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using EventFlowAPI.DB.Entities.Abstract;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace EventFlowAPI.DB.Entities
 {
-    public class HallRent
+    public class HallRent : BaseEntity
     {
-        public int Id { get; set; } 
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
         public DateTime PaymentDate { get; set; }

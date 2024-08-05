@@ -8,7 +8,7 @@ namespace EventFlowAPI.Logic.Repositories.Repositories
 {
     public class ReservationRepository(APIContext context) : GenericRepository<Reservation>(context), IReservationRepository
     {
-        public override sealed async Task<IEnumerable<Reservation>> GetAll()
+        public override sealed async Task<IEnumerable<Reservation>> GetAllAsync()
         {
             var records = await _context.Reservation
                                 .Include(r => r.User)
@@ -21,7 +21,7 @@ namespace EventFlowAPI.Logic.Repositories.Repositories
 
             return records;
         }
-        public override sealed async Task<Reservation> GetOne(int id)
+        public override sealed async Task<Reservation> GetOneAsync(int id)
         {
             if (id <= 0)
             {

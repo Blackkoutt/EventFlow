@@ -1,21 +1,16 @@
-using Microsoft.EntityFrameworkCore;
-using EventFlowAPI.DB.Context;
-using EventFlowAPI.Logic.Repositories.Repositories;
-using EventFlowAPI.Logic.Repositories.Interfaces;
-using EventFlowAPI.Logic.UnitOfWork;
+using EventFlowAPI.Extensions;
+using EventFlowAPI.Logic.Mapper.Profiles;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add API context options
-builder.Services.AddDbContext<APIContext>(options =>
-{
-    options.UseSqlServer(builder.Configuration.GetConnectionString("EventFlowDB"));
-});
+builder.AddConnectionToDB("EventFlowDB");
 
-// Add services to the container.
+// UnitOfWork
+builder.Services.AddUnitOfWork();
 
-// Repositories
-builder.Services.AddTransient<IUnitOfWork, UnitOfWork>();
+// Services
+builder.Services.AddApplicationServices();
 
 /*builder.Services.AddScoped<IAdditionalServicesRepository, AdditionalServicesRepository>();
 builder.Services.AddScoped<IEquipmentRepository, EquipmentRepository>();
@@ -50,12 +45,10 @@ builder.Services.AddScoped<IUserRepository, UserRepository>();*/
 
 // Services
 
-
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddAutoMapper(typeof(Program).Assembly);
+builder.Services.AddAutoMapper(typeof(AutoMapperProfile));
 
 var app = builder.Build();
 
@@ -69,6 +62,8 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
+
+app.UseAutoMapper();
 
 app.MapControllers();
 

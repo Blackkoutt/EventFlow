@@ -1,11 +1,12 @@
-﻿using EventFlowAPI.Logic.DTO.Validators;
+﻿using EventFlowAPI.Logic.DTO.Interfaces;
+using EventFlowAPI.Logic.DTO.Validators;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace EventFlowAPI.Logic.DTO.RequestDTO
+namespace EventFlowAPI.Logic.DTO.RequestDto
 {
     // rows and columns and max number of seats needs to be reduced 
-    public class HallRequestDTO
+    public class HallRequestDto : IRequestDto
     {
         // custom validator to verify that hall with given number does not exist
         [Required(ErrorMessage = "Numer sali jest wymagany.")]

@@ -1,8 +1,9 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using EventFlowAPI.Logic.DTO.Interfaces;
+using System.ComponentModel.DataAnnotations;
 
-namespace EventFlowAPI.Logic.DTO.RequestDTO
+namespace EventFlowAPI.Logic.DTO.RequestDto
 {
-    public class ReservationRequestDTO
+    public class ReservationRequestDto : IRequestDto
     {
         [Required(ErrorMessage = "Należy wybrać typ płatności.")]
         public int PaymentTypeId { get; set; }

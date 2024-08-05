@@ -1,11 +1,11 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using EventFlowAPI.DB.Entities.Abstract;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace EventFlowAPI.DB.Entities
 {
-    public class Seat
+    public class Seat : BaseEntity
     {
-        public int Id { get; set; }
 
         [Range(0, 999),
          Column(TypeName = "NUMERIC(3)")]
@@ -28,7 +28,7 @@ namespace EventFlowAPI.DB.Entities
         public int GridColumn { get; set; }
 
         public int SeatTypeId { get; set; }
-        public int HallNr { get; set; } 
+        public int HallId { get; set; } 
 
         public SeatType? SeatType { get; set; }
         public Hall? Hall { get; set; }

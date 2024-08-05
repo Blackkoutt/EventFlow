@@ -8,7 +8,7 @@ namespace EventFlowAPI.Logic.Repositories.Repositories
 {
     public class Festival_MediaPatronRepository(APIContext context) : GenericRepository<Festival_MediaPatron>(context), IFestival_MediaPatronRepository
     {
-        public override sealed async Task<IEnumerable<Festival_MediaPatron>> GetAll()
+        public override sealed async Task<IEnumerable<Festival_MediaPatron>> GetAllAsync()
         {
             var records = await _context.Festival_MediaPatron
                                 .Include(fmp => fmp.Festival)
@@ -18,7 +18,7 @@ namespace EventFlowAPI.Logic.Repositories.Repositories
 
             return records;
         }
-        public async Task<Festival_MediaPatron> GetOne(int festiwalId, int mediaPatronId)
+        public async Task<Festival_MediaPatron> GetOneAsync(int festiwalId, int mediaPatronId)
         {
             if (festiwalId <= 0 || mediaPatronId <= 0)
             {
@@ -37,7 +37,7 @@ namespace EventFlowAPI.Logic.Repositories.Repositories
 
             return record;
         }
-        public async Task Delete(int festiwalId, int mediaPatronId)
+        public async Task DeleteAsync(int festiwalId, int mediaPatronId)
         {
             if (festiwalId <= 0 || mediaPatronId <= 0)
             {

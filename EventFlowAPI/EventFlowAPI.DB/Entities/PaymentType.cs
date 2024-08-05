@@ -1,10 +1,10 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using EventFlowAPI.DB.Entities.Abstract;
+using System.ComponentModel.DataAnnotations;
 
 namespace EventFlowAPI.DB.Entities
 {
-    public class PaymentType
+    public class PaymentType : BaseEntity
     {
-        public int Id { get; set; }
 
         [MaxLength(30)]
         public string Name { get; set; } = string.Empty;

@@ -1,10 +1,11 @@
 ﻿using EventFlowAPI.Logic.DTO.Abstract;
+using EventFlowAPI.Logic.DTO.Interfaces;
 using System.ComponentModel.DataAnnotations;
 
-namespace EventFlowAPI.Logic.DTO.RequestDTO
+namespace EventFlowAPI.Logic.DTO.RequestDto
 {
     // User ID is not needed
-    public class HallRentRequestDTO : StartEndDateAbstract
+    public class HallRentRequestDto : StartEndDateAbstract, IRequestDto
     {
 
         [Required(ErrorMessage = "Należy wybrać typ płatności.")]
