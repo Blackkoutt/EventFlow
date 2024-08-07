@@ -17,7 +17,7 @@ namespace EventFlowAPI.DB.Entities
         public DateTime EndDate { get; set; }
         public TimeSpan Duration { get; set; }
         public int CategoryId { get; set; } 
-        public int HallNr { get; set; }
+        public int HallId { get; set; }
 
         public EventCategory? Category { get; set; } 
         public EventDetails? Details { get; set; }

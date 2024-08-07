@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace EventFlowAPI.Logic.Repositories.Repositories
 {
-    public class FestivalRepository(APIContext context) : GenericRepository<Festival>(context), IFestivalRepository
+    public sealed class FestivalRepository(APIContext context) : GenericRepository<Festival>(context), IFestivalRepository
     {
         public override sealed async Task<IEnumerable<Festival>> GetAllAsync()
         {
@@ -27,10 +27,8 @@ namespace EventFlowAPI.Logic.Repositories.Repositories
         }
         public override sealed async Task<Festival> GetOneAsync(int id)
         {
-            if (id <= 0)
-            {
-                throw new ArgumentNullException(nameof(id));
-            }
+            ArgumentOutOfRangeException.ThrowIfLessThan(id, 0, nameof(id));
+
             var record = await _context.Festival
                                 .AsSplitQuery()
                                 .Include(f => f.Details)
@@ -44,10 +42,7 @@ namespace EventFlowAPI.Logic.Repositories.Repositories
                                 .ThenInclude(fo => fo.Organizer)
                                 .FirstOrDefaultAsync(f => f.Id == id);
 
-
-            ArgumentNullException.ThrowIfNull(record, nameof(id));
-
-            return record;
+            return record ?? throw new KeyNotFoundException($"Entity with id {id} does not exist in database."); ;
         }
     }
 }

@@ -15,15 +15,15 @@ namespace EventFlowAPI.Logic.DTO.RequestDto
         public string ShortDescription { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "Wybierz co najmniej jedno wydarzenie.")]
-        public List<int> EventIds { get; set; } = new List<int>();
+        public List<int> EventIds { get; set; } = [];
 
         [Required(ErrorMessage = "Wybierz co najmniej jednego patrona medialnego.")]
-        public List<int> MediaPatronIds { get; set; } = new List<int>();
+        public List<int> MediaPatronIds { get; set; } = [];
 
         [Required(ErrorMessage = "Wybierz co najmniej jednego organizatora.")]
-        public List<int> OrganizerIds { get; set; } = new List<int>();
+        public List<int> OrganizerIds { get; set; } = [];
 
         [Required(ErrorMessage = "Wybierz co najmniej jednego sponsora.")]
-        public List<int> SponsorIds { get; set; } = new List<int>();
+        public List<int> SponsorIds { get; set; } = [];
     }
 }

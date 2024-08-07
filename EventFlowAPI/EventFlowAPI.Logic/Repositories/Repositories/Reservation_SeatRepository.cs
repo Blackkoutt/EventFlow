@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace EventFlowAPI.Logic.Repositories.Repositories
 {
-    public class Reservation_SeatRepository(APIContext context) : GenericRepository<Reservation_Seat>(context), IReservation_SeatRepository
+    public sealed class Reservation_SeatRepository(APIContext context) : GenericRepository<Reservation_Seat>(context), IReservation_SeatRepository
     {
         public override sealed async Task<IEnumerable<Reservation_Seat>> GetAllAsync()
         {
@@ -20,40 +20,27 @@ namespace EventFlowAPI.Logic.Repositories.Repositories
         }
         public async Task<Reservation_Seat> GetOneAsync(int reservationId, int seatId)
         {
-            if (reservationId <= 0 || seatId <= 0)
-            {
-                throw new ArgumentNullException(nameof(reservationId), nameof(seatId));
-            }
+            ArgumentOutOfRangeException.ThrowIfLessThan(reservationId, 0, nameof(reservationId));
+            ArgumentOutOfRangeException.ThrowIfLessThan(seatId, 0, nameof(seatId));
+
             var record = await _context.Reservation_Seat
                                 .AsSplitQuery()
                                 .Include(rs => rs.Reservation)
                                 .Include(rs => rs.Seat)
                                 .FirstOrDefaultAsync(rs => (rs.ReservationId == reservationId && rs.SeatId == seatId));
 
-            if (record == null)
-            {
-                throw new ArgumentNullException(nameof(record));
-            }
-
-            return record;
+            return record ?? throw new KeyNotFoundException($"Entity with reservationId {reservationId} and seatId {seatId} does not exist in database."); ;
         }
         public async Task DeleteAsync(int reservationId, int seatId)
         {
-            if (reservationId <= 0 || seatId <= 0)
-            {
-                throw new ArgumentNullException(nameof(reservationId), nameof(seatId));
-            }
+            ArgumentOutOfRangeException.ThrowIfLessThan(reservationId, 0, nameof(reservationId));
+            ArgumentOutOfRangeException.ThrowIfLessThan(seatId, 0, nameof(seatId));
 
-            var record = await _context.Reservation_Seat.FirstOrDefaultAsync(rs => (rs.ReservationId == reservationId && rs.SeatId == seatId));
-
-            if (record == null)
-            {
-                throw new ArgumentNullException(nameof(record));
-            }
+            var record = await _context.Reservation_Seat.FirstOrDefaultAsync(rs =>
+                         (rs.ReservationId == reservationId && rs.SeatId == seatId)) ??
+                         throw new KeyNotFoundException($"Entity with reservationId {reservationId} and seatId {seatId} does not exist in database.");
 
             _context.Reservation_Seat.Remove(record);
-
-            //await _context.SaveChangesAsync();
         }
 
     }

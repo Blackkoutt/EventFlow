@@ -7,7 +7,7 @@ namespace EventFlowAPI.DB.Extensions
     {
         public static void Seed(this ModelBuilder modelBuilder)
         {
-            var today = new DateTime(2024, 6, 18);
+            var today = new DateTime(2024, 8, 5);
 
             modelBuilder.Entity<AdditionalServices>().HasData(
                 new AdditionalServices
@@ -20,25 +20,25 @@ namespace EventFlowAPI.DB.Extensions
                 {
                     Id = 2,
                     Name = "Obsługa oświetlenia",
-                    Price = 340.00
+                    Price = 340.00m
                 },
                 new AdditionalServices
                 {
                     Id = 3,
                     Name = "Obsługa nagłośnienia",
-                    Price = 250.00
+                    Price = 250.00m
                 },
                 new AdditionalServices
                 {
                     Id = 4,
                     Name = "Fotograf",
-                    Price = 200.00
+                    Price = 200.00m
                 },
                 new AdditionalServices
                 {
                     Id = 5,
                     Name = "Promocja wydarzenia",
-                    Price = 140.00
+                    Price = 140.00m
                 }
             );
 
@@ -99,37 +99,37 @@ namespace EventFlowAPI.DB.Extensions
                 new EventDetails
                 {
                     Id = 1,
-                    Description = "Krótki opis wydarzenia Koncert: Mystic Waves"
+                    LongDescription = "Krótki opis wydarzenia Koncert: Mystic Waves"
                 },
                 new EventDetails
                 {
                     Id = 2,
-                    Description = "Krótki opis wydarzenia Spektakl: Cień Przeszłość"
+                    LongDescription = "Krótki opis wydarzenia Spektakl: Cień Przeszłość"
                 },
                 new EventDetails
                 {
                     Id = 3,
-                    Description = "Krótki opis wydarzenia Film: Królestwo planety małp"
+                    LongDescription = "Krótki opis wydarzenia Film: Królestwo planety małp"
                 },
                 new EventDetails
                 {
                     Id = 4,
-                    Description = "Krótki opis wydarzenia Wystawa: Nowe inspiracje"
+                    LongDescription = "Krótki opis wydarzenia Wystawa: Nowe inspiracje"
                 },
                 new EventDetails
                 {
                     Id = 5,
-                    Description = "Krótki opis wydarzenia Koncert: New Era"
+                    LongDescription = "Krótki opis wydarzenia Koncert: New Era"
                 },
                 new EventDetails
                 {
                     Id = 6,
-                    Description = "Krótki opis wydarzenia Film: Gladiator"
+                    LongDescription = "Krótki opis wydarzenia Film: Gladiator"
                 },
                 new EventDetails
                 {
                     Id = 7,
-                    Description = "Krótki opis wydarzenia Wystawa: Nowa sztuka"
+                    LongDescription = "Krótki opis wydarzenia Wystawa: Nowa sztuka"
                 }
             );
 
@@ -139,25 +139,29 @@ namespace EventFlowAPI.DB.Extensions
                 {
                     Id = 1,
                     Name = "Karnet miesięczny",
-                    Price = 89.99
+                    ValidityPeriodInMonths = 1,
+                    Price = 89.99m
                 },
                 new EventPassType
                 {
                     Id = 2,
                     Name = "Karnet kwartalny",
-                    Price = 235.99
+                    ValidityPeriodInMonths = 3,
+                    Price = 235.99m
                 },
                 new EventPassType
                 {
                     Id = 3,
                     Name = "Karnet półroczny",
-                    Price = 499.99
+                    ValidityPeriodInMonths = 6,
+                    Price = 499.99m
                 },
                 new EventPassType
                 {
                     Id = 4,
                     Name = "Karnet roczny",
-                    Price = 999.99
+                    ValidityPeriodInMonths = 12,
+                    Price = 999.99m
                 }
             );
 
@@ -166,17 +170,17 @@ namespace EventFlowAPI.DB.Extensions
                 new FestivalDetails
                 {
                     Id = 1,
-                    Description = "Opis festiwalu muzyki współczesnej",
+                    LongDescription = "Opis festiwalu muzyki współczesnej",
                 },
                 new FestivalDetails
                 {
                     Id = 2,
-                    Description = "Opis festiwalu filmowego",
+                    LongDescription = "Opis festiwalu filmowego",
                 },
                 new FestivalDetails
                 {
                     Id = 3,
-                    Description = "Opis festiwalu sztuki abstrakcyjnej",
+                    LongDescription = "Opis festiwalu sztuki abstrakcyjnej",
                 }
             );
 
@@ -279,21 +283,21 @@ namespace EventFlowAPI.DB.Extensions
                     Id = 1,
                     Name = "Miejsce VIP",
                     Description = "Opis miejsca VIP",
-                    AddtionalPaymentPercentage = 25.00
+                    AddtionalPaymentPercentage = 25.00m
                 },
                 new SeatType
                 {
                     Id = 2,
                     Name = "Miejsce klasy premium",
                     Description = "Opis miejsca klasy premium",
-                    AddtionalPaymentPercentage = 10.00
+                    AddtionalPaymentPercentage = 10.00m
                 },
                 new SeatType
                 {
                     Id = 3,
                     Name = "Miejsce zwykłe",
                     Description = "Opis miejsca zwykłego",
-                    AddtionalPaymentPercentage = 0.00
+                    AddtionalPaymentPercentage = 0.00m
                 }
             );
 
@@ -375,23 +379,29 @@ namespace EventFlowAPI.DB.Extensions
                 {
                     Id = 1,
                     Name = "Festiwal muzyki współczesnej",
+                    ShortDescription = "Festiwal muzyki współczesnej to nowy festiwal organizowany przez XYZ.",
                     StartDate = today.AddMonths(1),
-                    EndDate = today.AddMonths(1).AddDays(4)
+                    EndDate = today.AddMonths(1).AddDays(4),
+                    Duration = today.AddMonths(1) - today.AddMonths(1).AddDays(4)
                 },
                 new Festival
                 {
                     Id = 2,
                     Name = "Festiwal filmowy",
+                    ShortDescription = "Festiwal filmowy to festiwal na którym można obejrzeć filmy.",
                     StartDate = today.AddMonths(3),
-                    EndDate = today.AddMonths(3).AddDays(2)
+                    EndDate = today.AddMonths(3).AddDays(2),
+                    Duration = today.AddMonths(3) - today.AddMonths(3).AddDays(2)
                 },
 
                 new Festival
                 {
                     Id = 3,
                     Name = "Festiwal sztuki abstrakcyjnej",
+                    ShortDescription = "Festiwal sztuki abstrakcyjnej to festiwal na którym można zobaczyć sztukę.",
                     StartDate = today.AddMonths(5),
-                    EndDate = today.AddMonths(5).AddDays(1)
+                    EndDate = today.AddMonths(5).AddDays(1),
+                    Duration = today.AddMonths(5) - today.AddMonths(5).AddDays(1)
                 }
             );
 
@@ -399,46 +409,74 @@ namespace EventFlowAPI.DB.Extensions
             modelBuilder.Entity<Hall>().HasData(
                 new Hall
                 {
+                    Id = 1,
                     HallNr = 1,
-                    RentalPricePerHour = 120.99,
-                    floor = 2,
-                    Area = 50.45,
-                    NumberOfSeatsRows = 10,
+                    RentalPricePerHour = 120.99m,
+                    Floor = 2,
+                    TotalLength = 12m,
+                    TotalWidth = 10m,
+                    TotalArea = 120m,
+                    StageArea = 30m,
+                    NumberOfSeatsRows = 9,
+                    MaxNumberOfSeatsRows = 9,
                     NumberOfSeatsColumns = 10,
-                    MaxNumberOfSeats = 100,
+                    MaxNumberOfSeatsColumns = 10,
+                    NumberOfSeats = 90,
+                    MaxNumberOfSeats = 90,
                     HallTypeId = 1
                 },
                 new Hall
                 {
+                    Id = 2,
                     HallNr = 2,
-                    RentalPricePerHour = 89.99,
-                    floor = 1,
-                    Area = 68.85,
-                    NumberOfSeatsRows = 8,
-                    NumberOfSeatsColumns = 12,
-                    MaxNumberOfSeats = 96,
+                    RentalPricePerHour = 89.99m,
+                    Floor = 1,
+                    TotalLength = 15m,
+                    TotalWidth = 10m,
+                    TotalArea = 150m,
+                    StageArea = null,
+                    NumberOfSeatsRows = 15,
+                    MaxNumberOfSeatsRows = 15,
+                    NumberOfSeatsColumns = 10,
+                    MaxNumberOfSeatsColumns = 10,
+                    NumberOfSeats = 150,
+                    MaxNumberOfSeats = 150,
                     HallTypeId = 2
                 },
                 new Hall
                 {
+                    Id = 3,
                     HallNr = 3,
-                    RentalPricePerHour = 179.99,
-                    floor = 2,
-                    Area = 75.30,
-                    NumberOfSeatsRows = 7,
-                    NumberOfSeatsColumns = 14,
-                    MaxNumberOfSeats = 98,
+                    RentalPricePerHour = 179.99m,
+                    Floor = 2,
+                    TotalLength = 10m,
+                    TotalWidth = 8m,
+                    TotalArea = 80m,
+                    StageArea = 20m,
+                    NumberOfSeatsRows = 6,
+                    MaxNumberOfSeatsRows = 6,
+                    NumberOfSeatsColumns = 10,
+                    MaxNumberOfSeatsColumns = 10,
+                    NumberOfSeats = 60,
+                    MaxNumberOfSeats = 60,
                     HallTypeId = 3
                 },
                 new Hall
                 {
+                    Id = 4,
                     HallNr = 4,
-                    RentalPricePerHour = 199.99,
-                    floor = 1,
-                    Area = 55.20,
-                    NumberOfSeatsRows = 8,
-                    NumberOfSeatsColumns = 15,
-                    MaxNumberOfSeats = 120,
+                    RentalPricePerHour = 199.99m,
+                    Floor = 1,
+                    TotalLength = 14m,
+                    TotalWidth = 10m,
+                    TotalArea = 140m,
+                    StageArea = 40m,
+                    NumberOfSeatsRows = 10,
+                    MaxNumberOfSeatsRows = 10,
+                    NumberOfSeatsColumns = 10,
+                    MaxNumberOfSeatsColumns = 10,
+                    NumberOfSeats = 100,
+                    MaxNumberOfSeats = 100,
                     HallTypeId = 4
                 }
             );
@@ -606,64 +644,78 @@ namespace EventFlowAPI.DB.Extensions
                 {
                     Id = 1,
                     Name = "Koncert: Mystic Waves",
+                    ShortDescription = "Jedyna taka okazja na usłyszenie Mystic Waves na żywo.",
                     StartDate = today.AddMonths(1).AddDays(1),
                     EndDate = today.AddMonths(1).AddDays(1).AddHours(1),
+                    Duration = today.AddMonths(1).AddDays(1) - today.AddMonths(1).AddDays(1).AddHours(1),
                     CategoryId = 1,
-                    HallNr = 2,
+                    HallId = 2,
                 },
                 new Event
                 {
                     Id = 2,
-                    Name = "Cień Przeszłość",
+                    Name = "Cień Przeszłośći",
+                    ShortDescription = "Cień Przeszłości to jedyny taki spektakl.",
                     StartDate = today.AddMonths(1).AddDays(2),
                     EndDate = today.AddMonths(1).AddDays(2).AddHours(3),
+                    Duration = today.AddMonths(1).AddDays(2) - today.AddMonths(1).AddDays(2).AddHours(3),
                     CategoryId = 3,
-                    HallNr = 3,
+                    HallId = 3,
                 },
                 new Event
                 {
                     Id = 3,
                     Name = "Królestwo planety małp",
+                    ShortDescription = "Nowy film Królestwo planety małp już w kinach!.",
                     StartDate = today.AddMonths(1).AddDays(3),
                     EndDate = today.AddMonths(1).AddDays(3).AddHours(2),
+                    Duration = today.AddMonths(1).AddDays(3) - today.AddMonths(1).AddDays(3).AddHours(2),
                     CategoryId = 2,
-                    HallNr = 1,
+                    HallId = 1,
                 },
                 new Event
                 {
                     Id = 4,
                     Name = "Nowe inspiracje",
+                    ShortDescription = "Nowe inspiracje to nowoczesna wystawa sztuki.",
                     StartDate = today.AddMonths(1).AddDays(4),
                     EndDate = today.AddMonths(1).AddDays(4).AddHours(3),
+                    Duration = today.AddMonths(1).AddDays(4) - today.AddMonths(1).AddDays(4).AddHours(3),
                     CategoryId = 4,
-                    HallNr = 4,
+                    HallId = 4,
                 },
                 new Event
                 {
                     Id = 5,
                     Name = "Koncert: New Era",
+                    ShortDescription = "Jedyna taka okazja na usłyszenie New Era na żywo.",
                     StartDate = today.AddMonths(2).AddDays(1),
                     EndDate = today.AddMonths(2).AddDays(1).AddHours(1),
+                    Duration = today.AddMonths(2).AddDays(1) - today.AddMonths(2).AddDays(1).AddHours(1),
                     CategoryId = 1,
-                    HallNr = 2,
+                    HallId = 2,
                 },
                 new Event
                 {
                     Id = 6,
                     Name = "Gladiator",
+                    ShortDescription = "Nowy film Gladiator już w kinach!.",
                     StartDate = today.AddMonths(2).AddDays(3),
                     EndDate = today.AddMonths(2).AddDays(3).AddHours(2),
+                    Duration = today.AddMonths(2).AddDays(3) - today.AddMonths(2).AddDays(3).AddHours(2),
                     CategoryId = 2,
-                    HallNr = 1,
+                    HallId = 1,
                 },
                 new Event
                 {
                     Id = 7,
                     Name = "Nowa sztuka",
+                    ShortDescription = "Nowe sztuka to nowoczesna wystawa sztuki.",
                     StartDate = today.AddMonths(2).AddDays(4),
                     EndDate = today.AddMonths(2).AddDays(4).AddHours(3),
+                    Duration = today.AddMonths(2).AddDays(4) - today.AddMonths(2).AddDays(4).AddHours(3),
                     CategoryId = 4,
-                    HallNr = 4,
+                    HallId = 4,
                 }
             );
 
@@ -674,117 +726,143 @@ namespace EventFlowAPI.DB.Extensions
                     Id = 1,
                     SeatNr = 1,
                     Row = 1,
+                    GridRow = 1,
                     Column = 1,
+                    GridColumn = 1,
                     SeatTypeId = 1,
-                    HallNr = 1
+                    HallId = 1
                 },
                 new Seat
                 {
                     Id = 2,
                     SeatNr = 2,
                     Row = 1,
+                    GridRow = 1,
                     Column = 2,
+                    GridColumn = 2,
                     SeatTypeId = 1,
-                    HallNr = 1
+                    HallId = 1
                 },
                 new Seat
                 {
                     Id = 3,
                     SeatNr = 3,
                     Row = 1,
+                    GridRow = 1,
                     Column = 3,
+                    GridColumn = 3,
                     SeatTypeId = 1,
-                    HallNr = 1
+                    HallId = 1
                 },
                 new Seat
                 {
                     Id = 4,
                     SeatNr = 4,
                     Row = 1,
+                    GridRow = 1,
                     Column = 4,
+                    GridColumn = 4,
                     SeatTypeId = 1,
-                    HallNr = 1
+                    HallId = 1
                 },
                 new Seat
                 {
                     Id = 5,
                     SeatNr = 1,
                     Row = 1,
+                    GridRow = 1,
                     Column = 1,
+                    GridColumn = 1,
                     SeatTypeId = 2,
-                    HallNr = 2
+                    HallId = 2
                 },
                 new Seat
                 {
                     Id = 6,
                     SeatNr = 2,
                     Row = 1,
+                    GridRow = 1,
                     Column = 2,
+                    GridColumn = 2,
                     SeatTypeId = 2,
-                    HallNr = 2
+                    HallId = 2
                 },
                 new Seat
                 {
                     Id = 7,
                     SeatNr = 3,
                     Row = 1,
+                    GridRow = 1,
                     Column = 3,
+                    GridColumn = 3,
                     SeatTypeId = 2,
-                    HallNr = 2
+                    HallId = 2
                 },
                 new Seat
                 {
                     Id = 8,
                     SeatNr = 4,
                     Row = 1,
+                    GridRow = 1,
                     Column = 4,
+                    GridColumn = 4,
                     SeatTypeId = 2,
-                    HallNr = 2
+                    HallId = 2
                 },
                 new Seat
                 {
                     Id = 9,
                     SeatNr = 1,
                     Row = 1,
+                    GridRow = 1,
                     Column = 1,
+                    GridColumn = 1,
                     SeatTypeId = 3,
-                    HallNr = 3
+                    HallId = 3
                 },
                 new Seat
                 {
                     Id = 10,
                     SeatNr = 2,
                     Row = 1,
+                    GridRow = 1,
                     Column = 2,
+                    GridColumn = 2,
                     SeatTypeId = 3,
-                    HallNr = 3
+                    HallId = 3
                 },
                 new Seat
                 {
                     Id = 11,
                     SeatNr = 3,
                     Row = 1,
+                    GridRow = 1,
                     Column = 3,
+                    GridColumn = 3,
                     SeatTypeId = 3,
-                    HallNr = 3
+                    HallId = 3
                 },
                 new Seat
                 {
                     Id = 12,
                     SeatNr = 4,
                     Row = 1,
+                    GridRow = 1,
                     Column = 4,
+                    GridColumn = 4,
                     SeatTypeId = 3,
-                    HallNr = 3
+                    HallId = 3
                 },
                 new Seat
                 {
                     Id = 13,
                     SeatNr = 1,
                     Row = 1,
+                    GridRow = 1,
                     Column = 1,
+                    GridColumn = 1,
                     SeatTypeId = 3,
-                    HallNr = 4
+                    HallId = 4
                 }
             );
 
@@ -797,7 +875,7 @@ namespace EventFlowAPI.DB.Extensions
                     RenewalDate = null,
                     EndDate = today.AddMonths(6),
                     PaymentDate = today,
-                    PaymentAmount = 499.99,
+                    PaymentAmount = 499.99m,
                     PassTypeId = 3,
                     UserId = 1,
                     PaymentTypeId = 1
@@ -810,7 +888,7 @@ namespace EventFlowAPI.DB.Extensions
                     RenewalDate = null,
                     EndDate = today.AddYears(1),
                     PaymentDate = today,
-                    PaymentAmount = 999.99,
+                    PaymentAmount = 999.99m,
                     PassTypeId = 4,
                     UserId = 2,
                     PaymentTypeId = 2
@@ -822,7 +900,7 @@ namespace EventFlowAPI.DB.Extensions
                     RenewalDate = null,
                     EndDate = today.AddMonths(3),
                     PaymentDate = today,
-                    PaymentAmount = 235.99,
+                    PaymentAmount = 235.99m,
                     PassTypeId = 2,
                     UserId = 3,
                     PaymentTypeId = 1
@@ -837,9 +915,9 @@ namespace EventFlowAPI.DB.Extensions
                     StartDate = today.AddMonths(1).AddDays(1),
                     EndDate = today.AddMonths(1).AddDays(1).AddHours(8),
                     PaymentDate = today.AddDays(-1),
-                    PaymentAmount = 899.99,
+                    PaymentAmount = 899.99m,
                     PaymentTypeId = 1,
-                    HallNr = 1,
+                    HallId = 1,
                     UserId = 1
                 },
                 new HallRent
@@ -848,9 +926,9 @@ namespace EventFlowAPI.DB.Extensions
                     StartDate = today.AddMonths(1).AddDays(2),
                     EndDate = today.AddMonths(1).AddDays(2).AddHours(4),
                     PaymentDate = today.AddDays(-2),
-                    PaymentAmount = 699.99,
+                    PaymentAmount = 699.99m,
                     PaymentTypeId = 2,
-                    HallNr = 3,
+                    HallId = 3,
                     UserId = 3
                 },
                 new HallRent
@@ -859,9 +937,9 @@ namespace EventFlowAPI.DB.Extensions
                     StartDate = today.AddMonths(1).AddDays(3),
                     EndDate = today.AddMonths(1).AddDays(3).AddHours(2),
                     PaymentDate = today.AddDays(-3),
-                    PaymentAmount = 399.99,
+                    PaymentAmount = 399.99m,
                     PaymentTypeId = 3,
-                    HallNr = 3,
+                    HallId = 3,
                     UserId = 3
                 },
                 new HallRent
@@ -870,9 +948,9 @@ namespace EventFlowAPI.DB.Extensions
                     StartDate = today.AddMonths(1).AddDays(4),
                     EndDate = today.AddMonths(1).AddDays(4).AddHours(1),
                     PaymentDate = today.AddDays(-3),
-                    PaymentAmount = 150.99,
+                    PaymentAmount = 150.99m,
                     PaymentTypeId = 2,
-                    HallNr = 4,
+                    HallId = 4,
                     UserId = 2
                 }
             );
@@ -882,28 +960,28 @@ namespace EventFlowAPI.DB.Extensions
                 new EventTicket
                 {
                     Id = 1,
-                    Price = 24.99,
+                    Price = 24.99m,
                     EventId = 1,
                     TicketTypeId = 1,
                 },
                 new EventTicket
                 {
                     Id = 2,
-                    Price = 34.99,
+                    Price = 34.99m,
                     EventId = 2,
                     TicketTypeId = 2,
                 },
                 new EventTicket
                 {
                     Id = 3,
-                    Price = 29.99,
+                    Price = 29.99m,
                     EventId = 3,
                     TicketTypeId = 3,
                 },
                 new EventTicket
                 {
                     Id = 4,
-                    Price = 19.99,
+                    Price = 19.99m,
                     EventId = 4,
                     TicketTypeId = 3,
                 }
@@ -982,7 +1060,8 @@ namespace EventFlowAPI.DB.Extensions
                 {
                     Id = 1,
                     ReservationDate = today.AddDays(10),
-                    PaymentAmount = 24.99,
+                    PaymentDate = today.AddDays(10),
+                    PaymentAmount = 24.99m,
                     UserId = 1,
                     PaymentTypeId = 1,
                     EventTicketId = 1
@@ -991,7 +1070,8 @@ namespace EventFlowAPI.DB.Extensions
                 {
                     Id = 2,
                     ReservationDate = today.AddDays(16),
-                    PaymentAmount = 34.99,
+                    PaymentDate = today.AddDays(16),
+                    PaymentAmount = 34.99m,
                     UserId = 2,
                     PaymentTypeId = 2,
                     EventTicketId = 2
@@ -1000,7 +1080,8 @@ namespace EventFlowAPI.DB.Extensions
                 {
                     Id = 3,
                     ReservationDate = today.AddDays(17),
-                    PaymentAmount = 29.99,
+                    PaymentDate = today.AddDays(17),
+                    PaymentAmount = 29.99m,
                     UserId = 3,
                     PaymentTypeId = 3,
                     EventTicketId = 3
@@ -1009,7 +1090,8 @@ namespace EventFlowAPI.DB.Extensions
                 {
                     Id = 4,
                     ReservationDate = today.AddDays(18),
-                    PaymentAmount = 19.99,
+                    PaymentDate = today.AddDays(18),
+                    PaymentAmount = 19.99m,
                     UserId = 3,
                     PaymentTypeId = 2,
                     EventTicketId = 4

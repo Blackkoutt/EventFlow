@@ -58,7 +58,7 @@ namespace EventFlowAPI.DB.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Description = table.Column<string>(type: "nvarchar(2000)", maxLength: 2000, nullable: true)
+                    LongDescription = table.Column<string>(type: "nvarchar(2000)", maxLength: 2000, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -72,6 +72,7 @@ namespace EventFlowAPI.DB.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(40)", maxLength: 40, nullable: false),
+                    ValidityPeriodInMonths = table.Column<decimal>(type: "NUMERIC(2,0)", nullable: false),
                     Price = table.Column<decimal>(type: "NUMERIC(6,2)", nullable: false)
                 },
                 constraints: table =>
@@ -85,7 +86,7 @@ namespace EventFlowAPI.DB.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Description = table.Column<string>(type: "nvarchar(2000)", maxLength: 2000, nullable: true)
+                    LongDescription = table.Column<string>(type: "nvarchar(2000)", maxLength: 2000, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -112,7 +113,7 @@ namespace EventFlowAPI.DB.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: false)
+                    Name = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -125,7 +126,7 @@ namespace EventFlowAPI.DB.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(40)", maxLength: 40, nullable: false)
+                    Name = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -166,7 +167,7 @@ namespace EventFlowAPI.DB.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(25)", maxLength: 25, nullable: false)
+                    Name = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -179,7 +180,7 @@ namespace EventFlowAPI.DB.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: false)
+                    Name = table.Column<string>(type: "nvarchar(40)", maxLength: 40, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -193,8 +194,8 @@ namespace EventFlowAPI.DB.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Street = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    HouseNumber = table.Column<decimal>(type: "NUMERIC(4,0)", nullable: false),
-                    FlatNumber = table.Column<decimal>(type: "NUMERIC(4,0)", nullable: false),
+                    HouseNumber = table.Column<decimal>(type: "NUMERIC(3,0)", nullable: false),
+                    FlatNumber = table.Column<decimal>(type: "NUMERIC(3,0)", nullable: true),
                     City = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     ZipCode = table.Column<string>(type: "nvarchar(6)", maxLength: 6, nullable: false),
                     PhoneNumber = table.Column<string>(type: "nvarchar(15)", maxLength: 15, nullable: false)
@@ -209,9 +210,11 @@ namespace EventFlowAPI.DB.Migrations
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(40)", maxLength: 40, nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(60)", maxLength: 60, nullable: false),
+                    ShortDescription = table.Column<string>(type: "nvarchar(300)", maxLength: 300, nullable: false),
                     StartDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    EndDate = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    EndDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Duration = table.Column<TimeSpan>(type: "time", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -228,19 +231,26 @@ namespace EventFlowAPI.DB.Migrations
                 name: "Hall",
                 columns: table => new
                 {
-                    HallNr = table.Column<int>(type: "int", nullable: false)
+                    Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
+                    HallNr = table.Column<int>(type: "int", nullable: false),
                     RentalPricePerHour = table.Column<decimal>(type: "NUMERIC(5,2)", nullable: false),
-                    floor = table.Column<decimal>(type: "NUMERIC(1,0)", nullable: false),
-                    Area = table.Column<decimal>(type: "NUMERIC(5,2)", nullable: false),
+                    Floor = table.Column<decimal>(type: "NUMERIC(1,0)", nullable: false),
+                    TotalLength = table.Column<decimal>(type: "NUMERIC(4,2)", nullable: false),
+                    TotalWidth = table.Column<decimal>(type: "NUMERIC(4,2)", nullable: false),
+                    TotalArea = table.Column<decimal>(type: "NUMERIC(5,2)", nullable: false),
+                    StageArea = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
                     NumberOfSeatsRows = table.Column<decimal>(type: "NUMERIC(2,0)", nullable: false),
+                    MaxNumberOfSeatsRows = table.Column<decimal>(type: "NUMERIC(2,0)", nullable: false),
                     NumberOfSeatsColumns = table.Column<decimal>(type: "NUMERIC(2,0)", nullable: false),
+                    MaxNumberOfSeatsColumns = table.Column<decimal>(type: "NUMERIC(2,0)", nullable: false),
+                    NumberOfSeats = table.Column<decimal>(type: "NUMERIC(3,0)", nullable: false),
                     MaxNumberOfSeats = table.Column<decimal>(type: "NUMERIC(3,0)", nullable: false),
                     HallTypeId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Hall", x => x.HallNr);
+                    table.PrimaryKey("PK_Hall", x => x.Id);
                     table.ForeignKey(
                         name: "FK_Hall_HallType_HallTypeId",
                         column: x => x.HallTypeId,
@@ -278,7 +288,7 @@ namespace EventFlowAPI.DB.Migrations
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(40)", maxLength: 40, nullable: false),
                     Surname = table.Column<string>(type: "nvarchar(40)", maxLength: 40, nullable: false),
                     Email = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
                     DateOfBirth = table.Column<DateTime>(type: "datetime2", nullable: false)
@@ -372,10 +382,12 @@ namespace EventFlowAPI.DB.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(60)", maxLength: 60, nullable: false),
+                    ShortDescription = table.Column<string>(type: "nvarchar(300)", maxLength: 300, nullable: false),
                     StartDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     EndDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Duration = table.Column<TimeSpan>(type: "time", nullable: false),
                     CategoryId = table.Column<int>(type: "int", nullable: false),
-                    HallNr = table.Column<int>(type: "int", nullable: false)
+                    HallId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -393,10 +405,10 @@ namespace EventFlowAPI.DB.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Event_Hall_HallNr",
-                        column: x => x.HallNr,
+                        name: "FK_Event_Hall_HallId",
+                        column: x => x.HallId,
                         principalTable: "Hall",
-                        principalColumn: "HallNr",
+                        principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -408,18 +420,20 @@ namespace EventFlowAPI.DB.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     SeatNr = table.Column<decimal>(type: "NUMERIC(3,0)", nullable: false),
                     Row = table.Column<decimal>(type: "NUMERIC(2,0)", nullable: false),
+                    GridRow = table.Column<decimal>(type: "NUMERIC(2,0)", nullable: false),
                     Column = table.Column<decimal>(type: "NUMERIC(2,0)", nullable: false),
+                    GridColumn = table.Column<decimal>(type: "NUMERIC(2,0)", nullable: false),
                     SeatTypeId = table.Column<int>(type: "int", nullable: false),
-                    HallNr = table.Column<int>(type: "int", nullable: false)
+                    HallId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Seat", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Seat_Hall_HallNr",
-                        column: x => x.HallNr,
+                        name: "FK_Seat_Hall_HallId",
+                        column: x => x.HallId,
                         principalTable: "Hall",
-                        principalColumn: "HallNr",
+                        principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Seat_SeatType_SeatTypeId",
@@ -478,17 +492,17 @@ namespace EventFlowAPI.DB.Migrations
                     PaymentDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     PaymentAmount = table.Column<decimal>(type: "NUMERIC(7,2)", nullable: false),
                     PaymentTypeId = table.Column<int>(type: "int", nullable: false),
-                    HallNr = table.Column<int>(type: "int", nullable: false),
+                    HallId = table.Column<int>(type: "int", nullable: false),
                     UserId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_HallRent", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_HallRent_Hall_HallNr",
-                        column: x => x.HallNr,
+                        name: "FK_HallRent_Hall_HallId",
+                        column: x => x.HallId,
                         principalTable: "Hall",
-                        principalColumn: "HallNr",
+                        principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_HallRent_PaymentType_PaymentTypeId",
@@ -586,6 +600,7 @@ namespace EventFlowAPI.DB.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     ReservationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    PaymentDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     PaymentAmount = table.Column<decimal>(type: "NUMERIC(7,2)", nullable: false),
                     UserId = table.Column<int>(type: "int", nullable: false),
                     PaymentTypeId = table.Column<int>(type: "int", nullable: false),
@@ -642,9 +657,9 @@ namespace EventFlowAPI.DB.Migrations
                 column: "CategoryId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Event_HallNr",
+                name: "IX_Event_HallId",
                 table: "Event",
-                column: "HallNr");
+                column: "HallId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_EventPass_PassTypeId",
@@ -692,14 +707,20 @@ namespace EventFlowAPI.DB.Migrations
                 column: "SponsorId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Hall_HallNr",
+                table: "Hall",
+                column: "HallNr",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Hall_HallTypeId",
                 table: "Hall",
                 column: "HallTypeId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_HallRent_HallNr",
+                name: "IX_HallRent_HallId",
                 table: "HallRent",
-                column: "HallNr");
+                column: "HallId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_HallRent_PaymentTypeId",
@@ -742,9 +763,9 @@ namespace EventFlowAPI.DB.Migrations
                 column: "SeatId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Seat_HallNr",
+                name: "IX_Seat_HallId",
                 table: "Seat",
-                column: "HallNr");
+                column: "HallId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Seat_SeatTypeId",

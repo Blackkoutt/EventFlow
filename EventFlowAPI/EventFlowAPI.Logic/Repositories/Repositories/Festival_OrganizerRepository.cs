@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace EventFlowAPI.Logic.Repositories.Repositories
 {
-    public class Festival_OrganizerRepository(APIContext context) : GenericRepository<Festival_Organizer>(context), IFestival_OrganizerRepository
+    public sealed class Festival_OrganizerRepository(APIContext context) : GenericRepository<Festival_Organizer>(context), IFestival_OrganizerRepository
     {
         public override sealed async Task<IEnumerable<Festival_Organizer>> GetAllAsync()
         {
@@ -20,40 +20,27 @@ namespace EventFlowAPI.Logic.Repositories.Repositories
         }
         public async Task<Festival_Organizer> GetOneAsync(int festiwalId, int organizerId)
         {
-            if (festiwalId <= 0 || organizerId <= 0)
-            {
-                throw new ArgumentNullException(nameof(organizerId), nameof(festiwalId));
-            }
+            ArgumentOutOfRangeException.ThrowIfLessThan(festiwalId, 0, nameof(festiwalId));
+            ArgumentOutOfRangeException.ThrowIfLessThan(organizerId, 0, nameof(organizerId));
+
             var record = await _context.Festival_Organizer
                                 .AsSplitQuery()
                                 .Include(fo => fo.Festival)
                                 .Include(fo => fo.Organizer)
                                 .FirstOrDefaultAsync(fo => (fo.FestivalId == festiwalId && fo.OrganizerId == organizerId));
 
-            if (record == null)
-            {
-                throw new ArgumentNullException(nameof(record));
-            }
-
-            return record;
+            return record ?? throw new KeyNotFoundException($"Entity with festiwalId {festiwalId} and organizerId {organizerId} does not exist in database."); ;
         }
         public async Task DeleteAsync(int festiwalId, int organizerId)
         {
-            if (festiwalId <= 0 || organizerId <= 0)
-            {
-                throw new ArgumentNullException(nameof(festiwalId), nameof(organizerId));
-            }
+            ArgumentOutOfRangeException.ThrowIfLessThan(festiwalId, 0, nameof(festiwalId));
+            ArgumentOutOfRangeException.ThrowIfLessThan(organizerId, 0, nameof(organizerId));
 
-            var record = await _context.Festival_Organizer.FirstOrDefaultAsync(fo => (fo.FestivalId == festiwalId && fo.OrganizerId == organizerId));
-
-            if (record == null)
-            {
-                throw new ArgumentNullException(nameof(record));
-            }
+            var record = await _context.Festival_Organizer.FirstOrDefaultAsync(fo => 
+                         (fo.FestivalId == festiwalId && fo.OrganizerId == organizerId)) ??
+                         throw new KeyNotFoundException($"Entity with festiwalId {festiwalId} and organizerId {organizerId} does not exist in database.");
 
             _context.Festival_Organizer.Remove(record);
-
-           // await _context.SaveChangesAsync();
         }
     }
 }

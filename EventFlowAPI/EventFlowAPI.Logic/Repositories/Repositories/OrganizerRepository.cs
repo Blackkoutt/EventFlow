@@ -5,7 +5,7 @@ using EventFlowAPI.Logic.Repositories.Repositories.BaseRepositories;
 
 namespace EventFlowAPI.Logic.Repositories.Repositories
 {
-    public class OrganizerRepository(APIContext context) : GenericRepository<Organizer>(context), IOrganizerRepository
+    public sealed class OrganizerRepository(APIContext context) : GenericRepository<Organizer>(context), IOrganizerRepository
     {
     }
 }

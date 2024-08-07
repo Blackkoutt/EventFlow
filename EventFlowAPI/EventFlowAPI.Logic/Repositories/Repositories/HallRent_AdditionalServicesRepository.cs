@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace EventFlowAPI.Logic.Repositories.Repositories
 {
-    public class HallRent_AdditionalServicesRepository(APIContext context) : GenericRepository<HallRent_AdditionalServices>(context), IHallRent_AdditionalServicesRepository
+    public sealed class HallRent_AdditionalServicesRepository(APIContext context) : GenericRepository<HallRent_AdditionalServices>(context), IHallRent_AdditionalServicesRepository
     {
         public override sealed async Task<IEnumerable<HallRent_AdditionalServices>> GetAllAsync()
         {
@@ -20,40 +20,27 @@ namespace EventFlowAPI.Logic.Repositories.Repositories
         }
         public async Task<HallRent_AdditionalServices> GetOneAsync(int hallRentId, int additionalServicesId)
         {
-            if (hallRentId <= 0 || additionalServicesId <= 0)
-            {
-                throw new ArgumentNullException(nameof(hallRentId), nameof(additionalServicesId));
-            }
+            ArgumentOutOfRangeException.ThrowIfLessThan(hallRentId, 0, nameof(hallRentId));
+            ArgumentOutOfRangeException.ThrowIfLessThan(additionalServicesId, 0, nameof(additionalServicesId));
+
             var record = await _context.HallRent_AdditionalServices
                                 .AsSplitQuery()
                                 .Include(hras => hras.HallRent)
                                 .Include(hras => hras.AdditionalService)
                                 .FirstOrDefaultAsync(hras => (hras.HallRentId == hallRentId && hras.AdditionalServiceId == additionalServicesId));
 
-            if (record == null)
-            {
-                throw new ArgumentNullException(nameof(record));
-            }
-
-            return record;
+            return record ?? throw new KeyNotFoundException($"Entity with hallRentId {hallRentId} and additionalServicesId {additionalServicesId} does not exist in database."); ;
         }
         public async Task DeleteAsync(int hallRentId, int additionalServicesId)
         {
-            if (hallRentId <= 0 || additionalServicesId <= 0)
-            {
-                throw new ArgumentNullException(nameof(hallRentId), nameof(additionalServicesId));
-            }
+            ArgumentOutOfRangeException.ThrowIfLessThan(hallRentId, 0, nameof(hallRentId));
+            ArgumentOutOfRangeException.ThrowIfLessThan(additionalServicesId, 0, nameof(additionalServicesId));
 
-            var record = await _context.HallRent_AdditionalServices.FirstOrDefaultAsync(hras => (hras.HallRentId == hallRentId && hras.AdditionalServiceId == additionalServicesId));
-
-            if (record == null)
-            {
-                throw new ArgumentNullException(nameof(record));
-            }
+            var record = await _context.HallRent_AdditionalServices.FirstOrDefaultAsync(hras =>
+                         (hras.HallRentId == hallRentId && hras.AdditionalServiceId == additionalServicesId)) ??
+                         throw new KeyNotFoundException($"Entity with hallRentId {hallRentId} and additionalServicesId {additionalServicesId} does not exist in database.");
 
             _context.HallRent_AdditionalServices.Remove(record);
-
-            //await _context.SaveChangesAsync();
         }
     }
 }

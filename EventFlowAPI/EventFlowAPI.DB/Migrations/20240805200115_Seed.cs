@@ -18,11 +18,11 @@ namespace EventFlowAPI.DB.Migrations
                 columns: new[] { "Id", "Name", "Price" },
                 values: new object[,]
                 {
-                    { 1, "DJ", 400m },
-                    { 2, "Obsługa oświetlenia", 340m },
-                    { 3, "Obsługa nagłośnienia", 250m },
-                    { 4, "Fotograf", 200m },
-                    { 5, "Promocja wydarzenia", 140m }
+                    { 1, "DJ", 400.00m },
+                    { 2, "Obsługa oświetlenia", 340.00m },
+                    { 3, "Obsługa nagłośnienia", 250.00m },
+                    { 4, "Fotograf", 200.00m },
+                    { 5, "Promocja wydarzenia", 140.00m }
                 });
 
             migrationBuilder.InsertData(
@@ -49,7 +49,7 @@ namespace EventFlowAPI.DB.Migrations
 
             migrationBuilder.InsertData(
                 table: "EventDetails",
-                columns: new[] { "Id", "Description" },
+                columns: new[] { "Id", "LongDescription" },
                 values: new object[,]
                 {
                     { 1, "Krótki opis wydarzenia Koncert: Mystic Waves" },
@@ -63,18 +63,18 @@ namespace EventFlowAPI.DB.Migrations
 
             migrationBuilder.InsertData(
                 table: "EventPassType",
-                columns: new[] { "Id", "Name", "Price" },
+                columns: new[] { "Id", "Name", "Price", "ValidityPeriodInMonths" },
                 values: new object[,]
                 {
-                    { 1, "Karnet miesięczny", 89.99m },
-                    { 2, "Karnet kwartalny", 235.99m },
-                    { 3, "Karnet półroczny", 499.99m },
-                    { 4, "Karnet roczny", 999.99m }
+                    { 1, "Karnet miesięczny", 89.99m, 1m },
+                    { 2, "Karnet kwartalny", 235.99m, 3m },
+                    { 3, "Karnet półroczny", 499.99m, 6m },
+                    { 4, "Karnet roczny", 999.99m, 12m }
                 });
 
             migrationBuilder.InsertData(
                 table: "FestivalDetails",
-                columns: new[] { "Id", "Description" },
+                columns: new[] { "Id", "LongDescription" },
                 values: new object[,]
                 {
                     { 1, "Opis festiwalu muzyki współczesnej" },
@@ -129,9 +129,9 @@ namespace EventFlowAPI.DB.Migrations
                 columns: new[] { "Id", "AddtionalPaymentPercentage", "Description", "Name" },
                 values: new object[,]
                 {
-                    { 1, 25m, "Opis miejsca VIP", "Miejsce VIP" },
-                    { 2, 10m, "Opis miejsca klasy premium", "Miejsce klasy premium" },
-                    { 3, 0m, "Opis miejsca zwykłego", "Miejsce zwykłe" }
+                    { 1, 25.00m, "Opis miejsca VIP", "Miejsce VIP" },
+                    { 2, 10.00m, "Opis miejsca klasy premium", "Miejsce klasy premium" },
+                    { 3, 0.00m, "Opis miejsca zwykłego", "Miejsce zwykłe" }
                 });
 
             migrationBuilder.InsertData(
@@ -166,23 +166,23 @@ namespace EventFlowAPI.DB.Migrations
 
             migrationBuilder.InsertData(
                 table: "Festival",
-                columns: new[] { "Id", "EndDate", "Name", "StartDate" },
+                columns: new[] { "Id", "Duration", "EndDate", "Name", "ShortDescription", "StartDate" },
                 values: new object[,]
                 {
-                    { 1, new DateTime(2024, 7, 22, 0, 0, 0, 0, DateTimeKind.Unspecified), "Festiwal muzyki współczesnej", new DateTime(2024, 7, 18, 0, 0, 0, 0, DateTimeKind.Unspecified) },
-                    { 2, new DateTime(2024, 9, 20, 0, 0, 0, 0, DateTimeKind.Unspecified), "Festiwal filmowy", new DateTime(2024, 9, 18, 0, 0, 0, 0, DateTimeKind.Unspecified) },
-                    { 3, new DateTime(2024, 11, 19, 0, 0, 0, 0, DateTimeKind.Unspecified), "Festiwal sztuki abstrakcyjnej", new DateTime(2024, 11, 18, 0, 0, 0, 0, DateTimeKind.Unspecified) }
+                    { 1, new TimeSpan(-4, 0, 0, 0, 0), new DateTime(2024, 9, 9, 0, 0, 0, 0, DateTimeKind.Unspecified), "Festiwal muzyki współczesnej", "Festiwal muzyki współczesnej to nowy festiwal organizowany przez XYZ.", new DateTime(2024, 9, 5, 0, 0, 0, 0, DateTimeKind.Unspecified) },
+                    { 2, new TimeSpan(-2, 0, 0, 0, 0), new DateTime(2024, 11, 7, 0, 0, 0, 0, DateTimeKind.Unspecified), "Festiwal filmowy", "Festiwal filmowy to festiwal na którym można obejrzeć filmy.", new DateTime(2024, 11, 5, 0, 0, 0, 0, DateTimeKind.Unspecified) },
+                    { 3, new TimeSpan(-1, 0, 0, 0, 0), new DateTime(2025, 1, 6, 0, 0, 0, 0, DateTimeKind.Unspecified), "Festiwal sztuki abstrakcyjnej", "Festiwal sztuki abstrakcyjnej to festiwal na którym można zobaczyć sztukę.", new DateTime(2025, 1, 5, 0, 0, 0, 0, DateTimeKind.Unspecified) }
                 });
 
             migrationBuilder.InsertData(
                 table: "Hall",
-                columns: new[] { "HallNr", "Area", "HallTypeId", "MaxNumberOfSeats", "NumberOfSeatsColumns", "NumberOfSeatsRows", "RentalPricePerHour", "floor" },
+                columns: new[] { "Id", "Floor", "HallNr", "HallTypeId", "MaxNumberOfSeats", "MaxNumberOfSeatsColumns", "MaxNumberOfSeatsRows", "NumberOfSeats", "NumberOfSeatsColumns", "NumberOfSeatsRows", "RentalPricePerHour", "StageArea", "TotalArea", "TotalLength", "TotalWidth" },
                 values: new object[,]
                 {
-                    { 1, 50.45m, 1, 100m, 10m, 10m, 120.99m, 2m },
-                    { 2, 68.85m, 2, 96m, 12m, 8m, 89.99m, 1m },
-                    { 3, 75.3m, 3, 98m, 14m, 7m, 179.99m, 2m },
-                    { 4, 55.2m, 4, 120m, 15m, 8m, 199.99m, 1m }
+                    { 1, 2m, 1, 1, 90m, 10m, 9m, 90m, 10m, 9m, 120.99m, 30m, 120m, 12m, 10m },
+                    { 2, 1m, 2, 2, 150m, 10m, 15m, 150m, 10m, 15m, 89.99m, null, 150m, 15m, 10m },
+                    { 3, 2m, 3, 3, 60m, 10m, 6m, 60m, 10m, 6m, 179.99m, 20m, 80m, 10m, 8m },
+                    { 4, 1m, 4, 4, 100m, 10m, 10m, 100m, 10m, 10m, 199.99m, 40m, 140m, 14m, 10m }
                 });
 
             migrationBuilder.InsertData(
@@ -209,16 +209,16 @@ namespace EventFlowAPI.DB.Migrations
 
             migrationBuilder.InsertData(
                 table: "Event",
-                columns: new[] { "Id", "CategoryId", "EndDate", "HallNr", "Name", "StartDate" },
+                columns: new[] { "Id", "CategoryId", "Duration", "EndDate", "HallId", "Name", "ShortDescription", "StartDate" },
                 values: new object[,]
                 {
-                    { 1, 1, new DateTime(2024, 7, 19, 1, 0, 0, 0, DateTimeKind.Unspecified), 2, "Koncert: Mystic Waves", new DateTime(2024, 7, 19, 0, 0, 0, 0, DateTimeKind.Unspecified) },
-                    { 2, 3, new DateTime(2024, 7, 20, 3, 0, 0, 0, DateTimeKind.Unspecified), 3, "Cień Przeszłość", new DateTime(2024, 7, 20, 0, 0, 0, 0, DateTimeKind.Unspecified) },
-                    { 3, 2, new DateTime(2024, 7, 21, 2, 0, 0, 0, DateTimeKind.Unspecified), 1, "Królestwo planety małp", new DateTime(2024, 7, 21, 0, 0, 0, 0, DateTimeKind.Unspecified) },
-                    { 4, 4, new DateTime(2024, 7, 22, 3, 0, 0, 0, DateTimeKind.Unspecified), 4, "Nowe inspiracje", new DateTime(2024, 7, 22, 0, 0, 0, 0, DateTimeKind.Unspecified) },
-                    { 5, 1, new DateTime(2024, 8, 19, 1, 0, 0, 0, DateTimeKind.Unspecified), 2, "Koncert: New Era", new DateTime(2024, 8, 19, 0, 0, 0, 0, DateTimeKind.Unspecified) },
-                    { 6, 2, new DateTime(2024, 8, 21, 2, 0, 0, 0, DateTimeKind.Unspecified), 1, "Gladiator", new DateTime(2024, 8, 21, 0, 0, 0, 0, DateTimeKind.Unspecified) },
-                    { 7, 4, new DateTime(2024, 8, 22, 3, 0, 0, 0, DateTimeKind.Unspecified), 4, "Nowa sztuka", new DateTime(2024, 8, 22, 0, 0, 0, 0, DateTimeKind.Unspecified) }
+                    { 1, 1, new TimeSpan(0, -1, 0, 0, 0), new DateTime(2024, 9, 6, 1, 0, 0, 0, DateTimeKind.Unspecified), 2, "Koncert: Mystic Waves", "Jedyna taka okazja na usłyszenie Mystic Waves na żywo.", new DateTime(2024, 9, 6, 0, 0, 0, 0, DateTimeKind.Unspecified) },
+                    { 2, 3, new TimeSpan(0, -3, 0, 0, 0), new DateTime(2024, 9, 7, 3, 0, 0, 0, DateTimeKind.Unspecified), 3, "Cień Przeszłośći", "Cień Przeszłości to jedyny taki spektakl.", new DateTime(2024, 9, 7, 0, 0, 0, 0, DateTimeKind.Unspecified) },
+                    { 3, 2, new TimeSpan(0, -2, 0, 0, 0), new DateTime(2024, 9, 8, 2, 0, 0, 0, DateTimeKind.Unspecified), 1, "Królestwo planety małp", "Nowy film Królestwo planety małp już w kinach!.", new DateTime(2024, 9, 8, 0, 0, 0, 0, DateTimeKind.Unspecified) },
+                    { 4, 4, new TimeSpan(0, -3, 0, 0, 0), new DateTime(2024, 9, 9, 3, 0, 0, 0, DateTimeKind.Unspecified), 4, "Nowe inspiracje", "Nowe inspiracje to nowoczesna wystawa sztuki.", new DateTime(2024, 9, 9, 0, 0, 0, 0, DateTimeKind.Unspecified) },
+                    { 5, 1, new TimeSpan(0, -1, 0, 0, 0), new DateTime(2024, 10, 6, 1, 0, 0, 0, DateTimeKind.Unspecified), 2, "Koncert: New Era", "Jedyna taka okazja na usłyszenie New Era na żywo.", new DateTime(2024, 10, 6, 0, 0, 0, 0, DateTimeKind.Unspecified) },
+                    { 6, 2, new TimeSpan(0, -2, 0, 0, 0), new DateTime(2024, 10, 8, 2, 0, 0, 0, DateTimeKind.Unspecified), 1, "Gladiator", "Nowy film Gladiator już w kinach!.", new DateTime(2024, 10, 8, 0, 0, 0, 0, DateTimeKind.Unspecified) },
+                    { 7, 4, new TimeSpan(0, -3, 0, 0, 0), new DateTime(2024, 10, 9, 3, 0, 0, 0, DateTimeKind.Unspecified), 4, "Nowa sztuka", "Nowe sztuka to nowoczesna wystawa sztuki.", new DateTime(2024, 10, 9, 0, 0, 0, 0, DateTimeKind.Unspecified) }
                 });
 
             migrationBuilder.InsertData(
@@ -226,9 +226,9 @@ namespace EventFlowAPI.DB.Migrations
                 columns: new[] { "Id", "EndDate", "PassTypeId", "PaymentAmount", "PaymentDate", "PaymentTypeId", "RenewalDate", "StartDate", "UserId" },
                 values: new object[,]
                 {
-                    { 1, new DateTime(2024, 12, 18, 0, 0, 0, 0, DateTimeKind.Unspecified), 3, 499.99m, new DateTime(2024, 6, 18, 0, 0, 0, 0, DateTimeKind.Unspecified), 1, null, new DateTime(2024, 6, 18, 0, 0, 0, 0, DateTimeKind.Unspecified), 1 },
-                    { 2, new DateTime(2025, 6, 18, 0, 0, 0, 0, DateTimeKind.Unspecified), 4, 999.99m, new DateTime(2024, 6, 18, 0, 0, 0, 0, DateTimeKind.Unspecified), 2, null, new DateTime(2024, 6, 18, 0, 0, 0, 0, DateTimeKind.Unspecified), 2 },
-                    { 3, new DateTime(2024, 9, 18, 0, 0, 0, 0, DateTimeKind.Unspecified), 2, 235.99m, new DateTime(2024, 6, 18, 0, 0, 0, 0, DateTimeKind.Unspecified), 1, null, new DateTime(2024, 6, 18, 0, 0, 0, 0, DateTimeKind.Unspecified), 3 }
+                    { 1, new DateTime(2025, 2, 5, 0, 0, 0, 0, DateTimeKind.Unspecified), 3, 499.99m, new DateTime(2024, 8, 5, 0, 0, 0, 0, DateTimeKind.Unspecified), 1, null, new DateTime(2024, 8, 5, 0, 0, 0, 0, DateTimeKind.Unspecified), 1 },
+                    { 2, new DateTime(2025, 8, 5, 0, 0, 0, 0, DateTimeKind.Unspecified), 4, 999.99m, new DateTime(2024, 8, 5, 0, 0, 0, 0, DateTimeKind.Unspecified), 2, null, new DateTime(2024, 8, 5, 0, 0, 0, 0, DateTimeKind.Unspecified), 2 },
+                    { 3, new DateTime(2024, 11, 5, 0, 0, 0, 0, DateTimeKind.Unspecified), 2, 235.99m, new DateTime(2024, 8, 5, 0, 0, 0, 0, DateTimeKind.Unspecified), 1, null, new DateTime(2024, 8, 5, 0, 0, 0, 0, DateTimeKind.Unspecified), 3 }
                 });
 
             migrationBuilder.InsertData(
@@ -272,33 +272,33 @@ namespace EventFlowAPI.DB.Migrations
 
             migrationBuilder.InsertData(
                 table: "HallRent",
-                columns: new[] { "Id", "EndDate", "HallNr", "PaymentAmount", "PaymentDate", "PaymentTypeId", "StartDate", "UserId" },
+                columns: new[] { "Id", "EndDate", "HallId", "PaymentAmount", "PaymentDate", "PaymentTypeId", "StartDate", "UserId" },
                 values: new object[,]
                 {
-                    { 1, new DateTime(2024, 7, 19, 8, 0, 0, 0, DateTimeKind.Unspecified), 1, 899.99m, new DateTime(2024, 6, 17, 0, 0, 0, 0, DateTimeKind.Unspecified), 1, new DateTime(2024, 7, 19, 0, 0, 0, 0, DateTimeKind.Unspecified), 1 },
-                    { 2, new DateTime(2024, 7, 20, 4, 0, 0, 0, DateTimeKind.Unspecified), 3, 699.99m, new DateTime(2024, 6, 16, 0, 0, 0, 0, DateTimeKind.Unspecified), 2, new DateTime(2024, 7, 20, 0, 0, 0, 0, DateTimeKind.Unspecified), 3 },
-                    { 3, new DateTime(2024, 7, 21, 2, 0, 0, 0, DateTimeKind.Unspecified), 3, 399.99m, new DateTime(2024, 6, 15, 0, 0, 0, 0, DateTimeKind.Unspecified), 3, new DateTime(2024, 7, 21, 0, 0, 0, 0, DateTimeKind.Unspecified), 3 },
-                    { 4, new DateTime(2024, 7, 22, 1, 0, 0, 0, DateTimeKind.Unspecified), 4, 150.99m, new DateTime(2024, 6, 15, 0, 0, 0, 0, DateTimeKind.Unspecified), 2, new DateTime(2024, 7, 22, 0, 0, 0, 0, DateTimeKind.Unspecified), 2 }
+                    { 1, new DateTime(2024, 9, 6, 8, 0, 0, 0, DateTimeKind.Unspecified), 1, 899.99m, new DateTime(2024, 8, 4, 0, 0, 0, 0, DateTimeKind.Unspecified), 1, new DateTime(2024, 9, 6, 0, 0, 0, 0, DateTimeKind.Unspecified), 1 },
+                    { 2, new DateTime(2024, 9, 7, 4, 0, 0, 0, DateTimeKind.Unspecified), 3, 699.99m, new DateTime(2024, 8, 3, 0, 0, 0, 0, DateTimeKind.Unspecified), 2, new DateTime(2024, 9, 7, 0, 0, 0, 0, DateTimeKind.Unspecified), 3 },
+                    { 3, new DateTime(2024, 9, 8, 2, 0, 0, 0, DateTimeKind.Unspecified), 3, 399.99m, new DateTime(2024, 8, 2, 0, 0, 0, 0, DateTimeKind.Unspecified), 3, new DateTime(2024, 9, 8, 0, 0, 0, 0, DateTimeKind.Unspecified), 3 },
+                    { 4, new DateTime(2024, 9, 9, 1, 0, 0, 0, DateTimeKind.Unspecified), 4, 150.99m, new DateTime(2024, 8, 2, 0, 0, 0, 0, DateTimeKind.Unspecified), 2, new DateTime(2024, 9, 9, 0, 0, 0, 0, DateTimeKind.Unspecified), 2 }
                 });
 
             migrationBuilder.InsertData(
                 table: "Seat",
-                columns: new[] { "Id", "Column", "HallNr", "Row", "SeatNr", "SeatTypeId" },
+                columns: new[] { "Id", "Column", "GridColumn", "GridRow", "HallId", "Row", "SeatNr", "SeatTypeId" },
                 values: new object[,]
                 {
-                    { 1, 1m, 1, 1m, 1m, 1 },
-                    { 2, 2m, 1, 1m, 2m, 1 },
-                    { 3, 3m, 1, 1m, 3m, 1 },
-                    { 4, 4m, 1, 1m, 4m, 1 },
-                    { 5, 1m, 2, 1m, 1m, 2 },
-                    { 6, 2m, 2, 1m, 2m, 2 },
-                    { 7, 3m, 2, 1m, 3m, 2 },
-                    { 8, 4m, 2, 1m, 4m, 2 },
-                    { 9, 1m, 3, 1m, 1m, 3 },
-                    { 10, 2m, 3, 1m, 2m, 3 },
-                    { 11, 3m, 3, 1m, 3m, 3 },
-                    { 12, 4m, 3, 1m, 4m, 3 },
-                    { 13, 1m, 4, 1m, 1m, 3 }
+                    { 1, 1m, 1m, 1m, 1, 1m, 1m, 1 },
+                    { 2, 2m, 2m, 1m, 1, 1m, 2m, 1 },
+                    { 3, 3m, 3m, 1m, 1, 1m, 3m, 1 },
+                    { 4, 4m, 4m, 1m, 1, 1m, 4m, 1 },
+                    { 5, 1m, 1m, 1m, 2, 1m, 1m, 2 },
+                    { 6, 2m, 2m, 1m, 2, 1m, 2m, 2 },
+                    { 7, 3m, 3m, 1m, 2, 1m, 3m, 2 },
+                    { 8, 4m, 4m, 1m, 2, 1m, 4m, 2 },
+                    { 9, 1m, 1m, 1m, 3, 1m, 1m, 3 },
+                    { 10, 2m, 2m, 1m, 3, 1m, 2m, 3 },
+                    { 11, 3m, 3m, 1m, 3, 1m, 3m, 3 },
+                    { 12, 4m, 4m, 1m, 3, 1m, 4m, 3 },
+                    { 13, 1m, 1m, 1m, 4, 1m, 1m, 3 }
                 });
 
             migrationBuilder.InsertData(
@@ -340,13 +340,13 @@ namespace EventFlowAPI.DB.Migrations
 
             migrationBuilder.InsertData(
                 table: "Reservation",
-                columns: new[] { "Id", "EventTicketId", "PaymentAmount", "PaymentTypeId", "ReservationDate", "UserId" },
+                columns: new[] { "Id", "EventTicketId", "PaymentAmount", "PaymentDate", "PaymentTypeId", "ReservationDate", "UserId" },
                 values: new object[,]
                 {
-                    { 1, 1, 24.99m, 1, new DateTime(2024, 6, 28, 0, 0, 0, 0, DateTimeKind.Unspecified), 1 },
-                    { 2, 2, 34.99m, 2, new DateTime(2024, 7, 4, 0, 0, 0, 0, DateTimeKind.Unspecified), 2 },
-                    { 3, 3, 29.99m, 3, new DateTime(2024, 7, 5, 0, 0, 0, 0, DateTimeKind.Unspecified), 3 },
-                    { 4, 4, 19.99m, 2, new DateTime(2024, 7, 6, 0, 0, 0, 0, DateTimeKind.Unspecified), 3 }
+                    { 1, 1, 24.99m, new DateTime(2024, 8, 15, 0, 0, 0, 0, DateTimeKind.Unspecified), 1, new DateTime(2024, 8, 15, 0, 0, 0, 0, DateTimeKind.Unspecified), 1 },
+                    { 2, 2, 34.99m, new DateTime(2024, 8, 21, 0, 0, 0, 0, DateTimeKind.Unspecified), 2, new DateTime(2024, 8, 21, 0, 0, 0, 0, DateTimeKind.Unspecified), 2 },
+                    { 3, 3, 29.99m, new DateTime(2024, 8, 22, 0, 0, 0, 0, DateTimeKind.Unspecified), 3, new DateTime(2024, 8, 22, 0, 0, 0, 0, DateTimeKind.Unspecified), 3 },
+                    { 4, 4, 19.99m, new DateTime(2024, 8, 23, 0, 0, 0, 0, DateTimeKind.Unspecified), 2, new DateTime(2024, 8, 23, 0, 0, 0, 0, DateTimeKind.Unspecified), 3 }
                 });
 
             migrationBuilder.InsertData(
@@ -1011,22 +1011,22 @@ namespace EventFlowAPI.DB.Migrations
 
             migrationBuilder.DeleteData(
                 table: "Hall",
-                keyColumn: "HallNr",
+                keyColumn: "Id",
                 keyValue: 1);
 
             migrationBuilder.DeleteData(
                 table: "Hall",
-                keyColumn: "HallNr",
+                keyColumn: "Id",
                 keyValue: 2);
 
             migrationBuilder.DeleteData(
                 table: "Hall",
-                keyColumn: "HallNr",
+                keyColumn: "Id",
                 keyValue: 3);
 
             migrationBuilder.DeleteData(
                 table: "Hall",
-                keyColumn: "HallNr",
+                keyColumn: "Id",
                 keyValue: 4);
 
             migrationBuilder.DeleteData(

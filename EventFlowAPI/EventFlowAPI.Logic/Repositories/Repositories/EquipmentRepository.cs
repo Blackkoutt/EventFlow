@@ -5,7 +5,7 @@ using EventFlowAPI.Logic.Repositories.Repositories.BaseRepositories;
 
 namespace EventFlowAPI.Logic.Repositories.Repositories
 {
-    public class EquipmentRepository(APIContext context) : GenericRepository<Equipment>(context), IEquipmentRepository
+    public sealed class EquipmentRepository(APIContext context) : GenericRepository<Equipment>(context), IEquipmentRepository
     {
     }
 }

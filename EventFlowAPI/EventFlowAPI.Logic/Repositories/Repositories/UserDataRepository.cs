@@ -5,7 +5,7 @@ using EventFlowAPI.Logic.Repositories.Repositories.BaseRepositories;
 
 namespace EventFlowAPI.Logic.Repositories.Repositories
 {
-    public class UserDataRepository(APIContext context) : GenericRepository<UserData>(context), IUserDataRepository
+    public sealed class UserDataRepository(APIContext context) : GenericRepository<UserData>(context), IUserDataRepository
     {
     }
 }

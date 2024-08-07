@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
 using EventFlowAPI.DB.Context;
 using EventFlowAPI.Logic.Mapper.Extensions;
+using EventFlowAPI.Logic.Services.Interfaces;
+using EventFlowAPI.Logic.Services.Services;
 using EventFlowAPI.Logic.UnitOfWork;
 using Microsoft.EntityFrameworkCore;
 
@@ -30,6 +32,7 @@ namespace EventFlowAPI.Extensions
         public static void AddApplicationServices(this IServiceCollection services)
         {
             // here services
+            services.AddScoped<IAdditionalServicesService, AdditionalServicesService>();
 
         }
     }

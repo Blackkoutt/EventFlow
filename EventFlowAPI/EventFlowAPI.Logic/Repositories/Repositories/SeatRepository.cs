@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace EventFlowAPI.Logic.Repositories.Repositories
 {
-    public class SeatRepository(APIContext context) : GenericRepository<Seat>(context), ISeatRepository
+    public sealed class SeatRepository(APIContext context) : GenericRepository<Seat>(context), ISeatRepository
     {
         public override sealed async Task<IEnumerable<Seat>> GetAllAsync()
         {
@@ -20,20 +20,15 @@ namespace EventFlowAPI.Logic.Repositories.Repositories
         }
         public override sealed async Task<Seat> GetOneAsync(int id)
         {
-            if (id <= 0)
-            {
-                throw new ArgumentNullException(nameof(id));
-            }
+            ArgumentOutOfRangeException.ThrowIfLessThan(id, 0, nameof(id));
+
             var record = await _context.Seat
                                 .AsSplitQuery()
                                 .Include(s => s.Hall)
                                 .Include(s => s.SeatType)
                                 .FirstOrDefaultAsync(e => e.Id == id);
 
-
-            ArgumentNullException.ThrowIfNull(record, nameof(id));
-
-            return record;
+            return record ?? throw new KeyNotFoundException($"Entity with id {id} does not exist in database."); ;
         }
     }
 }

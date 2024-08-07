@@ -4,7 +4,7 @@ using EventFlowAPI.Logic.Services.Interfaces.BaseInterfaces;
 
 namespace EventFlowAPI.Logic.Services.Interfaces
 {
-    public interface IEventService : IGenericService<Event, EventResponseDto>
+    public interface IAdditionalServicesService : IGenericService<AdditionalServices, AdditionalServicesResponseDto>
     {
     }
 }

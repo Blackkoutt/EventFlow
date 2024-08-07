@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace EventFlowAPI.Logic.Repositories.Repositories
 {
-    public class ReservationRepository(APIContext context) : GenericRepository<Reservation>(context), IReservationRepository
+    public sealed class ReservationRepository(APIContext context) : GenericRepository<Reservation>(context), IReservationRepository
     {
         public override sealed async Task<IEnumerable<Reservation>> GetAllAsync()
         {
@@ -23,10 +23,8 @@ namespace EventFlowAPI.Logic.Repositories.Repositories
         }
         public override sealed async Task<Reservation> GetOneAsync(int id)
         {
-            if (id <= 0)
-            {
-                throw new ArgumentNullException(nameof(id));
-            }
+            ArgumentOutOfRangeException.ThrowIfLessThan(id, 0, nameof(id));
+
             var record = await _context.Reservation
                                 .AsSplitQuery()
                                 .Include(r => r.User)
@@ -36,10 +34,7 @@ namespace EventFlowAPI.Logic.Repositories.Repositories
                                 .Include(r => r.Ticket)
                                 .FirstOrDefaultAsync(e => e.Id == id);
 
-
-            ArgumentNullException.ThrowIfNull(record, nameof(id));
-
-            return record;
+            return record ?? throw new KeyNotFoundException($"Entity with id {id} does not exist in database."); ;
         }
     }
 }

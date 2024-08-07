@@ -14,11 +14,25 @@ namespace EventFlowAPI.Logic.Mapper.Extensions
         }
         public static T AsDto<T>(this IEntity entity)
         {
-            return _mapper!.Map<T>(entity);
+            try
+            {
+                return _mapper!.Map<T>(entity);
+            }
+            catch (AutoMapperMappingException) 
+            {
+                throw;
+            }
         }
         public static T AsEntity<T>(this IRequestDto dto)
         {
-            return _mapper!.Map<T>(dto);
+            try
+            {
+                return _mapper!.Map<T>(dto);
+            }
+            catch (AutoMapperMappingException)
+            {
+                throw;
+            }
         }
     }
 }

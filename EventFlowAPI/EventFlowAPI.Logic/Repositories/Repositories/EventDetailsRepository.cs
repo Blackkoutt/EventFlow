@@ -5,7 +5,7 @@ using EventFlowAPI.DB.Entities;
 
 namespace EventFlowAPI.Logic.Repositories.Repositories
 {
-    public class EventDetailsRepository(APIContext context) : GenericRepository<EventDetails>(context), IEventDetailsRepository
+    public sealed class EventDetailsRepository(APIContext context) : GenericRepository<EventDetails>(context), IEventDetailsRepository
     {
     }
 }

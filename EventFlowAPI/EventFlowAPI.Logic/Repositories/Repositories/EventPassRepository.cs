@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace EventFlowAPI.Logic.Repositories.Repositories
 {
-    public class EventPassRepository(APIContext context) : GenericRepository<EventPass>(context), IEventPassRepository
+    public sealed class EventPassRepository(APIContext context) : GenericRepository<EventPass>(context), IEventPassRepository
     {
         public override sealed async Task<IEnumerable<EventPass>> GetAllAsync()
         {
@@ -21,10 +21,8 @@ namespace EventFlowAPI.Logic.Repositories.Repositories
         }
         public override sealed async Task<EventPass> GetOneAsync(int id)
         {
-            if (id <= 0)
-            {
-                throw new ArgumentNullException(nameof(id));
-            }
+            ArgumentOutOfRangeException.ThrowIfLessThan(id, 0, nameof(id));
+
             var record = await _context.EventPass
                                 .AsSplitQuery()
                                 .Include(ep => ep.User)
@@ -32,10 +30,7 @@ namespace EventFlowAPI.Logic.Repositories.Repositories
                                 .Include(ep => ep.PaymentType)
                                 .FirstOrDefaultAsync(ep => ep.Id == id);
 
-
-            ArgumentNullException.ThrowIfNull(record, nameof(id));
-
-            return record;
+            return record ?? throw new KeyNotFoundException($"Entity with id {id} does not exist in database."); ;
         }
     }
 }

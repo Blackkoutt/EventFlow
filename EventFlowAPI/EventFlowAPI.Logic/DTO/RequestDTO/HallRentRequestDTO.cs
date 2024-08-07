@@ -12,8 +12,8 @@ namespace EventFlowAPI.Logic.DTO.RequestDto
         public int PaymentTypeId { get; set; }
 
         [Required(ErrorMessage = "Należy wybrać salę.")]
-        public int HallNr { get; set; }
+        public int HallId { get; set; }
 
-        public List<int> AdditionalServicesIds { get; set; } = new List<int>();
+        public List<int> AdditionalServicesIds { get; set; } = [];
     }
 }

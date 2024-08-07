@@ -5,7 +5,7 @@ using EventFlowAPI.Logic.Repositories.Repositories.BaseRepositories;
 
 namespace EventFlowAPI.Logic.Repositories.Repositories
 {
-    public class AdditionalServicesRepository(APIContext context) : GenericRepository<AdditionalServices>(context), IAdditionalServicesRepository
+    public sealed class AdditionalServicesRepository(APIContext context) : GenericRepository<AdditionalServices>(context), IAdditionalServicesRepository
     {
     }
 }

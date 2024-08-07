@@ -5,7 +5,7 @@ using EventFlowAPI.Logic.Repositories.Repositories.BaseRepositories;
 
 namespace EventFlowAPI.Logic.Repositories.Repositories
 {
-    public class FestivalDetailsRepository(APIContext context) : GenericRepository<FestivalDetails>(context), IFestivalDetailsRepository
+    public sealed class FestivalDetailsRepository(APIContext context) : GenericRepository<FestivalDetails>(context), IFestivalDetailsRepository
     {
     }
 }

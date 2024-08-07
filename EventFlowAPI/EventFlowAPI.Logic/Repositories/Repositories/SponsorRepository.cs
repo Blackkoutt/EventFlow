@@ -5,7 +5,7 @@ using EventFlowAPI.Logic.Repositories.Repositories.BaseRepositories;
 
 namespace EventFlowAPI.Logic.Repositories.Repositories
 {
-    public class SponsorRepository(APIContext context) : GenericRepository<Sponsor>(context), ISponsorRepository
+    public sealed class SponsorRepository(APIContext context) : GenericRepository<Sponsor>(context), ISponsorRepository
     {
     }
 }
