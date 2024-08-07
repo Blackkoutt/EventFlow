@@ -30,12 +30,12 @@ namespace EventFlowAPI.Logic.UnitOfWork
             _festivalDetails = new FestivalDetailsRepository(_context);
             _festivals = new FestivalRepository(_context);
             _hallRent_AdditionalServices = new HallRent_AdditionalServicesRepository(_context);
-            _hallRents = new HallRentRepository(_context);
+            _hallRents = new HallRentRespository(_context);
             _halls = new HallRepository(_context);
             _hallType_Equipments = new HallType_EquipmentRepository(_context);
             _hallTypes = new HallTypeRepository(_context);
             _mediaPatrons = new MediaPatronRepository(_context);
-            _organizers = new OrganizerRepository(_context);
+            _organizers = new OrganizerRespository(_context);
             _paymentTypes = new PaymentTypeRepository(_context);
             _reservation_Seats = new Reservation_SeatRepository(_context);
             _reservations = new ReservationRepository(_context);

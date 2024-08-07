@@ -1,6 +1,7 @@
 ﻿using EventFlowAPI.DB.Entities.Abstract;
 using EventFlowAPI.Logic.DTO.Interfaces;
 using EventFlowAPI.Logic.Mapper.Extensions;
+using EventFlowAPI.Logic.Repositories.Interfaces.BaseInterfaces;
 using EventFlowAPI.Logic.Services.Interfaces.BaseInterfaces;
 using EventFlowAPI.Logic.UnitOfWork;
 
@@ -11,17 +12,21 @@ namespace EventFlowAPI.Logic.Services.Services.BaseServices
         where TResponseDto : class
     {
         protected IUnitOfWork _unitOfWork;
+        protected IGenericRepository<TEntity> _repository;
         protected GenericService(IUnitOfWork unitOfWork) 
         {
             _unitOfWork = unitOfWork;
+
+            // Repository not exist
+            _repository = _unitOfWork.GetRepository<TEntity>();
         }
         public async Task AddAsync(IRequestDto requestDto)
         {
-            //AutoMapperMappingException, RepositoryNotExistException, ArgumentNullException
+            //AutoMapperMappingException, ArgumentNullException
             try
             {
                 var entity = (IEntity?)requestDto.AsEntity<TEntity>();
-                await _unitOfWork.GetRepository<TEntity>().AddAsync(entity);
+                await _repository.AddAsync(entity);
                 await _unitOfWork.SaveChangesAsync();
             }
             catch
@@ -29,12 +34,12 @@ namespace EventFlowAPI.Logic.Services.Services.BaseServices
                 throw;
             }           
         }
-        public async Task<IEnumerable<TResponseDto>> GetAllAsync()
+        public virtual async Task<IEnumerable<TResponseDto>> GetAllAsync()
         {
-            //RepositoryNotExistException, AutoMapperMappingException
+            //AutoMapperMappingException
             try
             {
-                var records = await _unitOfWork.GetRepository<TEntity>().GetAllAsync();
+                var records = await _repository.GetAllAsync();
                 return records.Select(entity => ((IEntity)entity).AsDto<TResponseDto>());
             }
             catch
@@ -42,12 +47,12 @@ namespace EventFlowAPI.Logic.Services.Services.BaseServices
                 throw;
             }
         }
-        public async Task<TResponseDto> GetOneAsync(int id)
+        public virtual async Task<TResponseDto> GetOneAsync(int id)
         {
-            // RepositoryNotExistException, ArgumentOutOfRangeException, KeyNotFoundException, AutoMapperMappingException
+            // ArgumentOutOfRangeException, KeyNotFoundException, AutoMapperMappingException
             try
             {
-                var record = (IEntity) await _unitOfWork.GetRepository<TEntity>().GetOneAsync(id);
+                var record = (IEntity) await _repository.GetOneAsync(id);
                 return record.AsDto<TResponseDto>();
             }
             catch
@@ -56,13 +61,14 @@ namespace EventFlowAPI.Logic.Services.Services.BaseServices
             }
 
         }
-        public async Task UpdateAsync(IRequestDto requestDto)
+        public async Task UpdateAsync(int id, IRequestDto requestDto)
         {
-            // AutoMapperMappingException, RepositoryNotExistException, ArgumentNullException
+            // ArgumentOutOfRangeException, KeyNotFoundException, AutoMapperMappingException, ArgumentNullException
             try
             {
-                var entity = (IEntity?)requestDto.AsEntity<TEntity>();
-                _unitOfWork.GetRepository<TEntity>().Update(entity);
+                var oldEntity = (IEntity)await _repository.GetOneAsync(id);
+                var newEntity = requestDto.MapTo(oldEntity);
+                _repository.Update(newEntity);
                 await _unitOfWork.SaveChangesAsync();
             }
             catch
@@ -72,10 +78,10 @@ namespace EventFlowAPI.Logic.Services.Services.BaseServices
         }
         public async Task DeleteAsync(int id)
         {
-            // RepositoryNotExistException, ArgumentOutOfRangeException, KeyNotFoundException
+            // ArgumentOutOfRangeException, KeyNotFoundException
             try
             {
-                await _unitOfWork.GetRepository<TEntity>().DeleteAsync(id);
+                await _repository.DeleteAsync(id);
                 await _unitOfWork.SaveChangesAsync();
             }
             catch

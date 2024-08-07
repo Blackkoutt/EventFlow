@@ -22,13 +22,13 @@ namespace EventFlowAPI.Logic.Mapper.Profiles
             CreateMap<EventDetails, EventDetailsResponseDto>();
 
             CreateMap<EventPassRequestDto, EventPass>();
-            CreateMap<EventPass, EventCategoryResponseDto>();
+            CreateMap<EventPass, EventPassResponseDto>();
 
             CreateMap<EventPassTypeRequestDto, EventPassType>();
             CreateMap<EventPassType, EventPassTypeResponseDto>();
 
             CreateMap<EventRequestDto, Event>();
-            CreateMap<Event, EventCategoryResponseDto>();
+            CreateMap<Event, EventResponseDto>();
 
             CreateMap<EventTicketRequestDto, EventTicket>();
             CreateMap<EventTicket, EventTicketResponseDto>();

@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using EventFlowAPI.DB.Entities.Abstract;
 using EventFlowAPI.Logic.DTO.Interfaces;
+using Microsoft.EntityFrameworkCore.Metadata.Conventions;
 
 namespace EventFlowAPI.Logic.Mapper.Extensions
 {
@@ -14,20 +15,46 @@ namespace EventFlowAPI.Logic.Mapper.Extensions
         }
         public static T AsDto<T>(this IEntity entity)
         {
+            T result;
             try
             {
-                return _mapper!.Map<T>(entity);
+                result = _mapper!.Map<T>(entity);
             }
-            catch (AutoMapperMappingException) 
+            catch (AutoMapperMappingException)
+            {
+                throw;
+            }
+            return result;
+        }
+        public static T AsEntity<T>(this IRequestDto dto)
+        {
+            T result;
+            try
+            {
+                result = _mapper!.Map<T>(dto);
+            }
+            catch (AutoMapperMappingException)
+            {
+                throw;
+            }
+            return result;
+        }
+        public static IEntity MapTo(this IRequestDto dto, IEntity entity)
+        {
+            try
+            {
+                return _mapper!.Map(dto, entity);
+            }
+            catch (AutoMapperMappingException)
             {
                 throw;
             }
         }
-        public static T AsEntity<T>(this IRequestDto dto)
+        public static IRequestDto MapTo(this IEntity entity, IRequestDto dto)
         {
             try
             {
-                return _mapper!.Map<T>(dto);
+                return _mapper!.Map(entity, dto);
             }
             catch (AutoMapperMappingException)
             {

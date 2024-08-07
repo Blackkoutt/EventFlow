@@ -9,7 +9,7 @@ namespace EventFlowAPI.Logic.Services.Interfaces.BaseInterfaces
         Task AddAsync(IRequestDto requestDto);
         Task<IEnumerable<TResponseDto>> GetAllAsync();
         Task<TResponseDto> GetOneAsync(int id);
-        Task UpdateAsync(IRequestDto requestDto);
+        Task UpdateAsync(int id, IRequestDto requestDto);
         Task DeleteAsync(int id);
 
     }
