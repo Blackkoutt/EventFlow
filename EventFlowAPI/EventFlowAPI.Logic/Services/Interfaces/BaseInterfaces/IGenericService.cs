@@ -1,4 +1,5 @@
 ﻿using EventFlowAPI.Logic.DTO.Interfaces;
+using EventFlowAPI.Logic.ResultObject;
 
 namespace EventFlowAPI.Logic.Services.Interfaces.BaseInterfaces
 {
@@ -6,11 +7,11 @@ namespace EventFlowAPI.Logic.Services.Interfaces.BaseInterfaces
         where TEntity : class
         where TResponseDto : class
     {
-        Task AddAsync(IRequestDto requestDto);
-        Task<IEnumerable<TResponseDto>> GetAllAsync();
-        Task<TResponseDto> GetOneAsync(int id);
-        Task UpdateAsync(int id, IRequestDto requestDto);
-        Task DeleteAsync(int id);
+        Task<Result<TResponseDto>> AddAsync(IRequestDto? requestDto);
+        Task<Result<IEnumerable<TResponseDto>>> GetAllAsync();
+        Task<Result<TResponseDto>> GetOneAsync(int id);
+        Task<Result<TResponseDto>> UpdateAsync(int id, IRequestDto requestDto);
+        Task<Result<TResponseDto>> DeleteAsync(int id);
 
     }
 }

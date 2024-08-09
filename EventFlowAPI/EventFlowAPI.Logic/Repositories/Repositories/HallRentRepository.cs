@@ -10,31 +10,25 @@ namespace EventFlowAPI.Logic.Repositories.Repositories
     {
         public override sealed async Task<IEnumerable<HallRent>> GetAllAsync()
         {
-            var records = await _context.HallRent
-                                .Include(hr => hr.User)
-                                .Include(hr => hr.PaymentType)
-                                .Include(hr => hr.Hall)
-                                .Include(hr => hr.AdditionalServices)
-                                .ThenInclude(hras => hras.AdditionalService)
-                                .AsSplitQuery()
-                                .ToListAsync();
-
-            return records;
+            return await _context.HallRent
+                        .Include(hr => hr.User)
+                        .Include(hr => hr.PaymentType)
+                        .Include(hr => hr.Hall)
+                        .Include(hr => hr.AdditionalServices)
+                        .ThenInclude(hras => hras.AdditionalService)
+                        .AsSplitQuery()
+                        .ToListAsync();
         }
-        public override sealed async Task<HallRent> GetOneAsync(int id)
+        public override sealed async Task<HallRent?> GetOneAsync(int id)
         {
-            ArgumentOutOfRangeException.ThrowIfLessThan(id, 0, nameof(id));
-
-            var record = await _context.HallRent
-                                .AsSplitQuery()
-                                .Include(hr => hr.User)
-                                .Include(hr => hr.PaymentType)
-                                .Include(hr => hr.Hall)
-                                .Include(hr => hr.AdditionalServices)
-                                .ThenInclude(hras => hras.AdditionalService)
-                                .FirstOrDefaultAsync(e => e.Id == id);
-
-            return record ?? throw new KeyNotFoundException($"Entity with id {id} does not exist in database."); ;
+            return await _context.HallRent
+                        .AsSplitQuery()
+                        .Include(hr => hr.User)
+                        .Include(hr => hr.PaymentType)
+                        .Include(hr => hr.Hall)
+                        .Include(hr => hr.AdditionalServices)
+                        .ThenInclude(hras => hras.AdditionalService)
+                        .FirstOrDefaultAsync(e => e.Id == id);
         }
     }
 }

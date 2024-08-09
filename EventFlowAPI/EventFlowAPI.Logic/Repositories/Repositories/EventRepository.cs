@@ -10,29 +10,23 @@ namespace EventFlowAPI.Logic.Repositories.Repositories
     {
         public override sealed async Task<IEnumerable<Event>> GetAllAsync()
         {
-            var records = await _context.Event
-                                .Include(e => e.Hall)
-                                .Include(e => e.Category)
-                                .Include(e => e.Details)
-                                .Include(e => e.Tickets)
-                                .AsSplitQuery()
-                                .ToListAsync();
-
-            return records;
+            return await _context.Event
+                        .Include(e => e.Hall)
+                        .Include(e => e.Category)
+                        .Include(e => e.Details)
+                        .Include(e => e.Tickets)
+                        .AsSplitQuery()
+                        .ToListAsync();
         }
-        public override sealed async Task<Event> GetOneAsync(int id)
+        public override sealed async Task<Event?> GetOneAsync(int id)
         {
-            ArgumentOutOfRangeException.ThrowIfLessThan(id, 0, nameof(id));
-
-            var record = await _context.Event
-                                .AsSplitQuery()
-                                .Include(e => e.Hall)
-                                .Include(e => e.Category)
-                                .Include(e => e.Details)
-                                .Include(e => e.Tickets)
-                                .FirstOrDefaultAsync(e=> e.Id == id);
-
-            return record ?? throw new KeyNotFoundException($"Entity with id {id} does not exist in database.");
+            return await _context.Event
+                        .AsSplitQuery()
+                        .Include(e => e.Hall)
+                        .Include(e => e.Category)
+                        .Include(e => e.Details)
+                        .Include(e => e.Tickets)
+                        .FirstOrDefaultAsync(e=> e.Id == id);
         }
     }
 }

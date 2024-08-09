@@ -10,27 +10,21 @@ namespace EventFlowAPI.Logic.Repositories.Repositories
     {
         public override sealed async Task<IEnumerable<EventPass>> GetAllAsync()
         {
-            var records = await _context.EventPass
-                                .Include(ep => ep.User)
-                                .Include(ep => ep.PassType)
-                                .Include(ep => ep.PaymentType)
-                                .AsSplitQuery()
-                                .ToListAsync();
-
-            return records;
+            return await _context.EventPass
+                    .Include(ep => ep.User)
+                    .Include(ep => ep.PassType)
+                    .Include(ep => ep.PaymentType)
+                    .AsSplitQuery()
+                    .ToListAsync();
         }
-        public override sealed async Task<EventPass> GetOneAsync(int id)
+        public override sealed async Task<EventPass?> GetOneAsync(int id)
         {
-            ArgumentOutOfRangeException.ThrowIfLessThan(id, 0, nameof(id));
-
-            var record = await _context.EventPass
-                                .AsSplitQuery()
-                                .Include(ep => ep.User)
-                                .Include(ep => ep.PassType)
-                                .Include(ep => ep.PaymentType)
-                                .FirstOrDefaultAsync(ep => ep.Id == id);
-
-            return record ?? throw new KeyNotFoundException($"Entity with id {id} does not exist in database."); ;
+            return await _context.EventPass
+                        .AsSplitQuery()
+                        .Include(ep => ep.User)
+                        .Include(ep => ep.PassType)
+                        .Include(ep => ep.PaymentType)
+                        .FirstOrDefaultAsync(ep => ep.Id == id);
         }
     }
 }

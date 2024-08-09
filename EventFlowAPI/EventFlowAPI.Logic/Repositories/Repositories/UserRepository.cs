@@ -10,23 +10,17 @@ namespace EventFlowAPI.Logic.Repositories.Repositories
     {
         public override sealed async Task<IEnumerable<User>> GetAllAsync()
         {
-            var records = await _context.User
-                                .Include(u => u.UserData)
-                                .AsSplitQuery()
-                                .ToListAsync();
-
-            return records;
+            return await _context.User
+                        .Include(u => u.UserData)
+                        .AsSplitQuery()
+                        .ToListAsync();
         }
-        public override sealed async Task<User> GetOneAsync(int id)
+        public override sealed async Task<User?> GetOneAsync(int id)
         {
-            ArgumentOutOfRangeException.ThrowIfLessThan(id, 0, nameof(id));
-
-            var record = await _context.User
-                                .AsSplitQuery()
-                                .Include(u => u.UserData)
-                                .FirstOrDefaultAsync(e => e.Id == id);
-
-            return record ?? throw new KeyNotFoundException($"Entity with id {id} does not exist in database."); ;
+            return await _context.User
+                        .AsSplitQuery()
+                        .Include(u => u.UserData)
+                        .FirstOrDefaultAsync(e => e.Id == id);
         }
     }
 }
