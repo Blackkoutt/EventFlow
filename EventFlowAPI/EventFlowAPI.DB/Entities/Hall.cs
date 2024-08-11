@@ -28,7 +28,8 @@ namespace EventFlowAPI.DB.Entities
          Column(TypeName = "NUMERIC(5,2)")]
         public decimal TotalArea { get; set; }
 
-        [Range(10.00, 400.00, ErrorMessage = "Powierzchnia sceny nie może być mniejsza niż 10 m2 lub większa niż 400 m2.")]
+        [Range(10.00, 400.00),
+            Column(TypeName = "NUMERIC(5,2)")]
         public decimal? StageArea { get; set; }
 
         [Range(0, 99),
@@ -56,7 +57,7 @@ namespace EventFlowAPI.DB.Entities
         public int MaxNumberOfSeats { get; set; }
         public int HallTypeId { get; set; }
 
-        public HallType? Type { get; set; }
+        public HallType Type { get; set; } = default!;
 
         public ICollection<Event> Events { get; set; } = [];
         public ICollection<Seat> Seats { get; set; } = [];

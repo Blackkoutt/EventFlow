@@ -1,5 +1,6 @@
 using EventFlowAPI.Extensions;
 using EventFlowAPI.Logic.Mapper.Profiles;
+using System.Diagnostics;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -68,3 +69,5 @@ app.UseAutoMapper();
 app.MapControllers();
 
 app.Run();
+
+

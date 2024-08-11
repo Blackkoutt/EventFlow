@@ -1,6 +1,7 @@
 ﻿using EventFlowAPI.DB.Entities.Abstract;
 using EventFlowAPI.Logic.DTO.Interfaces;
 using EventFlowAPI.Logic.Errors;
+using EventFlowAPI.Logic.Exceptions;
 using EventFlowAPI.Logic.Mapper.Extensions;
 using EventFlowAPI.Logic.Repositories.Interfaces.BaseInterfaces;
 using EventFlowAPI.Logic.ResultObject;
@@ -28,6 +29,11 @@ namespace EventFlowAPI.Logic.Services.Services.BaseServices
             if(requestDto == null)
             {
                 return Result<TResponseDto>.Failure(Error.NullParameter);
+            }
+
+            if(await IsSameEntityExistInDatabase(requestDto))
+            {
+                return Result<TResponseDto>.Failure(Error.SuchEntityExistInDb);
             }
 
             var entity = (IEntity)requestDto.AsEntity<TEntity>(); 
@@ -100,6 +106,16 @@ namespace EventFlowAPI.Logic.Services.Services.BaseServices
             await _unitOfWork.SaveChangesAsync();
 
             return Result<TResponseDto>.Success();
+        }
+        protected virtual async Task<bool> IsSameEntityExistInDatabase(IRequestDto entityDto)
+        {
+            if (entityDto is not INameableRequestDto nameableDto)
+            {
+                throw new BadParameterTypeException("Can not check existing entity in database: Given entity does not have a name property.");
+            }
+
+            return (await _repository.GetAllAsync(q =>
+                        q.Where(entity => ((INameableEntity)entity).Name == nameableDto.Name))).Any();
         }
     }
 }

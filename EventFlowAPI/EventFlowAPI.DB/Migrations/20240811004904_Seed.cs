@@ -327,7 +327,7 @@ namespace EventFlowAPI.DB.Migrations
 
             migrationBuilder.InsertData(
                 table: "HallRent_AdditionalServices",
-                columns: new[] { "AdditionalServiceId", "HallRentId" },
+                columns: new[] { "AdditionalServicesId", "HallRentId" },
                 values: new object[,]
                 {
                     { 1, 2 },
@@ -511,32 +511,32 @@ namespace EventFlowAPI.DB.Migrations
 
             migrationBuilder.DeleteData(
                 table: "HallRent_AdditionalServices",
-                keyColumns: new[] { "AdditionalServiceId", "HallRentId" },
+                keyColumns: new[] { "AdditionalServicesId", "HallRentId" },
                 keyValues: new object[] { 1, 2 });
 
             migrationBuilder.DeleteData(
                 table: "HallRent_AdditionalServices",
-                keyColumns: new[] { "AdditionalServiceId", "HallRentId" },
+                keyColumns: new[] { "AdditionalServicesId", "HallRentId" },
                 keyValues: new object[] { 2, 2 });
 
             migrationBuilder.DeleteData(
                 table: "HallRent_AdditionalServices",
-                keyColumns: new[] { "AdditionalServiceId", "HallRentId" },
+                keyColumns: new[] { "AdditionalServicesId", "HallRentId" },
                 keyValues: new object[] { 3, 2 });
 
             migrationBuilder.DeleteData(
                 table: "HallRent_AdditionalServices",
-                keyColumns: new[] { "AdditionalServiceId", "HallRentId" },
+                keyColumns: new[] { "AdditionalServicesId", "HallRentId" },
                 keyValues: new object[] { 2, 3 });
 
             migrationBuilder.DeleteData(
                 table: "HallRent_AdditionalServices",
-                keyColumns: new[] { "AdditionalServiceId", "HallRentId" },
+                keyColumns: new[] { "AdditionalServicesId", "HallRentId" },
                 keyValues: new object[] { 4, 4 });
 
             migrationBuilder.DeleteData(
                 table: "HallRent_AdditionalServices",
-                keyColumns: new[] { "AdditionalServiceId", "HallRentId" },
+                keyColumns: new[] { "AdditionalServicesId", "HallRentId" },
                 keyValues: new object[] { 5, 4 });
 
             migrationBuilder.DeleteData(

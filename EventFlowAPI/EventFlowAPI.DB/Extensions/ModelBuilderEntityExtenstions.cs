@@ -27,9 +27,9 @@ namespace EventFlowAPI.DB.Extensions
             modelBuilder.Entity<FestivalDetails>().HasKey(x => x.Id);
             modelBuilder.Entity<Hall>().HasKey(x => x.Id);
             modelBuilder.Entity<HallRent>().HasKey(x => x.Id);
-            modelBuilder.Entity<HallRent_AdditionalServices>().HasKey(x => new { x.HallRentId, x.AdditionalServiceId });
+            modelBuilder.Entity<HallRent_AdditionalServices>().HasKey(x => new { x.HallRentId, x.AdditionalServicesId });
             modelBuilder.Entity<HallType>().HasKey(x => x.Id);
-            modelBuilder.Entity<HallType_Equipment>().HasKey(x => new { x.EquipmentId, x.HallTypeId });
+           // modelBuilder.Entity<HallType_Equipment>().HasKey(x => new { x.EquipmentId, x.HallTypeId });
             modelBuilder.Entity<PaymentType>().HasKey(x => x.Id);
             modelBuilder.Entity<Reservation>().HasKey(x => x.Id);
             modelBuilder.Entity<Seat>().HasKey(x => x.Id);

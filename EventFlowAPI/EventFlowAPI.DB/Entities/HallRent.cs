@@ -17,10 +17,10 @@ namespace EventFlowAPI.DB.Entities
         public int HallId { get; set; }   
         public int UserId { get; set; }   
 
-        public PaymentType? PaymentType { get; set; }
-        public Hall? Hall { get; set; }  
-        public User? User { get; set; }
-        public ICollection<HallRent_AdditionalServices> AdditionalServices { get; set; } = [];
+        public PaymentType PaymentType { get; set; } = default!;
+        public Hall Hall { get; set; } = default!;
+        public User User { get; set; } = default!;
+        public ICollection<AdditionalServices> AdditionalServices { get; set; } = [];
 
     }
 }

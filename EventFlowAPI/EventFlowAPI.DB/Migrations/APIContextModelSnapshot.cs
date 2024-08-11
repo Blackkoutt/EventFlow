@@ -842,7 +842,7 @@ namespace EventFlowAPI.DB.Migrations
                         .HasColumnType("NUMERIC(5,2)");
 
                     b.Property<decimal?>("StageArea")
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("NUMERIC(5,2)");
 
                     b.Property<decimal>("TotalArea")
                         .HasColumnType("NUMERIC(5,2)");
@@ -1027,12 +1027,12 @@ namespace EventFlowAPI.DB.Migrations
                     b.Property<int>("HallRentId")
                         .HasColumnType("int");
 
-                    b.Property<int>("AdditionalServiceId")
+                    b.Property<int>("AdditionalServicesId")
                         .HasColumnType("int");
 
-                    b.HasKey("HallRentId", "AdditionalServiceId");
+                    b.HasKey("HallRentId", "AdditionalServicesId");
 
-                    b.HasIndex("AdditionalServiceId");
+                    b.HasIndex("AdditionalServicesId");
 
                     b.ToTable("HallRent_AdditionalServices");
 
@@ -1040,32 +1040,32 @@ namespace EventFlowAPI.DB.Migrations
                         new
                         {
                             HallRentId = 2,
-                            AdditionalServiceId = 1
+                            AdditionalServicesId = 1
                         },
                         new
                         {
                             HallRentId = 2,
-                            AdditionalServiceId = 2
+                            AdditionalServicesId = 2
                         },
                         new
                         {
                             HallRentId = 2,
-                            AdditionalServiceId = 3
+                            AdditionalServicesId = 3
                         },
                         new
                         {
                             HallRentId = 3,
-                            AdditionalServiceId = 2
+                            AdditionalServicesId = 2
                         },
                         new
                         {
                             HallRentId = 4,
-                            AdditionalServiceId = 4
+                            AdditionalServicesId = 4
                         },
                         new
                         {
                             HallRentId = 4,
-                            AdditionalServiceId = 5
+                            AdditionalServicesId = 5
                         });
                 });
 
@@ -1897,78 +1897,62 @@ namespace EventFlowAPI.DB.Migrations
 
             modelBuilder.Entity("EventFlowAPI.DB.Entities.Festival_Event", b =>
                 {
-                    b.HasOne("EventFlowAPI.DB.Entities.Event", "Event")
-                        .WithMany("Festivals")
+                    b.HasOne("EventFlowAPI.DB.Entities.Event", null)
+                        .WithMany()
                         .HasForeignKey("EventId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("EventFlowAPI.DB.Entities.Festival", "Festival")
-                        .WithMany("Events")
+                    b.HasOne("EventFlowAPI.DB.Entities.Festival", null)
+                        .WithMany()
                         .HasForeignKey("FestivalId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Event");
-
-                    b.Navigation("Festival");
                 });
 
             modelBuilder.Entity("EventFlowAPI.DB.Entities.Festival_MediaPatron", b =>
                 {
-                    b.HasOne("EventFlowAPI.DB.Entities.Festival", "Festival")
-                        .WithMany("MediaPatrons")
+                    b.HasOne("EventFlowAPI.DB.Entities.Festival", null)
+                        .WithMany()
                         .HasForeignKey("FestivalId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("EventFlowAPI.DB.Entities.MediaPatron", "MediaPatron")
-                        .WithMany("Festivals")
+                    b.HasOne("EventFlowAPI.DB.Entities.MediaPatron", null)
+                        .WithMany()
                         .HasForeignKey("MediaPatronId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Festival");
-
-                    b.Navigation("MediaPatron");
                 });
 
             modelBuilder.Entity("EventFlowAPI.DB.Entities.Festival_Organizer", b =>
                 {
-                    b.HasOne("EventFlowAPI.DB.Entities.Festival", "Festival")
-                        .WithMany("Organizers")
+                    b.HasOne("EventFlowAPI.DB.Entities.Festival", null)
+                        .WithMany()
                         .HasForeignKey("FestivalId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("EventFlowAPI.DB.Entities.Organizer", "Organizer")
-                        .WithMany("Festivals")
+                    b.HasOne("EventFlowAPI.DB.Entities.Organizer", null)
+                        .WithMany()
                         .HasForeignKey("OrganizerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Festival");
-
-                    b.Navigation("Organizer");
                 });
 
             modelBuilder.Entity("EventFlowAPI.DB.Entities.Festival_Sponsor", b =>
                 {
-                    b.HasOne("EventFlowAPI.DB.Entities.Festival", "Festival")
-                        .WithMany("Sponsors")
+                    b.HasOne("EventFlowAPI.DB.Entities.Festival", null)
+                        .WithMany()
                         .HasForeignKey("FestivalId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("EventFlowAPI.DB.Entities.Sponsor", "Sponsor")
-                        .WithMany("Festivals")
+                    b.HasOne("EventFlowAPI.DB.Entities.Sponsor", null)
+                        .WithMany()
                         .HasForeignKey("SponsorId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Festival");
-
-                    b.Navigation("Sponsor");
                 });
 
             modelBuilder.Entity("EventFlowAPI.DB.Entities.Hall", b =>
@@ -2011,40 +1995,32 @@ namespace EventFlowAPI.DB.Migrations
 
             modelBuilder.Entity("EventFlowAPI.DB.Entities.HallRent_AdditionalServices", b =>
                 {
-                    b.HasOne("EventFlowAPI.DB.Entities.AdditionalServices", "AdditionalService")
-                        .WithMany("Rents")
-                        .HasForeignKey("AdditionalServiceId")
+                    b.HasOne("EventFlowAPI.DB.Entities.AdditionalServices", null)
+                        .WithMany()
+                        .HasForeignKey("AdditionalServicesId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("EventFlowAPI.DB.Entities.HallRent", "HallRent")
-                        .WithMany("AdditionalServices")
+                    b.HasOne("EventFlowAPI.DB.Entities.HallRent", null)
+                        .WithMany()
                         .HasForeignKey("HallRentId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("AdditionalService");
-
-                    b.Navigation("HallRent");
                 });
 
             modelBuilder.Entity("EventFlowAPI.DB.Entities.HallType_Equipment", b =>
                 {
-                    b.HasOne("EventFlowAPI.DB.Entities.Equipment", "Equipment")
-                        .WithMany("HallTypes")
+                    b.HasOne("EventFlowAPI.DB.Entities.Equipment", null)
+                        .WithMany()
                         .HasForeignKey("EquipmentId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("EventFlowAPI.DB.Entities.HallType", "HallType")
-                        .WithMany("Equipments")
+                    b.HasOne("EventFlowAPI.DB.Entities.HallType", null)
+                        .WithMany()
                         .HasForeignKey("HallTypeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Equipment");
-
-                    b.Navigation("HallType");
                 });
 
             modelBuilder.Entity("EventFlowAPI.DB.Entities.Reservation", b =>
@@ -2077,13 +2053,13 @@ namespace EventFlowAPI.DB.Migrations
             modelBuilder.Entity("EventFlowAPI.DB.Entities.Reservation_Seat", b =>
                 {
                     b.HasOne("EventFlowAPI.DB.Entities.Reservation", "Reservation")
-                        .WithMany("Seats")
+                        .WithMany()
                         .HasForeignKey("ReservationId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.HasOne("EventFlowAPI.DB.Entities.Seat", "Seat")
-                        .WithMany("Reservations")
+                        .WithMany()
                         .HasForeignKey("SeatId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
@@ -2123,20 +2099,8 @@ namespace EventFlowAPI.DB.Migrations
                     b.Navigation("UserData");
                 });
 
-            modelBuilder.Entity("EventFlowAPI.DB.Entities.AdditionalServices", b =>
-                {
-                    b.Navigation("Rents");
-                });
-
-            modelBuilder.Entity("EventFlowAPI.DB.Entities.Equipment", b =>
-                {
-                    b.Navigation("HallTypes");
-                });
-
             modelBuilder.Entity("EventFlowAPI.DB.Entities.Event", b =>
                 {
-                    b.Navigation("Festivals");
-
                     b.Navigation("Tickets");
                 });
 
@@ -2160,17 +2124,6 @@ namespace EventFlowAPI.DB.Migrations
                     b.Navigation("Reservations");
                 });
 
-            modelBuilder.Entity("EventFlowAPI.DB.Entities.Festival", b =>
-                {
-                    b.Navigation("Events");
-
-                    b.Navigation("MediaPatrons");
-
-                    b.Navigation("Organizers");
-
-                    b.Navigation("Sponsors");
-                });
-
             modelBuilder.Entity("EventFlowAPI.DB.Entities.FestivalDetails", b =>
                 {
                     b.Navigation("Festival");
@@ -2185,26 +2138,9 @@ namespace EventFlowAPI.DB.Migrations
                     b.Navigation("Seats");
                 });
 
-            modelBuilder.Entity("EventFlowAPI.DB.Entities.HallRent", b =>
-                {
-                    b.Navigation("AdditionalServices");
-                });
-
             modelBuilder.Entity("EventFlowAPI.DB.Entities.HallType", b =>
                 {
-                    b.Navigation("Equipments");
-
                     b.Navigation("Halls");
-                });
-
-            modelBuilder.Entity("EventFlowAPI.DB.Entities.MediaPatron", b =>
-                {
-                    b.Navigation("Festivals");
-                });
-
-            modelBuilder.Entity("EventFlowAPI.DB.Entities.Organizer", b =>
-                {
-                    b.Navigation("Festivals");
                 });
 
             modelBuilder.Entity("EventFlowAPI.DB.Entities.PaymentType", b =>
@@ -2216,24 +2152,9 @@ namespace EventFlowAPI.DB.Migrations
                     b.Navigation("Reservations");
                 });
 
-            modelBuilder.Entity("EventFlowAPI.DB.Entities.Reservation", b =>
-                {
-                    b.Navigation("Seats");
-                });
-
-            modelBuilder.Entity("EventFlowAPI.DB.Entities.Seat", b =>
-                {
-                    b.Navigation("Reservations");
-                });
-
             modelBuilder.Entity("EventFlowAPI.DB.Entities.SeatType", b =>
                 {
                     b.Navigation("Seats");
-                });
-
-            modelBuilder.Entity("EventFlowAPI.DB.Entities.Sponsor", b =>
-                {
-                    b.Navigation("Festivals");
                 });
 
             modelBuilder.Entity("EventFlowAPI.DB.Entities.TicketType", b =>

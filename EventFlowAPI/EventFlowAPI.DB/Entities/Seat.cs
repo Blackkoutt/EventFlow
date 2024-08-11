@@ -30,8 +30,8 @@ namespace EventFlowAPI.DB.Entities
         public int SeatTypeId { get; set; }
         public int HallId { get; set; } 
 
-        public SeatType? SeatType { get; set; }
-        public Hall? Hall { get; set; }
-        public ICollection<Reservation_Seat> Reservations { get; set; } = [];
+        public SeatType SeatType { get; set; } = default!;
+        public Hall Hall { get; set; } = default!;
+        public ICollection<Reservation> Reservations { get; set; } = [];
     }
 }

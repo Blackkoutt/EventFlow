@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace EventFlowAPI.Logic.DTO.RequestDto
 {
-    public class HallTypeRequestDto : IRequestDto
+    public class HallTypeRequestDto : IRequestDto, INameableRequestDto
     {
 
         [Required(ErrorMessage = "Nazwa typu sali jest wymagana.")]
@@ -13,7 +13,7 @@ namespace EventFlowAPI.Logic.DTO.RequestDto
         [MaxLength(600, ErrorMessage = "Opis powinien  zawierać mniej niż 600 znaków.")]
         public string? Description { get; set; }
 
-        public List<int>? EquipmentIds { get; set; } = new List<int>();
+        public List<int>? EquipmentIds { get; set; } = [];
 
     }
 }

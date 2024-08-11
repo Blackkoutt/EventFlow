@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations;
 namespace EventFlowAPI.Logic.DTO.RequestDto
 {
     // Need to add custom validators to dates
-    public class EventRequestDto : StartEndDateAbstract, IRequestDto
+    public class EventRequestDto : StartEndDateAbstract, IRequestDto, INameableRequestDto
     {
 
         [Required(ErrorMessage = "Nazwa wydarzenia jest wymagana.")]

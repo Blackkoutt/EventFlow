@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace EventFlowAPI.Logic.DTO.RequestDto
 {
-    public class SeatTypeRequestDto : IRequestDto
+    public class SeatTypeRequestDto : IRequestDto, INameableRequestDto
     {
 
         [Required(ErrorMessage = "Nazwa typu miejsca jest wymagana.")]

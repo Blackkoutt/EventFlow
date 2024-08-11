@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace EventFlowAPI.Logic.DTO.RequestDto
 {
-    public class SponsorRequestDto : IRequestDto
+    public class SponsorRequestDto : IRequestDto, INameableRequestDto
     {
 
         [Required(ErrorMessage = "Nazwa sponsora jest wymagana.")]

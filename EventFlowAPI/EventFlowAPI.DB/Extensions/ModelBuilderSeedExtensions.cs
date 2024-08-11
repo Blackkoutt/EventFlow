@@ -42,7 +42,6 @@ namespace EventFlowAPI.DB.Extensions
                 }
             );
 
-
             modelBuilder.Entity<Equipment>().HasData(
                new Equipment
                {
@@ -1026,31 +1025,31 @@ namespace EventFlowAPI.DB.Extensions
                 new HallRent_AdditionalServices
                 {
                     HallRentId = 2,
-                    AdditionalServiceId = 1
+                    AdditionalServicesId = 1
                 },
                 new HallRent_AdditionalServices
                 {
                     HallRentId = 2,
-                    AdditionalServiceId = 2
+                    AdditionalServicesId = 2
                 }, new HallRent_AdditionalServices
                 {
                     HallRentId = 2,
-                    AdditionalServiceId = 3
+                    AdditionalServicesId = 3
                 },
                 new HallRent_AdditionalServices
                 {
                     HallRentId = 3,
-                    AdditionalServiceId = 2
+                    AdditionalServicesId = 2
                 },
                 new HallRent_AdditionalServices
                 {
                     HallRentId = 4,
-                    AdditionalServiceId = 4
+                    AdditionalServicesId = 4
                 },
                 new HallRent_AdditionalServices
                 {
                     HallRentId = 4,
-                    AdditionalServiceId = 5
+                    AdditionalServicesId = 5
                 }
             );
 

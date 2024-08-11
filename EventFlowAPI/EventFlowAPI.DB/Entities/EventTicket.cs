@@ -13,7 +13,7 @@ namespace EventFlowAPI.DB.Entities
         public int EventId { get; set; }
         public int TicketTypeId { get; set; }
         public Event? Event { get; set; }
-        public TicketType? TicketType { get; set; }
+        public TicketType TicketType { get; set; } = default!;
         public ICollection<Reservation> Reservations { get; set; } = [];
     }
 }

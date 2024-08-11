@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace EventFlowAPI.DB.Entities
 {
-    public class Festival : BaseEntity
+    public class Festival : BaseEntity, INameableEntity
     {
 
         [MaxLength(60)]
@@ -16,9 +16,9 @@ namespace EventFlowAPI.DB.Entities
         public TimeSpan Duration { get; set; }
 
         public FestivalDetails? Details { get; set; }
-        public ICollection<Festival_Event> Events { get; set; } = [];
-        public ICollection<Festival_MediaPatron> MediaPatrons { get; set; } = [];
-        public ICollection<Festival_Organizer> Organizers { get; set; } = [];
-        public ICollection<Festival_Sponsor> Sponsors { get; set; } = [];
+        public ICollection<Event> Events { get; set; } = [];
+        public ICollection<MediaPatron> MediaPatrons { get; set; } = [];
+        public ICollection<Organizer> Organizers { get; set; } = [];
+        public ICollection<Sponsor> Sponsors { get; set; } = [];
     }
 }

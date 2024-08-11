@@ -1,6 +1,7 @@
 ﻿using EventFlowAPI.DB.Extensions;
 using EventFlowAPI.DB.Entities;
 using Microsoft.EntityFrameworkCore;
+using System.Diagnostics;
 
 namespace EventFlowAPI.DB.Context
 {
@@ -53,6 +54,7 @@ namespace EventFlowAPI.DB.Context
             // Relations N:N
             modelBuilder.AddManyToManyRelations();
 
+            // Seed the data
             modelBuilder.Seed();
         }
     }

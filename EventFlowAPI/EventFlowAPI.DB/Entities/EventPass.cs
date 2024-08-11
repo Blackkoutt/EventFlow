@@ -17,8 +17,8 @@ namespace EventFlowAPI.DB.Entities
         public int PassTypeId { get; set; }
         public int UserId {  get; set; }
         public int PaymentTypeId { get; set; }
-        public EventPassType? PassType { get; set; }
-        public User? User { get; set; }
-        public PaymentType? PaymentType { get; set; }
+        public EventPassType PassType { get; set; } = default!;
+        public User User { get; set; } = default!;
+        public PaymentType PaymentType { get; set; } = default!;
     }
 }

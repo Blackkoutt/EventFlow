@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace EventFlowAPI.Logic.DTO.RequestDto
 {
-    public class EventCategoryRequestDto : IRequestDto
+    public class EventCategoryRequestDto : IRequestDto, INameableRequestDto
     {
 
         [Required(ErrorMessage = "Nazwa kategorii wydarzenia jest wymagana.")]

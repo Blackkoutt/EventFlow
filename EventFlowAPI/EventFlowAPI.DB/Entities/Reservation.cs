@@ -15,9 +15,9 @@ namespace EventFlowAPI.DB.Entities
         public int UserId { get; set; }
         public int PaymentTypeId { get; set; }
         public int EventTicketId { get; set; }  
-        public User? User { get; set; }
-        public PaymentType? PaymentType { get; set; }
-        public EventTicket? Ticket { get; set; }
-        public ICollection<Reservation_Seat> Seats { get; set; } = [];
+        public User User { get; set; } = default!;
+        public PaymentType PaymentType { get; set; } = default!;
+        public EventTicket Ticket { get; set; } = default!;
+        public ICollection<Seat> Seats { get; set; } = [];
     }
 }

@@ -8,34 +8,28 @@ namespace EventFlowAPI.Logic.Repositories.Repositories
 {
     public sealed class FestivalRepository(APIContext context) : GenericRepository<Festival>(context), IFestivalRepository
     {
-        public override sealed async Task<IEnumerable<Festival>> GetAllAsync()
+        public override sealed async Task<IEnumerable<Festival>> GetAllAsync(Func<IQueryable<Festival>, IQueryable<Festival>>? query = null)
         {
-            return await _context.Festival
+            var _table = _context.Festival
                         .Include(f => f.Details)
                         .Include(f => f.Events)
-                        .ThenInclude(fe => fe.Event)
                         .Include(f => f.Sponsors)
-                        .ThenInclude(fs => fs.Sponsor)
                         .Include(f => f.MediaPatrons)
-                        .ThenInclude(fmp => fmp.MediaPatron)
                         .Include(f => f.Organizers)
-                        .ThenInclude(fo => fo.Organizer)
-                        .AsSplitQuery()
-                        .ToListAsync();
+                        .AsSplitQuery();
+
+            return await (query != null ? query(_table).ToListAsync() : _table.ToListAsync());
         }
+
         public override sealed async Task<Festival?> GetOneAsync(int id)
         {
             return await _context.Festival
                         .AsSplitQuery()
                         .Include(f => f.Details)
                         .Include(f => f.Events)
-                        .ThenInclude(fe => fe.Event)
                         .Include(f => f.Sponsors)
-                        .ThenInclude(fs => fs.Sponsor)
                         .Include(f => f.MediaPatrons)
-                        .ThenInclude(fmp => fmp.MediaPatron)
                         .Include(f => f.Organizers)
-                        .ThenInclude(fo => fo.Organizer)
                         .FirstOrDefaultAsync(f => f.Id == id);
         }
     }

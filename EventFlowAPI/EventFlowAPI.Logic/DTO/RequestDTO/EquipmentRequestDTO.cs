@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace EventFlowAPI.Logic.DTO.RequestDto
 {
-    public class EquipmentRequestDto : IRequestDto
+    public class EquipmentRequestDto : IRequestDto, INameableRequestDto
     {
 
         [Required(ErrorMessage = "Nazwa wyposażenia jest wymagana.")]

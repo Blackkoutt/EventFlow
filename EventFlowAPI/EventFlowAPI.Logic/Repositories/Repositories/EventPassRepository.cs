@@ -8,14 +8,15 @@ namespace EventFlowAPI.Logic.Repositories.Repositories
 {
     public sealed class EventPassRepository(APIContext context) : GenericRepository<EventPass>(context), IEventPassRepository
     {
-        public override sealed async Task<IEnumerable<EventPass>> GetAllAsync()
+        public override sealed async Task<IEnumerable<EventPass>> GetAllAsync(Func<IQueryable<EventPass>, IQueryable<EventPass>>? query = null)
         {
-            return await _context.EventPass
+            var _table = _context.EventPass
                     .Include(ep => ep.User)
                     .Include(ep => ep.PassType)
                     .Include(ep => ep.PaymentType)
-                    .AsSplitQuery()
-                    .ToListAsync();
+                    .AsSplitQuery();
+
+            return await (query != null ? query(_table).ToListAsync() : _table.ToListAsync());
         }
         public override sealed async Task<EventPass?> GetOneAsync(int id)
         {

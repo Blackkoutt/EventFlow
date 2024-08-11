@@ -8,17 +8,18 @@ namespace EventFlowAPI.Logic.Repositories.Repositories
 {
     public sealed class ReservationRepository(APIContext context) : GenericRepository<Reservation>(context), IReservationRepository
     {
-        public override sealed async Task<IEnumerable<Reservation>> GetAllAsync()
+        public override sealed async Task<IEnumerable<Reservation>> GetAllAsync(Func<IQueryable<Reservation>, IQueryable<Reservation>>? query = null)
         {
-            return await _context.Reservation
+            var _table = _context.Reservation
                                 .Include(r => r.User)
                                 .Include(r => r.PaymentType)
                                 .Include(r => r.Seats)
-                                .ThenInclude(rs => rs.Seat)
                                 .Include(r => r.Ticket)
-                                .AsSplitQuery()
-                                .ToListAsync();
+                                .AsSplitQuery();
+
+            return await (query != null ? query(_table).ToListAsync() : _table.ToListAsync());
         }
+
         public override sealed async Task<Reservation?> GetOneAsync(int id)
         {
             return await _context.Reservation
@@ -26,7 +27,6 @@ namespace EventFlowAPI.Logic.Repositories.Repositories
                         .Include(r => r.User)
                         .Include(r => r.PaymentType)
                         .Include(r => r.Seats)
-                        .ThenInclude(rs => rs.Seat)
                         .Include(r => r.Ticket)
                         .FirstOrDefaultAsync(e => e.Id == id);
         }

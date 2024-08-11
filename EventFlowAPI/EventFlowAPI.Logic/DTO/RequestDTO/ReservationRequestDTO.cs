@@ -12,6 +12,6 @@ namespace EventFlowAPI.Logic.DTO.RequestDto
         public int EventTicketId { get; set; }
 
         [Required(ErrorMessage = "Wybierz co najmniej jedno miejsce.")]
-        public List<int> SeatsIds { get; set; } = new List<int>();
+        public List<int> SeatsIds { get; set; } = [];
     }
 }

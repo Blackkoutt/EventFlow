@@ -44,8 +44,8 @@ namespace EventFlowAPI.Logic.ResultObject
         public bool IsFailed => !IsSuccessful;
         public Error Error { get; }
 
-        public static Result<T> Success(T value) => new Result<T>(value);
-        public static Result<T> Success() => new Result<T>();
-        public static Result<T> Failure(Error error) => new Result<T>(error);
+        public static Result<T> Success(T value) => new(value);
+        public static Result<T> Success() => new();
+        public static Result<T> Failure(Error error) => new(error);
     }
 }

@@ -239,7 +239,7 @@ namespace EventFlowAPI.DB.Migrations
                     TotalLength = table.Column<decimal>(type: "NUMERIC(4,2)", nullable: false),
                     TotalWidth = table.Column<decimal>(type: "NUMERIC(4,2)", nullable: false),
                     TotalArea = table.Column<decimal>(type: "NUMERIC(5,2)", nullable: false),
-                    StageArea = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
+                    StageArea = table.Column<decimal>(type: "NUMERIC(5,2)", nullable: true),
                     NumberOfSeatsRows = table.Column<decimal>(type: "NUMERIC(2,0)", nullable: false),
                     MaxNumberOfSeatsRows = table.Column<decimal>(type: "NUMERIC(2,0)", nullable: false),
                     NumberOfSeatsColumns = table.Column<decimal>(type: "NUMERIC(2,0)", nullable: false),
@@ -574,14 +574,14 @@ namespace EventFlowAPI.DB.Migrations
                 columns: table => new
                 {
                     HallRentId = table.Column<int>(type: "int", nullable: false),
-                    AdditionalServiceId = table.Column<int>(type: "int", nullable: false)
+                    AdditionalServicesId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_HallRent_AdditionalServices", x => new { x.HallRentId, x.AdditionalServiceId });
+                    table.PrimaryKey("PK_HallRent_AdditionalServices", x => new { x.HallRentId, x.AdditionalServicesId });
                     table.ForeignKey(
-                        name: "FK_HallRent_AdditionalServices_AdditionalServices_AdditionalServiceId",
-                        column: x => x.AdditionalServiceId,
+                        name: "FK_HallRent_AdditionalServices_AdditionalServices_AdditionalServicesId",
+                        column: x => x.AdditionalServicesId,
                         principalTable: "AdditionalServices",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -733,9 +733,9 @@ namespace EventFlowAPI.DB.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_HallRent_AdditionalServices_AdditionalServiceId",
+                name: "IX_HallRent_AdditionalServices_AdditionalServicesId",
                 table: "HallRent_AdditionalServices",
-                column: "AdditionalServiceId");
+                column: "AdditionalServicesId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_HallType_Equipment_HallTypeId",

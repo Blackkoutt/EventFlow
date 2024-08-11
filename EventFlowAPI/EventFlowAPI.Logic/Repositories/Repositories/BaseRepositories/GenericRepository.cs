@@ -14,10 +14,12 @@ namespace EventFlowAPI.Logic.Repositories.Repositories.BaseRepositories
         {
             _context = context;
             _table = _context.Set<T>();
+            
         }
 
         public async Task AddAsync(IEntity entity) => await _table.AddAsync((T)entity);
-        public virtual async Task<IEnumerable<T>> GetAllAsync() => await _table.ToListAsync();
+        public virtual async Task<IEnumerable<T>> GetAllAsync(Func<IQueryable<T>, IQueryable<T>>? query = null)
+            => await (query?.Invoke(_table) ?? _table).ToListAsync();
         public virtual async Task<T?> GetOneAsync(int id) => await _table.FindAsync(id);
         public void Update(IEntity entity) => _table.Update((T)entity);
         public void Delete(IEntity entity) => _table.Remove((T)entity);

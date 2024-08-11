@@ -46,7 +46,8 @@ namespace EventFlowAPI.Logic.Mapper.Profiles
             CreateMap<Hall, HallResponseDto>();
 
             CreateMap<HallTypeRequestDto, HallType>();
-            CreateMap<HallType, HallTypeResponseDto>();
+            CreateMap<HallType, HallTypeResponseDto>()
+                .ForMember(dest => dest.Equipments, opt => opt.MapFrom(src => src.Equipments)); ;
 
             CreateMap<MediaPatronRequestDto, MediaPatron>();
             CreateMap<MediaPatron, MediaPatronResponseDto>();

@@ -8,13 +8,15 @@ namespace EventFlowAPI.Logic.Repositories.Repositories
 {
     public sealed class UserRepository(APIContext context) : GenericRepository<User>(context), IUserRepository
     {
-        public override sealed async Task<IEnumerable<User>> GetAllAsync()
+        public override sealed async Task<IEnumerable<User>> GetAllAsync(Func<IQueryable<User>, IQueryable<User>>? query = null)
         {
-            return await _context.User
+            var _table = _context.User
                         .Include(u => u.UserData)
-                        .AsSplitQuery()
-                        .ToListAsync();
+                        .AsSplitQuery();
+
+            return await (query != null ? query(_table).ToListAsync() : _table.ToListAsync());
         }
+
         public override sealed async Task<User?> GetOneAsync(int id)
         {
             return await _context.User

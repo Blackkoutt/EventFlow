@@ -8,17 +8,18 @@ namespace EventFlowAPI.Logic.Repositories.Repositories
 {
     public sealed class HallRentRespository(APIContext context) : GenericRepository<HallRent>(context), IHallRentRepository
     {
-        public override sealed async Task<IEnumerable<HallRent>> GetAllAsync()
+        public override sealed async Task<IEnumerable<HallRent>> GetAllAsync(Func<IQueryable<HallRent>, IQueryable<HallRent>>? query = null)
         {
-            return await _context.HallRent
+            var _table = _context.HallRent
                         .Include(hr => hr.User)
                         .Include(hr => hr.PaymentType)
                         .Include(hr => hr.Hall)
                         .Include(hr => hr.AdditionalServices)
-                        .ThenInclude(hras => hras.AdditionalService)
-                        .AsSplitQuery()
-                        .ToListAsync();
+                        .AsSplitQuery();
+
+            return await (query != null ? query(_table).ToListAsync() : _table.ToListAsync());
         }
+        
         public override sealed async Task<HallRent?> GetOneAsync(int id)
         {
             return await _context.HallRent
@@ -27,7 +28,6 @@ namespace EventFlowAPI.Logic.Repositories.Repositories
                         .Include(hr => hr.PaymentType)
                         .Include(hr => hr.Hall)
                         .Include(hr => hr.AdditionalServices)
-                        .ThenInclude(hras => hras.AdditionalService)
                         .FirstOrDefaultAsync(e => e.Id == id);
         }
     }

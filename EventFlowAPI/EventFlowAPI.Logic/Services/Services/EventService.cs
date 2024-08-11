@@ -28,7 +28,7 @@ namespace EventFlowAPI.Logic.Services.Services
         public override sealed async Task<Result<EventResponseDto>> GetOneAsync(int id)
         {
             // ArgumentOutOfRangeException, KeyNotFoundException, AutoMapperMappingException
-            var record = (IEntity)await _repository.GetOneAsync(id);
+            var record = (IEntity?)await _repository.GetOneAsync(id);
             var result = record.AsDto<EventResponseDto>();
             return Result<EventResponseDto>.Success(result);
         }

@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace EventFlowAPI.DB.Entities
 {
-    public class Event : BaseEntity
+    public class Event : BaseEntity, INameableEntity
     {
 
         [MaxLength(60)]
@@ -19,10 +19,10 @@ namespace EventFlowAPI.DB.Entities
         public int CategoryId { get; set; } 
         public int HallId { get; set; }
 
-        public EventCategory? Category { get; set; } 
+        public EventCategory Category { get; set; } = default!;
         public EventDetails? Details { get; set; }
-        public Hall? Hall { get; set; }
-        public ICollection<Festival_Event> Festivals { get; set; } = [];
+        public Hall Hall { get; set; } = default!;
+        public ICollection<Festival> Festivals { get; set; } = [];
         public ICollection<EventTicket> Tickets { get; set; } = [];
     }
 }

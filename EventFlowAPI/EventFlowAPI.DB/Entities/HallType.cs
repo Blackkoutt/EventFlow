@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace EventFlowAPI.DB.Entities
 {
-    public class HallType : BaseEntity
+    public class HallType : BaseEntity, INameableEntity
     {
 
         [MaxLength(30)]
@@ -13,6 +13,6 @@ namespace EventFlowAPI.DB.Entities
         public string? Description { get; set; }
 
         public ICollection<Hall> Halls { get; set; } = [];
-        public ICollection<HallType_Equipment> Equipments { get; set; } = [];
+        public ICollection<Equipment> Equipments { get; set; } = [];
     }
 }

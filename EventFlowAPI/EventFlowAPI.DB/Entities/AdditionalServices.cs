@@ -4,9 +4,8 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace EventFlowAPI.DB.Entities
 {
-    public class AdditionalServices : BaseEntity
+    public class AdditionalServices : BaseEntity, INameableEntity
     {
-        
         [MaxLength(40)]
         public string Name { get; set; } = string.Empty;
 
@@ -14,6 +13,6 @@ namespace EventFlowAPI.DB.Entities
          Column(TypeName = "NUMERIC(6,2)")]
         public decimal Price {  get; set; }
 
-        public ICollection<HallRent_AdditionalServices> Rents { get; set; } = [];
+        public ICollection<HallRent> Rents { get; set; } = [];
     }
 }
