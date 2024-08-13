@@ -1,8 +1,5 @@
-﻿using Azure.Core;
-using EventFlowAPI.Logic.DTO.RequestDto;
-using EventFlowAPI.Logic.DTO.ResponseDto;
+﻿using EventFlowAPI.Logic.DTO.RequestDto;
 using EventFlowAPI.Logic.Services.Interfaces;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EventFlowAPI.Controllers
@@ -17,41 +14,53 @@ namespace EventFlowAPI.Controllers
         {
             _eventService = eventService;
         }
-
         [HttpGet]
-        public async Task<IActionResult> GetAll()
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> GetEvents()
         {
-            var records = await _eventService.GetAllAsync();
-            return Ok(records);
+            var result = await _eventService.GetAllAsync();
+            return result.IsSuccessful ? Ok(result.Value) : BadRequest(result.Error.Details);
         }
+
 
         [HttpGet("{id:int}")]
-        public async Task<IActionResult> GetOne([FromRoute] int id)
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> GetEventById([FromRoute] int id)
         {
-            var record = await _eventService.GetOneAsync(id);
-            return Ok(record);
+            var result = await _eventService.GetOneAsync(id);
+            return result.IsSuccessful ? Ok(result.Value) : BadRequest(result.Error.Details);
         }
+
+
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
-        public async Task<IActionResult> Add([FromBody] EventRequestDto eventReqestDto)
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> CreateEvent([FromBody] EventRequestDto eventReqestDto)
         {
-            await _eventService.AddAsync(eventReqestDto);
-            return Created();
+            var result = await _eventService.AddAsync(eventReqestDto);
+            return result.IsSuccessful ? CreatedAtAction(nameof(GetEventById), new { id = result.Value.Id }, result.Value) : BadRequest(result.Error.Details);
         }
-        [HttpPut("{id:int}")]
 
-        public async Task<IActionResult> Update([FromRoute] int id, [FromBody] EventRequestDto eventReqestDto)
+
+        [HttpPut("{id:int}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> UpdateEvent([FromRoute] int id, [FromBody] EventRequestDto eventReqestDto)
         {
-            await _eventService.UpdateAsync(id, eventReqestDto);
-            return NoContent();
+            var result = await _eventService.UpdateAsync(id, eventReqestDto);
+            return result.IsSuccessful ? NoContent() : BadRequest(result.Error.Details);
         }
+
 
         [HttpDelete("{id:int}")]
-
-        public async Task<IActionResult> Delete([FromRoute] int id)
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> DeleteEvent([FromRoute] int id)
         {
-            await _eventService.DeleteAsync(id);
-            return NoContent();
+            var result = await _eventService.DeleteAsync(id);
+            return result.IsSuccessful ? NoContent() : BadRequest(result.Error.Details);
         }
     }
 }

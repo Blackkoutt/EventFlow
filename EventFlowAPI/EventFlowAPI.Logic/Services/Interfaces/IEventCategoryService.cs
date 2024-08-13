@@ -1,10 +1,16 @@
 ﻿using EventFlowAPI.DB.Entities;
+using EventFlowAPI.Logic.DTO.RequestDto;
 using EventFlowAPI.Logic.DTO.ResponseDto;
 using EventFlowAPI.Logic.Services.Interfaces.BaseInterfaces;
 
 namespace EventFlowAPI.Logic.Services.Interfaces
 {
-    public interface IEventCategoryService : IGenericService<EventCategory, EventCategoryResponseDto>
+    public interface IEventCategoryService : 
+        IGenericService<
+            EventCategory,
+            EventCategoryRequestDto,
+            EventCategoryResponseDto
+        >
     {
     }
 }

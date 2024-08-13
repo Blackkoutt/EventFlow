@@ -17,9 +17,12 @@ namespace EventFlowAPI.Logic.DTO.RequestDto
         public string ShortDescription { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "Należy podać kategorię wydarzenia.")]
+        [Range(0, int.MaxValue, ErrorMessage = "Id kategorii musi być większe lub równe 0.")]
         public int CategoryId { get; set; }
 
         [Required(ErrorMessage ="Należy podać numer sali w którym odbywa się wydarzenie.")]
-        public int HallNr { get; set; }
+        [Range(0, int.MaxValue, ErrorMessage = "Id hali musi być większe lub równe 0.")]
+        public int HallId { get; set; }
+
     }
 }

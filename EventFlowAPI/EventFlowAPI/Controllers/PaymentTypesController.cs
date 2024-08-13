@@ -13,7 +13,7 @@ namespace EventFlowAPI.Controllers
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> GetAdditionalServices()
+        public async Task<IActionResult> GetPaymentTypes()
         {
             var result = await _paymentTypeService.GetAllAsync();
             return result.IsSuccessful ? Ok(result.Value) : BadRequest(result.Error.Details);
@@ -23,7 +23,7 @@ namespace EventFlowAPI.Controllers
         [HttpGet("{id:int}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> GetAdditionalServiceById([FromRoute] int id)
+        public async Task<IActionResult> GetPaymentTypeById([FromRoute] int id)
         {
             var result = await _paymentTypeService.GetOneAsync(id);
             return result.IsSuccessful ? Ok(result.Value) : BadRequest(result.Error.Details);
@@ -33,19 +33,19 @@ namespace EventFlowAPI.Controllers
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> CreateAdditionalService([FromBody] AdditionalServicesRequestDto additionalServicesReqestDto)
+        public async Task<IActionResult> CreatePaymentType([FromBody] PaymentTypeRequestDto paymentTypeReqestDto)
         {
-            var result = await _paymentTypeService.AddAsync(additionalServicesReqestDto);
-            return result.IsSuccessful ? CreatedAtAction(nameof(GetAdditionalServiceById), new { id = result.Value.Id }, result.Value) : BadRequest(result.Error.Details);
+            var result = await _paymentTypeService.AddAsync(paymentTypeReqestDto);
+            return result.IsSuccessful ? CreatedAtAction(nameof(GetPaymentTypeById), new { id = result.Value.Id }, result.Value) : BadRequest(result.Error.Details);
         }
 
 
         [HttpPut("{id:int}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> UpdateAdditionalService([FromRoute] int id, [FromBody] AdditionalServicesRequestDto additionalServicesReqestDto)
+        public async Task<IActionResult> UpdatePaymentType([FromRoute] int id, [FromBody] PaymentTypeRequestDto paymentTypeReqestDto)
         {
-            var result = await _paymentTypeService.UpdateAsync(id, additionalServicesReqestDto);
+            var result = await _paymentTypeService.UpdateAsync(id, paymentTypeReqestDto);
             return result.IsSuccessful ? NoContent() : BadRequest(result.Error.Details);
         }
 
@@ -53,7 +53,7 @@ namespace EventFlowAPI.Controllers
         [HttpDelete("{id:int}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> DeleteAdditionalService([FromRoute] int id)
+        public async Task<IActionResult> DeletePaymentType([FromRoute] int id)
         {
             var result = await _paymentTypeService.DeleteAsync(id);
             return result.IsSuccessful ? NoContent() : BadRequest(result.Error.Details);

@@ -13,7 +13,7 @@ namespace EventFlowAPI.Controllers
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> GetAdditionalServices()
+        public async Task<IActionResult> GetSeatTypes()
         {
             var result = await _seatTypeService.GetAllAsync();
             return result.IsSuccessful ? Ok(result.Value) : BadRequest(result.Error.Details);
@@ -23,7 +23,7 @@ namespace EventFlowAPI.Controllers
         [HttpGet("{id:int}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> GetAdditionalServiceById([FromRoute] int id)
+        public async Task<IActionResult> GetSeatTypeById([FromRoute] int id)
         {
             var result = await _seatTypeService.GetOneAsync(id);
             return result.IsSuccessful ? Ok(result.Value) : BadRequest(result.Error.Details);
@@ -33,19 +33,19 @@ namespace EventFlowAPI.Controllers
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> CreateAdditionalService([FromBody] AdditionalServicesRequestDto additionalServicesReqestDto)
+        public async Task<IActionResult> CreateSeatType([FromBody] SeatTypeRequestDto seatTypeReqestDto)
         {
-            var result = await _seatTypeService.AddAsync(additionalServicesReqestDto);
-            return result.IsSuccessful ? CreatedAtAction(nameof(GetAdditionalServiceById), new { id = result.Value.Id }, result.Value) : BadRequest(result.Error.Details);
+            var result = await _seatTypeService.AddAsync(seatTypeReqestDto);
+            return result.IsSuccessful ? CreatedAtAction(nameof(GetSeatTypeById), new { id = result.Value.Id }, result.Value) : BadRequest(result.Error.Details);
         }
 
 
         [HttpPut("{id:int}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> UpdateAdditionalService([FromRoute] int id, [FromBody] AdditionalServicesRequestDto additionalServicesReqestDto)
+        public async Task<IActionResult> UpdateSeatType([FromRoute] int id, [FromBody] SeatTypeRequestDto seatTypeReqestDto)
         {
-            var result = await _seatTypeService.UpdateAsync(id, additionalServicesReqestDto);
+            var result = await _seatTypeService.UpdateAsync(id, seatTypeReqestDto);
             return result.IsSuccessful ? NoContent() : BadRequest(result.Error.Details);
         }
 
@@ -53,7 +53,7 @@ namespace EventFlowAPI.Controllers
         [HttpDelete("{id:int}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> DeleteAdditionalService([FromRoute] int id)
+        public async Task<IActionResult> DeleteSeatType([FromRoute] int id)
         {
             var result = await _seatTypeService.DeleteAsync(id);
             return result.IsSuccessful ? NoContent() : BadRequest(result.Error.Details);

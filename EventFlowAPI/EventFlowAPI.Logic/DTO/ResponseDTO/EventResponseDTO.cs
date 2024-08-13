@@ -1,4 +1,5 @@
-﻿using EventFlowAPI.Logic.DTO.Abstract;
+﻿using EventFlowAPI.DB.Entities;
+using EventFlowAPI.Logic.DTO.Abstract;
 
 namespace EventFlowAPI.Logic.DTO.ResponseDto
 {
@@ -12,5 +13,6 @@ namespace EventFlowAPI.Logic.DTO.ResponseDto
         public EventCategoryResponseDto? Category { get; set; }
         public EventDetailsResponseDto? Details { get; set; }
         public HallResponseDto? Hall { get; set; }
+        public ICollection<EventTicketResponseDto> Tickets { get; set; } = [];
     }
 }

@@ -14,7 +14,6 @@ namespace EventFlowAPI.Logic.Repositories.Repositories
                         .Include(e => e.Hall)
                         .Include(e => e.Category)
                         .Include(e => e.Details)
-                        .Include(e => e.Tickets)
                         .AsSplitQuery();
 
             return await (query != null ? query(_table).ToListAsync() : _table.ToListAsync());
@@ -27,6 +26,7 @@ namespace EventFlowAPI.Logic.Repositories.Repositories
                         .Include(e => e.Category)
                         .Include(e => e.Details)
                         .Include(e => e.Tickets)
+                        .ThenInclude(t => t.TicketType)
                         .FirstOrDefaultAsync(e=> e.Id == id);
         }
     }

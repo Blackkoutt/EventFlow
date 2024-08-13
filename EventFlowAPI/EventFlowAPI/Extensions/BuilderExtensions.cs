@@ -29,7 +29,7 @@ namespace EventFlowAPI.Extensions
         {
             services.AddTransient<IUnitOfWork, UnitOfWork>();
         }
-        public static void AddApplicationServices(this IServiceCollection services)
+        public static void AddApplicationCRUDServices(this IServiceCollection services)
         {
             services.AddScoped<IAdditionalServicesService, AdditionalServicesService>();
             services.AddScoped<IEquipmentService, EquipmentService>();

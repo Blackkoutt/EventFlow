@@ -1,5 +1,7 @@
 ﻿using EventFlowAPI.DB.Entities;
+using EventFlowAPI.Logic.DTO.RequestDto;
 using EventFlowAPI.Logic.DTO.ResponseDto;
+using EventFlowAPI.Logic.Errors;
 using EventFlowAPI.Logic.Mapper.Extensions;
 using EventFlowAPI.Logic.ResultObject;
 using EventFlowAPI.Logic.Services.Interfaces;
@@ -8,29 +10,41 @@ using EventFlowAPI.Logic.UnitOfWork;
 
 namespace EventFlowAPI.Logic.Services.Services
 {
-    public sealed class HallTypeService(IUnitOfWork unitOfWork) : GenericService<HallType, HallTypeResponseDto>(unitOfWork), IHallTypeService
+    public sealed class HallTypeService(IUnitOfWork unitOfWork) :
+        GenericService<
+            HallType,
+            HallTypeRequestDto,
+            HallTypeResponseDto
+        >(unitOfWork),
+        IHallTypeService
     {
-        public override sealed async Task<Result<IEnumerable<HallTypeResponseDto>>> GetAllAsync()
+
+        protected sealed override HallTypeResponseDto MapAsDto(HallType entity)
         {
-            //AutoMapperMappingException
-            var records = await _repository.GetAllAsync();
-            var result = records.Select(entity =>
+            var responseDto = entity.AsDto<HallTypeResponseDto>();
+            responseDto.Equipments = entity.Equipments.Select(eq => eq.AsDto<EquipmentResponseDto>()).ToList();
+            return responseDto;
+        }
+        protected sealed override async Task<Error> ValidateEntity(HallTypeRequestDto? requestDto, int? id = null)
+        {
+            var baseValidationError = await base.ValidateEntity(requestDto, id);
+            if (baseValidationError != Error.None)
             {
-                var entityDto = entity.AsDto<HallTypeResponseDto>();
-                entityDto.Equipments = entity.Equipments.Select(eq => eq.AsDto<EquipmentResponseDto>()).ToList();
-                //entityDto.Equipments = entity.Equipments
-                                          /*  .Select(eq =>
-                                            {
-                                                var eq1 = eq.Equipment;
-                                                eq1.AsDto<EquipmentResponseDto>();
-                                                eq.Equipment = eq1;
-                                                return eq;
-                                            })
-                                            .ToList();*/
-                //entityDto.Equipments = entity.Equipments.Select(eq => eq.Equipment.AsDto<EquipmentResponseDto>());
-                return entityDto;
-            });
-            return Result<IEnumerable<HallTypeResponseDto>>.Success(result);
+                return baseValidationError;
+            }
+            if(requestDto!.EquipmentIds == null)
+            {
+                return HallTypeError.NullEquipmentsParameter;
+            }
+            foreach(int equipmentId in requestDto!.EquipmentIds!)
+            {
+                if (!await IsEntityExistInDB<Equipment>(equipmentId))
+                {
+                    return HallTypeError.EquipmentNotFound;
+                }
+            }
+
+            return Error.None;
         }
     }
 }
