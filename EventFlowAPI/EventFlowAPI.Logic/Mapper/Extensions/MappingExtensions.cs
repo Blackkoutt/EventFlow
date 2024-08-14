@@ -50,6 +50,18 @@ namespace EventFlowAPI.Logic.Mapper.Extensions
                 throw;
             }
         }
+        public static IEntity MakeCopyFrom(this IEntity targetEntity, IEntity fromEntity)
+        {
+            try
+            {
+                return _mapper!.Map(fromEntity, targetEntity);
+            }
+            catch (AutoMapperMappingException)
+            {
+                throw;
+            }
+        }
+
         public static IRequestDto MapTo(this IEntity entity, IRequestDto dto)
         {
             try

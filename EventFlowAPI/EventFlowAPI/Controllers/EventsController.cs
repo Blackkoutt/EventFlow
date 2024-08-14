@@ -6,14 +6,10 @@ namespace EventFlowAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class EventsController : ControllerBase
+    public class EventsController(IEventService eventService) : ControllerBase
     {
-        private readonly IEventService _eventService;
+        private readonly IEventService _eventService = eventService;
 
-        public EventsController(IEventService eventService) 
-        {
-            _eventService = eventService;
-        }
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]

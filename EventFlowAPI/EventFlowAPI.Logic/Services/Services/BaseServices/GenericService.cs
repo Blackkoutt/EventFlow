@@ -68,16 +68,18 @@ namespace EventFlowAPI.Logic.Services.Services.BaseServices
             var error = await ValidateEntity(requestDto);
             if (error != Error.None) 
             {
-                Result<TResponseDto>.Failure(error);
+                return Result<TResponseDto>.Failure(error);
             }
 
             var entity = MapAsEntity(requestDto!);
-            var preparedEntity = PrepareEntityForAddition(entity);
+            var preparedEntityForAdd = PrepareEntityForAddition(entity);
 
-            await _repository.AddAsync(preparedEntity);
+            await _repository.AddAsync(preparedEntityForAdd);
             await _unitOfWork.SaveChangesAsync();
 
-            var response = MapAsDto(entity);
+            var preparedEntityAfterAddition = PrepareEnityAfterAddition((TEntity)preparedEntityForAdd);
+
+            var response = MapAsDto(preparedEntityAfterAddition);
 
             return Result<TResponseDto>.Success(response);
         }
@@ -97,7 +99,7 @@ namespace EventFlowAPI.Logic.Services.Services.BaseServices
                 return Result<TResponseDto>.Failure(Error.NotFound);
             }
 
-            var newEntity = MapAsEntity(requestDto!, oldEntity);
+            var newEntity = MapToEntity(requestDto!, oldEntity);
 
             _repository.Update(newEntity);
             await _unitOfWork.SaveChangesAsync();
@@ -148,14 +150,17 @@ namespace EventFlowAPI.Logic.Services.Services.BaseServices
                                         ((IEntity)record).AsDto<TResponseDto>();
         protected virtual TEntity MapAsEntity(TRequestDto requestDto) =>
                                         ((IRequestDto)requestDto).AsEntity<TEntity>();
-        protected virtual IEntity MapAsEntity(TRequestDto requestDto, TEntity oldEntity) =>
+        protected virtual IEntity MapToEntity(TRequestDto requestDto, TEntity oldEntity) =>
                                         ((IRequestDto)requestDto).MapTo((IEntity)oldEntity);
 
         protected async Task<bool> IsEntityExistInDB<TSomeEntity>(int id) 
                     where TSomeEntity : class =>
                     await _unitOfWork.GetRepository<TSomeEntity>().GetOneAsync(id) != null;
 
-        protected virtual IEntity PrepareEntityForAddition(TEntity entity) => (IEntity)entity;
+        protected virtual IEntity PrepareEntityForAddition(TEntity entity) => (IEntity) entity;
+
+        protected virtual TEntity PrepareEnityAfterAddition(TEntity entity) => entity;
+            
     
         protected virtual async Task<Error> ValidateEntity(TRequestDto? requestDto, int? id = null)
         {

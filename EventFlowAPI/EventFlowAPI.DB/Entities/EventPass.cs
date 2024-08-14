@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace EventFlowAPI.DB.Entities
 {
-    public class EventPass : BaseEntity
+    public class EventPass : BaseEntity, IDateableEntity
     {
         public DateTime StartDate { get; set; }
         public DateTime? RenewalDate { get; set; }

@@ -1,5 +1,6 @@
 ﻿using EventFlowAPI.DB.Entities;
 using EventFlowAPI.DB.Entities.Abstract;
+using EventFlowAPI.Logic.DTO.Interfaces;
 using EventFlowAPI.Logic.DTO.RequestDto;
 using EventFlowAPI.Logic.DTO.ResponseDto;
 using EventFlowAPI.Logic.Errors;
@@ -7,6 +8,7 @@ using EventFlowAPI.Logic.Mapper.Extensions;
 using EventFlowAPI.Logic.Services.Interfaces;
 using EventFlowAPI.Logic.Services.Services.BaseServices;
 using EventFlowAPI.Logic.UnitOfWork;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking.Internal;
 
 namespace EventFlowAPI.Logic.Services.Services
@@ -19,7 +21,6 @@ namespace EventFlowAPI.Logic.Services.Services
             >(unitOfWork),
         IEventService
     {
-
         protected sealed override async Task<Error> ValidateEntity(EventRequestDto? requestDto, int? id = null)
         {
             var baseValidationError = await base.ValidateEntity(requestDto, id);
@@ -39,7 +40,15 @@ namespace EventFlowAPI.Logic.Services.Services
                 return EventError.HallNotFound;
             }
 
-            // !!!!! Event Time and Hall Validation 
+            if (await CheckTimeCollisions<Event>(requestDto))
+            {
+                return EventError.CollisionWithExistingEvent;
+            }
+
+            if (await CheckTimeCollisions<HallRent>(requestDto))
+            {
+                return EventError.CollisionWithExistingHallRent;
+            }
 
             return Error.None;
         }
@@ -50,8 +59,28 @@ namespace EventFlowAPI.Logic.Services.Services
             entity.Duration = entity.EndDate - entity.StartDate;
             return entity;
         }
+        protected sealed override Event PrepareEnityAfterAddition(Event entity)
+        {
+            var eventCopy = (Event)(new Event().MakeCopyFrom(entity));
+            eventCopy.Hall.Seats = [];
+            eventCopy.Hall.Type = null!;
+            return entity;
+        }
 
+        protected sealed override Event MapAsEntity(EventRequestDto requestDto)
+        {
+            var eventEntity = base.MapAsEntity(requestDto);
+            AddEventDetails(eventEntity, requestDto.LongDescription);
+            return eventEntity;
+        }
 
+        protected sealed override IEntity MapToEntity(EventRequestDto requestDto, Event oldEntity)
+        {
+            var eventEntity = (Event) base.MapToEntity(requestDto, oldEntity);
+            AddEventDetails(eventEntity, requestDto.LongDescription);
+            return eventEntity;
+        }
+                             
         protected sealed override IEnumerable<EventResponseDto> MapAsDto(IEnumerable<Event> records)
         {
             return records.Select(entity =>
@@ -78,6 +107,28 @@ namespace EventFlowAPI.Logic.Services.Services
                 return ticketDto;               
             }).ToList();
             return responseDto;
+        }
+
+        private async Task<bool> CheckTimeCollisions<TEntity>(EventRequestDto newEntity) where TEntity : class
+        {
+            return (await _unitOfWork.GetRepository<TEntity>()
+                        .GetAllAsync(q =>
+                            q.Where(entity =>
+                                EF.Property<int>(entity, "HallId") == newEntity.HallId &&
+                                ((newEntity.StartDate <= EF.Property<DateTime>(entity, "StartDate") &&
+                                 newEntity.EndDate > EF.Property<DateTime>(entity, "StartDate")) ||
+                                (newEntity.StartDate < EF.Property<DateTime>(entity, "EndDate") &&
+                                 newEntity.EndDate >= EF.Property<DateTime>(entity, "EndDate"))))
+                        )
+                    ).Any();
+        }
+
+        private static void AddEventDetails(Event eventEntity, string? details)
+        {
+            if (details != null && details?.Trim() != string.Empty)
+            {
+                eventEntity.Details = new EventDetails { LongDescription = details };
+            }
         }
     }
 }

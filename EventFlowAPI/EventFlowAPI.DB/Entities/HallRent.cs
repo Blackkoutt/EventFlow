@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace EventFlowAPI.DB.Entities
 {
-    public class HallRent : BaseEntity
+    public class HallRent : BaseEntity, IDateableEntity
     {
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }

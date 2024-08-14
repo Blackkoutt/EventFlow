@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace EventFlowAPI.DB.Entities
 {
-    public class Festival : BaseEntity, INameableEntity
+    public class Festival : BaseEntity, INameableEntity, IDateableEntity
     {
 
         [MaxLength(60)]

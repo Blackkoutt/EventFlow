@@ -16,6 +16,9 @@ namespace EventFlowAPI.Logic.DTO.RequestDto
         [Length(2, 300, ErrorMessage = "Krótki opis powinien zawierać od 2 do 300 znaków.")]
         public string ShortDescription { get; set; } = string.Empty;
 
+        [MaxLength(2000, ErrorMessage = "Opis powinnien zawierać mniej niż 2000 znaków.")]
+        public string? LongDescription { get; set; }
+
         [Required(ErrorMessage = "Należy podać kategorię wydarzenia.")]
         [Range(0, int.MaxValue, ErrorMessage = "Id kategorii musi być większe lub równe 0.")]
         public int CategoryId { get; set; }
