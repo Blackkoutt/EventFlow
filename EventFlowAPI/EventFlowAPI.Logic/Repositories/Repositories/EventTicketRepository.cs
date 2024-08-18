@@ -8,7 +8,7 @@ namespace EventFlowAPI.Logic.Repositories.Repositories
 {
     public sealed class EventTicketRepository(APIContext context) : GenericRepository<EventTicket>(context), IEventTicketRepository
     {
-        public override sealed async Task<IEnumerable<EventTicket>> GetAllAsync(Func<IQueryable<EventTicket>, IQueryable<EventTicket>>? query = null)
+        public sealed override async Task<IEnumerable<EventTicket>> GetAllAsync(Func<IQueryable<EventTicket>, IQueryable<EventTicket>>? query = null)
         {
             var _table = _context.EventTicket
                         .Include(et => et.TicketType)
@@ -17,7 +17,7 @@ namespace EventFlowAPI.Logic.Repositories.Repositories
 
             return await (query != null ? query(_table).ToListAsync() : _table.ToListAsync());
         }
-        public override sealed async Task<EventTicket?> GetOneAsync(int id)
+        public sealed override async Task<EventTicket?> GetOneAsync(int id)
         {
             return await _context.EventTicket
                         .AsSplitQuery()

@@ -39,6 +39,7 @@ namespace EventFlowAPI.Logic.Mapper.Extensions
             }
             return result;
         }
+      
         public static IEntity MapTo(this IRequestDto dto, IEntity entity)
         {
             try

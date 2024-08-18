@@ -5,6 +5,7 @@ using EventFlowAPI.Logic.DTO.RequestDto;
 using EventFlowAPI.Logic.DTO.ResponseDto;
 using EventFlowAPI.Logic.Errors;
 using EventFlowAPI.Logic.Mapper.Extensions;
+using EventFlowAPI.Logic.ResultObject;
 using EventFlowAPI.Logic.Services.Interfaces;
 using EventFlowAPI.Logic.Services.Services.BaseServices;
 using EventFlowAPI.Logic.UnitOfWork;
@@ -21,6 +22,7 @@ namespace EventFlowAPI.Logic.Services.Services
             >(unitOfWork),
         IEventService
     {
+
         protected sealed override async Task<Error> ValidateEntity(EventRequestDto? requestDto, int? id = null)
         {
             var baseValidationError = await base.ValidateEntity(requestDto, id);
@@ -52,19 +54,20 @@ namespace EventFlowAPI.Logic.Services.Services
 
             return Error.None;
         }
+  
 
-
-        protected sealed override IEntity PrepareEntityForAddition(Event entity)
+        protected sealed override Event PrepareEntityForAddOrUpdate(Event newEntity, EventRequestDto requestDto, Event? oldEntity = null)
         {
-            entity.Duration = entity.EndDate - entity.StartDate;
-            return entity;
-        }
-        protected sealed override Event PrepareEnityAfterAddition(Event entity)
-        {
-            var eventCopy = (Event)(new Event().MakeCopyFrom(entity));
-            eventCopy.Hall.Seats = [];
-            eventCopy.Hall.Type = null!;
-            return entity;
+            if(oldEntity != null)
+            {
+                newEntity.DefaultHallId = oldEntity.HallId;
+            }
+            else
+            {
+                newEntity.DefaultHallId = newEntity.HallId;
+            }
+            newEntity.Duration = newEntity.EndDate - newEntity.StartDate;
+            return newEntity;
         }
 
         protected sealed override Event MapAsEntity(EventRequestDto requestDto)
@@ -73,6 +76,15 @@ namespace EventFlowAPI.Logic.Services.Services
             AddEventDetails(eventEntity, requestDto.LongDescription);
             return eventEntity;
         }
+        protected sealed override Event PrepareEnityAfterAddition(Event entity)
+        {
+            var eventCopy = (Event)(new Event().MakeCopyFrom(entity));
+            eventCopy.Hall.Seats = [];
+            eventCopy.Hall.Type = null!;
+            return eventCopy;
+        }
+
+       
 
         protected sealed override IEntity MapToEntity(EventRequestDto requestDto, Event oldEntity)
         {
@@ -114,7 +126,7 @@ namespace EventFlowAPI.Logic.Services.Services
             return (await _unitOfWork.GetRepository<TEntity>()
                         .GetAllAsync(q =>
                             q.Where(entity =>
-                                EF.Property<int>(entity, "HallId") == newEntity.HallId &&
+                                EF.Property<int>(entity, "DefaultHallId") == newEntity.HallId &&
                                 ((newEntity.StartDate <= EF.Property<DateTime>(entity, "StartDate") &&
                                  newEntity.EndDate > EF.Property<DateTime>(entity, "StartDate")) ||
                                 (newEntity.StartDate < EF.Property<DateTime>(entity, "EndDate") &&
@@ -129,6 +141,18 @@ namespace EventFlowAPI.Logic.Services.Services
             {
                 eventEntity.Details = new EventDetails { LongDescription = details };
             }
+        }
+
+        protected async sealed override Task<bool> IsSameEntityExistInDatabase(EventRequestDto entityDto, int? id = null)
+        {
+            var entities = await _repository.GetAllAsync(q =>
+                      q.Where(entity =>
+                        entity.Name == entityDto.Name &&
+                        entity.EndDate >= DateTime.Now &&
+                        entity.CategoryId == entityDto.CategoryId
+                      ));
+
+            return base.IsEntityWithOtherIdExistInList(entities, id);
         }
     }
 }

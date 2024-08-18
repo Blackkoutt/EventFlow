@@ -15,5 +15,9 @@ namespace EventFlowAPI.Logic.Services.Services
         >(unitOfWork),
         IHallRentService
     {
+        protected sealed override Task<bool> IsSameEntityExistInDatabase(HallRentRequestDto entityDto, int? id = null)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

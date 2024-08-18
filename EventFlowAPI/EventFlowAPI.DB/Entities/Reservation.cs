@@ -7,6 +7,11 @@ namespace EventFlowAPI.DB.Entities
     public class Reservation : BaseEntity
     {
         public DateTime ReservationDate { get; set; }
+        public DateTime StartOfReservationDate { get; set; }
+        public DateTime EndOfReservationDate { get; set; }
+
+        [NotMapped]
+        public bool IsReservationActive => EndOfReservationDate > DateTime.Now;
         public DateTime PaymentDate { get; set; }
 
         [Range(0.00, 99999.99),

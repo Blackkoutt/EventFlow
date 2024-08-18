@@ -5,10 +5,9 @@ namespace EventFlowAPI.Logic.DTO.Validators
 {
     public class StartAndEndDateValidator : ValidationAttribute
     {
-        protected override ValidationResult? IsValid(object? value, ValidationContext validationContext)
+        protected sealed override ValidationResult? IsValid(object? value, ValidationContext validationContext)
         {
-            var datesObj = validationContext.ObjectInstance as StartEndDateAbstract;
-            if (datesObj != null)
+            if (validationContext.ObjectInstance is StartEndDateAbstract datesObj)
             {
                 if (datesObj.StartDate < DateTime.Now)
                 {

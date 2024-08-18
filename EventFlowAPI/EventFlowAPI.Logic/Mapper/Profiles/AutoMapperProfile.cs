@@ -59,8 +59,7 @@ namespace EventFlowAPI.Logic.Mapper.Profiles
 
             CreateMap<HallType, HallType>();
             CreateMap<HallTypeRequestDto, HallType>();
-            CreateMap<HallType, HallTypeResponseDto>()
-                .ForMember(dest => dest.Equipments, opt => opt.MapFrom(src => src.Equipments)); ;
+            CreateMap<HallType, HallTypeResponseDto>();
 
             CreateMap<MediaPatron, MediaPatron>();
             CreateMap<MediaPatronRequestDto, MediaPatron>();
@@ -80,7 +79,7 @@ namespace EventFlowAPI.Logic.Mapper.Profiles
 
             CreateMap<Seat, Seat>();
             CreateMap<SeatRequestDto, Seat>();
-            CreateMap<Seat, SeatRequestDto>();
+            CreateMap<Seat, SeatResponseDto>();
 
             CreateMap<SeatType, SeatType>();
             CreateMap<SeatTypeRequestDto, SeatType>();

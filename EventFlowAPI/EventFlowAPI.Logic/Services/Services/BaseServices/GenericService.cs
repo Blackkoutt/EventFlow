@@ -1,14 +1,11 @@
-﻿using EventFlowAPI.DB.Entities;
-using EventFlowAPI.DB.Entities.Abstract;
+﻿using EventFlowAPI.DB.Entities.Abstract;
 using EventFlowAPI.Logic.DTO.Interfaces;
 using EventFlowAPI.Logic.Errors;
-using EventFlowAPI.Logic.Exceptions;
 using EventFlowAPI.Logic.Mapper.Extensions;
 using EventFlowAPI.Logic.Repositories.Interfaces.BaseInterfaces;
 using EventFlowAPI.Logic.ResultObject;
 using EventFlowAPI.Logic.Services.Interfaces.BaseInterfaces;
 using EventFlowAPI.Logic.UnitOfWork;
-using System.Security.Principal;
 
 namespace EventFlowAPI.Logic.Services.Services.BaseServices
 {
@@ -34,7 +31,7 @@ namespace EventFlowAPI.Logic.Services.Services.BaseServices
         }
 
 
-        public async Task<Result<IEnumerable<TResponseDto>>> GetAllAsync()
+        public virtual async Task<Result<IEnumerable<TResponseDto>>> GetAllAsync()
         {       
             var records = await _repository.GetAllAsync();
             var response = MapAsDto(records);
@@ -47,7 +44,7 @@ namespace EventFlowAPI.Logic.Services.Services.BaseServices
         {
             if (id < 0)
             {
-                return Result<TResponseDto>.Failure(Error.OutOfRangeId);
+                return Result<TResponseDto>.Failure(Error.RouteParamOutOfRange);
             }
 
             var record = await _repository.GetOneAsync(id);
@@ -72,12 +69,13 @@ namespace EventFlowAPI.Logic.Services.Services.BaseServices
             }
 
             var entity = MapAsEntity(requestDto!);
-            var preparedEntityForAdd = PrepareEntityForAddition(entity);
 
-            await _repository.AddAsync(preparedEntityForAdd);
+            var preparedEntity = PrepareEntityForAddOrUpdate(entity, requestDto!);
+
+            await _repository.AddAsync(preparedEntity);
             await _unitOfWork.SaveChangesAsync();
 
-            var preparedEntityAfterAddition = PrepareEnityAfterAddition((TEntity)preparedEntityForAdd);
+            var preparedEntityAfterAddition = PrepareEnityAfterAddition(preparedEntity);
 
             var response = MapAsDto(preparedEntityAfterAddition);
 
@@ -85,12 +83,12 @@ namespace EventFlowAPI.Logic.Services.Services.BaseServices
         }
 
 
-        public async Task<Result<TResponseDto>> UpdateAsync(int id, TRequestDto? requestDto)
+        public virtual async Task<Result<TResponseDto>> UpdateAsync(int id, TRequestDto? requestDto)
         {
             var error = await ValidateEntity(requestDto, id);
             if (error != Error.None)
             {
-                Result<TResponseDto>.Failure(error);
+                return Result<TResponseDto>.Failure(error);
             }
 
             var oldEntity = await _repository.GetOneAsync(id);
@@ -101,7 +99,9 @@ namespace EventFlowAPI.Logic.Services.Services.BaseServices
 
             var newEntity = MapToEntity(requestDto!, oldEntity);
 
-            _repository.Update(newEntity);
+            var preparedEntity = PrepareEntityForAddOrUpdate((TEntity)newEntity, requestDto!, oldEntity);
+
+            _repository.Update(preparedEntity);
             await _unitOfWork.SaveChangesAsync();
 
             return Result<TResponseDto>.Success();
@@ -111,10 +111,10 @@ namespace EventFlowAPI.Logic.Services.Services.BaseServices
         {
             if (id < 0)
             {
-                return Result<TResponseDto>.Failure(Error.OutOfRangeId);
+                return Result<TResponseDto>.Failure(Error.RouteParamOutOfRange);
             }
 
-            var entity = (IEntity?) await _repository.GetOneAsync(id);
+            var entity = await _repository.GetOneAsync(id);
 
             if (entity == null)
             {
@@ -128,26 +128,15 @@ namespace EventFlowAPI.Logic.Services.Services.BaseServices
         }
 
 
-        protected virtual async Task<bool> IsSameEntityExistInDatabase(TRequestDto entityDto)
-        {
-            if (entityDto is not INameableRequestDto nameableDto)
-            {
-                throw new BadParameterTypeException("Can not check existing entity in database:" +
-                                                    "Given entity does not have a name property.");
-            }
 
-            return (await _repository.GetAllAsync(q =>
-                           q.Where(entity =>
-                           ((INameableEntity)entity).Name == nameableDto.Name)))
-                           .Any();
-        }
+        protected abstract Task<bool> IsSameEntityExistInDatabase(TRequestDto entityDto, int? id = null);
 
 
         protected virtual IEnumerable<TResponseDto> MapAsDto(IEnumerable<TEntity> records) =>
             records.Select(entity => ((IEntity)entity).AsDto<TResponseDto>());
 
-        protected virtual TResponseDto MapAsDto(TEntity record) =>
-                                        ((IEntity)record).AsDto<TResponseDto>();
+        protected virtual TResponseDto MapAsDto(TEntity entity) =>
+                                        ((IEntity)entity).AsDto<TResponseDto>();
         protected virtual TEntity MapAsEntity(TRequestDto requestDto) =>
                                         ((IRequestDto)requestDto).AsEntity<TEntity>();
         protected virtual IEntity MapToEntity(TRequestDto requestDto, TEntity oldEntity) =>
@@ -157,16 +146,28 @@ namespace EventFlowAPI.Logic.Services.Services.BaseServices
                     where TSomeEntity : class =>
                     await _unitOfWork.GetRepository<TSomeEntity>().GetOneAsync(id) != null;
 
-        protected virtual IEntity PrepareEntityForAddition(TEntity entity) => (IEntity) entity;
+        protected virtual TEntity PrepareEntityForAddOrUpdate(TEntity newEntity, TRequestDto requestDto, TEntity? oldEntity = null) => newEntity;
 
         protected virtual TEntity PrepareEnityAfterAddition(TEntity entity) => entity;
+
+        protected bool IsEntityWithOtherIdExistInList(IEnumerable<BaseEntity> entities, int? id)
+        {
+            if (id != null)
+            {
+                return entities.Any(e => e.Id != id);
+            }
+            else
+            {
+                return entities.Any();
+            }
+        }
             
     
         protected virtual async Task<Error> ValidateEntity(TRequestDto? requestDto, int? id = null)
         {
             if (id != null && id < 0)
             {
-                return Error.OutOfRangeId;
+                return Error.RouteParamOutOfRange;
             }
 
             if (requestDto == null)
@@ -174,7 +175,7 @@ namespace EventFlowAPI.Logic.Services.Services.BaseServices
                 return Error.NullParameter;
             }
 
-            if (await IsSameEntityExistInDatabase(requestDto))
+            if (await IsSameEntityExistInDatabase(requestDto, id))
             {
                 return Error.SuchEntityExistInDb;
             }

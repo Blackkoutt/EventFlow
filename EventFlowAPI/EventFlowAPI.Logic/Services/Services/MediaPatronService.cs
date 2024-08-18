@@ -15,5 +15,13 @@ namespace EventFlowAPI.Logic.Services.Services
         >(unitOfWork),
         IMediaPatronService
     {
+        protected async sealed override Task<bool> IsSameEntityExistInDatabase(MediaPatronRequestDto entityDto, int? id = null)
+        {
+            var entities = await _repository.GetAllAsync(q =>
+                     q.Where(entity => entity.Name == entityDto.Name)
+                 );
+
+            return base.IsEntityWithOtherIdExistInList(entities, id);
+        }
     }
 }

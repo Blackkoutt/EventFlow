@@ -15,6 +15,12 @@ namespace EventFlowAPI.Logic.Services.Services
         >(unitOfWork),
         ISeatService
     {
-        
+        public bool IsSeatHaveActiveReservation(Seat seat) =>
+            seat.Reservations.Any(r => r.IsReservationActive);
+
+        protected sealed override Task<bool> IsSameEntityExistInDatabase(SeatRequestDto entityDto, int? id = null)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

@@ -15,6 +15,9 @@ namespace EventFlowAPI.Logic.Services.Services
         >(unitOfWork),
         IEventPassService
     {
-        
+        protected sealed override Task<bool> IsSameEntityExistInDatabase(EventPassRequestDto entityDto, int? id = null)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

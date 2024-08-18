@@ -4,10 +4,11 @@ using EventFlowAPI.Logic.DTO.ResponseDto;
 using EventFlowAPI.Logic.Services.Interfaces;
 using EventFlowAPI.Logic.Services.Services.BaseServices;
 using EventFlowAPI.Logic.UnitOfWork;
+using System.Runtime.CompilerServices;
 
 namespace EventFlowAPI.Logic.Services.Services
 {
-    public sealed class AdditionalServicesService (IUnitOfWork unitOfWork) :
+    public sealed class AdditionalServicesService(IUnitOfWork unitOfWork) :
         GenericService<
             AdditionalServices,
             AdditionalServicesRequestDto,
@@ -15,5 +16,12 @@ namespace EventFlowAPI.Logic.Services.Services
         >(unitOfWork),
         IAdditionalServicesService
     {
+        protected async sealed override Task<bool> IsSameEntityExistInDatabase(AdditionalServicesRequestDto entityDto, int? id = null)
+        {
+            var entities = await _repository.GetAllAsync(q =>
+                      q.Where(entity => entity.Name == entityDto.Name));
+
+            return base.IsEntityWithOtherIdExistInList(entities, id);
+        }
     }
 }

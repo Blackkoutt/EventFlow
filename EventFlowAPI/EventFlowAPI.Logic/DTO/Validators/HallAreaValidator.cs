@@ -7,7 +7,7 @@ namespace EventFlowAPI.Logic.DTO.Validators
 {
     public class HallAreaValidator : HallAbstractValidator
     {
-        protected override ValidationResult? ValidationRule(HallRequestDto hallObj)
+        protected sealed override ValidationResult? ValidationRule(HallRequestDto hallObj)
         {
             if(hallObj.StageArea != null)
             {

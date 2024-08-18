@@ -24,4 +24,8 @@
     <ProjectReference Include="..\EventFlowAPI.DB\EventFlowAPI.DB.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Helpers\" />
+  </ItemGroup>
+
 </Project>

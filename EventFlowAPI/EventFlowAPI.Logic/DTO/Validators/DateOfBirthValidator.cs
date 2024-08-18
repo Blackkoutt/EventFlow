@@ -9,7 +9,7 @@ namespace EventFlowAPI.Logic.DTO.Validators
         {
             this.minBirthDate = minBirthDate;
         }
-        protected override ValidationResult? IsValid(object? value, ValidationContext validationContext)
+        protected sealed override ValidationResult? IsValid(object? value, ValidationContext validationContext)
         {
             if (value is DateTime dateOfBirth)
             {

@@ -235,6 +235,8 @@ namespace EventFlowAPI.DB.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     HallNr = table.Column<int>(type: "int", nullable: false),
                     RentalPricePerHour = table.Column<decimal>(type: "NUMERIC(5,2)", nullable: false),
+                    IsCopy = table.Column<bool>(type: "bit", nullable: false),
+                    IsVisible = table.Column<bool>(type: "bit", nullable: false),
                     Floor = table.Column<decimal>(type: "NUMERIC(1,0)", nullable: false),
                     TotalLength = table.Column<decimal>(type: "NUMERIC(4,2)", nullable: false),
                     TotalWidth = table.Column<decimal>(type: "NUMERIC(4,2)", nullable: false),
@@ -387,7 +389,8 @@ namespace EventFlowAPI.DB.Migrations
                     EndDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Duration = table.Column<TimeSpan>(type: "time", nullable: false),
                     CategoryId = table.Column<int>(type: "int", nullable: false),
-                    HallId = table.Column<int>(type: "int", nullable: false)
+                    HallId = table.Column<int>(type: "int", nullable: false),
+                    DefaultHallId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -600,6 +603,8 @@ namespace EventFlowAPI.DB.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     ReservationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    StartOfReservationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    EndOfReservationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     PaymentDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     PaymentAmount = table.Column<decimal>(type: "NUMERIC(7,2)", nullable: false),
                     UserId = table.Column<int>(type: "int", nullable: false),
@@ -705,12 +710,6 @@ namespace EventFlowAPI.DB.Migrations
                 name: "IX_Festival_Sponsor_SponsorId",
                 table: "Festival_Sponsor",
                 column: "SponsorId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Hall_HallNr",
-                table: "Hall",
-                column: "HallNr",
-                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_Hall_HallTypeId",

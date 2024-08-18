@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EventFlowAPI.DB.Migrations
 {
     [DbContext(typeof(APIContext))]
-    [Migration("20240811004817_Initial")]
+    [Migration("20240817163147_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -74,6 +74,9 @@ namespace EventFlowAPI.DB.Migrations
                         .HasColumnType("int");
 
                     b.Property<int>("CategoryId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("DefaultHallId")
                         .HasColumnType("int");
 
                     b.Property<TimeSpan>("Duration")
@@ -358,6 +361,12 @@ namespace EventFlowAPI.DB.Migrations
                     b.Property<int>("HallTypeId")
                         .HasColumnType("int");
 
+                    b.Property<bool>("IsCopy")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsVisible")
+                        .HasColumnType("bit");
+
                     b.Property<decimal>("MaxNumberOfSeats")
                         .HasColumnType("NUMERIC(3)");
 
@@ -392,9 +401,6 @@ namespace EventFlowAPI.DB.Migrations
                         .HasColumnType("NUMERIC(4,2)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("HallNr")
-                        .IsUnique();
 
                     b.HasIndex("HallTypeId");
 
@@ -555,6 +561,9 @@ namespace EventFlowAPI.DB.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<DateTime>("EndOfReservationDate")
+                        .HasColumnType("datetime2");
+
                     b.Property<int>("EventTicketId")
                         .HasColumnType("int");
 
@@ -568,6 +577,9 @@ namespace EventFlowAPI.DB.Migrations
                         .HasColumnType("int");
 
                     b.Property<DateTime>("ReservationDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("StartOfReservationDate")
                         .HasColumnType("datetime2");
 
                     b.Property<int>("UserId")

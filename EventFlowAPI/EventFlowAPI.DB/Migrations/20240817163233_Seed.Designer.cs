@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EventFlowAPI.DB.Migrations
 {
     [DbContext(typeof(APIContext))]
-    [Migration("20240811004904_Seed")]
+    [Migration("20240817163233_Seed")]
     partial class Seed
     {
         /// <inheritdoc />
@@ -134,6 +134,9 @@ namespace EventFlowAPI.DB.Migrations
                     b.Property<int>("CategoryId")
                         .HasColumnType("int");
 
+                    b.Property<int>("DefaultHallId")
+                        .HasColumnType("int");
+
                     b.Property<TimeSpan>("Duration")
                         .HasColumnType("time");
 
@@ -169,6 +172,7 @@ namespace EventFlowAPI.DB.Migrations
                         {
                             Id = 1,
                             CategoryId = 1,
+                            DefaultHallId = 2,
                             Duration = new TimeSpan(0, -1, 0, 0, 0),
                             EndDate = new DateTime(2024, 9, 6, 1, 0, 0, 0, DateTimeKind.Unspecified),
                             HallId = 2,
@@ -180,6 +184,7 @@ namespace EventFlowAPI.DB.Migrations
                         {
                             Id = 2,
                             CategoryId = 3,
+                            DefaultHallId = 3,
                             Duration = new TimeSpan(0, -3, 0, 0, 0),
                             EndDate = new DateTime(2024, 9, 7, 3, 0, 0, 0, DateTimeKind.Unspecified),
                             HallId = 3,
@@ -191,6 +196,7 @@ namespace EventFlowAPI.DB.Migrations
                         {
                             Id = 3,
                             CategoryId = 2,
+                            DefaultHallId = 1,
                             Duration = new TimeSpan(0, -2, 0, 0, 0),
                             EndDate = new DateTime(2024, 9, 8, 2, 0, 0, 0, DateTimeKind.Unspecified),
                             HallId = 1,
@@ -202,6 +208,7 @@ namespace EventFlowAPI.DB.Migrations
                         {
                             Id = 4,
                             CategoryId = 4,
+                            DefaultHallId = 4,
                             Duration = new TimeSpan(0, -3, 0, 0, 0),
                             EndDate = new DateTime(2024, 9, 9, 3, 0, 0, 0, DateTimeKind.Unspecified),
                             HallId = 4,
@@ -213,6 +220,7 @@ namespace EventFlowAPI.DB.Migrations
                         {
                             Id = 5,
                             CategoryId = 1,
+                            DefaultHallId = 2,
                             Duration = new TimeSpan(0, -1, 0, 0, 0),
                             EndDate = new DateTime(2024, 10, 6, 1, 0, 0, 0, DateTimeKind.Unspecified),
                             HallId = 2,
@@ -224,6 +232,7 @@ namespace EventFlowAPI.DB.Migrations
                         {
                             Id = 6,
                             CategoryId = 2,
+                            DefaultHallId = 1,
                             Duration = new TimeSpan(0, -2, 0, 0, 0),
                             EndDate = new DateTime(2024, 10, 8, 2, 0, 0, 0, DateTimeKind.Unspecified),
                             HallId = 1,
@@ -235,6 +244,7 @@ namespace EventFlowAPI.DB.Migrations
                         {
                             Id = 7,
                             CategoryId = 4,
+                            DefaultHallId = 4,
                             Duration = new TimeSpan(0, -3, 0, 0, 0),
                             EndDate = new DateTime(2024, 10, 9, 3, 0, 0, 0, DateTimeKind.Unspecified),
                             HallId = 4,
@@ -823,6 +833,12 @@ namespace EventFlowAPI.DB.Migrations
                     b.Property<int>("HallTypeId")
                         .HasColumnType("int");
 
+                    b.Property<bool>("IsCopy")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsVisible")
+                        .HasColumnType("bit");
+
                     b.Property<decimal>("MaxNumberOfSeats")
                         .HasColumnType("NUMERIC(3)");
 
@@ -858,9 +874,6 @@ namespace EventFlowAPI.DB.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("HallNr")
-                        .IsUnique();
-
                     b.HasIndex("HallTypeId");
 
                     b.ToTable("Hall");
@@ -872,6 +885,8 @@ namespace EventFlowAPI.DB.Migrations
                             Floor = 2m,
                             HallNr = 1,
                             HallTypeId = 1,
+                            IsCopy = false,
+                            IsVisible = true,
                             MaxNumberOfSeats = 90m,
                             MaxNumberOfSeatsColumns = 10m,
                             MaxNumberOfSeatsRows = 9m,
@@ -890,6 +905,8 @@ namespace EventFlowAPI.DB.Migrations
                             Floor = 1m,
                             HallNr = 2,
                             HallTypeId = 2,
+                            IsCopy = false,
+                            IsVisible = true,
                             MaxNumberOfSeats = 150m,
                             MaxNumberOfSeatsColumns = 10m,
                             MaxNumberOfSeatsRows = 15m,
@@ -907,6 +924,8 @@ namespace EventFlowAPI.DB.Migrations
                             Floor = 2m,
                             HallNr = 3,
                             HallTypeId = 3,
+                            IsCopy = false,
+                            IsVisible = true,
                             MaxNumberOfSeats = 60m,
                             MaxNumberOfSeatsColumns = 10m,
                             MaxNumberOfSeatsRows = 6m,
@@ -925,6 +944,8 @@ namespace EventFlowAPI.DB.Migrations
                             Floor = 1m,
                             HallNr = 4,
                             HallTypeId = 4,
+                            IsCopy = false,
+                            IsVisible = true,
                             MaxNumberOfSeats = 100m,
                             MaxNumberOfSeatsColumns = 10m,
                             MaxNumberOfSeatsRows = 10m,
@@ -1280,6 +1301,9 @@ namespace EventFlowAPI.DB.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<DateTime>("EndOfReservationDate")
+                        .HasColumnType("datetime2");
+
                     b.Property<int>("EventTicketId")
                         .HasColumnType("int");
 
@@ -1293,6 +1317,9 @@ namespace EventFlowAPI.DB.Migrations
                         .HasColumnType("int");
 
                     b.Property<DateTime>("ReservationDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("StartOfReservationDate")
                         .HasColumnType("datetime2");
 
                     b.Property<int>("UserId")
@@ -1312,41 +1339,49 @@ namespace EventFlowAPI.DB.Migrations
                         new
                         {
                             Id = 1,
+                            EndOfReservationDate = new DateTime(2024, 9, 6, 1, 0, 0, 0, DateTimeKind.Unspecified),
                             EventTicketId = 1,
                             PaymentAmount = 24.99m,
                             PaymentDate = new DateTime(2024, 8, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             PaymentTypeId = 1,
                             ReservationDate = new DateTime(2024, 8, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            StartOfReservationDate = new DateTime(2024, 9, 6, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             UserId = 1
                         },
                         new
                         {
                             Id = 2,
+                            EndOfReservationDate = new DateTime(2024, 9, 7, 3, 0, 0, 0, DateTimeKind.Unspecified),
                             EventTicketId = 2,
                             PaymentAmount = 34.99m,
                             PaymentDate = new DateTime(2024, 8, 21, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             PaymentTypeId = 2,
                             ReservationDate = new DateTime(2024, 8, 21, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            StartOfReservationDate = new DateTime(2024, 9, 7, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             UserId = 2
                         },
                         new
                         {
                             Id = 3,
+                            EndOfReservationDate = new DateTime(2024, 9, 8, 2, 0, 0, 0, DateTimeKind.Unspecified),
                             EventTicketId = 3,
                             PaymentAmount = 29.99m,
                             PaymentDate = new DateTime(2024, 8, 22, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             PaymentTypeId = 3,
                             ReservationDate = new DateTime(2024, 8, 22, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            StartOfReservationDate = new DateTime(2024, 9, 8, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             UserId = 3
                         },
                         new
                         {
                             Id = 4,
+                            EndOfReservationDate = new DateTime(2024, 9, 9, 3, 0, 0, 0, DateTimeKind.Unspecified),
                             EventTicketId = 4,
                             PaymentAmount = 19.99m,
                             PaymentDate = new DateTime(2024, 8, 23, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             PaymentTypeId = 2,
                             ReservationDate = new DateTime(2024, 8, 23, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            StartOfReservationDate = new DateTime(2024, 9, 9, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             UserId = 3
                         });
                 });
@@ -1369,17 +1404,17 @@ namespace EventFlowAPI.DB.Migrations
                         new
                         {
                             ReservationId = 1,
-                            SeatId = 4
+                            SeatId = 5
                         },
                         new
                         {
                             ReservationId = 2,
-                            SeatId = 8
+                            SeatId = 9
                         },
                         new
                         {
                             ReservationId = 3,
-                            SeatId = 10
+                            SeatId = 1
                         },
                         new
                         {

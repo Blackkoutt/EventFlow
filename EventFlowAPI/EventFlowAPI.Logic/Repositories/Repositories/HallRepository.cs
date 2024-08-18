@@ -8,22 +8,22 @@ namespace EventFlowAPI.Logic.Repositories.Repositories
 {
     public sealed class HallRepository(APIContext context) : GenericRepository<Hall>(context), IHallRepository
     {
-        public override sealed async Task<IEnumerable<Hall>> GetAllAsync(Func<IQueryable<Hall>, IQueryable<Hall>>? query = null)
+        public sealed override async Task<IEnumerable<Hall>> GetAllAsync(Func<IQueryable<Hall>, IQueryable<Hall>>? query = null)
         {
             var _table = _context.Hall
-                        .Include(h => h.Seats)
-                        .Include(h => h.Type)
-                        .AsSplitQuery();
+                        .Include(h => h.Type);
 
             return await (query != null ? query(_table).ToListAsync() : _table.ToListAsync());
         }
 
-        public override sealed async Task<Hall?> GetOneAsync(int id)
+        public sealed override async Task<Hall?> GetOneAsync(int id)
         {
             return await _context.Hall
-                        .AsSplitQuery()
-                        .Include(h => h.Seats)
                         .Include(h => h.Type)
+                        .Include(h => h.Seats)
+                            .ThenInclude(s => s.SeatType)
+                        .Include(h => h.Seats)
+                            .ThenInclude(s => s.Reservations)
                         .FirstOrDefaultAsync(h => h.Id == id);
         }
     }

@@ -1,6 +1,7 @@
 ﻿using EventFlowAPI.Logic.DTO.Abstract;
 using EventFlowAPI.Logic.DTO.Interfaces;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace EventFlowAPI.Logic.DTO.RequestDto
 {
@@ -26,6 +27,8 @@ namespace EventFlowAPI.Logic.DTO.RequestDto
         [Required(ErrorMessage ="Należy podać numer sali w którym odbywa się wydarzenie.")]
         [Range(0, int.MaxValue, ErrorMessage = "Id hali musi być większe lub równe 0.")]
         public int HallId { get; set; }
+
+        //public HallRequestDto? HallDto { get; set; }
 
     }
 }

@@ -15,6 +15,15 @@ namespace EventFlowAPI.Logic.Services.Services
         >(unitOfWork),
         IFestivalService
     {
-       
+        protected async sealed override Task<bool> IsSameEntityExistInDatabase(FestivalRequestDto entityDto, int? id = null)
+        {
+            var entities = await _repository.GetAllAsync(q =>
+                      q.Where(entity =>
+                        entity.Name == entityDto.Name &&
+                        entity.EndDate >= DateTime.Now
+                       ));
+
+            return base.IsEntityWithOtherIdExistInList(entities, id);
+        }
     }
 }

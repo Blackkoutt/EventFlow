@@ -1,4 +1,5 @@
 ﻿using EventFlowAPI.DB.Entities.Abstract;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -11,6 +12,10 @@ namespace EventFlowAPI.DB.Entities
         [Range(0.00, 999.99),
          Column(TypeName = "NUMERIC(5,2)")]
         public decimal RentalPricePerHour { get; set; }
+
+        public bool IsCopy { get; set; } = false;
+
+        public bool IsVisible { get; set; } = true;
 
         [Range(0,4),
          Column(TypeName = "NUMERIC(1)")]

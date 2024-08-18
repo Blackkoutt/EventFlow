@@ -18,6 +18,17 @@ namespace EventFlowAPI.Logic.Services.Services
         >(unitOfWork),
         IHallTypeService
     {
+        protected async sealed override Task<bool> IsSameEntityExistInDatabase(HallTypeRequestDto entityDto, int? id = null)
+        {
+            var entities = await _repository.GetAllAsync(q =>
+                q.Where(entity =>
+                    entity.Name == entityDto.Name &&
+                    (entityDto.EquipmentIds == null || entity.Equipments.All(eq => entityDto.EquipmentIds.Contains(eq.Id)))
+                )
+            );
+
+            return base.IsEntityWithOtherIdExistInList(entities, id);
+        }
 
         protected sealed override HallTypeResponseDto MapAsDto(HallType entity)
         {

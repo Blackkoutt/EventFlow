@@ -29,8 +29,5 @@ namespace EventFlowAPI.Logic.DTO.RequestDto
 
         [Required(ErrorMessage = "Należy podać typ miejsca.")]
         public int SeatTypeId { get; set; }
-
-        [Required(ErrorMessage = "Należy wybrać salę.")]
-        public int HallId { get; set; } 
     }
 }

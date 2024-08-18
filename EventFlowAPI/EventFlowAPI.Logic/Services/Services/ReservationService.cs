@@ -15,6 +15,9 @@ namespace EventFlowAPI.Logic.Services.Services
         >(unitOfWork),
         IReservationService
     {
-       
+        protected sealed override Task<bool> IsSameEntityExistInDatabase(ReservationRequestDto entityDto, int? id = null)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

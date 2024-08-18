@@ -6,7 +6,7 @@ namespace EventFlowAPI.Logic.DTO.Validators.Abstract
 {
     public abstract class HallAbstractValidator : ValidationAttribute
     {
-        protected override ValidationResult? IsValid(object? value, ValidationContext validationContext)
+        protected sealed override ValidationResult? IsValid(object? value, ValidationContext validationContext)
         {
             if (validationContext.ObjectInstance is HallRequestDto hallObj)
             {

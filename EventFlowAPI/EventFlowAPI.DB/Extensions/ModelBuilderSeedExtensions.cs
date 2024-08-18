@@ -648,6 +648,7 @@ namespace EventFlowAPI.DB.Extensions
                     EndDate = today.AddMonths(1).AddDays(1).AddHours(1),
                     Duration = today.AddMonths(1).AddDays(1) - today.AddMonths(1).AddDays(1).AddHours(1),
                     CategoryId = 1,
+                    DefaultHallId = 2,
                     HallId = 2,
                 },
                 new Event
@@ -659,6 +660,7 @@ namespace EventFlowAPI.DB.Extensions
                     EndDate = today.AddMonths(1).AddDays(2).AddHours(3),
                     Duration = today.AddMonths(1).AddDays(2) - today.AddMonths(1).AddDays(2).AddHours(3),
                     CategoryId = 3,
+                    DefaultHallId = 3,
                     HallId = 3,
                 },
                 new Event
@@ -670,6 +672,7 @@ namespace EventFlowAPI.DB.Extensions
                     EndDate = today.AddMonths(1).AddDays(3).AddHours(2),
                     Duration = today.AddMonths(1).AddDays(3) - today.AddMonths(1).AddDays(3).AddHours(2),
                     CategoryId = 2,
+                    DefaultHallId = 1,
                     HallId = 1,
                 },
                 new Event
@@ -681,6 +684,7 @@ namespace EventFlowAPI.DB.Extensions
                     EndDate = today.AddMonths(1).AddDays(4).AddHours(3),
                     Duration = today.AddMonths(1).AddDays(4) - today.AddMonths(1).AddDays(4).AddHours(3),
                     CategoryId = 4,
+                    DefaultHallId = 4,
                     HallId = 4,
                 },
                 new Event
@@ -692,6 +696,7 @@ namespace EventFlowAPI.DB.Extensions
                     EndDate = today.AddMonths(2).AddDays(1).AddHours(1),
                     Duration = today.AddMonths(2).AddDays(1) - today.AddMonths(2).AddDays(1).AddHours(1),
                     CategoryId = 1,
+                    DefaultHallId = 2,
                     HallId = 2,
                 },
                 new Event
@@ -703,6 +708,7 @@ namespace EventFlowAPI.DB.Extensions
                     EndDate = today.AddMonths(2).AddDays(3).AddHours(2),
                     Duration = today.AddMonths(2).AddDays(3) - today.AddMonths(2).AddDays(3).AddHours(2),
                     CategoryId = 2,
+                    DefaultHallId = 1,
                     HallId = 1,
                 },
                 new Event
@@ -714,6 +720,7 @@ namespace EventFlowAPI.DB.Extensions
                     EndDate = today.AddMonths(2).AddDays(4).AddHours(3),
                     Duration = today.AddMonths(2).AddDays(4) - today.AddMonths(2).AddDays(4).AddHours(3),
                     CategoryId = 4,
+                    DefaultHallId = 4,
                     HallId = 4,
                 }
             );
@@ -1059,6 +1066,8 @@ namespace EventFlowAPI.DB.Extensions
                 {
                     Id = 1,
                     ReservationDate = today.AddDays(10),
+                    StartOfReservationDate = today.AddMonths(1).AddDays(1),
+                    EndOfReservationDate = today.AddMonths(1).AddDays(1).AddHours(1),
                     PaymentDate = today.AddDays(10),
                     PaymentAmount = 24.99m,
                     UserId = 1,
@@ -1069,6 +1078,8 @@ namespace EventFlowAPI.DB.Extensions
                 {
                     Id = 2,
                     ReservationDate = today.AddDays(16),
+                    StartOfReservationDate = today.AddMonths(1).AddDays(2),
+                    EndOfReservationDate = today.AddMonths(1).AddDays(2).AddHours(3),
                     PaymentDate = today.AddDays(16),
                     PaymentAmount = 34.99m,
                     UserId = 2,
@@ -1079,6 +1090,8 @@ namespace EventFlowAPI.DB.Extensions
                 {
                     Id = 3,
                     ReservationDate = today.AddDays(17),
+                    StartOfReservationDate = today.AddMonths(1).AddDays(3),
+                    EndOfReservationDate = today.AddMonths(1).AddDays(3).AddHours(2),
                     PaymentDate = today.AddDays(17),
                     PaymentAmount = 29.99m,
                     UserId = 3,
@@ -1089,6 +1102,8 @@ namespace EventFlowAPI.DB.Extensions
                 {
                     Id = 4,
                     ReservationDate = today.AddDays(18),
+                    StartOfReservationDate = today.AddMonths(1).AddDays(4),
+                    EndOfReservationDate = today.AddMonths(1).AddDays(4).AddHours(3),
                     PaymentDate = today.AddDays(18),
                     PaymentAmount = 19.99m,
                     UserId = 3,
@@ -1102,17 +1117,17 @@ namespace EventFlowAPI.DB.Extensions
                 new Reservation_Seat
                 {
                     ReservationId = 1,
-                    SeatId = 4
+                    SeatId = 5
                 },
                 new Reservation_Seat
                 {
                     ReservationId = 2,
-                    SeatId = 8
+                    SeatId = 9
                 },
                 new Reservation_Seat
                 {
                     ReservationId = 3,
-                    SeatId = 10
+                    SeatId = 1
                 },
                 new Reservation_Seat
                 {

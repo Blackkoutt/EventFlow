@@ -8,7 +8,7 @@ namespace EventFlowAPI.Logic.Repositories.Repositories
 {
     public sealed class HallTypeRepository(APIContext context) : GenericRepository<HallType>(context), IHallTypeRepository
     {
-        public override sealed async Task<HallType?> GetOneAsync(int id)
+        public sealed override async Task<HallType?> GetOneAsync(int id)
         {
             return await _context.HallType
                         .Include(ht => ht.Equipments)
