@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EventFlowAPI.DB.Migrations
 {
     [DbContext(typeof(APIContext))]
-    [Migration("20240817163147_Initial")]
+    [Migration("20240820213541_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -414,6 +414,9 @@ namespace EventFlowAPI.DB.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("DefaultHallId")
+                        .HasColumnType("int");
 
                     b.Property<DateTime>("EndDate")
                         .HasColumnType("datetime2");

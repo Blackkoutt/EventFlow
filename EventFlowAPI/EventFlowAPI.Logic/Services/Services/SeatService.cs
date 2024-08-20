@@ -15,8 +15,8 @@ namespace EventFlowAPI.Logic.Services.Services
         >(unitOfWork),
         ISeatService
     {
-        public bool IsSeatHaveActiveReservation(Seat seat) =>
-            seat.Reservations.Any(r => r.IsReservationActive);
+        public bool IsSeatHaveActiveReservationForEvent(Seat seatEntity, Event eventEntity) =>
+            seatEntity.Reservations.Any(r => r.IsReservationActive && r.Ticket?.Event.Id == eventEntity.Id);
 
         protected sealed override Task<bool> IsSameEntityExistInDatabase(SeatRequestDto entityDto, int? id = null)
         {

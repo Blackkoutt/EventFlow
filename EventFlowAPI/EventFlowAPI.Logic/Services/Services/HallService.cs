@@ -55,10 +55,72 @@ namespace EventFlowAPI.Logic.Services.Services
                 else
                 {
                     // Update existing copy
-                    UpdateAnExistingCopyOfHall(hallEntity, requestDto!);
+                    await UpdateAnExistingCopyOfHall(hallEntity, requestDto!);
                 }
             }
             return Result<HallResponseDto>.Success();
+        }
+
+        private async Task UpdateAnExistingCopyOfHall(Hall hallEntity, HallRequestDto requestDto)
+        {
+            var newEntity = (Hall) MapToEntity(requestDto, hallEntity);
+            newEntity.IsCopy = true;
+            var preparedEntity = PrepareEntityForAddOrUpdate(newEntity, requestDto, hallEntity);
+
+            _unitOfWork.GetRepository<Hall>().Update(preparedEntity);
+
+            await _unitOfWork.SaveChangesAsync();
+        }
+
+        private async Task<Result<(Event Event, Hall Hall, bool IsAnySeatChanged)>> ValidateBeforeUpdateHallForEvent(
+           IEventRepository _eventRepository,
+           HallRequestDto? hallRequestDto,
+           int eventId,
+           int hallId)
+        {
+            if (eventId < 0)
+            {
+                return Result<(Event Event, Hall Hall, bool IsAnyChangedSeat)>
+                    .Failure(Error.QueryParamOutOfRange);
+            }
+
+            var eventEntity = await _eventRepository.GetOneAsync(eventId);
+            if (eventEntity == null)
+            {
+                return Result<(Event Event, Hall Hall, bool IsAnyChangedSeat)>
+                    .Failure(EventError.NotFound);
+            }
+
+            if (eventEntity.HallId != hallId)
+            {
+                return Result<(Event Event, Hall Hall, bool IsAnyChangedSeat)>
+                    .Failure(EventError.EventIsNotInSuchHall);
+            }
+
+            var error = await ValidateEntity(hallRequestDto, hallId);
+            if (error != Error.None)
+            {
+                return Result<(Event Event, Hall Hall, bool IsAnyChangedSeat)>
+                    .Failure(error);
+            }
+
+            var hallEntity = await _repository.GetOneAsync(hallId);
+            if (hallEntity == null)
+            {
+                return Result<(Event Event, Hall Hall, bool IsAnyChangedSeat)>
+                    .Failure(HallError.NotFound);
+            }
+
+            var changedSeats = GetListOfChangedSeats(hallEntity, hallRequestDto!);
+
+            if (HaveNotAvailableSeatsChanged(changedSeats, eventEntity))
+            {
+                return Result<(Event Event, Hall Hall, bool IsAnyChangedSeat)>
+                    .Failure(SeatError.NotAvailableSeatChanged);
+            }
+
+            return Result<(Event Event, Hall Hall, bool IsAnyChangedSeat)>
+                    .Success((eventEntity, hallEntity, changedSeats.Count > 0));
         }
 
         public sealed override async Task<Result<HallResponseDto>> UpdateAsync(int id, HallRequestDto? requestDto)
@@ -256,66 +318,9 @@ namespace EventFlowAPI.Logic.Services.Services
 
             return Result<HallResponseDto>.Success();
         }
-        private async void UpdateAnExistingCopyOfHall(Hall hallEntity, HallRequestDto requestDto)
-        {
-            var newEntity = MapToEntity(requestDto, hallEntity);
-            var preparedEntity = PrepareEntityForAddOrUpdate((Hall)newEntity, requestDto, hallEntity);
+       
 
-            _repository.Update(preparedEntity);
-
-            await _unitOfWork.SaveChangesAsync();
-        }
-
-        private async Task<Result<(Event Event, Hall Hall, bool IsAnySeatChanged)>> ValidateBeforeUpdateHallForEvent(
-            IEventRepository _eventRepository,
-            HallRequestDto? hallRequestDto,
-            int eventId,
-            int hallId)
-        {
-            if (eventId < 0)
-            {
-                return Result<(Event Event, Hall Hall, bool IsAnyChangedSeat)>
-                    .Failure(Error.QueryParamOutOfRange);
-            }
-
-            var eventEntity = await _eventRepository.GetOneAsync(eventId);
-            if (eventEntity == null)
-            {
-                return Result<(Event Event, Hall Hall, bool IsAnyChangedSeat)>
-                    .Failure(EventError.NotFound);
-            }
-
-            if (eventEntity.HallId != hallId)
-            {
-                return Result<(Event Event, Hall Hall, bool IsAnyChangedSeat)>
-                    .Failure(EventError.EventIsNotInSuchHall);
-            }
-
-            var error = await ValidateEntity(hallRequestDto, hallId);
-            if (error != Error.None)
-            {
-                return Result<(Event Event, Hall Hall, bool IsAnyChangedSeat)>
-                    .Failure(error);
-            }
-
-            var hallEntity = await _repository.GetOneAsync(hallId);
-            if (hallEntity == null)
-            {
-                return Result<(Event Event, Hall Hall, bool IsAnyChangedSeat)>
-                    .Failure(HallError.NotFound);
-            }
-
-            var changedSeats = GetListOfChangedSeats(hallEntity, hallRequestDto!);
-
-            if (HaveNotAvailableSeatsChanged(changedSeats))
-            {
-                return Result<(Event Event, Hall Hall, bool IsAnyChangedSeat)>
-                    .Failure(SeatError.NotAvailableSeatChanged);
-            }
-
-            return Result<(Event Event, Hall Hall, bool IsAnyChangedSeat)>
-                    .Success((eventEntity, hallEntity, changedSeats.Count > 0));
-        }
+       
 
         private static List<Seat> GetListOfChangedSeats(Hall entity, HallRequestDto requestDto)
         {
@@ -358,6 +363,14 @@ namespace EventFlowAPI.Logic.Services.Services
                 {
                     return SeatError.SeatGridRowOutOfRange;
                 }
+                if(requestDto.Seats.Any(s => s != seat && s.Row == seat.Row && s.Column == seat.Column))
+                {
+                    return SeatError.SeatWithSuchRowAndColumnAlreadyExist;
+                }
+                if (requestDto.Seats.Any(s => s != seat && s.GridRow == seat.GridRow && s.GridColumn == seat.GridColumn))
+                {
+                    return SeatError.OtherSeatExistInSamePosition;
+                }
             }
             return Error.None;
         }
@@ -380,7 +393,7 @@ namespace EventFlowAPI.Logic.Services.Services
         private static bool IsSeatNumbersInHallAreUnique(ICollection<SeatRequestDto> seats) =>
             seats.Count == seats.Select(seat => seat.SeatNr).Distinct().Count();
 
-        private bool HaveNotAvailableSeatsChanged(List<Seat> seats) =>
-            seats.Any(seat => _seatService.IsSeatHaveActiveReservation(seat));
+        private bool HaveNotAvailableSeatsChanged(List<Seat> seats, Event eventEntity) =>
+            seats.Any(seat => _seatService.IsSeatHaveActiveReservationForEvent(seat, eventEntity));
     }
 }

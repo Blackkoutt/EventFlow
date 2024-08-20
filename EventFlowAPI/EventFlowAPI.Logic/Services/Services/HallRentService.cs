@@ -15,6 +15,18 @@ namespace EventFlowAPI.Logic.Services.Services
         >(unitOfWork),
         IHallRentService
     {
+        protected sealed override HallRent PrepareEntityForAddOrUpdate(HallRent newEntity, HallRentRequestDto requestDto, HallRent? oldEntity = null)
+        {
+            if (oldEntity != null)
+            {
+                newEntity.DefaultHallId = oldEntity.HallId;
+            }
+            else
+            {
+                newEntity.DefaultHallId = newEntity.HallId;
+            }
+            return newEntity;
+        }
         protected sealed override Task<bool> IsSameEntityExistInDatabase(HallRentRequestDto entityDto, int? id = null)
         {
             throw new NotImplementedException();

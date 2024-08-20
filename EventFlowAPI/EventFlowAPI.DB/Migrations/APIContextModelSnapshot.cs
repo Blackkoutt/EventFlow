@@ -965,6 +965,9 @@ namespace EventFlowAPI.DB.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<int>("DefaultHallId")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("EndDate")
                         .HasColumnType("datetime2");
 
@@ -1000,6 +1003,7 @@ namespace EventFlowAPI.DB.Migrations
                         new
                         {
                             Id = 1,
+                            DefaultHallId = 1,
                             EndDate = new DateTime(2024, 9, 6, 8, 0, 0, 0, DateTimeKind.Unspecified),
                             HallId = 1,
                             PaymentAmount = 899.99m,
@@ -1011,6 +1015,7 @@ namespace EventFlowAPI.DB.Migrations
                         new
                         {
                             Id = 2,
+                            DefaultHallId = 3,
                             EndDate = new DateTime(2024, 9, 7, 4, 0, 0, 0, DateTimeKind.Unspecified),
                             HallId = 3,
                             PaymentAmount = 699.99m,
@@ -1022,6 +1027,7 @@ namespace EventFlowAPI.DB.Migrations
                         new
                         {
                             Id = 3,
+                            DefaultHallId = 3,
                             EndDate = new DateTime(2024, 9, 8, 2, 0, 0, 0, DateTimeKind.Unspecified),
                             HallId = 3,
                             PaymentAmount = 399.99m,
@@ -1033,6 +1039,7 @@ namespace EventFlowAPI.DB.Migrations
                         new
                         {
                             Id = 4,
+                            DefaultHallId = 4,
                             EndDate = new DateTime(2024, 9, 9, 1, 0, 0, 0, DateTimeKind.Unspecified),
                             HallId = 4,
                             PaymentAmount = 150.99m,

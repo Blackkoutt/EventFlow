@@ -12,6 +12,6 @@ namespace EventFlowAPI.Logic.Services.Interfaces
             SeatResponseDto
         >
     {
-        bool IsSeatHaveActiveReservation(Seat seat);
+        bool IsSeatHaveActiveReservationForEvent(Seat seatEntity, Event eventEntity);
     }
 }

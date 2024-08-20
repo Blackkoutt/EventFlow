@@ -496,6 +496,7 @@ namespace EventFlowAPI.DB.Migrations
                     PaymentAmount = table.Column<decimal>(type: "NUMERIC(7,2)", nullable: false),
                     PaymentTypeId = table.Column<int>(type: "int", nullable: false),
                     HallId = table.Column<int>(type: "int", nullable: false),
+                    DefaultHallId = table.Column<int>(type: "int", nullable: false),
                     UserId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>

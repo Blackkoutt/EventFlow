@@ -272,13 +272,13 @@ namespace EventFlowAPI.DB.Migrations
 
             migrationBuilder.InsertData(
                 table: "HallRent",
-                columns: new[] { "Id", "EndDate", "HallId", "PaymentAmount", "PaymentDate", "PaymentTypeId", "StartDate", "UserId" },
+                columns: new[] { "Id", "DefaultHallId", "EndDate", "HallId", "PaymentAmount", "PaymentDate", "PaymentTypeId", "StartDate", "UserId" },
                 values: new object[,]
                 {
-                    { 1, new DateTime(2024, 9, 6, 8, 0, 0, 0, DateTimeKind.Unspecified), 1, 899.99m, new DateTime(2024, 8, 4, 0, 0, 0, 0, DateTimeKind.Unspecified), 1, new DateTime(2024, 9, 6, 0, 0, 0, 0, DateTimeKind.Unspecified), 1 },
-                    { 2, new DateTime(2024, 9, 7, 4, 0, 0, 0, DateTimeKind.Unspecified), 3, 699.99m, new DateTime(2024, 8, 3, 0, 0, 0, 0, DateTimeKind.Unspecified), 2, new DateTime(2024, 9, 7, 0, 0, 0, 0, DateTimeKind.Unspecified), 3 },
-                    { 3, new DateTime(2024, 9, 8, 2, 0, 0, 0, DateTimeKind.Unspecified), 3, 399.99m, new DateTime(2024, 8, 2, 0, 0, 0, 0, DateTimeKind.Unspecified), 3, new DateTime(2024, 9, 8, 0, 0, 0, 0, DateTimeKind.Unspecified), 3 },
-                    { 4, new DateTime(2024, 9, 9, 1, 0, 0, 0, DateTimeKind.Unspecified), 4, 150.99m, new DateTime(2024, 8, 2, 0, 0, 0, 0, DateTimeKind.Unspecified), 2, new DateTime(2024, 9, 9, 0, 0, 0, 0, DateTimeKind.Unspecified), 2 }
+                    { 1, 1, new DateTime(2024, 9, 6, 8, 0, 0, 0, DateTimeKind.Unspecified), 1, 899.99m, new DateTime(2024, 8, 4, 0, 0, 0, 0, DateTimeKind.Unspecified), 1, new DateTime(2024, 9, 6, 0, 0, 0, 0, DateTimeKind.Unspecified), 1 },
+                    { 2, 3, new DateTime(2024, 9, 7, 4, 0, 0, 0, DateTimeKind.Unspecified), 3, 699.99m, new DateTime(2024, 8, 3, 0, 0, 0, 0, DateTimeKind.Unspecified), 2, new DateTime(2024, 9, 7, 0, 0, 0, 0, DateTimeKind.Unspecified), 3 },
+                    { 3, 3, new DateTime(2024, 9, 8, 2, 0, 0, 0, DateTimeKind.Unspecified), 3, 399.99m, new DateTime(2024, 8, 2, 0, 0, 0, 0, DateTimeKind.Unspecified), 3, new DateTime(2024, 9, 8, 0, 0, 0, 0, DateTimeKind.Unspecified), 3 },
+                    { 4, 4, new DateTime(2024, 9, 9, 1, 0, 0, 0, DateTimeKind.Unspecified), 4, 150.99m, new DateTime(2024, 8, 2, 0, 0, 0, 0, DateTimeKind.Unspecified), 2, new DateTime(2024, 9, 9, 0, 0, 0, 0, DateTimeKind.Unspecified), 2 }
                 });
 
             migrationBuilder.InsertData(

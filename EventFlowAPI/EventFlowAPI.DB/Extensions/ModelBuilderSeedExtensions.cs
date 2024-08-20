@@ -924,6 +924,7 @@ namespace EventFlowAPI.DB.Extensions
                     PaymentAmount = 899.99m,
                     PaymentTypeId = 1,
                     HallId = 1,
+                    DefaultHallId = 1,
                     UserId = 1
                 },
                 new HallRent
@@ -935,6 +936,7 @@ namespace EventFlowAPI.DB.Extensions
                     PaymentAmount = 699.99m,
                     PaymentTypeId = 2,
                     HallId = 3,
+                    DefaultHallId = 3,
                     UserId = 3
                 },
                 new HallRent
@@ -946,6 +948,7 @@ namespace EventFlowAPI.DB.Extensions
                     PaymentAmount = 399.99m,
                     PaymentTypeId = 3,
                     HallId = 3,
+                    DefaultHallId = 3,
                     UserId = 3
                 },
                 new HallRent
@@ -957,6 +960,7 @@ namespace EventFlowAPI.DB.Extensions
                     PaymentAmount = 150.99m,
                     PaymentTypeId = 2,
                     HallId = 4,
+                    DefaultHallId = 4,
                     UserId = 2
                 }
             );

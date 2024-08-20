@@ -5,6 +5,7 @@ using EventFlowAPI.Logic.DTO.RequestDto;
 using EventFlowAPI.Logic.DTO.ResponseDto;
 using EventFlowAPI.Logic.Errors;
 using EventFlowAPI.Logic.Mapper.Extensions;
+using EventFlowAPI.Logic.Repositories.Interfaces;
 using EventFlowAPI.Logic.ResultObject;
 using EventFlowAPI.Logic.Services.Interfaces;
 using EventFlowAPI.Logic.Services.Services.BaseServices;
@@ -42,12 +43,12 @@ namespace EventFlowAPI.Logic.Services.Services
                 return EventError.HallNotFound;
             }
 
-            if (await CheckTimeCollisions<Event>(requestDto))
+            if (await CheckTimeCollisionsWithEvents(requestDto))
             {
                 return EventError.CollisionWithExistingEvent;
             }
 
-            if (await CheckTimeCollisions<HallRent>(requestDto))
+            if (await CheckTimeCollisionsWithHallRents(requestDto))
             {
                 return EventError.CollisionWithExistingHallRent;
             }
@@ -121,9 +122,9 @@ namespace EventFlowAPI.Logic.Services.Services
             return responseDto;
         }
 
-        private async Task<bool> CheckTimeCollisions<TEntity>(EventRequestDto newEntity) where TEntity : class
+        private async Task<bool> CheckTimeCollisionsWithHallRents(EventRequestDto newEntity)
         {
-            return (await _unitOfWork.GetRepository<TEntity>()
+            return (await _unitOfWork.GetRepository<HallRent>()
                         .GetAllAsync(q =>
                             q.Where(entity =>
                                 EF.Property<int>(entity, "DefaultHallId") == newEntity.HallId &&
@@ -134,6 +135,33 @@ namespace EventFlowAPI.Logic.Services.Services
                         )
                     ).Any();
         }
+        private async Task<bool> CheckTimeCollisionsWithEvents(EventRequestDto newEntity)
+        {
+            return (await _unitOfWork.GetRepository<Event>()
+                        .GetAllAsync(q =>
+                            q.Where(entity =>
+                                EF.Property<int>(entity, "DefaultHallId") == newEntity.HallId &&
+                                ((newEntity.StartDate <= EF.Property<DateTime>(entity, "StartDate") &&
+                                 newEntity.EndDate > EF.Property<DateTime>(entity, "StartDate")) ||
+                                (newEntity.StartDate < EF.Property<DateTime>(entity, "EndDate") &&
+                                 newEntity.EndDate >= EF.Property<DateTime>(entity, "EndDate"))))
+                        )
+                    ).Any();
+        }
+
+        /*private async Task<bool> CheckTimeCollisions<TEntity>(EventRequestDto newEntity) where TEntity : class
+        {
+            return (await _unitOfWork.GetRepository<TEntity>()
+                        .GetAllAsync(q =>
+                            q.Where(entity =>
+                                EF.Property<int>(EF.Property<object>(entity, "Hall"), "DefaultHallId") == newEntity.HallId &&
+                                ((newEntity.StartDate <= EF.Property<DateTime>(entity, "StartDate") &&
+                                 newEntity.EndDate > EF.Property<DateTime>(entity, "StartDate")) ||
+                                (newEntity.StartDate < EF.Property<DateTime>(entity, "EndDate") &&
+                                 newEntity.EndDate >= EF.Property<DateTime>(entity, "EndDate"))))
+                        )
+                    ).Any();
+        }*/
 
         private static void AddEventDetails(Event eventEntity, string? details)
         {
