@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EventFlowAPI.DB.Migrations
 {
     [DbContext(typeof(APIContext))]
-    [Migration("20240820213626_Seed")]
+    [Migration("20240829003609_Seed")]
     partial class Seed
     {
         /// <inheritdoc />
@@ -20,7 +20,7 @@ namespace EventFlowAPI.DB.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.5")
+                .HasAnnotation("ProductVersion", "8.0.8")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -377,8 +377,9 @@ namespace EventFlowAPI.DB.Migrations
                     b.Property<DateTime>("StartDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
 
@@ -400,7 +401,7 @@ namespace EventFlowAPI.DB.Migrations
                             PaymentDate = new DateTime(2024, 8, 5, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             PaymentTypeId = 1,
                             StartDate = new DateTime(2024, 8, 5, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            UserId = 1
+                            UserId = "1"
                         },
                         new
                         {
@@ -411,7 +412,7 @@ namespace EventFlowAPI.DB.Migrations
                             PaymentDate = new DateTime(2024, 8, 5, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             PaymentTypeId = 2,
                             StartDate = new DateTime(2024, 8, 5, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            UserId = 2
+                            UserId = "2"
                         },
                         new
                         {
@@ -422,7 +423,7 @@ namespace EventFlowAPI.DB.Migrations
                             PaymentDate = new DateTime(2024, 8, 5, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             PaymentTypeId = 1,
                             StartDate = new DateTime(2024, 8, 5, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            UserId = 3
+                            UserId = "3"
                         });
                 });
 
@@ -989,8 +990,9 @@ namespace EventFlowAPI.DB.Migrations
                     b.Property<DateTime>("StartDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
 
@@ -1013,7 +1015,7 @@ namespace EventFlowAPI.DB.Migrations
                             PaymentDate = new DateTime(2024, 8, 4, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             PaymentTypeId = 1,
                             StartDate = new DateTime(2024, 9, 6, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            UserId = 1
+                            UserId = "1"
                         },
                         new
                         {
@@ -1025,7 +1027,7 @@ namespace EventFlowAPI.DB.Migrations
                             PaymentDate = new DateTime(2024, 8, 3, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             PaymentTypeId = 2,
                             StartDate = new DateTime(2024, 9, 7, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            UserId = 3
+                            UserId = "3"
                         },
                         new
                         {
@@ -1037,7 +1039,7 @@ namespace EventFlowAPI.DB.Migrations
                             PaymentDate = new DateTime(2024, 8, 2, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             PaymentTypeId = 3,
                             StartDate = new DateTime(2024, 9, 8, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            UserId = 3
+                            UserId = "3"
                         },
                         new
                         {
@@ -1049,7 +1051,7 @@ namespace EventFlowAPI.DB.Migrations
                             PaymentDate = new DateTime(2024, 8, 2, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             PaymentTypeId = 2,
                             StartDate = new DateTime(2024, 9, 9, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            UserId = 2
+                            UserId = "2"
                         });
                 });
 
@@ -1329,8 +1331,9 @@ namespace EventFlowAPI.DB.Migrations
                     b.Property<DateTime>("StartOfReservationDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
 
@@ -1353,7 +1356,7 @@ namespace EventFlowAPI.DB.Migrations
                             PaymentTypeId = 1,
                             ReservationDate = new DateTime(2024, 8, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             StartOfReservationDate = new DateTime(2024, 9, 6, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            UserId = 1
+                            UserId = "1"
                         },
                         new
                         {
@@ -1365,7 +1368,7 @@ namespace EventFlowAPI.DB.Migrations
                             PaymentTypeId = 2,
                             ReservationDate = new DateTime(2024, 8, 21, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             StartOfReservationDate = new DateTime(2024, 9, 7, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            UserId = 2
+                            UserId = "2"
                         },
                         new
                         {
@@ -1377,7 +1380,7 @@ namespace EventFlowAPI.DB.Migrations
                             PaymentTypeId = 3,
                             ReservationDate = new DateTime(2024, 8, 22, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             StartOfReservationDate = new DateTime(2024, 9, 8, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            UserId = 3
+                            UserId = "3"
                         },
                         new
                         {
@@ -1389,7 +1392,7 @@ namespace EventFlowAPI.DB.Migrations
                             PaymentTypeId = 2,
                             ReservationDate = new DateTime(2024, 8, 23, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             StartOfReservationDate = new DateTime(2024, 9, 9, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            UserId = 3
+                            UserId = "3"
                         });
                 });
 
@@ -1427,6 +1430,52 @@ namespace EventFlowAPI.DB.Migrations
                         {
                             ReservationId = 4,
                             SeatId = 13
+                        });
+                });
+
+            modelBuilder.Entity("EventFlowAPI.DB.Entities.Role", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("ConcurrencyStamp")
+                        .IsConcurrencyToken()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<string>("NormalizedName")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("NormalizedName")
+                        .IsUnique()
+                        .HasDatabaseName("RoleNameIndex")
+                        .HasFilter("[NormalizedName] IS NOT NULL");
+
+                    b.ToTable("AspNetRoles", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "1",
+                            Description = "Admin role",
+                            Name = "Admin",
+                            NormalizedName = "ADMIN"
+                        },
+                        new
+                        {
+                            Id = "2",
+                            Description = "User role",
+                            Name = "User",
+                            NormalizedName = "USER"
                         });
                 });
 
@@ -1733,65 +1782,145 @@ namespace EventFlowAPI.DB.Migrations
 
             modelBuilder.Entity("EventFlowAPI.DB.Entities.User", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("AccessFailedCount")
                         .HasColumnType("int");
+
+                    b.Property<string>("ConcurrencyStamp")
+                        .IsConcurrencyToken()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("DateOfBirth")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Email")
-                        .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)");
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<bool>("EmailConfirmed")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("LockoutEnabled")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTimeOffset?>("LockoutEnd")
+                        .HasColumnType("datetimeoffset");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(40)
                         .HasColumnType("nvarchar(40)");
 
+                    b.Property<string>("NormalizedEmail")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<string>("NormalizedUserName")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<string>("PasswordHash")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PhoneNumber")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("PhoneNumberConfirmed")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("SecurityStamp")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Surname")
                         .IsRequired()
                         .HasMaxLength(40)
                         .HasColumnType("nvarchar(40)");
 
+                    b.Property<bool>("TwoFactorEnabled")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("UserName")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
                     b.HasKey("Id");
 
-                    b.ToTable("User");
+                    b.HasIndex("NormalizedEmail")
+                        .HasDatabaseName("EmailIndex");
+
+                    b.HasIndex("NormalizedUserName")
+                        .IsUnique()
+                        .HasDatabaseName("UserNameIndex")
+                        .HasFilter("[NormalizedUserName] IS NOT NULL");
+
+                    b.ToTable("AspNetUsers", (string)null);
 
                     b.HasData(
                         new
                         {
-                            Id = 1,
+                            Id = "1",
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "ed29f232-3f7f-410a-8011-1deae87b9e40",
                             DateOfBirth = new DateTime(2000, 4, 3, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Email = "p.nowicki@gmail.com",
-                            Name = "Piotr",
-                            Surname = "Nowicki"
+                            Email = "admin@gmail.com",
+                            EmailConfirmed = true,
+                            LockoutEnabled = false,
+                            Name = "Admin",
+                            NormalizedEmail = "ADMIN@GMAIL.COM",
+                            NormalizedUserName = "ADMIN@GMAIL.COM",
+                            PasswordHash = "AQAAAAIAAYagAAAAECc1eAZGJlZCcVqx4WISnTEqgPCr6fejBVQ5k/t99UbL4B3fEN7UPGYFVKlnlV6HMA==",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "aa4c1b35-fe80-4d16-88e2-e53ff190e909",
+                            Surname = "Admin",
+                            TwoFactorEnabled = false,
+                            UserName = "admin@gmail.com"
                         },
                         new
                         {
-                            Id = 2,
+                            Id = "2",
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "8ca236d2-e0c6-4c75-9fc6-803f4163d830",
                             DateOfBirth = new DateTime(1985, 2, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Email = "a.nowak@gmail.com",
-                            Name = "Adam",
-                            Surname = "Nowak"
+                            Email = "j.kowalski@gmail.com",
+                            EmailConfirmed = true,
+                            LockoutEnabled = false,
+                            Name = "Jan",
+                            NormalizedEmail = "J.KOWALSKI@GMAIL.COM",
+                            NormalizedUserName = "J.KOWALSKI@GMAIL.COM",
+                            PasswordHash = "AQAAAAIAAYagAAAAEFtiTnh1+R+DZBIhgpmJfxqz3bVDAg9pBIF9d1q2XepMr9HsM3iDTci93w6yI4He3Q==",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "78ac969e-e1e8-4f7e-9159-1b3d810e1f94",
+                            Surname = "Kowalski",
+                            TwoFactorEnabled = false,
+                            UserName = "j.kowalski@gmail.com"
                         },
                         new
                         {
-                            Id = 3,
+                            Id = "3",
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "04047c16-cdcd-46ea-bdae-d9077971bb94",
                             DateOfBirth = new DateTime(1979, 12, 11, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "a.kowalska@gmail.com",
+                            EmailConfirmed = true,
+                            LockoutEnabled = false,
                             Name = "Anna",
-                            Surname = "Kowalska"
+                            NormalizedEmail = "A.KOWALSKA@GMAIL.COM",
+                            NormalizedUserName = "A.KOWALSKA@GMAIL.COM",
+                            PasswordHash = "AQAAAAIAAYagAAAAEEmwXq1kQImvaofcmLH4f5t38L2SnUM6xFbzHexINgno1NNjGihGWvTpusjCQzvTBQ==",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "423711a0-0f1f-4037-b28c-1e0a1d2b8393",
+                            Surname = "Kowalska",
+                            TwoFactorEnabled = false,
+                            UserName = "a.kowalska@gmail.com"
                         });
                 });
 
             modelBuilder.Entity("EventFlowAPI.DB.Entities.UserData", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("City")
                         .IsRequired()
@@ -1826,7 +1955,7 @@ namespace EventFlowAPI.DB.Migrations
                     b.HasData(
                         new
                         {
-                            Id = 1,
+                            Id = "1",
                             City = "Warszawa",
                             FlatNumber = 14m,
                             HouseNumber = 12m,
@@ -1836,7 +1965,7 @@ namespace EventFlowAPI.DB.Migrations
                         },
                         new
                         {
-                            Id = 2,
+                            Id = "2",
                             City = "Poznań",
                             FlatNumber = 31m,
                             HouseNumber = 10m,
@@ -1846,7 +1975,7 @@ namespace EventFlowAPI.DB.Migrations
                         },
                         new
                         {
-                            Id = 3,
+                            Id = "3",
                             City = "Białystok",
                             FlatNumber = 21m,
                             HouseNumber = 7m,
@@ -1854,6 +1983,129 @@ namespace EventFlowAPI.DB.Migrations
                             Street = "Pogodna",
                             ZipCode = "14-453"
                         });
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ClaimType")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ClaimValue")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("RoleId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RoleId");
+
+                    b.ToTable("AspNetRoleClaims", (string)null);
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ClaimType")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ClaimValue")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("AspNetUserClaims", (string)null);
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
+                {
+                    b.Property<string>("LoginProvider")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("ProviderKey")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("ProviderDisplayName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("LoginProvider", "ProviderKey");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("AspNetUserLogins", (string)null);
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
+                {
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("RoleId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("UserId", "RoleId");
+
+                    b.HasIndex("RoleId");
+
+                    b.ToTable("AspNetUserRoles", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            UserId = "1",
+                            RoleId = "1"
+                        },
+                        new
+                        {
+                            UserId = "2",
+                            RoleId = "2"
+                        },
+                        new
+                        {
+                            UserId = "3",
+                            RoleId = "2"
+                        });
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
+                {
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("LoginProvider")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Value")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("UserId", "LoginProvider", "Name");
+
+                    b.ToTable("AspNetUserTokens", (string)null);
                 });
 
             modelBuilder.Entity("EventFlowAPI.DB.Entities.Event", b =>
@@ -2133,15 +2385,66 @@ namespace EventFlowAPI.DB.Migrations
                     b.Navigation("SeatType");
                 });
 
-            modelBuilder.Entity("EventFlowAPI.DB.Entities.User", b =>
+            modelBuilder.Entity("EventFlowAPI.DB.Entities.UserData", b =>
                 {
-                    b.HasOne("EventFlowAPI.DB.Entities.UserData", "UserData")
-                        .WithOne("User")
-                        .HasForeignKey("EventFlowAPI.DB.Entities.User", "Id")
+                    b.HasOne("EventFlowAPI.DB.Entities.User", "User")
+                        .WithOne("UserData")
+                        .HasForeignKey("EventFlowAPI.DB.Entities.UserData", "Id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("UserData");
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
+                {
+                    b.HasOne("EventFlowAPI.DB.Entities.Role", null)
+                        .WithMany()
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
+                {
+                    b.HasOne("EventFlowAPI.DB.Entities.User", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
+                {
+                    b.HasOne("EventFlowAPI.DB.Entities.User", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
+                {
+                    b.HasOne("EventFlowAPI.DB.Entities.Role", null)
+                        .WithMany()
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("EventFlowAPI.DB.Entities.User", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
+                {
+                    b.HasOne("EventFlowAPI.DB.Entities.User", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("EventFlowAPI.DB.Entities.Event", b =>
@@ -2214,11 +2517,8 @@ namespace EventFlowAPI.DB.Migrations
                     b.Navigation("HallRents");
 
                     b.Navigation("Reservations");
-                });
 
-            modelBuilder.Entity("EventFlowAPI.DB.Entities.UserData", b =>
-                {
-                    b.Navigation("User");
+                    b.Navigation("UserData");
                 });
 #pragma warning restore 612, 618
         }

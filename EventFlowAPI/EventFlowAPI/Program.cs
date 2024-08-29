@@ -4,19 +4,27 @@ using EventFlowAPI.Logic.Mapper.Profiles;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add API context options
-builder.AddConnectionToDB("EventFlowDB");
+builder.AddConnectionToDB(connectionString: "EventFlowDB");
+
+// Add Identity
+builder.AddIdentity();
+
+// Add JWT Token Authorization
+builder.AddJWTTokenAuth(jwtSettingsSection: "JWTSettings");
 
 // UnitOfWork
 builder.Services.AddUnitOfWork();
 
-// App CRUD Services
+// App Services
 builder.Services.AddApplicationCRUDServices();
+builder.Services.AddApplicationAuthServices();
 
 // Other Services
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerUI();
 builder.Services.AddAutoMapper(typeof(AutoMapperProfile));
+builder.Services.AddHttpContextAccessor();
 
 var app = builder.Build();
 
@@ -29,6 +37,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.UseAutoMapper();

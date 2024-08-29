@@ -11,6 +11,13 @@ namespace EventFlowAPI.Logic.Response.Abstract
                 { "errors", new[] { message } }
             };
         }
+        protected HttpResponse(Dictionary<string, string> errors)
+        {
+            Details = new Dictionary<string, object>
+            {
+                { "errors", errors }
+            };
+        }
         public HttpStatusCode? Code { get; set; }
         public string? Title { get; set; }
         public string? Type { get; set; }

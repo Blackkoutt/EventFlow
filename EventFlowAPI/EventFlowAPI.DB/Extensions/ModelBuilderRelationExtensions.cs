@@ -1,4 +1,5 @@
 ﻿using EventFlowAPI.DB.Entities;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace EventFlowAPI.DB.Extensions
@@ -7,10 +8,10 @@ namespace EventFlowAPI.DB.Extensions
     {
         public static void AddOneToOneRelations(this ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<User>()
-               .HasOne(x => x.UserData)
-               .WithOne(x => x.User)
-               .HasForeignKey<User>(x => x.Id);
+            modelBuilder.Entity<UserData>()
+               .HasOne(x => x.User)
+               .WithOne(x => x.UserData)
+               .HasForeignKey<UserData>(x => x.Id);
 
             modelBuilder.Entity<Event>()
                 .HasOne(x => x.Details)
@@ -24,6 +25,11 @@ namespace EventFlowAPI.DB.Extensions
         }
         public static void AddManyToManyRelations(this ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<User>()
+             .HasMany(e => e.Roles)
+             .WithMany(e => e.Users)
+             .UsingEntity<IdentityUserRole<string>>();
+
             modelBuilder.Entity<Festival>()
                .HasMany(e => e.Organizers)
                .WithMany(e => e.Festivals)

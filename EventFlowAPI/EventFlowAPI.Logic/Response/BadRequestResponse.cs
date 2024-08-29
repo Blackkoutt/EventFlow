@@ -11,5 +11,11 @@ namespace EventFlowAPI.Logic.Response
             Title = "BadRequest";
             Type = "https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/400";
         }
+        public BadRequestResponse(Dictionary<string, string> errors) : base(errors)
+        {
+            Code = HttpStatusCode.BadRequest;
+            Title = "BadRequest";
+            Type = "https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/400";
+        }
     }
 }

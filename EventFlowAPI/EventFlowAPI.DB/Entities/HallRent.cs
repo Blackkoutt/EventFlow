@@ -16,7 +16,7 @@ namespace EventFlowAPI.DB.Entities
         public int PaymentTypeId { get; set; }   
         public int HallId { get; set; }
         public int DefaultHallId { get; set; }
-        public int UserId { get; set; }   
+        public string UserId { get; set; } = string.Empty;
         
 
 

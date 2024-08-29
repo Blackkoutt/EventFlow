@@ -1,11 +1,11 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace EventFlowAPI.Logic.DTO.Validators
+namespace EventFlowAPI.Logic.Identity.DTO.Validators
 {
     public class DateOfBirthValidator : ValidationAttribute
     {
         private readonly int minBirthDate;
-        public DateOfBirthValidator(int minBirthDate) 
+        public DateOfBirthValidator(int minBirthDate)
         {
             this.minBirthDate = minBirthDate;
         }
@@ -20,5 +20,6 @@ namespace EventFlowAPI.Logic.DTO.Validators
             }
             return ValidationResult.Success;
         }
+
     }
 }

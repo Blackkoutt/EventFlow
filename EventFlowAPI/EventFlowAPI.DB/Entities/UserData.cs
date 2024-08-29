@@ -4,8 +4,9 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace EventFlowAPI.DB.Entities
 {
-    public class UserData : BaseEntity
+    public class UserData : IEntity
     {
+        public string Id { get; set; } = string.Empty;
 
         [MaxLength(50)]
         public string Street { get; set; } = string.Empty;

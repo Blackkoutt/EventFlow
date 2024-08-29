@@ -1,5 +1,7 @@
 ﻿using EventFlowAPI.DB.Entities;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using System.Runtime.CompilerServices;
 
 namespace EventFlowAPI.DB.Extensions
 {
@@ -8,6 +10,12 @@ namespace EventFlowAPI.DB.Extensions
         public static void Seed(this ModelBuilder modelBuilder)
         {
             var today = new DateTime(2024, 8, 5);
+
+            modelBuilder.SeedUsersData();
+            modelBuilder.SeedUsers();
+            modelBuilder.SeedRoles();
+            modelBuilder.SeedUsersInRoles();
+
 
             modelBuilder.Entity<AdditionalServices>().HasData(
                 new AdditionalServices
@@ -339,40 +347,6 @@ namespace EventFlowAPI.DB.Extensions
             );
 
 
-            modelBuilder.Entity<UserData>().HasData(
-                new UserData
-                {
-                    Id = 1,
-                    Street = "Wesoła",
-                    HouseNumber = 12,
-                    FlatNumber = 14,
-                    City = "Warszawa",
-                    ZipCode = "15-264",
-                    PhoneNumber = "789456123"
-                },
-                new UserData
-                {
-                    Id = 2,
-                    Street = "Wiejska",
-                    HouseNumber = 10,
-                    FlatNumber = 31,
-                    City = "Poznań",
-                    ZipCode = "01-342",
-                    PhoneNumber = "123456789"
-                },
-                new UserData
-                {
-                    Id = 3,
-                    Street = "Pogodna",
-                    HouseNumber = 7,
-                    FlatNumber = 21,
-                    City = "Białystok",
-                    ZipCode = "14-453",
-                    PhoneNumber = "147852369"
-                }
-            );
-
-
             modelBuilder.Entity<Festival>().HasData(
                 new Festival
                 {
@@ -506,34 +480,6 @@ namespace EventFlowAPI.DB.Extensions
                 {
                     HallTypeId = 3,
                     EquipmentId = 2
-                }
-            );
-
-
-            modelBuilder.Entity<User>().HasData(
-                new User
-                {
-                    Id = 1,
-                    Name = "Piotr",
-                    Surname = "Nowicki",
-                    Email = "p.nowicki@gmail.com",
-                    DateOfBirth = new DateTime(2000, 4, 3)
-                },
-                new User
-                {
-                    Id = 2,
-                    Name = "Adam",
-                    Surname = "Nowak",
-                    Email = "a.nowak@gmail.com",
-                    DateOfBirth = new DateTime(1985, 2, 1)
-                },
-                new User
-                {
-                    Id = 3,
-                    Name = "Anna",
-                    Surname = "Kowalska",
-                    Email = "a.kowalska@gmail.com",
-                    DateOfBirth = new DateTime(1979, 12, 11)
                 }
             );
 
@@ -883,7 +829,7 @@ namespace EventFlowAPI.DB.Extensions
                     PaymentDate = today,
                     PaymentAmount = 499.99m,
                     PassTypeId = 3,
-                    UserId = 1,
+                    UserId = "1",
                     PaymentTypeId = 1
                 },
 
@@ -896,7 +842,7 @@ namespace EventFlowAPI.DB.Extensions
                     PaymentDate = today,
                     PaymentAmount = 999.99m,
                     PassTypeId = 4,
-                    UserId = 2,
+                    UserId = "2",
                     PaymentTypeId = 2
                 },
                 new EventPass
@@ -908,7 +854,7 @@ namespace EventFlowAPI.DB.Extensions
                     PaymentDate = today,
                     PaymentAmount = 235.99m,
                     PassTypeId = 2,
-                    UserId = 3,
+                    UserId = "3",
                     PaymentTypeId = 1
                 }
             );
@@ -925,7 +871,7 @@ namespace EventFlowAPI.DB.Extensions
                     PaymentTypeId = 1,
                     HallId = 1,
                     DefaultHallId = 1,
-                    UserId = 1
+                    UserId = "1"
                 },
                 new HallRent
                 {
@@ -937,7 +883,7 @@ namespace EventFlowAPI.DB.Extensions
                     PaymentTypeId = 2,
                     HallId = 3,
                     DefaultHallId = 3,
-                    UserId = 3
+                    UserId = "3"
                 },
                 new HallRent
                 {
@@ -949,7 +895,7 @@ namespace EventFlowAPI.DB.Extensions
                     PaymentTypeId = 3,
                     HallId = 3,
                     DefaultHallId = 3,
-                    UserId = 3
+                    UserId = "3"
                 },
                 new HallRent
                 {
@@ -961,7 +907,7 @@ namespace EventFlowAPI.DB.Extensions
                     PaymentTypeId = 2,
                     HallId = 4,
                     DefaultHallId = 4,
-                    UserId = 2
+                    UserId = "2"
                 }
             );
 
@@ -1074,7 +1020,7 @@ namespace EventFlowAPI.DB.Extensions
                     EndOfReservationDate = today.AddMonths(1).AddDays(1).AddHours(1),
                     PaymentDate = today.AddDays(10),
                     PaymentAmount = 24.99m,
-                    UserId = 1,
+                    UserId = "1",
                     PaymentTypeId = 1,
                     EventTicketId = 1
                 },
@@ -1086,7 +1032,7 @@ namespace EventFlowAPI.DB.Extensions
                     EndOfReservationDate = today.AddMonths(1).AddDays(2).AddHours(3),
                     PaymentDate = today.AddDays(16),
                     PaymentAmount = 34.99m,
-                    UserId = 2,
+                    UserId = "2",
                     PaymentTypeId = 2,
                     EventTicketId = 2
                 },
@@ -1098,7 +1044,7 @@ namespace EventFlowAPI.DB.Extensions
                     EndOfReservationDate = today.AddMonths(1).AddDays(3).AddHours(2),
                     PaymentDate = today.AddDays(17),
                     PaymentAmount = 29.99m,
-                    UserId = 3,
+                    UserId = "3",
                     PaymentTypeId = 3,
                     EventTicketId = 3
                 },
@@ -1110,7 +1056,7 @@ namespace EventFlowAPI.DB.Extensions
                     EndOfReservationDate = today.AddMonths(1).AddDays(4).AddHours(3),
                     PaymentDate = today.AddDays(18),
                     PaymentAmount = 19.99m,
-                    UserId = 3,
+                    UserId = "3",
                     PaymentTypeId = 2,
                     EventTicketId = 4
                 }

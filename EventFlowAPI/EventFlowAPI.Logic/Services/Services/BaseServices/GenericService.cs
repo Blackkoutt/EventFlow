@@ -1,4 +1,5 @@
-﻿using EventFlowAPI.DB.Entities.Abstract;
+﻿using EventFlowAPI.DB.Entities;
+using EventFlowAPI.DB.Entities.Abstract;
 using EventFlowAPI.Logic.DTO.Interfaces;
 using EventFlowAPI.Logic.Errors;
 using EventFlowAPI.Logic.Mapper.Extensions;
@@ -6,6 +7,7 @@ using EventFlowAPI.Logic.Repositories.Interfaces.BaseInterfaces;
 using EventFlowAPI.Logic.ResultObject;
 using EventFlowAPI.Logic.Services.Interfaces.BaseInterfaces;
 using EventFlowAPI.Logic.UnitOfWork;
+using Microsoft.AspNetCore.Identity;
 
 namespace EventFlowAPI.Logic.Services.Services.BaseServices
 {
@@ -20,19 +22,21 @@ namespace EventFlowAPI.Logic.Services.Services.BaseServices
         where TResponseDto : class
     {
         //AutoMapperMappingException , RepositoryNotExist
-        protected IUnitOfWork _unitOfWork;
-        protected IGenericRepository<TEntity> _repository;
-        protected GenericService(IUnitOfWork unitOfWork) 
+        protected readonly IUnitOfWork _unitOfWork;
+        //protected readonly UserManager<User> _userManager;
+        protected readonly IGenericRepository<TEntity> _repository;
+        protected GenericService(IUnitOfWork unitOfWork/*, UserManager<User> userManager*/) 
         {
             _unitOfWork = unitOfWork;
-
+           // _userManager = userManager;
             // Repository not exist exception
             _repository = _unitOfWork.GetRepository<TEntity>();
         }
 
 
         public virtual async Task<Result<IEnumerable<TResponseDto>>> GetAllAsync()
-        {       
+        {
+            //_userManager.CreateAsync(new User(), "asss");
             var records = await _repository.GetAllAsync();
             var response = MapAsDto(records);
             

@@ -35,7 +35,7 @@ namespace EventFlowAPI.DB.Extensions
             modelBuilder.Entity<Seat>().HasKey(x => x.Id);
             modelBuilder.Entity<SeatType>().HasKey(x => x.Id);
             modelBuilder.Entity<Reservation_Seat>().HasKey(x => new { x.ReservationId, x.SeatId });
-            modelBuilder.Entity<User>().HasKey(x => x.Id);
+           // modelBuilder.Entity<User>().HasKey(x => x.Id);
             modelBuilder.Entity<UserData>().HasKey(x => x.Id);
         }
         public static void AddEntitiesConstraints(this ModelBuilder modelBuilder)

@@ -5,5 +5,6 @@ namespace EventFlowAPI.Logic.Repositories.Interfaces
 {
     public interface IUserRepository : IGenericRepository<User>
     {
+        Task<User?> GetOneAsync(string id);
     }
 }

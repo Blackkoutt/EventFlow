@@ -17,7 +17,7 @@ namespace EventFlowAPI.DB.Entities
         [Range(0.00, 99999.99),
          Column(TypeName = "NUMERIC(7,2)")]
         public decimal PaymentAmount { get; set; }
-        public int UserId { get; set; }
+        public string UserId { get; set; } = string.Empty;
         public int PaymentTypeId { get; set; }
         public int EventTicketId { get; set; }  
         public User User { get; set; } = default!;

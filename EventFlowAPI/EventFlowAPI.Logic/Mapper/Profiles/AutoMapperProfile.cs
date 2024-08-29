@@ -2,6 +2,8 @@
 using EventFlowAPI.DB.Entities;
 using EventFlowAPI.Logic.DTO.RequestDto;
 using EventFlowAPI.Logic.DTO.ResponseDto;
+using EventFlowAPI.Logic.Identity.DTO.RequestDto;
+using EventFlowAPI.Logic.Identity.DTO.ResponseDto;
 
 namespace EventFlowAPI.Logic.Mapper.Profiles
 {
@@ -98,7 +100,8 @@ namespace EventFlowAPI.Logic.Mapper.Profiles
             CreateMap<UserData, UserDataResponseDto>();
 
             CreateMap<User, User>();
-            CreateMap<UserRequestDto, User>();
+            CreateMap<UserRegisterRequestDto, User>()
+                .ForMember(u => u.UserName, opt => opt.MapFrom(dto => dto.Email));
             CreateMap<User, UserResponseDto>();
         }
     }

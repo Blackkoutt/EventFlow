@@ -26,6 +26,25 @@ namespace EventFlowAPI.DB.Migrations
                 });
 
             migrationBuilder.InsertData(
+                table: "AspNetRoles",
+                columns: new[] { "Id", "ConcurrencyStamp", "Description", "Name", "NormalizedName" },
+                values: new object[,]
+                {
+                    { "1", null, "Admin role", "Admin", "ADMIN" },
+                    { "2", null, "User role", "User", "USER" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "AspNetUsers",
+                columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "DateOfBirth", "Email", "EmailConfirmed", "LockoutEnabled", "LockoutEnd", "Name", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "Surname", "TwoFactorEnabled", "UserName" },
+                values: new object[,]
+                {
+                    { "1", 0, "ed29f232-3f7f-410a-8011-1deae87b9e40", new DateTime(2000, 4, 3, 0, 0, 0, 0, DateTimeKind.Unspecified), "admin@gmail.com", true, false, null, "Admin", "ADMIN@GMAIL.COM", "ADMIN@GMAIL.COM", "AQAAAAIAAYagAAAAECc1eAZGJlZCcVqx4WISnTEqgPCr6fejBVQ5k/t99UbL4B3fEN7UPGYFVKlnlV6HMA==", null, false, "aa4c1b35-fe80-4d16-88e2-e53ff190e909", "Admin", false, "admin@gmail.com" },
+                    { "2", 0, "8ca236d2-e0c6-4c75-9fc6-803f4163d830", new DateTime(1985, 2, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "j.kowalski@gmail.com", true, false, null, "Jan", "J.KOWALSKI@GMAIL.COM", "J.KOWALSKI@GMAIL.COM", "AQAAAAIAAYagAAAAEFtiTnh1+R+DZBIhgpmJfxqz3bVDAg9pBIF9d1q2XepMr9HsM3iDTci93w6yI4He3Q==", null, false, "78ac969e-e1e8-4f7e-9159-1b3d810e1f94", "Kowalski", false, "j.kowalski@gmail.com" },
+                    { "3", 0, "04047c16-cdcd-46ea-bdae-d9077971bb94", new DateTime(1979, 12, 11, 0, 0, 0, 0, DateTimeKind.Unspecified), "a.kowalska@gmail.com", true, false, null, "Anna", "A.KOWALSKA@GMAIL.COM", "A.KOWALSKA@GMAIL.COM", "AQAAAAIAAYagAAAAEEmwXq1kQImvaofcmLH4f5t38L2SnUM6xFbzHexINgno1NNjGihGWvTpusjCQzvTBQ==", null, false, "423711a0-0f1f-4037-b28c-1e0a1d2b8393", "Kowalska", false, "a.kowalska@gmail.com" }
+                });
+
+            migrationBuilder.InsertData(
                 table: "Equipment",
                 columns: new[] { "Id", "Description", "Name" },
                 values: new object[,]
@@ -155,13 +174,23 @@ namespace EventFlowAPI.DB.Migrations
                 });
 
             migrationBuilder.InsertData(
-                table: "UserData",
-                columns: new[] { "Id", "City", "FlatNumber", "HouseNumber", "PhoneNumber", "Street", "ZipCode" },
+                table: "AspNetUserRoles",
+                columns: new[] { "RoleId", "UserId" },
                 values: new object[,]
                 {
-                    { 1, "Warszawa", 14m, 12m, "789456123", "Wesoła", "15-264" },
-                    { 2, "Poznań", 31m, 10m, "123456789", "Wiejska", "01-342" },
-                    { 3, "Białystok", 21m, 7m, "147852369", "Pogodna", "14-453" }
+                    { "1", "1" },
+                    { "2", "2" },
+                    { "2", "3" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "EventPass",
+                columns: new[] { "Id", "EndDate", "PassTypeId", "PaymentAmount", "PaymentDate", "PaymentTypeId", "RenewalDate", "StartDate", "UserId" },
+                values: new object[,]
+                {
+                    { 1, new DateTime(2025, 2, 5, 0, 0, 0, 0, DateTimeKind.Unspecified), 3, 499.99m, new DateTime(2024, 8, 5, 0, 0, 0, 0, DateTimeKind.Unspecified), 1, null, new DateTime(2024, 8, 5, 0, 0, 0, 0, DateTimeKind.Unspecified), "1" },
+                    { 2, new DateTime(2025, 8, 5, 0, 0, 0, 0, DateTimeKind.Unspecified), 4, 999.99m, new DateTime(2024, 8, 5, 0, 0, 0, 0, DateTimeKind.Unspecified), 2, null, new DateTime(2024, 8, 5, 0, 0, 0, 0, DateTimeKind.Unspecified), "2" },
+                    { 3, new DateTime(2024, 11, 5, 0, 0, 0, 0, DateTimeKind.Unspecified), 2, 235.99m, new DateTime(2024, 8, 5, 0, 0, 0, 0, DateTimeKind.Unspecified), 1, null, new DateTime(2024, 8, 5, 0, 0, 0, 0, DateTimeKind.Unspecified), "3" }
                 });
 
             migrationBuilder.InsertData(
@@ -198,13 +227,13 @@ namespace EventFlowAPI.DB.Migrations
                 });
 
             migrationBuilder.InsertData(
-                table: "User",
-                columns: new[] { "Id", "DateOfBirth", "Email", "Name", "Surname" },
+                table: "UserData",
+                columns: new[] { "Id", "City", "FlatNumber", "HouseNumber", "PhoneNumber", "Street", "ZipCode" },
                 values: new object[,]
                 {
-                    { 1, new DateTime(2000, 4, 3, 0, 0, 0, 0, DateTimeKind.Unspecified), "p.nowicki@gmail.com", "Piotr", "Nowicki" },
-                    { 2, new DateTime(1985, 2, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "a.nowak@gmail.com", "Adam", "Nowak" },
-                    { 3, new DateTime(1979, 12, 11, 0, 0, 0, 0, DateTimeKind.Unspecified), "a.kowalska@gmail.com", "Anna", "Kowalska" }
+                    { "1", "Warszawa", 14m, 12m, "789456123", "Wesoła", "15-264" },
+                    { "2", "Poznań", 31m, 10m, "123456789", "Wiejska", "01-342" },
+                    { "3", "Białystok", 21m, 7m, "147852369", "Pogodna", "14-453" }
                 });
 
             migrationBuilder.InsertData(
@@ -219,16 +248,6 @@ namespace EventFlowAPI.DB.Migrations
                     { 5, 1, 2, new TimeSpan(0, -1, 0, 0, 0), new DateTime(2024, 10, 6, 1, 0, 0, 0, DateTimeKind.Unspecified), 2, "Koncert: New Era", "Jedyna taka okazja na usłyszenie New Era na żywo.", new DateTime(2024, 10, 6, 0, 0, 0, 0, DateTimeKind.Unspecified) },
                     { 6, 2, 1, new TimeSpan(0, -2, 0, 0, 0), new DateTime(2024, 10, 8, 2, 0, 0, 0, DateTimeKind.Unspecified), 1, "Gladiator", "Nowy film Gladiator już w kinach!.", new DateTime(2024, 10, 8, 0, 0, 0, 0, DateTimeKind.Unspecified) },
                     { 7, 4, 4, new TimeSpan(0, -3, 0, 0, 0), new DateTime(2024, 10, 9, 3, 0, 0, 0, DateTimeKind.Unspecified), 4, "Nowa sztuka", "Nowe sztuka to nowoczesna wystawa sztuki.", new DateTime(2024, 10, 9, 0, 0, 0, 0, DateTimeKind.Unspecified) }
-                });
-
-            migrationBuilder.InsertData(
-                table: "EventPass",
-                columns: new[] { "Id", "EndDate", "PassTypeId", "PaymentAmount", "PaymentDate", "PaymentTypeId", "RenewalDate", "StartDate", "UserId" },
-                values: new object[,]
-                {
-                    { 1, new DateTime(2025, 2, 5, 0, 0, 0, 0, DateTimeKind.Unspecified), 3, 499.99m, new DateTime(2024, 8, 5, 0, 0, 0, 0, DateTimeKind.Unspecified), 1, null, new DateTime(2024, 8, 5, 0, 0, 0, 0, DateTimeKind.Unspecified), 1 },
-                    { 2, new DateTime(2025, 8, 5, 0, 0, 0, 0, DateTimeKind.Unspecified), 4, 999.99m, new DateTime(2024, 8, 5, 0, 0, 0, 0, DateTimeKind.Unspecified), 2, null, new DateTime(2024, 8, 5, 0, 0, 0, 0, DateTimeKind.Unspecified), 2 },
-                    { 3, new DateTime(2024, 11, 5, 0, 0, 0, 0, DateTimeKind.Unspecified), 2, 235.99m, new DateTime(2024, 8, 5, 0, 0, 0, 0, DateTimeKind.Unspecified), 1, null, new DateTime(2024, 8, 5, 0, 0, 0, 0, DateTimeKind.Unspecified), 3 }
                 });
 
             migrationBuilder.InsertData(
@@ -275,10 +294,10 @@ namespace EventFlowAPI.DB.Migrations
                 columns: new[] { "Id", "DefaultHallId", "EndDate", "HallId", "PaymentAmount", "PaymentDate", "PaymentTypeId", "StartDate", "UserId" },
                 values: new object[,]
                 {
-                    { 1, 1, new DateTime(2024, 9, 6, 8, 0, 0, 0, DateTimeKind.Unspecified), 1, 899.99m, new DateTime(2024, 8, 4, 0, 0, 0, 0, DateTimeKind.Unspecified), 1, new DateTime(2024, 9, 6, 0, 0, 0, 0, DateTimeKind.Unspecified), 1 },
-                    { 2, 3, new DateTime(2024, 9, 7, 4, 0, 0, 0, DateTimeKind.Unspecified), 3, 699.99m, new DateTime(2024, 8, 3, 0, 0, 0, 0, DateTimeKind.Unspecified), 2, new DateTime(2024, 9, 7, 0, 0, 0, 0, DateTimeKind.Unspecified), 3 },
-                    { 3, 3, new DateTime(2024, 9, 8, 2, 0, 0, 0, DateTimeKind.Unspecified), 3, 399.99m, new DateTime(2024, 8, 2, 0, 0, 0, 0, DateTimeKind.Unspecified), 3, new DateTime(2024, 9, 8, 0, 0, 0, 0, DateTimeKind.Unspecified), 3 },
-                    { 4, 4, new DateTime(2024, 9, 9, 1, 0, 0, 0, DateTimeKind.Unspecified), 4, 150.99m, new DateTime(2024, 8, 2, 0, 0, 0, 0, DateTimeKind.Unspecified), 2, new DateTime(2024, 9, 9, 0, 0, 0, 0, DateTimeKind.Unspecified), 2 }
+                    { 1, 1, new DateTime(2024, 9, 6, 8, 0, 0, 0, DateTimeKind.Unspecified), 1, 899.99m, new DateTime(2024, 8, 4, 0, 0, 0, 0, DateTimeKind.Unspecified), 1, new DateTime(2024, 9, 6, 0, 0, 0, 0, DateTimeKind.Unspecified), "1" },
+                    { 2, 3, new DateTime(2024, 9, 7, 4, 0, 0, 0, DateTimeKind.Unspecified), 3, 699.99m, new DateTime(2024, 8, 3, 0, 0, 0, 0, DateTimeKind.Unspecified), 2, new DateTime(2024, 9, 7, 0, 0, 0, 0, DateTimeKind.Unspecified), "3" },
+                    { 3, 3, new DateTime(2024, 9, 8, 2, 0, 0, 0, DateTimeKind.Unspecified), 3, 399.99m, new DateTime(2024, 8, 2, 0, 0, 0, 0, DateTimeKind.Unspecified), 3, new DateTime(2024, 9, 8, 0, 0, 0, 0, DateTimeKind.Unspecified), "3" },
+                    { 4, 4, new DateTime(2024, 9, 9, 1, 0, 0, 0, DateTimeKind.Unspecified), 4, 150.99m, new DateTime(2024, 8, 2, 0, 0, 0, 0, DateTimeKind.Unspecified), 2, new DateTime(2024, 9, 9, 0, 0, 0, 0, DateTimeKind.Unspecified), "2" }
                 });
 
             migrationBuilder.InsertData(
@@ -343,10 +362,10 @@ namespace EventFlowAPI.DB.Migrations
                 columns: new[] { "Id", "EndOfReservationDate", "EventTicketId", "PaymentAmount", "PaymentDate", "PaymentTypeId", "ReservationDate", "StartOfReservationDate", "UserId" },
                 values: new object[,]
                 {
-                    { 1, new DateTime(2024, 9, 6, 1, 0, 0, 0, DateTimeKind.Unspecified), 1, 24.99m, new DateTime(2024, 8, 15, 0, 0, 0, 0, DateTimeKind.Unspecified), 1, new DateTime(2024, 8, 15, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2024, 9, 6, 0, 0, 0, 0, DateTimeKind.Unspecified), 1 },
-                    { 2, new DateTime(2024, 9, 7, 3, 0, 0, 0, DateTimeKind.Unspecified), 2, 34.99m, new DateTime(2024, 8, 21, 0, 0, 0, 0, DateTimeKind.Unspecified), 2, new DateTime(2024, 8, 21, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2024, 9, 7, 0, 0, 0, 0, DateTimeKind.Unspecified), 2 },
-                    { 3, new DateTime(2024, 9, 8, 2, 0, 0, 0, DateTimeKind.Unspecified), 3, 29.99m, new DateTime(2024, 8, 22, 0, 0, 0, 0, DateTimeKind.Unspecified), 3, new DateTime(2024, 8, 22, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2024, 9, 8, 0, 0, 0, 0, DateTimeKind.Unspecified), 3 },
-                    { 4, new DateTime(2024, 9, 9, 3, 0, 0, 0, DateTimeKind.Unspecified), 4, 19.99m, new DateTime(2024, 8, 23, 0, 0, 0, 0, DateTimeKind.Unspecified), 2, new DateTime(2024, 8, 23, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2024, 9, 9, 0, 0, 0, 0, DateTimeKind.Unspecified), 3 }
+                    { 1, new DateTime(2024, 9, 6, 1, 0, 0, 0, DateTimeKind.Unspecified), 1, 24.99m, new DateTime(2024, 8, 15, 0, 0, 0, 0, DateTimeKind.Unspecified), 1, new DateTime(2024, 8, 15, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2024, 9, 6, 0, 0, 0, 0, DateTimeKind.Unspecified), "1" },
+                    { 2, new DateTime(2024, 9, 7, 3, 0, 0, 0, DateTimeKind.Unspecified), 2, 34.99m, new DateTime(2024, 8, 21, 0, 0, 0, 0, DateTimeKind.Unspecified), 2, new DateTime(2024, 8, 21, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2024, 9, 7, 0, 0, 0, 0, DateTimeKind.Unspecified), "2" },
+                    { 3, new DateTime(2024, 9, 8, 2, 0, 0, 0, DateTimeKind.Unspecified), 3, 29.99m, new DateTime(2024, 8, 22, 0, 0, 0, 0, DateTimeKind.Unspecified), 3, new DateTime(2024, 8, 22, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2024, 9, 8, 0, 0, 0, 0, DateTimeKind.Unspecified), "3" },
+                    { 4, new DateTime(2024, 9, 9, 3, 0, 0, 0, DateTimeKind.Unspecified), 4, 19.99m, new DateTime(2024, 8, 23, 0, 0, 0, 0, DateTimeKind.Unspecified), 2, new DateTime(2024, 8, 23, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2024, 9, 9, 0, 0, 0, 0, DateTimeKind.Unspecified), "3" }
                 });
 
             migrationBuilder.InsertData(
@@ -364,6 +383,21 @@ namespace EventFlowAPI.DB.Migrations
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DeleteData(
+                table: "AspNetUserRoles",
+                keyColumns: new[] { "RoleId", "UserId" },
+                keyValues: new object[] { "1", "1" });
+
+            migrationBuilder.DeleteData(
+                table: "AspNetUserRoles",
+                keyColumns: new[] { "RoleId", "UserId" },
+                keyValues: new object[] { "2", "2" });
+
+            migrationBuilder.DeleteData(
+                table: "AspNetUserRoles",
+                keyColumns: new[] { "RoleId", "UserId" },
+                keyValues: new object[] { "2", "3" });
+
             migrationBuilder.DeleteData(
                 table: "EventPass",
                 keyColumn: "Id",
@@ -635,6 +669,21 @@ namespace EventFlowAPI.DB.Migrations
                 keyValue: 12);
 
             migrationBuilder.DeleteData(
+                table: "UserData",
+                keyColumn: "Id",
+                keyValue: "1");
+
+            migrationBuilder.DeleteData(
+                table: "UserData",
+                keyColumn: "Id",
+                keyValue: "2");
+
+            migrationBuilder.DeleteData(
+                table: "UserData",
+                keyColumn: "Id",
+                keyValue: "3");
+
+            migrationBuilder.DeleteData(
                 table: "AdditionalServices",
                 keyColumn: "Id",
                 keyValue: 1);
@@ -658,6 +707,16 @@ namespace EventFlowAPI.DB.Migrations
                 table: "AdditionalServices",
                 keyColumn: "Id",
                 keyValue: 5);
+
+            migrationBuilder.DeleteData(
+                table: "AspNetRoles",
+                keyColumn: "Id",
+                keyValue: "1");
+
+            migrationBuilder.DeleteData(
+                table: "AspNetRoles",
+                keyColumn: "Id",
+                keyValue: "2");
 
             migrationBuilder.DeleteData(
                 table: "Equipment",
@@ -825,6 +884,21 @@ namespace EventFlowAPI.DB.Migrations
                 keyValue: 3);
 
             migrationBuilder.DeleteData(
+                table: "AspNetUsers",
+                keyColumn: "Id",
+                keyValue: "1");
+
+            migrationBuilder.DeleteData(
+                table: "AspNetUsers",
+                keyColumn: "Id",
+                keyValue: "2");
+
+            migrationBuilder.DeleteData(
+                table: "AspNetUsers",
+                keyColumn: "Id",
+                keyValue: "3");
+
+            migrationBuilder.DeleteData(
                 table: "EventDetails",
                 keyColumn: "Id",
                 keyValue: 5);
@@ -905,21 +979,6 @@ namespace EventFlowAPI.DB.Migrations
                 keyValue: 3);
 
             migrationBuilder.DeleteData(
-                table: "User",
-                keyColumn: "Id",
-                keyValue: 1);
-
-            migrationBuilder.DeleteData(
-                table: "User",
-                keyColumn: "Id",
-                keyValue: 2);
-
-            migrationBuilder.DeleteData(
-                table: "User",
-                keyColumn: "Id",
-                keyValue: 3);
-
-            migrationBuilder.DeleteData(
                 table: "Event",
                 keyColumn: "Id",
                 keyValue: 1);
@@ -951,21 +1010,6 @@ namespace EventFlowAPI.DB.Migrations
 
             migrationBuilder.DeleteData(
                 table: "TicketType",
-                keyColumn: "Id",
-                keyValue: 3);
-
-            migrationBuilder.DeleteData(
-                table: "UserData",
-                keyColumn: "Id",
-                keyValue: 1);
-
-            migrationBuilder.DeleteData(
-                table: "UserData",
-                keyColumn: "Id",
-                keyValue: 2);
-
-            migrationBuilder.DeleteData(
-                table: "UserData",
                 keyColumn: "Id",
                 keyValue: 3);
 
