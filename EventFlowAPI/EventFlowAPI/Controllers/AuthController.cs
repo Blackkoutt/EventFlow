@@ -9,9 +9,10 @@ namespace EventFlowAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class AuthController(IAuthService authService, IUserService userService) : ControllerBase
+    public class AuthController(IAuthService authService, IUserService userService, IGoogleAuthService googleAuthService) : ControllerBase
     {
         private readonly IAuthService _authService = authService;
+        private readonly IGoogleAuthService _googleAuthService = googleAuthService;
         private readonly IUserService _userService = userService;
 
 
@@ -45,15 +46,38 @@ namespace EventFlowAPI.Controllers
             return Ok(result.Value);
         }
 
+        [HttpGet("google-login")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<IActionResult> LoginViaGoogle(string code)
+        {
+            var result = await _googleAuthService.LoginViaGoogle(code);
+            if (!result.IsSuccessful)
+            {
+                return result.Error.Details!.Code switch
+                {
+                    HttpStatusCode.BadRequest => BadRequest(result.Error.Details),
+                    HttpStatusCode.Unauthorized => Unauthorized(result.Error.Details),
+                    _ => StatusCode((int)HttpStatusCode.InternalServerError, result.Error.Details)
+                };
+            }
+            return Ok(result.Value);
+        }     
+
+
+
         [HttpGet("info")]
         [Authorize]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<IActionResult> Info()
         {
             var result = await _userService.GetCurrentUserInfo();
             return result.IsSuccessful ? Ok(result.Value) : BadRequest(result.Error.Details);
         }
+
 
     }
 }

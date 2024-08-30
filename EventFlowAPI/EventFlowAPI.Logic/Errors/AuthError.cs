@@ -9,5 +9,8 @@ namespace EventFlowAPI.Logic.Errors
         public static readonly Error InvalidEmailOrPassword = new(new UnauthorizedResponse("Invalid email or password."));
         public static readonly Error CanNotConfirmIdentity = new(new UnauthorizedResponse("Identity can't be confirmed."));
         public static readonly Error CanNotFoundUserInDB = new(new UnauthorizedResponse("Can't found user in database."));
+        public static readonly Error GoogleTokenVerificationFailed = new(new UnauthorizedResponse("Google token verification failed."));
+        public static readonly Error CannotExchangeCodeForToken = new(new UnauthorizedResponse("Can't exchange code for Google Bearer token."));
+        public static readonly Error HttpContextNotAvailable = new(new BadRequestResponse("Can't access http context."));
     }
 }

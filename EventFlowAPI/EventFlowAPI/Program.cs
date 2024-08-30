@@ -9,8 +9,10 @@ builder.AddConnectionToDB(connectionString: "EventFlowDB");
 // Add Identity
 builder.AddIdentity();
 
-// Add JWT Token Authorization
-builder.AddJWTTokenAuth(jwtSettingsSection: "JWTSettings");
+// Add JWT Token, Google Auth and Facebook Auth
+builder.AddAuthentication(jwtSettingsSection: "JWTSettings",
+                          googleAuthSection: "Authentication:Google",
+                          facebookAuthSection: "Authentication:Facebook");
 
 // UnitOfWork
 builder.Services.AddUnitOfWork();

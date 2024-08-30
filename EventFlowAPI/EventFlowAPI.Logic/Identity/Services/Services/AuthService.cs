@@ -4,22 +4,21 @@ using EventFlowAPI.Logic.Identity.DTO.RequestDto;
 using EventFlowAPI.Logic.Identity.DTO.ResponseDto;
 using EventFlowAPI.Logic.Identity.Helpers;
 using EventFlowAPI.Logic.Identity.Services.Interfaces;
+using EventFlowAPI.Logic.Identity.Services.Services.BaseServices;
 using EventFlowAPI.Logic.Mapper.Extensions;
 using EventFlowAPI.Logic.ResultObject;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
-using System.Security.Claims;
+using Microsoft.Extensions.Configuration;
 
 namespace EventFlowAPI.Logic.Identity.Services.Services
 {
     public class AuthService(
         UserManager<User> userManager,
-        IJWTGeneratorService jwtGeneratorService,
-        IHttpContextAccessor httpContextAccessor) : IAuthService
+        IHttpContextAccessor httpContextAccessor,
+        IConfiguration configuration,
+        IJWTGeneratorService jwtGeneratorService) : BaseAuthService(userManager, httpContextAccessor, configuration, jwtGeneratorService), IAuthService
     {
-        private readonly UserManager<User> _userManager = userManager;
-        private readonly IJWTGeneratorService _jwtGeneratorService = jwtGeneratorService;
-        private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
 
         public async Task<Result<UserRegisterResponseDto>> RegisterUser(UserRegisterRequestDto? requestDto)
         {
@@ -66,22 +65,6 @@ namespace EventFlowAPI.Logic.Identity.Services.Services
 
             return Result<LoginResponseDto>.Success(responseDto);
         }
-        public async Task<Result<string>> GetCurrentUserId()
-        {
-            var userEmail = _httpContextAccessor.HttpContext?.User.Identity?.Name;
-            if(userEmail == null)
-            {
-                return Result<string>.Failure(AuthError.CanNotConfirmIdentity);
-            }
-            var user = await _userManager.FindByEmailAsync(userEmail);
-            if (user == null)
-            {
-                return Result<string>.Failure(AuthError.CanNotFoundUserInDB);
-            }
-            return Result<string>.Success(user.Id);
-        }
-            
 
-        public async Task<IList<string>?> GetRolesForCurrentUser(User user) => await _userManager.GetRolesAsync(user);
     }
 }
