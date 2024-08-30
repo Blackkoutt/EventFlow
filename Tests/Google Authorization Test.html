@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Google Authentication</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        margin: 0;
+        background-color: #f4f4f4;
+      }
+
+      h1 {
+        margin-bottom: 20px;
+      }
+
+      button {
+        background-color: #4285f4;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 16px;
+      }
+
+      button:hover {
+        background-color: #357ae8;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Google Authentication Test</h1>
+    <button id="login-button">Log in with Google</button>
+
+    <script src="https://apis.google.com/js/platform.js" async defer></script>
+    <script>
+      const CLIENT_ID =
+        "562656751721-00ccd9kpnue274ipk4l6bnc2a0acg0e5.apps.googleusercontent.com";
+      const REDIRECT_URI = "https://localhost:7229/api/auth/google-login";
+
+      document.addEventListener("DOMContentLoaded", () => {
+        const loginButton = document.getElementById("login-button");
+
+        loginButton.addEventListener("click", () => {
+          const authUrl = `https://accounts.google.com/o/oauth2/v2/auth?response_type=code&client_id=${CLIENT_ID}&redirect_uri=${encodeURIComponent(
+            REDIRECT_URI
+          )}&scope=openid%20profile%20email`;
+          window.location.href = authUrl;
+        });
+      });
+    </script>
+  </body>
+</html>
