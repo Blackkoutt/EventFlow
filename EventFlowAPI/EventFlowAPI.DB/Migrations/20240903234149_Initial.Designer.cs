@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EventFlowAPI.DB.Migrations
 {
     [DbContext(typeof(APIContext))]
-    [Migration("20240829003532_Initial")]
+    [Migration("20240903234149_Initial")]
     partial class Initial
     {
         /// <inheritdoc />

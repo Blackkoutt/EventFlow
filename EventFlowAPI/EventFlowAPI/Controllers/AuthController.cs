@@ -9,11 +9,16 @@ namespace EventFlowAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class AuthController(IAuthService authService, IUserService userService, IGoogleAuthService googleAuthService) : ControllerBase
+    public class AuthController(
+        IAuthService authService,
+        IUserService userService,
+        IGoogleAuthService googleAuthService,
+        IFacebookAuthService facebookAuthService) : ControllerBase
     {
         private readonly IAuthService _authService = authService;
-        private readonly IGoogleAuthService _googleAuthService = googleAuthService;
         private readonly IUserService _userService = userService;
+        private readonly IGoogleAuthService _googleAuthService = googleAuthService;
+        private readonly IFacebookAuthService _facebookAuthService = facebookAuthService;
 
 
 
@@ -46,13 +51,19 @@ namespace EventFlowAPI.Controllers
             return Ok(result.Value);
         }
 
+        [HttpGet("signin-google")]
+        public IActionResult SiginGoogle() => Redirect(_googleAuthService.GetLinkToSigninPage());
+
+        [HttpGet("signin-facebook")]
+        public IActionResult SiginFacebook() => Redirect(_facebookAuthService.GetLinkToSigninPage());
+
         [HttpGet("google-login")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<IActionResult> LoginViaGoogle(string code)
         {
-            var result = await _googleAuthService.LoginViaGoogle(code);
+            var result = await _googleAuthService.Login(code);
             if (!result.IsSuccessful)
             {
                 return result.Error.Details!.Code switch
@@ -63,7 +74,26 @@ namespace EventFlowAPI.Controllers
                 };
             }
             return Ok(result.Value);
-        }     
+        }
+
+        [HttpGet("facebook-login")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<IActionResult> LoginViaFacebook(string code)
+        {
+            var result = await _facebookAuthService.Login(code);
+            if (!result.IsSuccessful)
+            {
+                return result.Error.Details!.Code switch
+                {
+                    HttpStatusCode.BadRequest => BadRequest(result.Error.Details),
+                    HttpStatusCode.Unauthorized => Unauthorized(result.Error.Details),
+                    _ => StatusCode((int)HttpStatusCode.InternalServerError, result.Error.Details)
+                };
+            }
+            return Ok(result.Value);
+        }
 
 
 

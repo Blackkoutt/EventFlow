@@ -2,7 +2,7 @@
 
 namespace EventFlowAPI.Logic.Identity.Services.Interfaces
 {
-    public interface IGoogleAuthService : IBaseExternalAuthService
+    public interface IFacebookAuthService : IBaseExternalAuthService
     {
     }
 }

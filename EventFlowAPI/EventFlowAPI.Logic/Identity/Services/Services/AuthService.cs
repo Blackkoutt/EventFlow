@@ -26,11 +26,13 @@ namespace EventFlowAPI.Logic.Identity.Services.Services
             {
                 return Result<UserRegisterResponseDto>.Failure(Error.NullParameter);
             }
+
             var isUserWithSameEmailExistInDB = await _userManager.FindByEmailAsync(requestDto.Email);
             if(isUserWithSameEmailExistInDB != null)
             {
                 return Result<UserRegisterResponseDto>.Failure(AuthError.EmailAlreadyTaken);
             }
+
             var user = requestDto.AsEntity<User>();
 
             var result = await _userManager.CreateAsync(user, requestDto.Password);

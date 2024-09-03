@@ -37,11 +37,11 @@ namespace EventFlowAPI.Extensions
             }).AddGoogle(options =>
             {
                 options.GetGoogleOptions(googleSettings);
-            }); 
-            /*.AddFacebook(options =>
+            }) 
+            .AddFacebook(options =>
              {
                  options.GetFacebookOptions(facebookSettings);
-             });*/
+             });
         }
         
         private static TokenValidationParameters GetJWTTokenOptions(IConfigurationSection jwtSettingsSection)
@@ -72,8 +72,8 @@ namespace EventFlowAPI.Extensions
         }
         private static FacebookOptions GetFacebookOptions(this FacebookOptions options, IConfigurationSection facebookSection)
         {
-            options.ClientId = facebookSection["clientId"]!;
-            options.ClientSecret = facebookSection["clientSecret"]!;
+            options.ClientId = facebookSection["AppId"]!;
+            options.ClientSecret = facebookSection["AppSecret"]!;
             return options;
         }
         private static GoogleOptions GetGoogleOptions(this GoogleOptions options, IConfigurationSection googleSection)

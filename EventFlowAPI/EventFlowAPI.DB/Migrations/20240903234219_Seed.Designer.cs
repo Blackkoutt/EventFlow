@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EventFlowAPI.DB.Migrations
 {
     [DbContext(typeof(APIContext))]
-    [Migration("20240829003609_Seed")]
+    [Migration("20240903234219_Seed")]
     partial class Seed
     {
         /// <inheritdoc />
@@ -1862,7 +1862,7 @@ namespace EventFlowAPI.DB.Migrations
                         {
                             Id = "1",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "ed29f232-3f7f-410a-8011-1deae87b9e40",
+                            ConcurrencyStamp = "f9b5f45d-cb1e-4fab-a052-c00279fe0b90",
                             DateOfBirth = new DateTime(2000, 4, 3, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "admin@gmail.com",
                             EmailConfirmed = true,
@@ -1870,9 +1870,9 @@ namespace EventFlowAPI.DB.Migrations
                             Name = "Admin",
                             NormalizedEmail = "ADMIN@GMAIL.COM",
                             NormalizedUserName = "ADMIN@GMAIL.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAECc1eAZGJlZCcVqx4WISnTEqgPCr6fejBVQ5k/t99UbL4B3fEN7UPGYFVKlnlV6HMA==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEGzfAVH46bCaJ+ES7ytppQA3XvJQLwLTApNLnbDMrHrQn+WQSO5lCDGa7T8Pgiv6mA==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "aa4c1b35-fe80-4d16-88e2-e53ff190e909",
+                            SecurityStamp = "29d03c5d-5788-475c-8cf4-dc2abc79c3c8",
                             Surname = "Admin",
                             TwoFactorEnabled = false,
                             UserName = "admin@gmail.com"
@@ -1881,7 +1881,7 @@ namespace EventFlowAPI.DB.Migrations
                         {
                             Id = "2",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "8ca236d2-e0c6-4c75-9fc6-803f4163d830",
+                            ConcurrencyStamp = "f87e9fd7-8bb4-4b09-b2a0-b4bf31c53f1e",
                             DateOfBirth = new DateTime(1985, 2, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "j.kowalski@gmail.com",
                             EmailConfirmed = true,
@@ -1889,9 +1889,9 @@ namespace EventFlowAPI.DB.Migrations
                             Name = "Jan",
                             NormalizedEmail = "J.KOWALSKI@GMAIL.COM",
                             NormalizedUserName = "J.KOWALSKI@GMAIL.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEFtiTnh1+R+DZBIhgpmJfxqz3bVDAg9pBIF9d1q2XepMr9HsM3iDTci93w6yI4He3Q==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEP6ZJZ8ENuxpexo1onP6RYV/X6L6sF+6gSQO6oOmam4/+hjI9CnVW3XBzI9NDmJzOA==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "78ac969e-e1e8-4f7e-9159-1b3d810e1f94",
+                            SecurityStamp = "2119a904-581e-4791-a01b-d2163c28fc88",
                             Surname = "Kowalski",
                             TwoFactorEnabled = false,
                             UserName = "j.kowalski@gmail.com"
@@ -1900,7 +1900,7 @@ namespace EventFlowAPI.DB.Migrations
                         {
                             Id = "3",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "04047c16-cdcd-46ea-bdae-d9077971bb94",
+                            ConcurrencyStamp = "2b547d34-7d60-4239-bf70-856b8f7b6557",
                             DateOfBirth = new DateTime(1979, 12, 11, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "a.kowalska@gmail.com",
                             EmailConfirmed = true,
@@ -1908,9 +1908,9 @@ namespace EventFlowAPI.DB.Migrations
                             Name = "Anna",
                             NormalizedEmail = "A.KOWALSKA@GMAIL.COM",
                             NormalizedUserName = "A.KOWALSKA@GMAIL.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEEmwXq1kQImvaofcmLH4f5t38L2SnUM6xFbzHexINgno1NNjGihGWvTpusjCQzvTBQ==",
+                            PasswordHash = "AQAAAAIAAYagAAAAENFu1MArIWOHgEs65XUBEtnCaZHxY5hzLlmATZkbfzAez9Z5suSGS3xWPQq0lFCDtQ==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "423711a0-0f1f-4037-b28c-1e0a1d2b8393",
+                            SecurityStamp = "d3f3cf46-4d2f-4858-8f9d-939f8885730c",
                             Surname = "Kowalska",
                             TwoFactorEnabled = false,
                             UserName = "a.kowalska@gmail.com"

@@ -44,6 +44,7 @@ namespace EventFlowAPI.Extensions
         {
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<IGoogleAuthService, GoogleAuthService>();
+            services.AddScoped<IFacebookAuthService, FacebookAuthService>();
             services.AddSingleton<IJWTGeneratorService, JWTGeneratorService>();
         }
         public static void AddSwaggerUI(this IServiceCollection services)
