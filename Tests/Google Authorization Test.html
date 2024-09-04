@@ -21,38 +21,48 @@
       }
 
       button {
-        background-color: #4285f4;
         color: white;
         border: none;
         padding: 10px 20px;
         border-radius: 5px;
         cursor: pointer;
-        font-size: 16px;
+        font-size: 20px;
       }
-
-      button:hover {
+      #google-button {
+        background-color: #b03a3a;
+      }
+      #google-button:hover {
+        background-color: #a02a2a;
+      }
+      #fb-button {
+        background-color: #4285f4;
+        margin-top: 20px;
+      }
+      #fb-button:hover {
         background-color: #357ae8;
       }
     </style>
   </head>
   <body>
-    <h1>Google Authentication Test</h1>
-    <button id="login-button">Log in with Google</button>
+    <h1>Google And Facebook Authentication Test</h1>
+
+    <button id="google-button">Log in with Google</button>
+    <button id="fb-button">Log in with Facebook</button>
 
     <script src="https://apis.google.com/js/platform.js" async defer></script>
     <script>
-      const CLIENT_ID =
-        "562656751721-00ccd9kpnue274ipk4l6bnc2a0acg0e5.apps.googleusercontent.com";
-      const REDIRECT_URI = "https://localhost:7229/api/auth/google-login";
+      const authApiUrl = "https://localhost:7229/api/auth";
 
       document.addEventListener("DOMContentLoaded", () => {
-        const loginButton = document.getElementById("login-button");
+        const googleButton = document.getElementById("google-button");
+        const fbButton = document.getElementById("fb-button");
 
-        loginButton.addEventListener("click", () => {
-          const authUrl = `https://accounts.google.com/o/oauth2/v2/auth?response_type=code&client_id=${CLIENT_ID}&redirect_uri=${encodeURIComponent(
-            REDIRECT_URI
-          )}&scope=openid%20profile%20email`;
-          window.location.href = authUrl;
+        googleButton.addEventListener("click", () => {
+          window.location.href = `${authApiUrl}/signin-google`;
+        });
+
+        fbButton.addEventListener("click", () => {
+          window.location.href = `${authApiUrl}/signin-facebook`;
         });
       });
     </script>

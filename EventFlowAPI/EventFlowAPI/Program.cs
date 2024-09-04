@@ -20,6 +20,7 @@ builder.Services.AddUnitOfWork();
 // App Services
 builder.Services.AddApplicationCRUDServices();
 builder.Services.AddApplicationAuthServices();
+builder.Services.AddApplicationOtherServices();
 
 // Other Services
 builder.Services.AddControllers();

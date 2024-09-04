@@ -1,9 +1,12 @@
-﻿using EventFlowAPI.Logic.Identity.DTO.RequestDto;
+﻿using EventFlowAPI.Logic.Helpers;
+using EventFlowAPI.Logic.Identity.DTO.RequestDto;
 using EventFlowAPI.Logic.Identity.Services.Interfaces;
-using EventFlowAPI.Logic.Services.Interfaces;
+using EventFlowAPI.Logic.Services.CRUDServices.Interfaces;
+using EventFlowAPI.Logic.Services.OtherServices.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
+using System.Security.Cryptography.X509Certificates;
 
 namespace EventFlowAPI.Controllers
 {
@@ -13,12 +16,14 @@ namespace EventFlowAPI.Controllers
         IAuthService authService,
         IUserService userService,
         IGoogleAuthService googleAuthService,
-        IFacebookAuthService facebookAuthService) : ControllerBase
+        IFacebookAuthService facebookAuthService,
+        IEmailSenderService emailSender) : ControllerBase
     {
         private readonly IAuthService _authService = authService;
         private readonly IUserService _userService = userService;
         private readonly IGoogleAuthService _googleAuthService = googleAuthService;
         private readonly IFacebookAuthService _facebookAuthService = facebookAuthService;
+        private readonly IEmailSenderService _emailSender= emailSender;
 
 
 
@@ -93,6 +98,22 @@ namespace EventFlowAPI.Controllers
                 };
             }
             return Ok(result.Value);
+        }
+
+        [HttpPost("send-email")]
+        public async Task<IActionResult> SendEmail()
+        {
+            var to = "oliwiahryniewicka1@interia.pl";
+            var subject = "Powiadomienie - EventFlow";
+            var content = "Siema wariacie";
+            var emailDto = new EmailDto 
+            {
+                Email = to,
+                Subject = subject,
+                Body = content
+            };
+            await _emailSender.SendEmailAsync(emailDto);
+            return Ok();
         }
 
 

@@ -1,5 +1,5 @@
 ﻿using EventFlowAPI.Logic.DTO.RequestDto;
-using EventFlowAPI.Logic.Services.Interfaces;
+using EventFlowAPI.Logic.Services.CRUDServices.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EventFlowAPI.Controllers

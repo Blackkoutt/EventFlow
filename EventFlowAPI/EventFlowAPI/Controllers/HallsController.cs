@@ -1,9 +1,7 @@
 ﻿using EventFlowAPI.Logic.DTO.RequestDto;
 using EventFlowAPI.Logic.DTO.ResponseDto;
 using EventFlowAPI.Logic.ResultObject;
-using EventFlowAPI.Logic.Services.Interfaces;
-using EventFlowAPI.Logic.Services.Services;
-using Microsoft.AspNetCore.Http;
+using EventFlowAPI.Logic.Services.CRUDServices.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EventFlowAPI.Controllers

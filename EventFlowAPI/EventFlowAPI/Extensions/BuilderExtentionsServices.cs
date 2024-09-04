@@ -1,7 +1,9 @@
 ﻿using EventFlowAPI.Logic.Identity.Services.Interfaces;
 using EventFlowAPI.Logic.Identity.Services.Services;
-using EventFlowAPI.Logic.Services.Interfaces;
-using EventFlowAPI.Logic.Services.Services;
+using EventFlowAPI.Logic.Services.CRUDServices.Interfaces;
+using EventFlowAPI.Logic.Services.CRUDServices.Services;
+using EventFlowAPI.Logic.Services.OtherServices.Interfaces;
+using EventFlowAPI.Logic.Services.OtherServices.Services;
 using EventFlowAPI.Logic.UnitOfWork;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
@@ -47,6 +49,10 @@ namespace EventFlowAPI.Extensions
             services.AddScoped<IFacebookAuthService, FacebookAuthService>();
             services.AddSingleton<IJWTGeneratorService, JWTGeneratorService>();
         }
+        public static void AddApplicationOtherServices(this IServiceCollection services)
+        {
+            services.AddScoped<IEmailSenderService, EmailSenderService>();
+        }
         public static void AddSwaggerUI(this IServiceCollection services)
         {
             services.AddSwaggerGen(options =>
@@ -77,17 +83,6 @@ namespace EventFlowAPI.Extensions
         });
             });
         }
-        private static OpenApiSecurityScheme GetApiSecurityScheme()
-        {
-            return new OpenApiSecurityScheme
-            {
-                In = ParameterLocation.Header,
-                Name = "Authorization",
-                Type = SecuritySchemeType.Http,
-                Scheme = "Bearer",
-                BearerFormat = "JWT",
-                Description = "Enter JWT token:"
-            };
-        }
+        
     }
 }
