@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace EventFlowAPI.Logic.DTO.RequestDto
 {
-    public class EventTicketRequestDto : IRequestDto
+    public class TicketRequestDto : IRequestDto
     {
 
         [Required(ErrorMessage = "Cena biletu na wydarzenie jest wymagana.")]
@@ -12,6 +12,8 @@ namespace EventFlowAPI.Logic.DTO.RequestDto
 
         [Required(ErrorMessage = "Należy podać wydarzenie którego dotyczy bilet.")]
         public int EventId { get; set; }
+
+        public int? FestivalId { get; set; }
 
         [Required(ErrorMessage = "Należy podać typ biletu.")]
         public int TicketTypeId { get; set; }

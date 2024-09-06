@@ -19,10 +19,10 @@ namespace EventFlowAPI.DB.Entities
         public decimal PaymentAmount { get; set; }
         public string UserId { get; set; } = string.Empty;
         public int PaymentTypeId { get; set; }
-        public int EventTicketId { get; set; }  
+        public int TicketId { get; set; }  
         public User User { get; set; } = default!;
         public PaymentType PaymentType { get; set; } = default!;
-        public EventTicket Ticket { get; set; } = default!;
+        public Ticket Ticket { get; set; } = default!;
         public ICollection<Seat> Seats { get; set; } = [];
     }
 }

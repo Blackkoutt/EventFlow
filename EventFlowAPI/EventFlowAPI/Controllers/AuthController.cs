@@ -6,7 +6,7 @@ using EventFlowAPI.Logic.Services.OtherServices.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
-using System.Security.Cryptography.X509Certificates;
+using System.Xml.Serialization;
 
 namespace EventFlowAPI.Controllers
 {
@@ -36,11 +36,24 @@ namespace EventFlowAPI.Controllers
             return result.IsSuccessful ? Ok() : BadRequest(result.Error.Details);
         }
 
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="loginRequestDto"></param>
+        /// <returns>JWT token</returns>
+        /// <remarks>
+        /// Sample request:
+        /// 
+        ///     {
+        ///         "email": "j.kowalski@gmail.com",
+        ///         "password": "789456123qaz"
+        ///     }
+        ///       
+        /// </remarks>
         [HttpPost("login")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]        
         public async Task<IActionResult> Login([FromBody] LoginRequestDto loginRequestDto)
         {
             var result = await _authService.Login(loginRequestDto);

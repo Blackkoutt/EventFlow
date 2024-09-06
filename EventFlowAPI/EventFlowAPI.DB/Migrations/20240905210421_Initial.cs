@@ -656,33 +656,6 @@ namespace EventFlowAPI.DB.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "EventTicket",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Price = table.Column<decimal>(type: "NUMERIC(5,2)", nullable: false),
-                    EventId = table.Column<int>(type: "int", nullable: false),
-                    TicketTypeId = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_EventTicket", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_EventTicket_Event_EventId",
-                        column: x => x.EventId,
-                        principalTable: "Event",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_EventTicket_TicketType_TicketTypeId",
-                        column: x => x.TicketTypeId,
-                        principalTable: "TicketType",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Festival_Event",
                 columns: table => new
                 {
@@ -702,6 +675,39 @@ namespace EventFlowAPI.DB.Migrations
                         name: "FK_Festival_Event_Festival_FestivalId",
                         column: x => x.FestivalId,
                         principalTable: "Festival",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Ticket",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Price = table.Column<decimal>(type: "NUMERIC(5,2)", nullable: false),
+                    TicketTypeId = table.Column<int>(type: "int", nullable: false),
+                    EventId = table.Column<int>(type: "int", nullable: false),
+                    FestivalId = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Ticket", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Ticket_Event_EventId",
+                        column: x => x.EventId,
+                        principalTable: "Event",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Ticket_Festival_FestivalId",
+                        column: x => x.FestivalId,
+                        principalTable: "Festival",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Ticket_TicketType_TicketTypeId",
+                        column: x => x.TicketTypeId,
+                        principalTable: "TicketType",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -743,7 +749,7 @@ namespace EventFlowAPI.DB.Migrations
                     PaymentAmount = table.Column<decimal>(type: "NUMERIC(7,2)", nullable: false),
                     UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     PaymentTypeId = table.Column<int>(type: "int", nullable: false),
-                    EventTicketId = table.Column<int>(type: "int", nullable: false)
+                    TicketId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -755,15 +761,15 @@ namespace EventFlowAPI.DB.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Reservation_EventTicket_EventTicketId",
-                        column: x => x.EventTicketId,
-                        principalTable: "EventTicket",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
                         name: "FK_Reservation_PaymentType_PaymentTypeId",
                         column: x => x.PaymentTypeId,
                         principalTable: "PaymentType",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Reservation_Ticket_TicketId",
+                        column: x => x.TicketId,
+                        principalTable: "Ticket",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -855,16 +861,6 @@ namespace EventFlowAPI.DB.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_EventTicket_EventId",
-                table: "EventTicket",
-                column: "EventId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_EventTicket_TicketTypeId",
-                table: "EventTicket",
-                column: "TicketTypeId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Festival_Event_EventId",
                 table: "Festival_Event",
                 column: "EventId");
@@ -915,14 +911,14 @@ namespace EventFlowAPI.DB.Migrations
                 column: "HallTypeId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Reservation_EventTicketId",
-                table: "Reservation",
-                column: "EventTicketId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Reservation_PaymentTypeId",
                 table: "Reservation",
                 column: "PaymentTypeId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Reservation_TicketId",
+                table: "Reservation",
+                column: "TicketId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Reservation_UserId",
@@ -943,6 +939,21 @@ namespace EventFlowAPI.DB.Migrations
                 name: "IX_Seat_SeatTypeId",
                 table: "Seat",
                 column: "SeatTypeId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Ticket_EventId",
+                table: "Ticket",
+                column: "EventId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Ticket_FestivalId",
+                table: "Ticket",
+                column: "FestivalId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Ticket_TicketTypeId",
+                table: "Ticket",
+                column: "TicketTypeId");
         }
 
         /// <inheritdoc />
@@ -1003,9 +1014,6 @@ namespace EventFlowAPI.DB.Migrations
                 name: "Organizer");
 
             migrationBuilder.DropTable(
-                name: "Festival");
-
-            migrationBuilder.DropTable(
                 name: "Sponsor");
 
             migrationBuilder.DropTable(
@@ -1024,22 +1032,22 @@ namespace EventFlowAPI.DB.Migrations
                 name: "Seat");
 
             migrationBuilder.DropTable(
-                name: "FestivalDetails");
-
-            migrationBuilder.DropTable(
                 name: "AspNetUsers");
 
             migrationBuilder.DropTable(
-                name: "EventTicket");
+                name: "PaymentType");
 
             migrationBuilder.DropTable(
-                name: "PaymentType");
+                name: "Ticket");
 
             migrationBuilder.DropTable(
                 name: "SeatType");
 
             migrationBuilder.DropTable(
                 name: "Event");
+
+            migrationBuilder.DropTable(
+                name: "Festival");
 
             migrationBuilder.DropTable(
                 name: "TicketType");
@@ -1052,6 +1060,9 @@ namespace EventFlowAPI.DB.Migrations
 
             migrationBuilder.DropTable(
                 name: "Hall");
+
+            migrationBuilder.DropTable(
+                name: "FestivalDetails");
 
             migrationBuilder.DropTable(
                 name: "HallType");

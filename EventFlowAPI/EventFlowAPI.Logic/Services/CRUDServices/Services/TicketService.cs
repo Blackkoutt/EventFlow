@@ -7,15 +7,15 @@ using EventFlowAPI.Logic.UnitOfWork;
 
 namespace EventFlowAPI.Logic.Services.CRUDServices.Services
 {
-    public sealed class EventTicketService(IUnitOfWork unitOfWork) :
+    public sealed class TicketService(IUnitOfWork unitOfWork) :
         GenericService<
-            EventTicket,
-            EventTicketRequestDto,
-            EventTicketResponseDto
+            Ticket,
+            TicketRequestDto,
+            TicketResponseDto
         >(unitOfWork),
-        IEventTicketService
+        ITicketService
     {
-        protected async sealed override Task<bool> IsSameEntityExistInDatabase(EventTicketRequestDto entityDto, int? id = null)
+        protected async sealed override Task<bool> IsSameEntityExistInDatabase(TicketRequestDto entityDto, int? id = null)
         {
             var entities = await _repository.GetAllAsync(q =>
                       q.Where(entity =>

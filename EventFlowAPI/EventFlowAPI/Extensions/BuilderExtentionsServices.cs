@@ -5,9 +5,6 @@ using EventFlowAPI.Logic.Services.CRUDServices.Services;
 using EventFlowAPI.Logic.Services.OtherServices.Interfaces;
 using EventFlowAPI.Logic.Services.OtherServices.Services;
 using EventFlowAPI.Logic.UnitOfWork;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.OpenApi.Models;
-using Swashbuckle.AspNetCore.Filters;
 
 namespace EventFlowAPI.Extensions
 {
@@ -25,7 +22,7 @@ namespace EventFlowAPI.Extensions
             services.AddScoped<IEventPassService, EventPassService>();
             services.AddScoped<IEventPassTypeService, EventPassTypeService>();
             services.AddScoped<IEventService, EventService>();
-            services.AddScoped<IEventTicketService, EventTicketService>();
+            services.AddScoped<ITicketService, TicketService>();
             services.AddScoped<IFestivalDetailsService, FestivalDetailsService>();
             services.AddScoped<IFestivalService, FestivalService>();
             services.AddScoped<IHallRentService, HallRentService>();
@@ -52,37 +49,7 @@ namespace EventFlowAPI.Extensions
         public static void AddApplicationOtherServices(this IServiceCollection services)
         {
             services.AddScoped<IEmailSenderService, EmailSenderService>();
+            services.AddScoped<ITicketCreatorService, TicketCreatorService>();
         }
-        public static void AddSwaggerUI(this IServiceCollection services)
-        {
-            services.AddSwaggerGen(options =>
-            {
-                options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
-                {
-                    Name = "Authorization",
-                    Type = SecuritySchemeType.Http,
-                    Scheme = "Bearer",
-                    BearerFormat = "JWT",
-                    In = ParameterLocation.Header,
-                    Description = "Wprowadź token JWT w formacie: Bearer {token}"
-                });
-
-                options.AddSecurityRequirement(new OpenApiSecurityRequirement
-        {
-            {
-                new OpenApiSecurityScheme
-                {
-                    Reference = new OpenApiReference
-                    {
-                        Type = ReferenceType.SecurityScheme,
-                        Id = "Bearer"
-                    }
-                },
-                new string[] {}
-            }
-        });
-            });
-        }
-        
     }
 }

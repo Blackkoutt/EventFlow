@@ -39,9 +39,9 @@ namespace EventFlowAPI.DB.Migrations
                 columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "DateOfBirth", "Email", "EmailConfirmed", "LockoutEnabled", "LockoutEnd", "Name", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "Surname", "TwoFactorEnabled", "UserName" },
                 values: new object[,]
                 {
-                    { "1", 0, "f9b5f45d-cb1e-4fab-a052-c00279fe0b90", new DateTime(2000, 4, 3, 0, 0, 0, 0, DateTimeKind.Unspecified), "admin@gmail.com", true, false, null, "Admin", "ADMIN@GMAIL.COM", "ADMIN@GMAIL.COM", "AQAAAAIAAYagAAAAEGzfAVH46bCaJ+ES7ytppQA3XvJQLwLTApNLnbDMrHrQn+WQSO5lCDGa7T8Pgiv6mA==", null, false, "29d03c5d-5788-475c-8cf4-dc2abc79c3c8", "Admin", false, "admin@gmail.com" },
-                    { "2", 0, "f87e9fd7-8bb4-4b09-b2a0-b4bf31c53f1e", new DateTime(1985, 2, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "j.kowalski@gmail.com", true, false, null, "Jan", "J.KOWALSKI@GMAIL.COM", "J.KOWALSKI@GMAIL.COM", "AQAAAAIAAYagAAAAEP6ZJZ8ENuxpexo1onP6RYV/X6L6sF+6gSQO6oOmam4/+hjI9CnVW3XBzI9NDmJzOA==", null, false, "2119a904-581e-4791-a01b-d2163c28fc88", "Kowalski", false, "j.kowalski@gmail.com" },
-                    { "3", 0, "2b547d34-7d60-4239-bf70-856b8f7b6557", new DateTime(1979, 12, 11, 0, 0, 0, 0, DateTimeKind.Unspecified), "a.kowalska@gmail.com", true, false, null, "Anna", "A.KOWALSKA@GMAIL.COM", "A.KOWALSKA@GMAIL.COM", "AQAAAAIAAYagAAAAENFu1MArIWOHgEs65XUBEtnCaZHxY5hzLlmATZkbfzAez9Z5suSGS3xWPQq0lFCDtQ==", null, false, "d3f3cf46-4d2f-4858-8f9d-939f8885730c", "Kowalska", false, "a.kowalska@gmail.com" }
+                    { "1", 0, "fb3ddf27-067c-46e1-b597-f0c15014b882", new DateTime(2000, 4, 3, 0, 0, 0, 0, DateTimeKind.Unspecified), "admin@gmail.com", true, false, null, "Admin", "ADMIN@GMAIL.COM", "ADMIN@GMAIL.COM", "AQAAAAIAAYagAAAAEILawDLW2MKaPbnP4+aAv3ClpmWulEdis1saOaiAI1tp5+eusxjyDHi+2nJP7t+mXQ==", null, false, "dfbadf0f-220c-459e-912b-d1eed97ba477", "Admin", false, "admin@gmail.com" },
+                    { "2", 0, "21afc9a3-3116-40cd-9a41-6ef10a3ef8f2", new DateTime(1985, 2, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "j.kowalski@gmail.com", true, false, null, "Jan", "J.KOWALSKI@GMAIL.COM", "J.KOWALSKI@GMAIL.COM", "AQAAAAIAAYagAAAAEGoCny2DEyg2BOLKTmf9TLiqJl3Dz1UMSjRWcHkMh4Oafs8K5RH2e5WBBbZeXA8zSQ==", null, false, "40e0a49d-7933-4670-b3c2-75b8d86308bb", "Kowalski", false, "j.kowalski@gmail.com" },
+                    { "3", 0, "f588cf5f-8c24-4a06-bbcf-f6a5b12254fa", new DateTime(1979, 12, 11, 0, 0, 0, 0, DateTimeKind.Unspecified), "a.kowalska@gmail.com", true, false, null, "Anna", "A.KOWALSKA@GMAIL.COM", "A.KOWALSKA@GMAIL.COM", "AQAAAAIAAYagAAAAEDZ7CKBJDSuAMxXD+MRKoQSumw3ms9+gngofZUgDnazhcHtP8Xx5HGzvUxz1Fap1bA==", null, false, "9359c437-c522-44cd-bd33-57d44cc243f6", "Kowalska", false, "a.kowalska@gmail.com" }
                 });
 
             migrationBuilder.InsertData(
@@ -198,9 +198,9 @@ namespace EventFlowAPI.DB.Migrations
                 columns: new[] { "Id", "Duration", "EndDate", "Name", "ShortDescription", "StartDate" },
                 values: new object[,]
                 {
-                    { 1, new TimeSpan(-4, 0, 0, 0, 0), new DateTime(2024, 9, 9, 0, 0, 0, 0, DateTimeKind.Unspecified), "Festiwal muzyki współczesnej", "Festiwal muzyki współczesnej to nowy festiwal organizowany przez XYZ.", new DateTime(2024, 9, 5, 0, 0, 0, 0, DateTimeKind.Unspecified) },
-                    { 2, new TimeSpan(-2, 0, 0, 0, 0), new DateTime(2024, 11, 7, 0, 0, 0, 0, DateTimeKind.Unspecified), "Festiwal filmowy", "Festiwal filmowy to festiwal na którym można obejrzeć filmy.", new DateTime(2024, 11, 5, 0, 0, 0, 0, DateTimeKind.Unspecified) },
-                    { 3, new TimeSpan(-1, 0, 0, 0, 0), new DateTime(2025, 1, 6, 0, 0, 0, 0, DateTimeKind.Unspecified), "Festiwal sztuki abstrakcyjnej", "Festiwal sztuki abstrakcyjnej to festiwal na którym można zobaczyć sztukę.", new DateTime(2025, 1, 5, 0, 0, 0, 0, DateTimeKind.Unspecified) }
+                    { 1, new TimeSpan(-31, -1, 0, 0, 0), new DateTime(2024, 10, 6, 1, 0, 0, 0, DateTimeKind.Unspecified), "Festiwal muzyki współczesnej", "Festiwal muzyki współczesnej to nowy festiwal organizowany przez XYZ.", new DateTime(2024, 9, 6, 0, 0, 0, 0, DateTimeKind.Unspecified) },
+                    { 2, new TimeSpan(-31, -2, 0, 0, 0), new DateTime(2024, 10, 8, 2, 0, 0, 0, DateTimeKind.Unspecified), "Festiwal filmowy", "Festiwal filmowy to festiwal na którym można obejrzeć filmy.", new DateTime(2024, 9, 7, 0, 0, 0, 0, DateTimeKind.Unspecified) },
+                    { 3, new TimeSpan(-30, -3, 0, 0, 0), new DateTime(2024, 10, 9, 3, 0, 0, 0, DateTimeKind.Unspecified), "Festiwal sztuki abstrakcyjnej", "Festiwal sztuki abstrakcyjnej to festiwal na którym można zobaczyć sztukę.", new DateTime(2024, 9, 9, 0, 0, 0, 0, DateTimeKind.Unspecified) }
                 });
 
             migrationBuilder.InsertData(
@@ -311,24 +311,13 @@ namespace EventFlowAPI.DB.Migrations
                     { 4, 4m, 4m, 1m, 1, 1m, 4m, 1 },
                     { 5, 1m, 1m, 1m, 2, 1m, 1m, 2 },
                     { 6, 2m, 2m, 1m, 2, 1m, 2m, 2 },
-                    { 7, 3m, 3m, 1m, 2, 1m, 3m, 2 },
+                    { 7, 3m, 3m, 1m, 2, 1m, 3m, 1 },
                     { 8, 4m, 4m, 1m, 2, 1m, 4m, 2 },
                     { 9, 1m, 1m, 1m, 3, 1m, 1m, 3 },
                     { 10, 2m, 2m, 1m, 3, 1m, 2m, 3 },
                     { 11, 3m, 3m, 1m, 3, 1m, 3m, 3 },
                     { 12, 4m, 4m, 1m, 3, 1m, 4m, 3 },
                     { 13, 1m, 1m, 1m, 4, 1m, 1m, 3 }
-                });
-
-            migrationBuilder.InsertData(
-                table: "EventTicket",
-                columns: new[] { "Id", "EventId", "Price", "TicketTypeId" },
-                values: new object[,]
-                {
-                    { 1, 1, 24.99m, 1 },
-                    { 2, 2, 34.99m, 2 },
-                    { 3, 3, 29.99m, 3 },
-                    { 4, 4, 19.99m, 3 }
                 });
 
             migrationBuilder.InsertData(
@@ -358,14 +347,33 @@ namespace EventFlowAPI.DB.Migrations
                 });
 
             migrationBuilder.InsertData(
-                table: "Reservation",
-                columns: new[] { "Id", "EndOfReservationDate", "EventTicketId", "PaymentAmount", "PaymentDate", "PaymentTypeId", "ReservationDate", "StartOfReservationDate", "UserId" },
+                table: "Ticket",
+                columns: new[] { "Id", "EventId", "FestivalId", "Price", "TicketTypeId" },
                 values: new object[,]
                 {
-                    { 1, new DateTime(2024, 9, 6, 1, 0, 0, 0, DateTimeKind.Unspecified), 1, 24.99m, new DateTime(2024, 8, 15, 0, 0, 0, 0, DateTimeKind.Unspecified), 1, new DateTime(2024, 8, 15, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2024, 9, 6, 0, 0, 0, 0, DateTimeKind.Unspecified), "1" },
-                    { 2, new DateTime(2024, 9, 7, 3, 0, 0, 0, DateTimeKind.Unspecified), 2, 34.99m, new DateTime(2024, 8, 21, 0, 0, 0, 0, DateTimeKind.Unspecified), 2, new DateTime(2024, 8, 21, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2024, 9, 7, 0, 0, 0, 0, DateTimeKind.Unspecified), "2" },
-                    { 3, new DateTime(2024, 9, 8, 2, 0, 0, 0, DateTimeKind.Unspecified), 3, 29.99m, new DateTime(2024, 8, 22, 0, 0, 0, 0, DateTimeKind.Unspecified), 3, new DateTime(2024, 8, 22, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2024, 9, 8, 0, 0, 0, 0, DateTimeKind.Unspecified), "3" },
-                    { 4, new DateTime(2024, 9, 9, 3, 0, 0, 0, DateTimeKind.Unspecified), 4, 19.99m, new DateTime(2024, 8, 23, 0, 0, 0, 0, DateTimeKind.Unspecified), 2, new DateTime(2024, 8, 23, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2024, 9, 9, 0, 0, 0, 0, DateTimeKind.Unspecified), "3" }
+                    { 1, 1, null, 24.99m, 1 },
+                    { 2, 2, null, 34.99m, 2 },
+                    { 3, 3, null, 29.99m, 3 },
+                    { 4, 4, null, 19.99m, 3 },
+                    { 5, 1, 1, 19.99m, 1 },
+                    { 6, 5, 1, 19.99m, 1 },
+                    { 7, 2, 2, 29.99m, 2 },
+                    { 8, 6, 2, 29.99m, 2 }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Reservation",
+                columns: new[] { "Id", "EndOfReservationDate", "PaymentAmount", "PaymentDate", "PaymentTypeId", "ReservationDate", "StartOfReservationDate", "TicketId", "UserId" },
+                values: new object[,]
+                {
+                    { 1, new DateTime(2024, 9, 6, 1, 0, 0, 0, DateTimeKind.Unspecified), 24.99m, new DateTime(2024, 8, 15, 0, 0, 0, 0, DateTimeKind.Unspecified), 1, new DateTime(2024, 8, 15, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2024, 9, 6, 0, 0, 0, 0, DateTimeKind.Unspecified), 1, "1" },
+                    { 2, new DateTime(2024, 9, 7, 3, 0, 0, 0, DateTimeKind.Unspecified), 34.99m, new DateTime(2024, 8, 21, 0, 0, 0, 0, DateTimeKind.Unspecified), 2, new DateTime(2024, 8, 21, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2024, 9, 7, 0, 0, 0, 0, DateTimeKind.Unspecified), 2, "2" },
+                    { 3, new DateTime(2024, 9, 8, 2, 0, 0, 0, DateTimeKind.Unspecified), 29.99m, new DateTime(2024, 8, 22, 0, 0, 0, 0, DateTimeKind.Unspecified), 3, new DateTime(2024, 8, 22, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2024, 9, 8, 0, 0, 0, 0, DateTimeKind.Unspecified), 3, "3" },
+                    { 4, new DateTime(2024, 9, 9, 3, 0, 0, 0, DateTimeKind.Unspecified), 19.99m, new DateTime(2024, 8, 23, 0, 0, 0, 0, DateTimeKind.Unspecified), 2, new DateTime(2024, 8, 23, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2024, 9, 9, 0, 0, 0, 0, DateTimeKind.Unspecified), 4, "3" },
+                    { 5, new DateTime(2024, 9, 6, 1, 0, 0, 0, DateTimeKind.Unspecified), 19.99m, new DateTime(2024, 8, 18, 0, 0, 0, 0, DateTimeKind.Unspecified), 2, new DateTime(2024, 8, 18, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2024, 9, 6, 0, 0, 0, 0, DateTimeKind.Unspecified), 5, "2" },
+                    { 6, new DateTime(2024, 10, 6, 1, 0, 0, 0, DateTimeKind.Unspecified), 19.99m, new DateTime(2024, 8, 19, 0, 0, 0, 0, DateTimeKind.Unspecified), 2, new DateTime(2024, 8, 19, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2024, 10, 6, 0, 0, 0, 0, DateTimeKind.Unspecified), 6, "2" },
+                    { 7, new DateTime(2024, 9, 7, 3, 0, 0, 0, DateTimeKind.Unspecified), 29.99m, new DateTime(2024, 8, 20, 0, 0, 0, 0, DateTimeKind.Unspecified), 2, new DateTime(2024, 8, 20, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2024, 9, 7, 0, 0, 0, 0, DateTimeKind.Unspecified), 7, "2" },
+                    { 8, new DateTime(2024, 10, 8, 2, 0, 0, 0, DateTimeKind.Unspecified), 29.99m, new DateTime(2024, 8, 20, 0, 0, 0, 0, DateTimeKind.Unspecified), 2, new DateTime(2024, 8, 20, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2024, 10, 8, 0, 0, 0, 0, DateTimeKind.Unspecified), 7, "2" }
                 });
 
             migrationBuilder.InsertData(
@@ -376,7 +384,11 @@ namespace EventFlowAPI.DB.Migrations
                     { 1, 5 },
                     { 2, 9 },
                     { 3, 1 },
-                    { 4, 13 }
+                    { 4, 13 },
+                    { 5, 8 },
+                    { 6, 8 },
+                    { 7, 12 },
+                    { 8, 3 }
                 });
         }
 
@@ -624,14 +636,29 @@ namespace EventFlowAPI.DB.Migrations
                 keyValues: new object[] { 4, 13 });
 
             migrationBuilder.DeleteData(
-                table: "Seat",
-                keyColumn: "Id",
-                keyValue: 2);
+                table: "Reservation_Seat",
+                keyColumns: new[] { "ReservationId", "SeatId" },
+                keyValues: new object[] { 5, 8 });
+
+            migrationBuilder.DeleteData(
+                table: "Reservation_Seat",
+                keyColumns: new[] { "ReservationId", "SeatId" },
+                keyValues: new object[] { 6, 8 });
+
+            migrationBuilder.DeleteData(
+                table: "Reservation_Seat",
+                keyColumns: new[] { "ReservationId", "SeatId" },
+                keyValues: new object[] { 7, 12 });
+
+            migrationBuilder.DeleteData(
+                table: "Reservation_Seat",
+                keyColumns: new[] { "ReservationId", "SeatId" },
+                keyValues: new object[] { 8, 3 });
 
             migrationBuilder.DeleteData(
                 table: "Seat",
                 keyColumn: "Id",
-                keyValue: 3);
+                keyValue: 2);
 
             migrationBuilder.DeleteData(
                 table: "Seat",
@@ -651,11 +678,6 @@ namespace EventFlowAPI.DB.Migrations
             migrationBuilder.DeleteData(
                 table: "Seat",
                 keyColumn: "Id",
-                keyValue: 8);
-
-            migrationBuilder.DeleteData(
-                table: "Seat",
-                keyColumn: "Id",
                 keyValue: 10);
 
             migrationBuilder.DeleteData(
@@ -664,9 +686,9 @@ namespace EventFlowAPI.DB.Migrations
                 keyValue: 11);
 
             migrationBuilder.DeleteData(
-                table: "Seat",
+                table: "Ticket",
                 keyColumn: "Id",
-                keyValue: 12);
+                keyValue: 8);
 
             migrationBuilder.DeleteData(
                 table: "UserData",
@@ -741,11 +763,6 @@ namespace EventFlowAPI.DB.Migrations
             migrationBuilder.DeleteData(
                 table: "Event",
                 keyColumn: "Id",
-                keyValue: 5);
-
-            migrationBuilder.DeleteData(
-                table: "Event",
-                keyColumn: "Id",
                 keyValue: 6);
 
             migrationBuilder.DeleteData(
@@ -771,16 +788,6 @@ namespace EventFlowAPI.DB.Migrations
             migrationBuilder.DeleteData(
                 table: "Festival",
                 keyColumn: "Id",
-                keyValue: 1);
-
-            migrationBuilder.DeleteData(
-                table: "Festival",
-                keyColumn: "Id",
-                keyValue: 2);
-
-            migrationBuilder.DeleteData(
-                table: "Festival",
-                keyColumn: "Id",
                 keyValue: 3);
 
             migrationBuilder.DeleteData(
@@ -847,11 +854,36 @@ namespace EventFlowAPI.DB.Migrations
                 table: "Reservation",
                 keyColumn: "Id",
                 keyValue: 4);
+
+            migrationBuilder.DeleteData(
+                table: "Reservation",
+                keyColumn: "Id",
+                keyValue: 5);
+
+            migrationBuilder.DeleteData(
+                table: "Reservation",
+                keyColumn: "Id",
+                keyValue: 6);
+
+            migrationBuilder.DeleteData(
+                table: "Reservation",
+                keyColumn: "Id",
+                keyValue: 7);
+
+            migrationBuilder.DeleteData(
+                table: "Reservation",
+                keyColumn: "Id",
+                keyValue: 8);
 
             migrationBuilder.DeleteData(
                 table: "Seat",
                 keyColumn: "Id",
                 keyValue: 1);
+
+            migrationBuilder.DeleteData(
+                table: "Seat",
+                keyColumn: "Id",
+                keyValue: 3);
 
             migrationBuilder.DeleteData(
                 table: "Seat",
@@ -861,7 +893,17 @@ namespace EventFlowAPI.DB.Migrations
             migrationBuilder.DeleteData(
                 table: "Seat",
                 keyColumn: "Id",
+                keyValue: 8);
+
+            migrationBuilder.DeleteData(
+                table: "Seat",
+                keyColumn: "Id",
                 keyValue: 9);
+
+            migrationBuilder.DeleteData(
+                table: "Seat",
+                keyColumn: "Id",
+                keyValue: 12);
 
             migrationBuilder.DeleteData(
                 table: "Seat",
@@ -901,11 +943,6 @@ namespace EventFlowAPI.DB.Migrations
             migrationBuilder.DeleteData(
                 table: "EventDetails",
                 keyColumn: "Id",
-                keyValue: 5);
-
-            migrationBuilder.DeleteData(
-                table: "EventDetails",
-                keyColumn: "Id",
                 keyValue: 6);
 
             migrationBuilder.DeleteData(
@@ -914,69 +951,74 @@ namespace EventFlowAPI.DB.Migrations
                 keyValue: 7);
 
             migrationBuilder.DeleteData(
-                table: "EventTicket",
-                keyColumn: "Id",
-                keyValue: 1);
-
-            migrationBuilder.DeleteData(
-                table: "EventTicket",
-                keyColumn: "Id",
-                keyValue: 2);
-
-            migrationBuilder.DeleteData(
-                table: "EventTicket",
+                table: "FestivalDetails",
                 keyColumn: "Id",
                 keyValue: 3);
 
             migrationBuilder.DeleteData(
-                table: "EventTicket",
+                table: "PaymentType",
+                keyColumn: "Id",
+                keyValue: 1);
+
+            migrationBuilder.DeleteData(
+                table: "PaymentType",
+                keyColumn: "Id",
+                keyValue: 2);
+
+            migrationBuilder.DeleteData(
+                table: "PaymentType",
+                keyColumn: "Id",
+                keyValue: 3);
+
+            migrationBuilder.DeleteData(
+                table: "SeatType",
+                keyColumn: "Id",
+                keyValue: 1);
+
+            migrationBuilder.DeleteData(
+                table: "SeatType",
+                keyColumn: "Id",
+                keyValue: 2);
+
+            migrationBuilder.DeleteData(
+                table: "SeatType",
+                keyColumn: "Id",
+                keyValue: 3);
+
+            migrationBuilder.DeleteData(
+                table: "Ticket",
+                keyColumn: "Id",
+                keyValue: 1);
+
+            migrationBuilder.DeleteData(
+                table: "Ticket",
+                keyColumn: "Id",
+                keyValue: 2);
+
+            migrationBuilder.DeleteData(
+                table: "Ticket",
+                keyColumn: "Id",
+                keyValue: 3);
+
+            migrationBuilder.DeleteData(
+                table: "Ticket",
                 keyColumn: "Id",
                 keyValue: 4);
 
             migrationBuilder.DeleteData(
-                table: "FestivalDetails",
+                table: "Ticket",
                 keyColumn: "Id",
-                keyValue: 1);
+                keyValue: 5);
 
             migrationBuilder.DeleteData(
-                table: "FestivalDetails",
+                table: "Ticket",
                 keyColumn: "Id",
-                keyValue: 2);
+                keyValue: 6);
 
             migrationBuilder.DeleteData(
-                table: "FestivalDetails",
+                table: "Ticket",
                 keyColumn: "Id",
-                keyValue: 3);
-
-            migrationBuilder.DeleteData(
-                table: "PaymentType",
-                keyColumn: "Id",
-                keyValue: 1);
-
-            migrationBuilder.DeleteData(
-                table: "PaymentType",
-                keyColumn: "Id",
-                keyValue: 2);
-
-            migrationBuilder.DeleteData(
-                table: "PaymentType",
-                keyColumn: "Id",
-                keyValue: 3);
-
-            migrationBuilder.DeleteData(
-                table: "SeatType",
-                keyColumn: "Id",
-                keyValue: 1);
-
-            migrationBuilder.DeleteData(
-                table: "SeatType",
-                keyColumn: "Id",
-                keyValue: 2);
-
-            migrationBuilder.DeleteData(
-                table: "SeatType",
-                keyColumn: "Id",
-                keyValue: 3);
+                keyValue: 7);
 
             migrationBuilder.DeleteData(
                 table: "Event",
@@ -997,6 +1039,21 @@ namespace EventFlowAPI.DB.Migrations
                 table: "Event",
                 keyColumn: "Id",
                 keyValue: 4);
+
+            migrationBuilder.DeleteData(
+                table: "Event",
+                keyColumn: "Id",
+                keyValue: 5);
+
+            migrationBuilder.DeleteData(
+                table: "Festival",
+                keyColumn: "Id",
+                keyValue: 1);
+
+            migrationBuilder.DeleteData(
+                table: "Festival",
+                keyColumn: "Id",
+                keyValue: 2);
 
             migrationBuilder.DeleteData(
                 table: "TicketType",
@@ -1052,6 +1109,21 @@ namespace EventFlowAPI.DB.Migrations
                 table: "EventDetails",
                 keyColumn: "Id",
                 keyValue: 4);
+
+            migrationBuilder.DeleteData(
+                table: "EventDetails",
+                keyColumn: "Id",
+                keyValue: 5);
+
+            migrationBuilder.DeleteData(
+                table: "FestivalDetails",
+                keyColumn: "Id",
+                keyValue: 1);
+
+            migrationBuilder.DeleteData(
+                table: "FestivalDetails",
+                keyColumn: "Id",
+                keyValue: 2);
 
             migrationBuilder.DeleteData(
                 table: "Hall",

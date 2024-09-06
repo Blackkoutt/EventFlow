@@ -5,11 +5,11 @@ using EventFlowAPI.Logic.Services.CRUDServices.Interfaces.BaseInterfaces;
 
 namespace EventFlowAPI.Logic.Services.CRUDServices.Interfaces
 {
-    public interface IEventTicketService :
+    public interface ITicketService :
         IGenericService<
-            EventTicket,
-            EventTicketRequestDto,
-            EventTicketResponseDto
+            Ticket,
+            TicketRequestDto,
+            TicketResponseDto
         >
     {
     }

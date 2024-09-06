@@ -14,7 +14,7 @@ namespace EventFlowAPI.DB.Extensions
             modelBuilder.Entity<EventDetails>().HasKey(x => x.Id);
             modelBuilder.Entity<EventPass>().HasKey(x => x.Id);
             modelBuilder.Entity<EventPassType>().HasKey(x => x.Id);
-            modelBuilder.Entity<EventTicket>().HasKey(x => x.Id);
+            modelBuilder.Entity<Ticket>().HasKey(x => x.Id);
             modelBuilder.Entity<TicketType>().HasKey(x => x.Id);
             modelBuilder.Entity<Festival>().HasKey(x => x.Id);
             modelBuilder.Entity<MediaPatron>().HasKey(x => x.Id);

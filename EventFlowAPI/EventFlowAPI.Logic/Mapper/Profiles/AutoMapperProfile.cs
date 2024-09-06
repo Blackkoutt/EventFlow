@@ -39,9 +39,9 @@ namespace EventFlowAPI.Logic.Mapper.Profiles
             CreateMap<EventRequestDto, Event>();
             CreateMap<Event, EventResponseDto>();
 
-            CreateMap<EventTicket, EventTicket>();
-            CreateMap<EventTicketRequestDto, EventTicket>();
-            CreateMap<EventTicket, EventTicketResponseDto>();
+            CreateMap<Ticket, Ticket>();
+            CreateMap<TicketRequestDto, Ticket>();
+            CreateMap<Ticket, TicketResponseDto>();
 
             CreateMap<FestivalDetails, FestivalDetails>();
             CreateMap<FestivalDetailsRequestDto, FestivalDetails>();

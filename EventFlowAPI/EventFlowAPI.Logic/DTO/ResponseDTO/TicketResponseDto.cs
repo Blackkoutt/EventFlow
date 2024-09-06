@@ -2,7 +2,7 @@
 
 namespace EventFlowAPI.Logic.DTO.ResponseDto
 {
-    public class EventTicketResponseDto : BaseResponseDto
+    public class TicketResponseDto : BaseResponseDto
     {
         public decimal Price { get; set; }
         //public EventResponseDto? Event { get; set; }

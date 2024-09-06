@@ -11,6 +11,11 @@ namespace EventFlowAPI.Logic.Identity.DTO.RequestDto
         public string Email { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "Hasło jest wymagane.")]
+
+        /// <summary>
+        /// The user's last name.
+        /// </summary>
+        /// <example>Austin</example>
         public string Password { get; set; } = string.Empty;
     }
 }

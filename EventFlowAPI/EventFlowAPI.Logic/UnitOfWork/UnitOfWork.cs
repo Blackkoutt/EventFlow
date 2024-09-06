@@ -22,7 +22,7 @@ namespace EventFlowAPI.Logic.UnitOfWork
             _eventPasses = new EventPassRepository(_context);
             _eventPassTypes = new EventPassTypeRepository(_context);
             _events = new EventRepository(_context);
-            _eventTickets = new EventTicketRepository(_context);
+            _tickets = new TicketRepository(_context);
             _festivalDetails = new FestivalDetailsRepository(_context);
             _festivals = new FestivalRepository(_context);
             _hallRents = new HallRentRespository(_context);
@@ -73,7 +73,7 @@ namespace EventFlowAPI.Logic.UnitOfWork
                 { typeof(EventPass), _eventPasses },
                 { typeof(EventPassType), _eventPassTypes },
                 { typeof(Event), _events },
-                { typeof(EventTicket), _eventTickets },
+                { typeof(Ticket), _tickets },
                 { typeof(FestivalDetails), _festivalDetails },
                 { typeof(Festival), _festivals },
                 { typeof(HallRent), _hallRents },
@@ -99,7 +99,7 @@ namespace EventFlowAPI.Logic.UnitOfWork
         private readonly IEventPassRepository _eventPasses;
         private readonly IEventPassTypeRepository _eventPassTypes;
         private readonly IEventRepository _events;
-        private readonly IEventTicketRepository _eventTickets;
+        private readonly ITicketRepository _tickets;
         private readonly IFestivalDetailsRepository _festivalDetails;
         private readonly IFestivalRepository _festivals;
         private readonly IHallRentRepository _hallRents;

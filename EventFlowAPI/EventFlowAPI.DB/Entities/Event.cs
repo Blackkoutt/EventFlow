@@ -24,6 +24,6 @@ namespace EventFlowAPI.DB.Entities
         public EventDetails? Details { get; set; }
         public Hall Hall { get; set; } = default!;
         public ICollection<Festival> Festivals { get; set; } = [];
-        public ICollection<EventTicket> Tickets { get; set; } = [];
+        public ICollection<Ticket> Tickets { get; set; } = [];
     }
 }

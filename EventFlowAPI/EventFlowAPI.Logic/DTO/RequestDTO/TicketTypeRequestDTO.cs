@@ -1,5 +1,6 @@
 ﻿using EventFlowAPI.Logic.DTO.Interfaces;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace EventFlowAPI.Logic.DTO.RequestDto
 {

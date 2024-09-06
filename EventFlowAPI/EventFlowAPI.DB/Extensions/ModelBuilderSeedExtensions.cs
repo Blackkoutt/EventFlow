@@ -332,19 +332,20 @@ namespace EventFlowAPI.DB.Extensions
                 new TicketType
                 {
                     Id = 1,
-                    Name = "Bilet normalny"
+                    Name = "Bilet normalny",
+
                 },
                 new TicketType
                 {
                     Id = 2,
-                    Name = "Bilet ulgowy"
+                    Name = "Bilet ulgowy",
                 },
                 new TicketType
                 {
                     Id = 3,
-                    Name = "Bilet rodzinny"
+                    Name = "Bilet rodzinny",
                 }
-            );
+            ) ;
 
 
             modelBuilder.Entity<Festival>().HasData(
@@ -353,18 +354,18 @@ namespace EventFlowAPI.DB.Extensions
                     Id = 1,
                     Name = "Festiwal muzyki współczesnej",
                     ShortDescription = "Festiwal muzyki współczesnej to nowy festiwal organizowany przez XYZ.",
-                    StartDate = today.AddMonths(1),
-                    EndDate = today.AddMonths(1).AddDays(4),
-                    Duration = today.AddMonths(1) - today.AddMonths(1).AddDays(4)
+                    StartDate = today.AddMonths(1).AddDays(1),
+                    EndDate = today.AddMonths(2).AddDays(1).AddHours(1),
+                    Duration = today.AddMonths(1) - today.AddMonths(2).AddDays(1).AddHours(1)
                 },
                 new Festival
                 {
                     Id = 2,
                     Name = "Festiwal filmowy",
                     ShortDescription = "Festiwal filmowy to festiwal na którym można obejrzeć filmy.",
-                    StartDate = today.AddMonths(3),
-                    EndDate = today.AddMonths(3).AddDays(2),
-                    Duration = today.AddMonths(3) - today.AddMonths(3).AddDays(2)
+                    StartDate = today.AddMonths(1).AddDays(2),
+                    EndDate = today.AddMonths(2).AddDays(3).AddHours(2),
+                    Duration = today.AddMonths(1).AddDays(2) - today.AddMonths(2).AddDays(3).AddHours(2)
                 },
 
                 new Festival
@@ -372,9 +373,9 @@ namespace EventFlowAPI.DB.Extensions
                     Id = 3,
                     Name = "Festiwal sztuki abstrakcyjnej",
                     ShortDescription = "Festiwal sztuki abstrakcyjnej to festiwal na którym można zobaczyć sztukę.",
-                    StartDate = today.AddMonths(5),
-                    EndDate = today.AddMonths(5).AddDays(1),
-                    Duration = today.AddMonths(5) - today.AddMonths(5).AddDays(1)
+                    StartDate = today.AddMonths(1).AddDays(4),
+                    EndDate = today.AddMonths(2).AddDays(4).AddHours(3),
+                    Duration = today.AddMonths(1).AddDays(4) - today.AddMonths(2).AddDays(4).AddHours(3)
                 }
             );
 
@@ -747,7 +748,7 @@ namespace EventFlowAPI.DB.Extensions
                     GridRow = 1,
                     Column = 3,
                     GridColumn = 3,
-                    SeatTypeId = 2,
+                    SeatTypeId = 1,
                     HallId = 2
                 },
                 new Seat
@@ -912,36 +913,69 @@ namespace EventFlowAPI.DB.Extensions
             );
 
 
-            modelBuilder.Entity<EventTicket>().HasData(
-                new EventTicket
+            modelBuilder.Entity<Ticket>().HasData(
+                new Ticket
                 {
                     Id = 1,
                     Price = 24.99m,
                     EventId = 1,
-                    TicketTypeId = 1,
+                    TicketTypeId = 1
                 },
-                new EventTicket
+                new Ticket
                 {
                     Id = 2,
                     Price = 34.99m,
                     EventId = 2,
-                    TicketTypeId = 2,
+                    TicketTypeId = 2
                 },
-                new EventTicket
+                new Ticket
                 {
                     Id = 3,
                     Price = 29.99m,
                     EventId = 3,
-                    TicketTypeId = 3,
+                    TicketTypeId = 3
                 },
-                new EventTicket
+                new Ticket
                 {
                     Id = 4,
                     Price = 19.99m,
                     EventId = 4,
-                    TicketTypeId = 3,
+                    TicketTypeId = 3
+                },
+                new Ticket
+                {
+                    Id = 5,
+                    Price = 19.99m,
+                    EventId = 1,
+                    FestivalId = 1,
+                    TicketTypeId = 1
+                },
+                new Ticket
+                {
+                    Id = 6,
+                    Price = 19.99m,
+                    EventId = 5,
+                    FestivalId = 1,
+                    TicketTypeId = 1
+                },
+                new Ticket
+                {
+                    Id = 7,
+                    Price = 29.99m,
+                    EventId = 2,
+                    FestivalId = 2,
+                    TicketTypeId = 2
+                },
+                new Ticket
+                {
+                    Id = 8,
+                    Price = 29.99m,
+                    EventId = 6,
+                    FestivalId = 2,
+                    TicketTypeId = 2
                 }
             );
+
 
 
             modelBuilder.Entity<Festival_Event>().HasData(
@@ -1022,7 +1056,7 @@ namespace EventFlowAPI.DB.Extensions
                     PaymentAmount = 24.99m,
                     UserId = "1",
                     PaymentTypeId = 1,
-                    EventTicketId = 1
+                    TicketId = 1
                 },
                 new Reservation
                 {
@@ -1034,7 +1068,7 @@ namespace EventFlowAPI.DB.Extensions
                     PaymentAmount = 34.99m,
                     UserId = "2",
                     PaymentTypeId = 2,
-                    EventTicketId = 2
+                    TicketId = 2
                 },
                 new Reservation
                 {
@@ -1046,7 +1080,7 @@ namespace EventFlowAPI.DB.Extensions
                     PaymentAmount = 29.99m,
                     UserId = "3",
                     PaymentTypeId = 3,
-                    EventTicketId = 3
+                    TicketId = 3
                 },
                 new Reservation
                 {
@@ -1058,7 +1092,55 @@ namespace EventFlowAPI.DB.Extensions
                     PaymentAmount = 19.99m,
                     UserId = "3",
                     PaymentTypeId = 2,
-                    EventTicketId = 4
+                    TicketId = 4
+                },
+                new Reservation
+                {
+                    Id = 5,
+                    ReservationDate = today.AddDays(13),
+                    StartOfReservationDate = today.AddMonths(1).AddDays(1),
+                    EndOfReservationDate = today.AddMonths(1).AddDays(1).AddHours(1),
+                    PaymentDate = today.AddDays(13),
+                    PaymentAmount = 19.99m,
+                    UserId = "2",
+                    PaymentTypeId = 2,
+                    TicketId = 5
+                },
+                new Reservation
+                {
+                    Id = 6,
+                    ReservationDate = today.AddDays(14),
+                    StartOfReservationDate = today.AddMonths(2).AddDays(1),
+                    EndOfReservationDate = today.AddMonths(2).AddDays(1).AddHours(1),
+                    PaymentDate = today.AddDays(14),
+                    PaymentAmount = 19.99m,
+                    UserId = "2",
+                    PaymentTypeId = 2,
+                    TicketId = 6
+                },
+                new Reservation
+                {
+                    Id = 7,
+                    ReservationDate = today.AddDays(15),
+                    StartOfReservationDate = today.AddMonths(1).AddDays(2),
+                    EndOfReservationDate = today.AddMonths(1).AddDays(2).AddHours(3),
+                    PaymentDate = today.AddDays(15),
+                    PaymentAmount = 29.99m,
+                    UserId = "2",
+                    PaymentTypeId = 2,
+                    TicketId = 7
+                },
+                new Reservation
+                {
+                    Id = 8,
+                    ReservationDate = today.AddDays(15),
+                    StartOfReservationDate = today.AddMonths(2).AddDays(3),
+                    EndOfReservationDate = today.AddMonths(2).AddDays(3).AddHours(2),
+                    PaymentDate = today.AddDays(15),
+                    PaymentAmount = 29.99m,
+                    UserId = "2",
+                    PaymentTypeId = 2,
+                    TicketId = 7
                 }
             );
 
@@ -1083,6 +1165,26 @@ namespace EventFlowAPI.DB.Extensions
                 {
                     ReservationId = 4,
                     SeatId = 13
+                },
+                new Reservation_Seat
+                {
+                    ReservationId = 5,
+                    SeatId = 8
+                },
+                new Reservation_Seat
+                {
+                    ReservationId = 6,
+                    SeatId = 8
+                },
+                new Reservation_Seat
+                {
+                    ReservationId = 7,
+                    SeatId = 12
+                },
+                new Reservation_Seat
+                {
+                    ReservationId = 8,
+                    SeatId = 3
                 }
             );
         }

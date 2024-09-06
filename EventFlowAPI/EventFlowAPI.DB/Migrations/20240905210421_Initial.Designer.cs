@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EventFlowAPI.DB.Migrations
 {
     [DbContext(typeof(APIContext))]
-    [Migration("20240903234149_Initial")]
+    [Migration("20240905210421_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -211,32 +211,6 @@ namespace EventFlowAPI.DB.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("EventPassType");
-                });
-
-            modelBuilder.Entity("EventFlowAPI.DB.Entities.EventTicket", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("EventId")
-                        .HasColumnType("int");
-
-                    b.Property<decimal>("Price")
-                        .HasColumnType("NUMERIC(5,2)");
-
-                    b.Property<int>("TicketTypeId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("EventId");
-
-                    b.HasIndex("TicketTypeId");
-
-                    b.ToTable("EventTicket");
                 });
 
             modelBuilder.Entity("EventFlowAPI.DB.Entities.Festival", b =>
@@ -569,9 +543,6 @@ namespace EventFlowAPI.DB.Migrations
                     b.Property<DateTime>("EndOfReservationDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("EventTicketId")
-                        .HasColumnType("int");
-
                     b.Property<decimal>("PaymentAmount")
                         .HasColumnType("NUMERIC(7,2)");
 
@@ -587,15 +558,18 @@ namespace EventFlowAPI.DB.Migrations
                     b.Property<DateTime>("StartOfReservationDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<int>("TicketId")
+                        .HasColumnType("int");
+
                     b.Property<string>("UserId")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("EventTicketId");
-
                     b.HasIndex("PaymentTypeId");
+
+                    b.HasIndex("TicketId");
 
                     b.HasIndex("UserId");
 
@@ -726,6 +700,37 @@ namespace EventFlowAPI.DB.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Sponsor");
+                });
+
+            modelBuilder.Entity("EventFlowAPI.DB.Entities.Ticket", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("EventId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("FestivalId")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("Price")
+                        .HasColumnType("NUMERIC(5,2)");
+
+                    b.Property<int>("TicketTypeId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("EventId");
+
+                    b.HasIndex("FestivalId");
+
+                    b.HasIndex("TicketTypeId");
+
+                    b.ToTable("Ticket");
                 });
 
             modelBuilder.Entity("EventFlowAPI.DB.Entities.TicketType", b =>
@@ -1020,25 +1025,6 @@ namespace EventFlowAPI.DB.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("EventFlowAPI.DB.Entities.EventTicket", b =>
-                {
-                    b.HasOne("EventFlowAPI.DB.Entities.Event", "Event")
-                        .WithMany("Tickets")
-                        .HasForeignKey("EventId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("EventFlowAPI.DB.Entities.TicketType", "TicketType")
-                        .WithMany("Tickets")
-                        .HasForeignKey("TicketTypeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Event");
-
-                    b.Navigation("TicketType");
-                });
-
             modelBuilder.Entity("EventFlowAPI.DB.Entities.Festival", b =>
                 {
                     b.HasOne("EventFlowAPI.DB.Entities.FestivalDetails", "Details")
@@ -1180,15 +1166,15 @@ namespace EventFlowAPI.DB.Migrations
 
             modelBuilder.Entity("EventFlowAPI.DB.Entities.Reservation", b =>
                 {
-                    b.HasOne("EventFlowAPI.DB.Entities.EventTicket", "Ticket")
-                        .WithMany("Reservations")
-                        .HasForeignKey("EventTicketId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("EventFlowAPI.DB.Entities.PaymentType", "PaymentType")
                         .WithMany("Reservations")
                         .HasForeignKey("PaymentTypeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("EventFlowAPI.DB.Entities.Ticket", "Ticket")
+                        .WithMany("Reservations")
+                        .HasForeignKey("TicketId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -1241,6 +1227,31 @@ namespace EventFlowAPI.DB.Migrations
                     b.Navigation("Hall");
 
                     b.Navigation("SeatType");
+                });
+
+            modelBuilder.Entity("EventFlowAPI.DB.Entities.Ticket", b =>
+                {
+                    b.HasOne("EventFlowAPI.DB.Entities.Event", "Event")
+                        .WithMany("Tickets")
+                        .HasForeignKey("EventId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("EventFlowAPI.DB.Entities.Festival", "Festival")
+                        .WithMany("Tickets")
+                        .HasForeignKey("FestivalId");
+
+                    b.HasOne("EventFlowAPI.DB.Entities.TicketType", "TicketType")
+                        .WithMany("Tickets")
+                        .HasForeignKey("TicketTypeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Event");
+
+                    b.Navigation("Festival");
+
+                    b.Navigation("TicketType");
                 });
 
             modelBuilder.Entity("EventFlowAPI.DB.Entities.UserData", b =>
@@ -1325,9 +1336,9 @@ namespace EventFlowAPI.DB.Migrations
                     b.Navigation("EventPasses");
                 });
 
-            modelBuilder.Entity("EventFlowAPI.DB.Entities.EventTicket", b =>
+            modelBuilder.Entity("EventFlowAPI.DB.Entities.Festival", b =>
                 {
-                    b.Navigation("Reservations");
+                    b.Navigation("Tickets");
                 });
 
             modelBuilder.Entity("EventFlowAPI.DB.Entities.FestivalDetails", b =>
@@ -1361,6 +1372,11 @@ namespace EventFlowAPI.DB.Migrations
             modelBuilder.Entity("EventFlowAPI.DB.Entities.SeatType", b =>
                 {
                     b.Navigation("Seats");
+                });
+
+            modelBuilder.Entity("EventFlowAPI.DB.Entities.Ticket", b =>
+                {
+                    b.Navigation("Reservations");
                 });
 
             modelBuilder.Entity("EventFlowAPI.DB.Entities.TicketType", b =>

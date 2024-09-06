@@ -20,5 +20,6 @@ namespace EventFlowAPI.DB.Entities
         public ICollection<MediaPatron> MediaPatrons { get; set; } = [];
         public ICollection<Organizer> Organizers { get; set; } = [];
         public ICollection<Sponsor> Sponsors { get; set; } = [];
+        public ICollection<Ticket> Tickets { get; set; } = [];
     }
 }

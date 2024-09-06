@@ -15,7 +15,7 @@ namespace EventFlowAPI.DB.Context
         public DbSet<EventDetails> EventDetails { get; set; }
         public DbSet<EventPass> EventPass { get; set; }
         public DbSet<EventPassType> EventPassType { get; set; }
-        public DbSet<EventTicket> EventTicket { get; set; }
+        public DbSet<Ticket> Ticket { get; set; }
         public DbSet<TicketType> TicketType { get; set; }
         public DbSet<Festival> Festival { get; set; }
         public DbSet<MediaPatron> MediaPatron { get; set; }
@@ -36,7 +36,6 @@ namespace EventFlowAPI.DB.Context
         public DbSet<Seat> Seat { get; set; }
         public DbSet<SeatType> SeatType { get; set; }
         public DbSet<Reservation_Seat> Reservation_Seat { get; set; }  
-       // public DbSet<User> User { get; set; }
         public DbSet<UserData> UserData { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

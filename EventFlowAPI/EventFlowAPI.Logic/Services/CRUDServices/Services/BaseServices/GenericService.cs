@@ -23,20 +23,16 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services.BaseServices
     {
         //AutoMapperMappingException , RepositoryNotExist
         protected readonly IUnitOfWork _unitOfWork;
-        //protected readonly UserManager<User> _userManager;
         protected readonly IGenericRepository<TEntity> _repository;
-        protected GenericService(IUnitOfWork unitOfWork/*, UserManager<User> userManager*/)
+        protected GenericService(IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
-            // _userManager = userManager;
-            // Repository not exist exception
             _repository = _unitOfWork.GetRepository<TEntity>();
         }
 
 
         public virtual async Task<Result<IEnumerable<TResponseDto>>> GetAllAsync()
         {
-            //_userManager.CreateAsync(new User(), "asss");
             var records = await _repository.GetAllAsync();
             var response = MapAsDto(records);
 

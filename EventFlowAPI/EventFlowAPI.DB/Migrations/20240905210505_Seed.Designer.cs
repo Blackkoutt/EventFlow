@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EventFlowAPI.DB.Migrations
 {
     [DbContext(typeof(APIContext))]
-    [Migration("20240903234219_Seed")]
+    [Migration("20240905210505_Seed")]
     partial class Seed
     {
         /// <inheritdoc />
@@ -481,62 +481,6 @@ namespace EventFlowAPI.DB.Migrations
                         });
                 });
 
-            modelBuilder.Entity("EventFlowAPI.DB.Entities.EventTicket", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("EventId")
-                        .HasColumnType("int");
-
-                    b.Property<decimal>("Price")
-                        .HasColumnType("NUMERIC(5,2)");
-
-                    b.Property<int>("TicketTypeId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("EventId");
-
-                    b.HasIndex("TicketTypeId");
-
-                    b.ToTable("EventTicket");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            EventId = 1,
-                            Price = 24.99m,
-                            TicketTypeId = 1
-                        },
-                        new
-                        {
-                            Id = 2,
-                            EventId = 2,
-                            Price = 34.99m,
-                            TicketTypeId = 2
-                        },
-                        new
-                        {
-                            Id = 3,
-                            EventId = 3,
-                            Price = 29.99m,
-                            TicketTypeId = 3
-                        },
-                        new
-                        {
-                            Id = 4,
-                            EventId = 4,
-                            Price = 19.99m,
-                            TicketTypeId = 3
-                        });
-                });
-
             modelBuilder.Entity("EventFlowAPI.DB.Entities.Festival", b =>
                 {
                     b.Property<int>("Id")
@@ -569,29 +513,29 @@ namespace EventFlowAPI.DB.Migrations
                         new
                         {
                             Id = 1,
-                            Duration = new TimeSpan(-4, 0, 0, 0, 0),
-                            EndDate = new DateTime(2024, 9, 9, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Duration = new TimeSpan(-31, -1, 0, 0, 0),
+                            EndDate = new DateTime(2024, 10, 6, 1, 0, 0, 0, DateTimeKind.Unspecified),
                             Name = "Festiwal muzyki współczesnej",
                             ShortDescription = "Festiwal muzyki współczesnej to nowy festiwal organizowany przez XYZ.",
-                            StartDate = new DateTime(2024, 9, 5, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            StartDate = new DateTime(2024, 9, 6, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             Id = 2,
-                            Duration = new TimeSpan(-2, 0, 0, 0, 0),
-                            EndDate = new DateTime(2024, 11, 7, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Duration = new TimeSpan(-31, -2, 0, 0, 0),
+                            EndDate = new DateTime(2024, 10, 8, 2, 0, 0, 0, DateTimeKind.Unspecified),
                             Name = "Festiwal filmowy",
                             ShortDescription = "Festiwal filmowy to festiwal na którym można obejrzeć filmy.",
-                            StartDate = new DateTime(2024, 11, 5, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            StartDate = new DateTime(2024, 9, 7, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             Id = 3,
-                            Duration = new TimeSpan(-1, 0, 0, 0, 0),
-                            EndDate = new DateTime(2025, 1, 6, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Duration = new TimeSpan(-30, -3, 0, 0, 0),
+                            EndDate = new DateTime(2024, 10, 9, 3, 0, 0, 0, DateTimeKind.Unspecified),
                             Name = "Festiwal sztuki abstrakcyjnej",
                             ShortDescription = "Festiwal sztuki abstrakcyjnej to festiwal na którym można zobaczyć sztukę.",
-                            StartDate = new DateTime(2025, 1, 5, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            StartDate = new DateTime(2024, 9, 9, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         });
                 });
 
@@ -1313,9 +1257,6 @@ namespace EventFlowAPI.DB.Migrations
                     b.Property<DateTime>("EndOfReservationDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("EventTicketId")
-                        .HasColumnType("int");
-
                     b.Property<decimal>("PaymentAmount")
                         .HasColumnType("NUMERIC(7,2)");
 
@@ -1331,15 +1272,18 @@ namespace EventFlowAPI.DB.Migrations
                     b.Property<DateTime>("StartOfReservationDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<int>("TicketId")
+                        .HasColumnType("int");
+
                     b.Property<string>("UserId")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("EventTicketId");
-
                     b.HasIndex("PaymentTypeId");
+
+                    b.HasIndex("TicketId");
 
                     b.HasIndex("UserId");
 
@@ -1350,49 +1294,97 @@ namespace EventFlowAPI.DB.Migrations
                         {
                             Id = 1,
                             EndOfReservationDate = new DateTime(2024, 9, 6, 1, 0, 0, 0, DateTimeKind.Unspecified),
-                            EventTicketId = 1,
                             PaymentAmount = 24.99m,
                             PaymentDate = new DateTime(2024, 8, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             PaymentTypeId = 1,
                             ReservationDate = new DateTime(2024, 8, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             StartOfReservationDate = new DateTime(2024, 9, 6, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TicketId = 1,
                             UserId = "1"
                         },
                         new
                         {
                             Id = 2,
                             EndOfReservationDate = new DateTime(2024, 9, 7, 3, 0, 0, 0, DateTimeKind.Unspecified),
-                            EventTicketId = 2,
                             PaymentAmount = 34.99m,
                             PaymentDate = new DateTime(2024, 8, 21, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             PaymentTypeId = 2,
                             ReservationDate = new DateTime(2024, 8, 21, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             StartOfReservationDate = new DateTime(2024, 9, 7, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TicketId = 2,
                             UserId = "2"
                         },
                         new
                         {
                             Id = 3,
                             EndOfReservationDate = new DateTime(2024, 9, 8, 2, 0, 0, 0, DateTimeKind.Unspecified),
-                            EventTicketId = 3,
                             PaymentAmount = 29.99m,
                             PaymentDate = new DateTime(2024, 8, 22, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             PaymentTypeId = 3,
                             ReservationDate = new DateTime(2024, 8, 22, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             StartOfReservationDate = new DateTime(2024, 9, 8, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TicketId = 3,
                             UserId = "3"
                         },
                         new
                         {
                             Id = 4,
                             EndOfReservationDate = new DateTime(2024, 9, 9, 3, 0, 0, 0, DateTimeKind.Unspecified),
-                            EventTicketId = 4,
                             PaymentAmount = 19.99m,
                             PaymentDate = new DateTime(2024, 8, 23, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             PaymentTypeId = 2,
                             ReservationDate = new DateTime(2024, 8, 23, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             StartOfReservationDate = new DateTime(2024, 9, 9, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TicketId = 4,
                             UserId = "3"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            EndOfReservationDate = new DateTime(2024, 9, 6, 1, 0, 0, 0, DateTimeKind.Unspecified),
+                            PaymentAmount = 19.99m,
+                            PaymentDate = new DateTime(2024, 8, 18, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            PaymentTypeId = 2,
+                            ReservationDate = new DateTime(2024, 8, 18, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            StartOfReservationDate = new DateTime(2024, 9, 6, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TicketId = 5,
+                            UserId = "2"
+                        },
+                        new
+                        {
+                            Id = 6,
+                            EndOfReservationDate = new DateTime(2024, 10, 6, 1, 0, 0, 0, DateTimeKind.Unspecified),
+                            PaymentAmount = 19.99m,
+                            PaymentDate = new DateTime(2024, 8, 19, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            PaymentTypeId = 2,
+                            ReservationDate = new DateTime(2024, 8, 19, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            StartOfReservationDate = new DateTime(2024, 10, 6, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TicketId = 6,
+                            UserId = "2"
+                        },
+                        new
+                        {
+                            Id = 7,
+                            EndOfReservationDate = new DateTime(2024, 9, 7, 3, 0, 0, 0, DateTimeKind.Unspecified),
+                            PaymentAmount = 29.99m,
+                            PaymentDate = new DateTime(2024, 8, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            PaymentTypeId = 2,
+                            ReservationDate = new DateTime(2024, 8, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            StartOfReservationDate = new DateTime(2024, 9, 7, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TicketId = 7,
+                            UserId = "2"
+                        },
+                        new
+                        {
+                            Id = 8,
+                            EndOfReservationDate = new DateTime(2024, 10, 8, 2, 0, 0, 0, DateTimeKind.Unspecified),
+                            PaymentAmount = 29.99m,
+                            PaymentDate = new DateTime(2024, 8, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            PaymentTypeId = 2,
+                            ReservationDate = new DateTime(2024, 8, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            StartOfReservationDate = new DateTime(2024, 10, 8, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TicketId = 7,
+                            UserId = "2"
                         });
                 });
 
@@ -1430,6 +1422,26 @@ namespace EventFlowAPI.DB.Migrations
                         {
                             ReservationId = 4,
                             SeatId = 13
+                        },
+                        new
+                        {
+                            ReservationId = 5,
+                            SeatId = 8
+                        },
+                        new
+                        {
+                            ReservationId = 6,
+                            SeatId = 8
+                        },
+                        new
+                        {
+                            ReservationId = 7,
+                            SeatId = 12
+                        },
+                        new
+                        {
+                            ReservationId = 8,
+                            SeatId = 3
                         });
                 });
 
@@ -1592,7 +1604,7 @@ namespace EventFlowAPI.DB.Migrations
                             HallId = 2,
                             Row = 1m,
                             SeatNr = 3m,
-                            SeatTypeId = 2
+                            SeatTypeId = 1
                         },
                         new
                         {
@@ -1745,6 +1757,99 @@ namespace EventFlowAPI.DB.Migrations
                         });
                 });
 
+            modelBuilder.Entity("EventFlowAPI.DB.Entities.Ticket", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("EventId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("FestivalId")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("Price")
+                        .HasColumnType("NUMERIC(5,2)");
+
+                    b.Property<int>("TicketTypeId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("EventId");
+
+                    b.HasIndex("FestivalId");
+
+                    b.HasIndex("TicketTypeId");
+
+                    b.ToTable("Ticket");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            EventId = 1,
+                            Price = 24.99m,
+                            TicketTypeId = 1
+                        },
+                        new
+                        {
+                            Id = 2,
+                            EventId = 2,
+                            Price = 34.99m,
+                            TicketTypeId = 2
+                        },
+                        new
+                        {
+                            Id = 3,
+                            EventId = 3,
+                            Price = 29.99m,
+                            TicketTypeId = 3
+                        },
+                        new
+                        {
+                            Id = 4,
+                            EventId = 4,
+                            Price = 19.99m,
+                            TicketTypeId = 3
+                        },
+                        new
+                        {
+                            Id = 5,
+                            EventId = 1,
+                            FestivalId = 1,
+                            Price = 19.99m,
+                            TicketTypeId = 1
+                        },
+                        new
+                        {
+                            Id = 6,
+                            EventId = 5,
+                            FestivalId = 1,
+                            Price = 19.99m,
+                            TicketTypeId = 1
+                        },
+                        new
+                        {
+                            Id = 7,
+                            EventId = 2,
+                            FestivalId = 2,
+                            Price = 29.99m,
+                            TicketTypeId = 2
+                        },
+                        new
+                        {
+                            Id = 8,
+                            EventId = 6,
+                            FestivalId = 2,
+                            Price = 29.99m,
+                            TicketTypeId = 2
+                        });
+                });
+
             modelBuilder.Entity("EventFlowAPI.DB.Entities.TicketType", b =>
                 {
                     b.Property<int>("Id")
@@ -1862,7 +1967,7 @@ namespace EventFlowAPI.DB.Migrations
                         {
                             Id = "1",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "f9b5f45d-cb1e-4fab-a052-c00279fe0b90",
+                            ConcurrencyStamp = "fb3ddf27-067c-46e1-b597-f0c15014b882",
                             DateOfBirth = new DateTime(2000, 4, 3, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "admin@gmail.com",
                             EmailConfirmed = true,
@@ -1870,9 +1975,9 @@ namespace EventFlowAPI.DB.Migrations
                             Name = "Admin",
                             NormalizedEmail = "ADMIN@GMAIL.COM",
                             NormalizedUserName = "ADMIN@GMAIL.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEGzfAVH46bCaJ+ES7ytppQA3XvJQLwLTApNLnbDMrHrQn+WQSO5lCDGa7T8Pgiv6mA==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEILawDLW2MKaPbnP4+aAv3ClpmWulEdis1saOaiAI1tp5+eusxjyDHi+2nJP7t+mXQ==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "29d03c5d-5788-475c-8cf4-dc2abc79c3c8",
+                            SecurityStamp = "dfbadf0f-220c-459e-912b-d1eed97ba477",
                             Surname = "Admin",
                             TwoFactorEnabled = false,
                             UserName = "admin@gmail.com"
@@ -1881,7 +1986,7 @@ namespace EventFlowAPI.DB.Migrations
                         {
                             Id = "2",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "f87e9fd7-8bb4-4b09-b2a0-b4bf31c53f1e",
+                            ConcurrencyStamp = "21afc9a3-3116-40cd-9a41-6ef10a3ef8f2",
                             DateOfBirth = new DateTime(1985, 2, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "j.kowalski@gmail.com",
                             EmailConfirmed = true,
@@ -1889,9 +1994,9 @@ namespace EventFlowAPI.DB.Migrations
                             Name = "Jan",
                             NormalizedEmail = "J.KOWALSKI@GMAIL.COM",
                             NormalizedUserName = "J.KOWALSKI@GMAIL.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEP6ZJZ8ENuxpexo1onP6RYV/X6L6sF+6gSQO6oOmam4/+hjI9CnVW3XBzI9NDmJzOA==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEGoCny2DEyg2BOLKTmf9TLiqJl3Dz1UMSjRWcHkMh4Oafs8K5RH2e5WBBbZeXA8zSQ==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "2119a904-581e-4791-a01b-d2163c28fc88",
+                            SecurityStamp = "40e0a49d-7933-4670-b3c2-75b8d86308bb",
                             Surname = "Kowalski",
                             TwoFactorEnabled = false,
                             UserName = "j.kowalski@gmail.com"
@@ -1900,7 +2005,7 @@ namespace EventFlowAPI.DB.Migrations
                         {
                             Id = "3",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "2b547d34-7d60-4239-bf70-856b8f7b6557",
+                            ConcurrencyStamp = "f588cf5f-8c24-4a06-bbcf-f6a5b12254fa",
                             DateOfBirth = new DateTime(1979, 12, 11, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "a.kowalska@gmail.com",
                             EmailConfirmed = true,
@@ -1908,9 +2013,9 @@ namespace EventFlowAPI.DB.Migrations
                             Name = "Anna",
                             NormalizedEmail = "A.KOWALSKA@GMAIL.COM",
                             NormalizedUserName = "A.KOWALSKA@GMAIL.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAENFu1MArIWOHgEs65XUBEtnCaZHxY5hzLlmATZkbfzAez9Z5suSGS3xWPQq0lFCDtQ==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEDZ7CKBJDSuAMxXD+MRKoQSumw3ms9+gngofZUgDnazhcHtP8Xx5HGzvUxz1Fap1bA==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "d3f3cf46-4d2f-4858-8f9d-939f8885730c",
+                            SecurityStamp = "9359c437-c522-44cd-bd33-57d44cc243f6",
                             Surname = "Kowalska",
                             TwoFactorEnabled = false,
                             UserName = "a.kowalska@gmail.com"
@@ -2162,25 +2267,6 @@ namespace EventFlowAPI.DB.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("EventFlowAPI.DB.Entities.EventTicket", b =>
-                {
-                    b.HasOne("EventFlowAPI.DB.Entities.Event", "Event")
-                        .WithMany("Tickets")
-                        .HasForeignKey("EventId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("EventFlowAPI.DB.Entities.TicketType", "TicketType")
-                        .WithMany("Tickets")
-                        .HasForeignKey("TicketTypeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Event");
-
-                    b.Navigation("TicketType");
-                });
-
             modelBuilder.Entity("EventFlowAPI.DB.Entities.Festival", b =>
                 {
                     b.HasOne("EventFlowAPI.DB.Entities.FestivalDetails", "Details")
@@ -2322,15 +2408,15 @@ namespace EventFlowAPI.DB.Migrations
 
             modelBuilder.Entity("EventFlowAPI.DB.Entities.Reservation", b =>
                 {
-                    b.HasOne("EventFlowAPI.DB.Entities.EventTicket", "Ticket")
-                        .WithMany("Reservations")
-                        .HasForeignKey("EventTicketId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("EventFlowAPI.DB.Entities.PaymentType", "PaymentType")
                         .WithMany("Reservations")
                         .HasForeignKey("PaymentTypeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("EventFlowAPI.DB.Entities.Ticket", "Ticket")
+                        .WithMany("Reservations")
+                        .HasForeignKey("TicketId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -2383,6 +2469,31 @@ namespace EventFlowAPI.DB.Migrations
                     b.Navigation("Hall");
 
                     b.Navigation("SeatType");
+                });
+
+            modelBuilder.Entity("EventFlowAPI.DB.Entities.Ticket", b =>
+                {
+                    b.HasOne("EventFlowAPI.DB.Entities.Event", "Event")
+                        .WithMany("Tickets")
+                        .HasForeignKey("EventId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("EventFlowAPI.DB.Entities.Festival", "Festival")
+                        .WithMany("Tickets")
+                        .HasForeignKey("FestivalId");
+
+                    b.HasOne("EventFlowAPI.DB.Entities.TicketType", "TicketType")
+                        .WithMany("Tickets")
+                        .HasForeignKey("TicketTypeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Event");
+
+                    b.Navigation("Festival");
+
+                    b.Navigation("TicketType");
                 });
 
             modelBuilder.Entity("EventFlowAPI.DB.Entities.UserData", b =>
@@ -2467,9 +2578,9 @@ namespace EventFlowAPI.DB.Migrations
                     b.Navigation("EventPasses");
                 });
 
-            modelBuilder.Entity("EventFlowAPI.DB.Entities.EventTicket", b =>
+            modelBuilder.Entity("EventFlowAPI.DB.Entities.Festival", b =>
                 {
-                    b.Navigation("Reservations");
+                    b.Navigation("Tickets");
                 });
 
             modelBuilder.Entity("EventFlowAPI.DB.Entities.FestivalDetails", b =>
@@ -2503,6 +2614,11 @@ namespace EventFlowAPI.DB.Migrations
             modelBuilder.Entity("EventFlowAPI.DB.Entities.SeatType", b =>
                 {
                     b.Navigation("Seats");
+                });
+
+            modelBuilder.Entity("EventFlowAPI.DB.Entities.Ticket", b =>
+                {
+                    b.Navigation("Reservations");
                 });
 
             modelBuilder.Entity("EventFlowAPI.DB.Entities.TicketType", b =>

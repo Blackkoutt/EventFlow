@@ -181,7 +181,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
 
             if (!await IsAllSeatTypesExistInDB(requestDto!.Seats))
             {
-                return SeatError.SeatTypeNotFound;
+                return SeatTypeError.SeatTypeNotFound;
             }
 
             var isValidSeatsRowAndColumnError = IsValidSeatsRowAndColumn(requestDto);
@@ -292,7 +292,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             var eventTicketsIds = eventEntity.Tickets.Select(t => t.Id);
 
             var reservationsForEvent = (await _unitOfWork.GetRepository<Reservation>().GetAllAsync(q =>
-                                        q.Where(r => eventTicketsIds.Contains(r.EventTicketId)))).ToList();
+                                        q.Where(r => eventTicketsIds.Contains(r.TicketId)))).ToList();
 
             var seatsInHall = await _unitOfWork.GetRepository<Seat>().GetAllAsync(q =>
                                 q.Where(s => s.HallId == hallAddResult.Value.Id));
