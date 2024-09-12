@@ -3,7 +3,9 @@ using EventFlowAPI.Logic.Identity.Services.Services;
 using EventFlowAPI.Logic.Services.CRUDServices.Interfaces;
 using EventFlowAPI.Logic.Services.CRUDServices.Services;
 using EventFlowAPI.Logic.Services.OtherServices.Interfaces;
+using EventFlowAPI.Logic.Services.OtherServices.Interfaces.TicketCreatorConfiguration;
 using EventFlowAPI.Logic.Services.OtherServices.Services;
+using EventFlowAPI.Logic.Services.OtherServices.Services.TicketCreatorConfiguration;
 using EventFlowAPI.Logic.UnitOfWork;
 
 namespace EventFlowAPI.Extensions
@@ -50,6 +52,8 @@ namespace EventFlowAPI.Extensions
         {
             services.AddScoped<IEmailSenderService, EmailSenderService>();
             services.AddScoped<ITicketCreatorService, TicketCreatorService>();
+            services.AddScoped<IQRCodeGeneratorService, QRCodeGeneratorService>();
+            services.AddScoped<IEventTicketCreatorConfigurationService, EventTicketCreatorConfigurationService>();
         }
     }
 }

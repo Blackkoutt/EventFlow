@@ -7,6 +7,8 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Assets\Templates\festival_ticket_front.png" />
+    <None Remove="Assets\Templates\festival_ticket_reverse.png" />
     <None Remove="Assets\ticket_template.png" />
   </ItemGroup>
 
@@ -25,6 +27,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Resource Include="Assets\Templates\festival_ticket_front.png" />
+    <Resource Include="Assets\Templates\festival_ticket_reverse.png" />
     <Resource Include="Assets\Templates\ticket_template.png" />
   </ItemGroup>
 

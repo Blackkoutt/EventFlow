@@ -6,6 +6,7 @@ namespace EventFlowAPI.DB.Entities
 {
     public class Reservation : BaseEntity
     {
+        public Guid ReservationUniqueId { get; set; } = Guid.NewGuid();
         public DateTime ReservationDate { get; set; }
         public DateTime StartOfReservationDate { get; set; }
         public DateTime EndOfReservationDate { get; set; }
