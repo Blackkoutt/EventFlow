@@ -1,7 +1,9 @@
-﻿namespace EventFlowAPI.Logic.Helpers.TicketOptions
+﻿using EventFlowAPI.Logic.Helpers.Enums;
+
+namespace EventFlowAPI.Logic.Helpers.TicketOptions
 {
     public class TicketPricePrintingOptions : TicketPrintingOptions
     {
-        public string Currency { get; set; } = string.Empty;
+        public Currency Currency { get; set; }
     }
 }

@@ -13,6 +13,7 @@ namespace EventFlowAPI.Logic.Repositories.Repositories
             var _table = _context.Ticket
                         .Include(t => t.TicketType)
                         .Include(t => t.Event)
+                            .ThenInclude(e => e.Category)
                         .Include(t => t.Festival)
                         .AsSplitQuery();
 

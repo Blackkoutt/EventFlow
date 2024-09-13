@@ -40,6 +40,7 @@ namespace EventFlowAPI.DB.Extensions
         }
         public static void AddEntitiesConstraints(this ModelBuilder modelBuilder)
         {
+            
             /*modelBuilder.Entity<Hall>()
                 .HasIndex(e => e.HallNr)
                 .IsUnique();*/

@@ -55,6 +55,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
 
             decimal paymentAmount = 0;
 
+            // If it is festival then additional payment couldn't be calculated
             foreach (var seat in seatsList)
             {
                 var additionalPayment = ticket.Price * (seat.SeatType.AddtionalPaymentPercentage/100);
@@ -68,7 +69,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
 
                 var tickets = await ticketRepository.GetAllAsync(q => q.Where(t => t.FestivalId == festival.Id));
 
-                Dictionary<Ticket, List<Seat>> eventSeatsDict = new Dictionary<Ticket, List<Seat>>();
+                Dictionary<Ticket, List<Seat>> eventSeatsDict = [];
 
                 foreach(var eventTicket in tickets)
                 {
@@ -76,10 +77,13 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
                     eventSeatsDict.Add(eventTicket, seatsInEventHall);
                 }
 
+                var festivalGuid = Guid.NewGuid();
+
                 foreach(var (eventTicket, seats) in eventSeatsDict)
                 {
                     var reservationEntity = new Reservation
                     {
+                        ReservationGuid = festivalGuid,
                         ReservationDate = DateTime.Now,
                         StartOfReservationDate = eventTicket.Event.StartDate,
                         EndOfReservationDate = eventTicket.Event.EndDate,
@@ -94,6 +98,8 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
                     reservationsList.Add(reservationEntity);
                 }
 
+                await _ticketCreator.CreateFestivalTicketPNG(festival, reservationsList);
+
                 // Add Reservation to DB and generate Ticket 
 
             }
@@ -103,6 +109,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
 
                 var reservationEntity = new Reservation
                 {
+                    ReservationGuid = Guid.NewGuid(),
                     ReservationDate = DateTime.Now,
                     StartOfReservationDate = ticket.Event.StartDate,
                     EndOfReservationDate = ticket.Event.EndDate,
@@ -115,7 +122,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
                     Seats = seatsList,
                 };
 
-                await _ticketCreator.CreateEventTicketJPG(reservationEntity);
+                await _ticketCreator.CreateEventTicketPNG(reservationEntity);
 
                 // Add Reservation to DB and generate Ticket 
             }

@@ -1044,11 +1044,14 @@ namespace EventFlowAPI.DB.Extensions
                 }
             );
 
+            var firstFestivalGuid = Guid.NewGuid(); 
+            var secondFestivalGuid = Guid.NewGuid();    
 
             modelBuilder.Entity<Reservation>().HasData(
                 new Reservation
                 {
                     Id = 1,
+                    ReservationGuid = Guid.NewGuid(),
                     ReservationDate = today.AddDays(10),
                     StartOfReservationDate = today.AddMonths(1).AddDays(1),
                     EndOfReservationDate = today.AddMonths(1).AddDays(1).AddHours(1),
@@ -1061,6 +1064,7 @@ namespace EventFlowAPI.DB.Extensions
                 new Reservation
                 {
                     Id = 2,
+                    ReservationGuid = Guid.NewGuid(),
                     ReservationDate = today.AddDays(16),
                     StartOfReservationDate = today.AddMonths(1).AddDays(2),
                     EndOfReservationDate = today.AddMonths(1).AddDays(2).AddHours(3),
@@ -1073,6 +1077,7 @@ namespace EventFlowAPI.DB.Extensions
                 new Reservation
                 {
                     Id = 3,
+                    ReservationGuid = Guid.NewGuid(),
                     ReservationDate = today.AddDays(17),
                     StartOfReservationDate = today.AddMonths(1).AddDays(3),
                     EndOfReservationDate = today.AddMonths(1).AddDays(3).AddHours(2),
@@ -1085,6 +1090,7 @@ namespace EventFlowAPI.DB.Extensions
                 new Reservation
                 {
                     Id = 4,
+                    ReservationGuid = Guid.NewGuid(),
                     ReservationDate = today.AddDays(18),
                     StartOfReservationDate = today.AddMonths(1).AddDays(4),
                     EndOfReservationDate = today.AddMonths(1).AddDays(4).AddHours(3),
@@ -1097,6 +1103,7 @@ namespace EventFlowAPI.DB.Extensions
                 new Reservation
                 {
                     Id = 5,
+                    ReservationGuid = firstFestivalGuid,
                     ReservationDate = today.AddDays(13),
                     StartOfReservationDate = today.AddMonths(1).AddDays(1),
                     EndOfReservationDate = today.AddMonths(1).AddDays(1).AddHours(1),
@@ -1109,6 +1116,7 @@ namespace EventFlowAPI.DB.Extensions
                 new Reservation
                 {
                     Id = 6,
+                    ReservationGuid = firstFestivalGuid,
                     ReservationDate = today.AddDays(14),
                     StartOfReservationDate = today.AddMonths(2).AddDays(1),
                     EndOfReservationDate = today.AddMonths(2).AddDays(1).AddHours(1),
@@ -1121,6 +1129,7 @@ namespace EventFlowAPI.DB.Extensions
                 new Reservation
                 {
                     Id = 7,
+                    ReservationGuid = secondFestivalGuid,
                     ReservationDate = today.AddDays(15),
                     StartOfReservationDate = today.AddMonths(1).AddDays(2),
                     EndOfReservationDate = today.AddMonths(1).AddDays(2).AddHours(3),
@@ -1133,6 +1142,7 @@ namespace EventFlowAPI.DB.Extensions
                 new Reservation
                 {
                     Id = 8,
+                    ReservationGuid = secondFestivalGuid,
                     ReservationDate = today.AddDays(15),
                     StartOfReservationDate = today.AddMonths(2).AddDays(3),
                     EndOfReservationDate = today.AddMonths(2).AddDays(3).AddHours(2),

@@ -29,7 +29,6 @@
   <ItemGroup>
     <Resource Include="Assets\Templates\festival_ticket_front.png" />
     <Resource Include="Assets\Templates\festival_ticket_reverse.png" />
-    <Resource Include="Assets\Templates\ticket_template.png" />
   </ItemGroup>
 
   <ItemGroup>
