@@ -4,7 +4,7 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Interfaces
 {
     public interface ITicketCreatorService
     {
-        Task<int> CreateEventTicketPNG(Reservation reservation);
-        Task<int> CreateFestivalTicketPNG(Festival festival, List<Reservation> reservations);
+        Task<byte[]> CreateEventTicketJPEG(Reservation reservation);
+        Task<List<byte[]>> CreateFestivalTicketPNG(Festival festival, List<Reservation> reservations);
     }
 }

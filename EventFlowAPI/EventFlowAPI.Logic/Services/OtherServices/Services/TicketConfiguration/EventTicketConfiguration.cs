@@ -1,16 +1,17 @@
 ﻿using EventFlowAPI.DB.Entities;
+using EventFlowAPI.Logic.Helpers;
 using EventFlowAPI.Logic.Helpers.Enums;
 using EventFlowAPI.Logic.Helpers.TicketOptions;
+using EventFlowAPI.Logic.Services.OtherServices.Interfaces;
 using EventFlowAPI.Logic.Services.OtherServices.Interfaces.TicketConfiguration;
 using EventFlowAPI.Logic.Services.OtherServices.Services.TicketConfiguration.Abstract;
-using Microsoft.Extensions.Configuration;
 using SixLabors.Fonts;
 using SixLabors.ImageSharp;
 
 namespace EventFlowAPI.Logic.Services.OtherServices.Services.TicketConfiguration
 {
-    public class EventTicketConfiguration(IConfiguration configuration) :
-        TicketConfiguration<Event>(configuration),
+    public class EventTicketConfiguration(IAssetService assetService) :
+        TicketConfiguration<Event>(assetService),
         IEventTicketConfiguration
     {
 
@@ -24,14 +25,15 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services.TicketConfiguration
         protected sealed override short TitleRightMax => 748;
         protected sealed override short TitleEstimatedCharWidth => 24;
         protected sealed override short TitleEstimatedMaxCharHeight => 35;
-        protected sealed override Font TitleFont => GetFont(48, FontStyle.Bold, FontType.Inter_Regular);
+        protected sealed override Font TitleFont => _assetService.GetFont(48, FontStyle.Bold, FontType.Inter);
         protected sealed override Color TitleColor => Color.Black;
 
 
         // Ticket Date Settings 
-        protected sealed override Font DateFont => GetFont(40, FontStyle.Bold, FontType.Inter_Regular);
+        protected sealed override Font DateFont => _assetService.GetFont(40, FontStyle.Bold, FontType.Inter);
         protected sealed override Color DateColor => Color.Black;
         protected sealed override PointF DateLocation => new(x: 230, y: 426);
+        protected sealed override string FormatDate => DateFormat.DateTime;
 
 
         // Ticket Qr Code Settings 
@@ -47,12 +49,12 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services.TicketConfiguration
         private readonly Color priceColor = Color.Black;
         private const Currency priceCurrency = Currency.PLN;
         private PointF PriceLocation => new(x: detailsPrintX, y: detailsPrintY);
-        private Font PriceFont => GetFont(25, FontStyle.Bold, FontType.Inter_Regular);
+        private Font PriceFont => _assetService.GetFont(25, FontStyle.Bold, FontType.Inter);
 
 
         // Ticket Hall Settings   
         private readonly Color hallColor = Color.Black;
-        private Font HallFont => GetFont(25, FontStyle.Bold, FontType.Inter_Regular);
+        private Font HallFont => _assetService.GetFont(25, FontStyle.Bold, FontType.Inter);
         private PointF HallLocation => new(x: 371, y: detailsPrintY);
 
 
@@ -61,13 +63,13 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services.TicketConfiguration
         private const short durationRightMax = 717;
         private const short durationEstimatedCharWidth = 12;
         private readonly Color DurationColor = Color.Black;
-        private Font DurationFont => GetFont(25, FontStyle.Bold, FontType.Inter_Regular);   
+        private Font DurationFont => _assetService.GetFont(25, FontStyle.Bold, FontType.Inter);   
         private PointF DurationLocation => new(x: detailsPrintX, y: detailsPrintY);
 
 
         // Ticket Seats Settings
         private readonly Color SeatsColor = Color.Black;
-        private Font SeatsFont => GetFont(32, FontStyle.Bold, FontType.Inter_Regular);    
+        private Font SeatsFont => _assetService.GetFont(32, FontStyle.Bold, FontType.Inter);    
         private PointF SeatsLocation => new(x: 865, y: 85);
 
         protected override string GetTitle(Event entity) => $"{entity.Category.Name}: {entity.Name}";

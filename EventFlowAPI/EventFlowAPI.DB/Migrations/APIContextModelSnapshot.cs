@@ -1266,7 +1266,7 @@ namespace EventFlowAPI.DB.Migrations
                     b.Property<DateTime>("ReservationDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<Guid>("ReservationUniqueId")
+                    b.Property<Guid>("ReservationGuid")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("StartOfReservationDate")
@@ -1274,6 +1274,12 @@ namespace EventFlowAPI.DB.Migrations
 
                     b.Property<int>("TicketId")
                         .HasColumnType("int");
+
+                    b.Property<decimal>("TotalAdditionalPaymentAmount")
+                        .HasColumnType("NUMERIC(6,2)");
+
+                    b.Property<decimal>("TotalAddtionalPaymentPercentage")
+                        .HasColumnType("NUMERIC(5,2)");
 
                     b.Property<string>("UserId")
                         .IsRequired()
@@ -1298,9 +1304,11 @@ namespace EventFlowAPI.DB.Migrations
                             PaymentDate = new DateTime(2024, 8, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             PaymentTypeId = 1,
                             ReservationDate = new DateTime(2024, 8, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            ReservationUniqueId = new Guid("4070abb1-609d-4263-8c9e-d60f7495a310"),
+                            ReservationGuid = new Guid("3fb4eeba-5940-41f9-b70b-caa8191aa535"),
                             StartOfReservationDate = new DateTime(2024, 9, 6, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             TicketId = 1,
+                            TotalAdditionalPaymentAmount = 2.5m,
+                            TotalAddtionalPaymentPercentage = 10m,
                             UserId = "1"
                         },
                         new
@@ -1311,9 +1319,11 @@ namespace EventFlowAPI.DB.Migrations
                             PaymentDate = new DateTime(2024, 8, 21, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             PaymentTypeId = 2,
                             ReservationDate = new DateTime(2024, 8, 21, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            ReservationUniqueId = new Guid("d283ee49-c397-4bad-bbef-8f8613c2769b"),
+                            ReservationGuid = new Guid("c6651d2c-3332-4631-a25b-9425e226ee82"),
                             StartOfReservationDate = new DateTime(2024, 9, 7, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             TicketId = 2,
+                            TotalAdditionalPaymentAmount = 0m,
+                            TotalAddtionalPaymentPercentage = 0m,
                             UserId = "2"
                         },
                         new
@@ -1324,9 +1334,11 @@ namespace EventFlowAPI.DB.Migrations
                             PaymentDate = new DateTime(2024, 8, 22, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             PaymentTypeId = 3,
                             ReservationDate = new DateTime(2024, 8, 22, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            ReservationUniqueId = new Guid("8ab269b8-c43f-4705-b1be-c2b358d2a95d"),
+                            ReservationGuid = new Guid("ae90f5ba-e06a-4d3d-a199-f28d640e9956"),
                             StartOfReservationDate = new DateTime(2024, 9, 8, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             TicketId = 3,
+                            TotalAdditionalPaymentAmount = 7.5m,
+                            TotalAddtionalPaymentPercentage = 25m,
                             UserId = "3"
                         },
                         new
@@ -1337,9 +1349,11 @@ namespace EventFlowAPI.DB.Migrations
                             PaymentDate = new DateTime(2024, 8, 23, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             PaymentTypeId = 2,
                             ReservationDate = new DateTime(2024, 8, 23, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            ReservationUniqueId = new Guid("b5741b27-c9ba-431e-8a4c-df000a4901e3"),
+                            ReservationGuid = new Guid("7c3c16b9-da09-4324-aac1-36a836cb62eb"),
                             StartOfReservationDate = new DateTime(2024, 9, 9, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             TicketId = 4,
+                            TotalAdditionalPaymentAmount = 0m,
+                            TotalAddtionalPaymentPercentage = 0m,
                             UserId = "3"
                         },
                         new
@@ -1350,9 +1364,11 @@ namespace EventFlowAPI.DB.Migrations
                             PaymentDate = new DateTime(2024, 8, 18, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             PaymentTypeId = 2,
                             ReservationDate = new DateTime(2024, 8, 18, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            ReservationUniqueId = new Guid("17fd388a-cba4-450e-929e-32cb1400f88f"),
+                            ReservationGuid = new Guid("6d5c09c3-eee5-4530-adbe-8b493c0b8eaa"),
                             StartOfReservationDate = new DateTime(2024, 9, 6, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             TicketId = 5,
+                            TotalAdditionalPaymentAmount = 2m,
+                            TotalAddtionalPaymentPercentage = 10m,
                             UserId = "2"
                         },
                         new
@@ -1363,9 +1379,11 @@ namespace EventFlowAPI.DB.Migrations
                             PaymentDate = new DateTime(2024, 8, 19, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             PaymentTypeId = 2,
                             ReservationDate = new DateTime(2024, 8, 19, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            ReservationUniqueId = new Guid("e78be3ac-731b-4ae7-8eac-766ea4b0dad5"),
+                            ReservationGuid = new Guid("6d5c09c3-eee5-4530-adbe-8b493c0b8eaa"),
                             StartOfReservationDate = new DateTime(2024, 10, 6, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             TicketId = 6,
+                            TotalAdditionalPaymentAmount = 2m,
+                            TotalAddtionalPaymentPercentage = 10m,
                             UserId = "2"
                         },
                         new
@@ -1376,9 +1394,11 @@ namespace EventFlowAPI.DB.Migrations
                             PaymentDate = new DateTime(2024, 8, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             PaymentTypeId = 2,
                             ReservationDate = new DateTime(2024, 8, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            ReservationUniqueId = new Guid("96ee2e65-3c2b-43eb-aaf8-9bb5293f2d12"),
+                            ReservationGuid = new Guid("eab2a757-4af2-4c7a-8a19-61a8f087cd72"),
                             StartOfReservationDate = new DateTime(2024, 9, 7, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             TicketId = 7,
+                            TotalAdditionalPaymentAmount = 0m,
+                            TotalAddtionalPaymentPercentage = 0m,
                             UserId = "2"
                         },
                         new
@@ -1389,9 +1409,11 @@ namespace EventFlowAPI.DB.Migrations
                             PaymentDate = new DateTime(2024, 8, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             PaymentTypeId = 2,
                             ReservationDate = new DateTime(2024, 8, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            ReservationUniqueId = new Guid("bdbc92ca-af28-44bc-b8cd-57d1a07803e3"),
+                            ReservationGuid = new Guid("eab2a757-4af2-4c7a-8a19-61a8f087cd72"),
                             StartOfReservationDate = new DateTime(2024, 10, 8, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             TicketId = 7,
+                            TotalAdditionalPaymentAmount = 7.5m,
+                            TotalAddtionalPaymentPercentage = 25m,
                             UserId = "2"
                         });
                 });
@@ -1975,7 +1997,7 @@ namespace EventFlowAPI.DB.Migrations
                         {
                             Id = "1",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "37b079be-f5f0-401b-87c1-34d64fe76e2b",
+                            ConcurrencyStamp = "03bf3d00-e75a-45fe-a705-b3ebfff42589",
                             DateOfBirth = new DateTime(2000, 4, 3, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "admin@gmail.com",
                             EmailConfirmed = true,
@@ -1983,9 +2005,9 @@ namespace EventFlowAPI.DB.Migrations
                             Name = "Admin",
                             NormalizedEmail = "ADMIN@GMAIL.COM",
                             NormalizedUserName = "ADMIN@GMAIL.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEAoskRV1ULeYVsTOuG0/TtA3bDxcT1eADSqCwu5+rRfAnkKRRgyyZx/+Ovtt9QEmdg==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEAYgw1kAcl2vnfwbFbriAxMOvZ2UZzhhUy4zPFu01JZSF7HuGXmc3WsnPg9wOZYAgw==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "f4c8e54c-ecb5-4d32-b5d0-8ce721a300c9",
+                            SecurityStamp = "1854673d-e04b-4069-9754-b660ecd9ae13",
                             Surname = "Admin",
                             TwoFactorEnabled = false,
                             UserName = "admin@gmail.com"
@@ -1994,7 +2016,7 @@ namespace EventFlowAPI.DB.Migrations
                         {
                             Id = "2",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "7f62ca2d-7bc0-483a-a4fa-e7f247b5e45b",
+                            ConcurrencyStamp = "1249177b-acae-41cc-9fce-ed1f68661c5e",
                             DateOfBirth = new DateTime(1985, 2, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "j.kowalski@gmail.com",
                             EmailConfirmed = true,
@@ -2002,9 +2024,9 @@ namespace EventFlowAPI.DB.Migrations
                             Name = "Jan",
                             NormalizedEmail = "J.KOWALSKI@GMAIL.COM",
                             NormalizedUserName = "J.KOWALSKI@GMAIL.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEE3GrfuCsC5hEhKMhovDYwO1wefcH+GU8/gI1iYFClRLBOQu5bQCekPeaNypMqwKhA==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEPjOqa+gY25dQ7M25qJEympWnkgRAWkt76M0eNRzbRAydSAHghWbNp3bcwTLmYpqsA==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "06ea2a8c-0698-42fb-afe7-48878486c823",
+                            SecurityStamp = "f1a2ff11-6e7c-49c3-a0bf-3ac02d104ba8",
                             Surname = "Kowalski",
                             TwoFactorEnabled = false,
                             UserName = "j.kowalski@gmail.com"
@@ -2013,7 +2035,7 @@ namespace EventFlowAPI.DB.Migrations
                         {
                             Id = "3",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "50d963b7-4921-48c9-b1c3-7da5d3f60fc9",
+                            ConcurrencyStamp = "8faf1548-312b-446d-ba5e-3cd7986a604c",
                             DateOfBirth = new DateTime(1979, 12, 11, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "a.kowalska@gmail.com",
                             EmailConfirmed = true,
@@ -2021,9 +2043,9 @@ namespace EventFlowAPI.DB.Migrations
                             Name = "Anna",
                             NormalizedEmail = "A.KOWALSKA@GMAIL.COM",
                             NormalizedUserName = "A.KOWALSKA@GMAIL.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEGMP6JNLFvt75mgPDxvmWuAcV6uIyvp9gbjL7mlj480abGJVOZtidHE5+viXxQjBjg==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEAeOhTAGatlGBWgrHyJbsXyus2wedCtMJL7zBHQZC969cWPlJ/xO267FRJ2i1p4nFA==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "e2f311d4-55ec-4021-9416-36c376a408ce",
+                            SecurityStamp = "20bc73fc-5da3-43b8-907d-0be944a3d5b3",
                             Surname = "Kowalska",
                             TwoFactorEnabled = false,
                             UserName = "a.kowalska@gmail.com"

@@ -9,7 +9,5 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Interfaces.TicketConfigurati
         TicketTitlePrintingOptions GetTitlePrintingOptions(TEntity entity);
         TicketDatePrintingOptions GetDatePrintingOptions();
         TicketQRCodePrintingOptions GetQRCodePrintingOptions();
-        string GetAssetPath(AssetType assetType, string assetName);
-        Task<Image> GetTicketTemplate(Template templateName);
     }
 }

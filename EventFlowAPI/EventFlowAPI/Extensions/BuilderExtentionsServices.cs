@@ -55,6 +55,8 @@ namespace EventFlowAPI.Extensions
             services.AddScoped<IQRCodeGeneratorService, QRCodeGeneratorService>();
             services.AddScoped<IEventTicketConfiguration, EventTicketConfiguration>();
             services.AddScoped<IFestivalTicketConfiguration, FestivalTicketConfiguration>();
+            services.AddScoped<IAssetService, AssetService>();
+            services.AddScoped<IPdfBuilderService, PdfBuilderService>();
         }
     }
 }

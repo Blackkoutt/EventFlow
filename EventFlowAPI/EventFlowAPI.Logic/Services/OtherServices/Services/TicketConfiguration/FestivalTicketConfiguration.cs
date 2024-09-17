@@ -2,9 +2,9 @@
 using EventFlowAPI.Logic.Helpers;
 using EventFlowAPI.Logic.Helpers.Enums;
 using EventFlowAPI.Logic.Helpers.TicketOptions;
+using EventFlowAPI.Logic.Services.OtherServices.Interfaces;
 using EventFlowAPI.Logic.Services.OtherServices.Interfaces.TicketConfiguration;
 using EventFlowAPI.Logic.Services.OtherServices.Services.TicketConfiguration.Abstract;
-using Microsoft.Extensions.Configuration;
 using SixLabors.Fonts;
 using SixLabors.ImageSharp;
 
@@ -32,14 +32,15 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services.TicketConfiguration
         protected sealed override short TitleRightMax => 1600;
         protected sealed override short TitleEstimatedCharWidth => 39;
         protected sealed override short TitleEstimatedMaxCharHeight => 104;
-        protected sealed override Font TitleFont => GetFont(130, FontStyle.Bold, FontType.BigShouldersDisplay_Regular);
+        protected sealed override Font TitleFont => _assetService.GetFont(130, FontStyle.Bold, FontType.BigShouldersDisplay);
         protected sealed override Color TitleColor => Color.FromRgb(255, 102, 196);
 
 
         // Front Ticket Date Settings 
-        protected sealed override Font DateFont => GetFont(60, FontStyle.Regular, FontType.BigShouldersDisplay_Regular);
+        protected sealed override Font DateFont => _assetService.GetFont(60, FontStyle.Regular, FontType.BigShouldersDisplay);
         protected sealed override Color DateColor => Color.Black;
         protected sealed override PointF DateLocation => new(x: 995, y: 470);
+        protected sealed override string FormatDate => DateFormat.Date;
 
 
         // Front Ticket Qr Code Settings 
@@ -49,19 +50,19 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services.TicketConfiguration
 
 
         // Reverse Ticket Tab Number Settings
-        private Font TabNumberFont => GetFont(55, FontStyle.Bold, FontType.Inter_Regular);
+        private Font TabNumberFont => _assetService.GetFont(55, FontStyle.Bold, FontType.Inter);
         private Color TabNumberColor => Color.Black;
         private PointF TabNumberLocation => new(x: printX, y: printY);
 
 
         // Reverse Ticket Tab Number Settings
-        private Font EventInfoFont => GetFont(24, FontStyle.Regular, FontType.Inter_Regular);
+        private Font EventInfoFont => _assetService.GetFont(24, FontStyle.Regular, FontType.Inter);
         private Color EventInfoColor => Color.Black;
         private PointF EventInfoLocation => new(x: printX, y: printY);
 
 
         // Reverse Ticket Seats Settings
-        private Font SeatsFont => GetFont(30, FontStyle.Bold, FontType.Inter_Bold);
+        private Font SeatsFont => _assetService.GetFont(30, FontStyle.Bold, FontType.Inter);
         private Color SeatsColor => Color.Black;
         private PointF SeatsLocation => new(x: printX, y: printY);
 
@@ -71,7 +72,7 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services.TicketConfiguration
         private int printX;
         private int printY;
 
-        public FestivalTicketConfiguration(IConfiguration configuration) : base(configuration)
+        public FestivalTicketConfiguration(IAssetService assetService) : base(assetService)
         {
             tabStartX = firstColumnX_DefaultValue;
             tabStartY = y_DefaultValue;

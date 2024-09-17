@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EventFlowAPI.DB.Migrations
 {
     [DbContext(typeof(APIContext))]
-    [Migration("20240912134445_Initial")]
+    [Migration("20240916181017_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -555,7 +555,7 @@ namespace EventFlowAPI.DB.Migrations
                     b.Property<DateTime>("ReservationDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<Guid>("ReservationUniqueId")
+                    b.Property<Guid>("ReservationGuid")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("StartOfReservationDate")
@@ -563,6 +563,12 @@ namespace EventFlowAPI.DB.Migrations
 
                     b.Property<int>("TicketId")
                         .HasColumnType("int");
+
+                    b.Property<decimal>("TotalAdditionalPaymentAmount")
+                        .HasColumnType("NUMERIC(6,2)");
+
+                    b.Property<decimal>("TotalAddtionalPaymentPercentage")
+                        .HasColumnType("NUMERIC(5,2)");
 
                     b.Property<string>("UserId")
                         .IsRequired()

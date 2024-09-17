@@ -4,6 +4,7 @@
     {
         Templates,
         Fonts,
+        Pictures,
         Tests
     }
 }

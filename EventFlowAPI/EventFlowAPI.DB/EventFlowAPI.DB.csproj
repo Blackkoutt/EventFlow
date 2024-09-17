@@ -7,6 +7,14 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Assets\Images\**" />
+    <EmbeddedResource Remove="Assets\Images\**" />
+    <None Remove="Assets\Images\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="Assets\Pictures\EventFlowLogo_Big.png" />
+    <None Remove="Assets\Pictures\EventFlowLogo_Small.png" />
     <None Remove="Assets\Templates\festival_ticket_front.png" />
     <None Remove="Assets\Templates\festival_ticket_reverse.png" />
     <None Remove="Assets\ticket_template.png" />
@@ -27,6 +35,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Resource Include="Assets\Pictures\EventFlowLogo_Big.png" />
+    <Resource Include="Assets\Pictures\EventFlowLogo_Small.png" />
     <Resource Include="Assets\Templates\festival_ticket_front.png" />
     <Resource Include="Assets\Templates\festival_ticket_reverse.png" />
   </ItemGroup>

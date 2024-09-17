@@ -1,17 +1,77 @@
-﻿using EventFlowAPI.Logic.Helpers.TicketOptions;
-using SixLabors.Fonts;
+﻿using EventFlowAPI.Logic.Helpers.Enums;
+using EventFlowAPI.Logic.Helpers.TicketOptions;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Drawing.Processing;
 using SixLabors.ImageSharp.Processing;
-using System.IO;
 
 namespace EventFlowAPI.Logic.Services.OtherServices.Extensions
 {
     public static class ImageExtensions
     {
+        public static async Task<byte[]> AsBitmap(this Image image, ImageFormat format)
+        {
+            using (var memoryStream = new MemoryStream())
+            {
+                switch (format)
+                {
+                    case ImageFormat.JPEG:
+                        {
+                            await image.SaveAsJpegAsync(memoryStream);
+                            break;
+                        }
+                    case ImageFormat.PNG:
+                        {
+                            await image.SaveAsPngAsync(memoryStream);
+                            break;
+                        }
+                    case ImageFormat.GIF:
+                        {
+                            await image.SaveAsGifAsync(memoryStream);
+                            break;
+                        }
+                    case ImageFormat.BMP:
+                        {
+                            await image.SaveAsBmpAsync(memoryStream);
+                            break;
+                        }
+                    case ImageFormat.PBM:
+                        {
+                            await image.SaveAsPbmAsync(memoryStream);
+                            break;
+                        }
+                    case ImageFormat.QOI:
+                        {
+                            await image.SaveAsQoiAsync(memoryStream);
+                            break;
+                        }
+                    case ImageFormat.TGA:
+                        {
+                            await image.SaveAsTgaAsync(memoryStream);
+                            break;
+                        }
+                    case ImageFormat.TIFF:
+                        {
+                            await image.SaveAsTiffAsync(memoryStream);
+                            break;
+                        }
+                    case ImageFormat.WEBP:
+                        {
+                            await image.SaveAsWebpAsync(memoryStream);
+                            break;
+                        }
+                    default:
+                        {
+                            await image.SaveAsJpegAsync(memoryStream);
+                            break;
+                        }
+                }
+                return memoryStream.ToArray();
+            }
+        }
+
         public static void Draw(this Image image, string text, TicketPrintingOptions options)
         {
-            if(options is TicketTitlePrintingOptions)
+            if (options is TicketTitlePrintingOptions)
             {
                 var titleOptions = (TicketTitlePrintingOptions)options;
                 image.Mutate(ctx => ctx.DrawText(

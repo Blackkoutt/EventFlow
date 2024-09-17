@@ -3,6 +3,7 @@ using EventFlowAPI.DB.Entities;
 using EventFlowAPI.Logic.DTO.RequestDto;
 using EventFlowAPI.Logic.DTO.ResponseDto;
 using EventFlowAPI.Logic.Errors;
+using EventFlowAPI.Logic.Helpers;
 using EventFlowAPI.Logic.Identity.Services.Interfaces;
 using EventFlowAPI.Logic.ResultObject;
 using EventFlowAPI.Logic.Services.CRUDServices.Interfaces;
@@ -16,7 +17,9 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
         IUnitOfWork unitOfWork,
         ISeatService seatService,
         IAuthService authService,
-        ITicketCreatorService ticketCreator) :
+        ITicketCreatorService ticketCreator,
+        IPdfBuilderService pdfBuilderService,
+        IEmailSenderService emailSender) :
         GenericService<
             Reservation,
             ReservationRequestDto,
@@ -27,6 +30,8 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
         private readonly ISeatService _seatService = seatService;
         private readonly IAuthService _authService = authService;
         private readonly ITicketCreatorService _ticketCreator = ticketCreator;
+        private readonly IPdfBuilderService _pdfBuilderService = pdfBuilderService;
+        private readonly IEmailSenderService _emailSender = emailSender;
 
         public async Task<Result<ReservationResponseDto>> MakeReservation(ReservationRequestDto? requestDto)
         {
@@ -53,14 +58,10 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             var ticket = await ticketRepository.GetOneAsync(requestDto.TicketId);
             var festival = ticket!.Festival;
 
-            decimal paymentAmount = 0;
+
 
             // If it is festival then additional payment couldn't be calculated
-            foreach (var seat in seatsList)
-            {
-                var additionalPayment = ticket.Price * (seat.SeatType.AddtionalPaymentPercentage/100);
-                paymentAmount += ticket.Price + additionalPayment;
-            }
+            List<byte[]> ticketBitmaps = [];
 
             if (festival != null)
             {
@@ -83,46 +84,115 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
                 {
                     var reservationEntity = new Reservation
                     {
+                        Id = 123123, // to delete
                         ReservationGuid = festivalGuid,
                         ReservationDate = DateTime.Now,
                         StartOfReservationDate = eventTicket.Event.StartDate,
                         EndOfReservationDate = eventTicket.Event.EndDate,
                         PaymentDate = DateTime.Now,
-                        PaymentAmount = paymentAmount,
+                        PaymentAmount = Math.Round(eventTicket.Price, 2),
+                        TotalAddtionalPaymentPercentage = 0m,
+                        TotalAdditionalPaymentAmount = 0m,
                         //UserId = currentUserIdResult.Value,
-                        PaymentTypeId = requestDto.PaymentTypeId,
+                        //PaymentTypeId = requestDto.PaymentTypeId,
                         //TicketId = eventTicket.Id,
+                        PaymentType = new PaymentType
+                        {
+                            Name = "Płatność kartą"
+                        },
+                        User = new User // to delete
+                        {
+                            Name = "Mateusz",
+                            Surname = "Strapczuk"
+                        },
                         Ticket = eventTicket,
                         Seats = seats,
                     };
                     reservationsList.Add(reservationEntity);
                 }
 
-                await _ticketCreator.CreateFestivalTicketPNG(festival, reservationsList);
+                ticketBitmaps = await _ticketCreator.CreateFestivalTicketPNG(festival, reservationsList);
+                var ticketPDF = await _pdfBuilderService.CreateTicketPdf(reservationsList.First(), ticketBitmaps);
+                
+                var emailDto = new EmailDto
+                {
+                    Email = "mateusz.strapczuk@gmail.com",
+                    Subject = $"Twoje bilety EventFlow - zamówienie nr {reservationsList.First().Id}",
+                    Body = $"Test",
+                    Attachments =
+                    {
+                        new AttachmentDto
+                        {
+                            Type = "application/pdf",
+                            FileName =$"eventflow_bilety_{reservationsList.First().Id}.pdf",
+                            Data = ticketPDF
+                        }
+                    }
+                };
+                await _emailSender.SendEmailAsync(emailDto);
 
                 // Add Reservation to DB and generate Ticket 
 
             }
             else
-            {  
+            {
                 // ticket for event 
+                decimal paymentAmount = 0;
+                decimal totalAdditionalPayment = 0;
+                foreach (var seat in seatsList)
+                {
+                    var additionalPayment = ticket.Price * (seat.SeatType.AddtionalPaymentPercentage / 100);
+                    totalAdditionalPayment += additionalPayment;
+                    paymentAmount += ticket.Price + additionalPayment;
+                }
+                decimal totalAdditionalPaymentPercentage = Math.Round((totalAdditionalPayment / ticket.Price) * 100, 2);
 
                 var reservationEntity = new Reservation
                 {
+                    Id = 12342, // to delete
                     ReservationGuid = Guid.NewGuid(),
                     ReservationDate = DateTime.Now,
                     StartOfReservationDate = ticket.Event.StartDate,
                     EndOfReservationDate = ticket.Event.EndDate,
                     PaymentDate = DateTime.Now,
-                    PaymentAmount = paymentAmount,
+                    TotalAddtionalPaymentPercentage = totalAdditionalPaymentPercentage,
+                    TotalAdditionalPaymentAmount = Math.Round(totalAdditionalPayment, 2),
+                    PaymentAmount = Math.Round(paymentAmount, 2),
                     //UserId = currentUserIdResult.Value,
-                    PaymentTypeId = requestDto.PaymentTypeId,
+                    //PaymentTypeId = requestDto.PaymentTypeId,
                     // TicketId = ticket.Id,  
+                    PaymentType = new PaymentType
+                    {
+                        Name = "Płatność kartą"
+                    },
+                    User = new User // to delete
+                    {
+                        Name = "Mateusz",
+                        Surname = "Strapczuk"
+                    },
                     Ticket = ticket,
                     Seats = seatsList,
                 };
 
-                await _ticketCreator.CreateEventTicketPNG(reservationEntity);
+                var ticketBitmap = await _ticketCreator.CreateEventTicketJPEG(reservationEntity);
+                ticketBitmaps.Add(ticketBitmap);
+                var ticketPDF = await _pdfBuilderService.CreateTicketPdf(reservationEntity, ticketBitmaps);
+                var emailDto = new EmailDto
+                {
+                    Email = "mateusz.strapczuk@gmail.com",
+                    Subject = $"Twoje bilety EventFlow - zamówienie nr {reservationEntity.Id}",
+                    Body = $"Test",
+                    Attachments =
+                    {
+                        new AttachmentDto
+                        {
+                            Type = "application/pdf",
+                            FileName =$"eventflow_bilety_{reservationEntity.Id}.pdf",
+                            Data = ticketPDF
+                        }
+                    }
+                };
+                await _emailSender.SendEmailAsync(emailDto);
 
                 // Add Reservation to DB and generate Ticket 
             }

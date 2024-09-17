@@ -1,17 +1,15 @@
-﻿using EventFlowAPI.Logic.Helpers;
-using EventFlowAPI.Logic.Helpers.Enums;
-using EventFlowAPI.Logic.Helpers.TicketOptions;
+﻿using EventFlowAPI.Logic.Helpers.TicketOptions;
+using EventFlowAPI.Logic.Services.OtherServices.Interfaces;
 using EventFlowAPI.Logic.Services.OtherServices.Interfaces.TicketConfiguration.Abstract;
-using Microsoft.Extensions.Configuration;
 using SixLabors.Fonts;
 using SixLabors.ImageSharp;
 
 namespace EventFlowAPI.Logic.Services.OtherServices.Services.TicketConfiguration.Abstract
 {
     public abstract class TicketConfiguration<TEntity>(
-        IConfiguration configuration) : ITicketConfiguration<TEntity> where TEntity : class
+        IAssetService assetService) : ITicketConfiguration<TEntity> where TEntity : class
     {
-        private readonly IConfiguration _configuration = configuration;
+        protected IAssetService _assetService = assetService;
 
         public TicketTitlePrintingOptions GetTitlePrintingOptions(TEntity entity)
         {
@@ -61,7 +59,7 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services.TicketConfiguration
                 Font = DateFont,
                 BrushColor = DateColor,
                 Location = DateLocation,
-                DateFormat = DateFormat.Date,
+                DateFormat = FormatDate,
             };
         }
 
@@ -74,31 +72,6 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services.TicketConfiguration
                 Size = QRCodeSize
             };
         }
-
-
-        private FontCollection fontCollection = new();
-        protected Font GetFont(int fontSize, FontStyle fontStyle, FontType fontName)
-        {
-
-            var isFontExist = fontCollection.TryGet(fontName.ToString().Replace("_", "-"), out FontFamily fontFamily);
-            if (!isFontExist)
-            {
-                var fontPath = GetAssetPath(AssetType.Fonts, fontName.ToString().Replace("_", "-"));
-                fontFamily = fontCollection.Add(fontPath);
-            }
-
-            return fontFamily.CreateFont(fontSize, fontStyle);
-        }
-
-        public string GetAssetPath(AssetType assetType, string assetName) => Path.GetFullPath(_configuration.GetSection($"Assets:{assetType}")[assetName]!);
-        
-        
-        public async Task<Image> GetTicketTemplate(Template templateName)
-        {
-            var ticketPath = GetAssetPath(AssetType.Templates, templateName.ToString());
-            return await Image.LoadAsync(ticketPath);
-        }
-
 
         // Title abstract params
         protected abstract string GetTitle(TEntity entity);
@@ -116,6 +89,7 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services.TicketConfiguration
         protected abstract Font DateFont { get; }
         protected abstract Color DateColor { get; }
         protected abstract PointF DateLocation { get; }
+        protected abstract string FormatDate { get; }
 
 
         // QR Code abstract params

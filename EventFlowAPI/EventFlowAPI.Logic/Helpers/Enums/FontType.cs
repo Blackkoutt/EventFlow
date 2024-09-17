@@ -2,9 +2,9 @@
 {
     public enum FontType
     {
-        Inter_Regular,
-        Inter_Bold,
-        BigShouldersDisplay_Regular,
-        BigShouldersDisplay_Bold,
+        Inter,
+        //Inter_Bold,
+        BigShouldersDisplay,
+       // BigShouldersDisplay_Bold,
     }
 }

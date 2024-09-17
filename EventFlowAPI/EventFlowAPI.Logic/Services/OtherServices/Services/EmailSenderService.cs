@@ -24,11 +24,9 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
             {
                 foreach(AttachmentDto attachmentDto in emailDto.Attachments)
                 {
-                    using (var stream = new MemoryStream(attachmentDto.Data))
-                    {
-                        var attachment = new Attachment(stream, attachmentDto.FileName, attachmentDto.Type); // "application/pdf"
-                        mailMessage.Attachments.Add(attachment);
-                    }
+                    var stream = new MemoryStream(attachmentDto.Data);
+                    var attachment = new Attachment(stream, attachmentDto.FileName, attachmentDto.Type); // "application/pdf"
+                    mailMessage.Attachments.Add(attachment);
                 }
             }
             return client.SendMailAsync(mailMessage);

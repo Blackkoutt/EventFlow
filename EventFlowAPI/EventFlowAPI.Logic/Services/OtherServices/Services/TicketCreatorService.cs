@@ -11,82 +11,85 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
     public class TicketCreatorService(
         IFestivalTicketConfiguration festivalTicketConfig,
         IEventTicketConfiguration eventTicketConfig,
-        IQRCodeGeneratorService qrCoder) : ITicketCreatorService
+        IQRCodeGeneratorService qrCoder,
+        IAssetService assetService) : ITicketCreatorService
     {
         private readonly IFestivalTicketConfiguration _festivalTicketConfig = festivalTicketConfig;
         private readonly IEventTicketConfiguration _eventTicketConfig = eventTicketConfig;
         private readonly IQRCodeGeneratorService _qrCoder = qrCoder;
+        private readonly IAssetService _assetService = assetService;   
 
-        public async Task<int> CreateEventTicketPNG(Reservation reservation)
+        public async Task<byte[]> CreateEventTicketJPEG(Reservation reservation)
         {
-            var outputPath = _eventTicketConfig.GetAssetPath(AssetType.Tests, "EventPath");
+            // TEST
+            var outputPath = _assetService.GetOutputTestPath(TestsOutput.EventPath);
 
-            using (var image = await _eventTicketConfig.GetTicketTemplate(Template.EventTicket))
-            {
-                var eventEntity = reservation.Ticket.Event;
+            var image = await _assetService.GetTicketTemplate(Template.EventTicket);
+            var eventEntity = reservation.Ticket.Event;
 
-                var titleOptions = _eventTicketConfig.GetTitlePrintingOptions(eventEntity);     
-                image.Draw(eventEntity.Name, titleOptions);
+            var titleOptions = _eventTicketConfig.GetTitlePrintingOptions(eventEntity);     
+            image.Draw(eventEntity.Name, titleOptions);
 
-                var dateOptions = _eventTicketConfig.GetDatePrintingOptions();
-                image.Draw($"{eventEntity.StartDate.ToString(dateOptions.DateFormat)}", dateOptions);
+            var dateOptions = _eventTicketConfig.GetDatePrintingOptions();
+            image.Draw($"{eventEntity.StartDate.ToString(dateOptions.DateFormat)}", dateOptions);
 
-                var priceOptions = _eventTicketConfig.GetPricePrintingOptions(reservation);
-                image.Draw($"{reservation.Ticket.Price} {priceOptions.Currency}", priceOptions);
+            var priceOptions = _eventTicketConfig.GetPricePrintingOptions(reservation);
+            image.Draw($"{reservation.Ticket.Price} {priceOptions.Currency}", priceOptions);
 
-                var hallOptions = _eventTicketConfig.GetHallPrintingOptions();
-                image.Draw(eventEntity.Hall.HallNr.ToString(), hallOptions);
+            var hallOptions = _eventTicketConfig.GetHallPrintingOptions();
+            image.Draw(eventEntity.Hall.HallNr.ToString(), hallOptions);
 
-                var durationOptions = _eventTicketConfig.GetDurationPrintingOpitons(eventEntity);
-                image.Draw($"{eventEntity.Duration.TotalMinutes} min", durationOptions);
+            var durationOptions = _eventTicketConfig.GetDurationPrintingOpitons(eventEntity);
+            image.Draw($"{eventEntity.Duration.TotalMinutes} min", durationOptions);
  
-                var seatsOptions = _eventTicketConfig.GetSeatsPrintingOptions();
-                image.Draw(string.Join(", ", reservation.Seats.Select(s => s.SeatNr)), seatsOptions);
+            var seatsOptions = _eventTicketConfig.GetSeatsPrintingOptions();
+            image.Draw(string.Join(", ", reservation.Seats.Select(s => s.SeatNr)), seatsOptions);
 
-                var qrCodeOptions = _eventTicketConfig.GetQRCodePrintingOptions();
-                var qrCode = _qrCoder.GenerateQRCode(reservation, qrCodeOptions.Size);
-                image.Draw(qrCode, qrCodeOptions);
+            var qrCodeOptions = _eventTicketConfig.GetQRCodePrintingOptions();
+            var qrCode = _qrCoder.GenerateQRCode(reservation, qrCodeOptions.Size);
+            image.Draw(qrCode, qrCodeOptions);
                 
-                await image.SaveAsPngAsync(outputPath);
-                return 1;
+            // TEST
+            await image.SaveAsJpegAsync(outputPath);
 
-                /*using (var memoryStream = new MemoryStream())
-                {
-                   
-                    //return memoryStream.ToArray();
-                    
-                }*/
-            }
+            return await image.AsBitmap(ImageFormat.JPEG);         
         }
 
-        public async Task<int> CreateFestivalTicketPNG(Festival festival, List<Reservation> reservations)
+        public async Task<List<byte[]>> CreateFestivalTicketPNG(Festival festival, List<Reservation> reservations)
         {
-            var outputPath = _festivalTicketConfig.GetAssetPath(AssetType.Tests, "FestivalPathFront");
+            List<byte[]> imagesBitmaps = [];
 
-            using (var template = await _festivalTicketConfig.GetTicketTemplate(Template.FestivalTicketFront))
-            {
-                var ticket = CreateFestivalFrontOfTicket(template, festival, reservations.First());
+            // TEST
+            var outputPath = _assetService.GetOutputTestPath(TestsOutput.FestivalPathFront);
 
-                await ticket.SaveAsPngAsync(outputPath);
-            }
+            var frontTemplate = await _assetService.GetTicketTemplate(Template.FestivalTicketFront);
+            var frontTicket = CreateFestivalFrontOfTicket(frontTemplate, festival, reservations.First());
+
+            // TEST
+            await frontTicket.SaveAsPngAsync(outputPath);
+
+            var frontTicketBitmap = await frontTicket.AsBitmap(ImageFormat.JPEG);
+            imagesBitmaps.Add(frontTicketBitmap);
 
             List<Image> reverseOfTickets = [];
-            var outputReverseTicketPath = _festivalTicketConfig.GetAssetPath(AssetType.Tests, "FestivalPathReverse");
-            using (var template = await _festivalTicketConfig.GetTicketTemplate(Template.FestivalTicketReverse))
+
+            // TEST
+            var outputReverseTicketPath = _assetService.GetOutputTestPath(TestsOutput.FestivalPathReverse);
+
+            var reverseTemplate = await _assetService.GetTicketTemplate(Template.FestivalTicketReverse);
+            reverseOfTickets = CreateFestivalReverseOfTickets(reverseTemplate, reservations);
+
+            for (int i = 0; i < reverseOfTickets.Count; i++)
             {
-                reverseOfTickets = CreateFestivalReverseOfTickets(template, reservations);
-                for (int i = 0; i < reverseOfTickets.Count; i++)
-                {
-                    var outputName = $"festival_reverse_test{i + 1}.png";
-                    var reverseOutputPath = $"{outputReverseTicketPath}{outputName}";
-                    await reverseOfTickets[i].SaveAsPngAsync(reverseOutputPath);
-                }
+                // TEST
+                var outputName = $"festival_reverse_test{i + 1}.png";
+                var reverseOutputPath = $"{outputReverseTicketPath}{outputName}";
+                await reverseOfTickets[i].SaveAsPngAsync(reverseOutputPath);
+
+                var ticketReverse = await reverseOfTickets[i].AsBitmap(ImageFormat.JPEG);
+                imagesBitmaps.Add(ticketReverse);
             }
-
-            
-            
-
-            return 1;
+            return imagesBitmaps;
         }
 
         private Image CreateFestivalFrontOfTicket(Image template, Festival festival, Reservation reservation)
@@ -148,6 +151,5 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
             }
             return reverseOfTickets;
         }
-
     }
 }
