@@ -2,7 +2,6 @@
 using EventFlowAPI.DB.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using Microsoft.AspNetCore.Identity;
 
 namespace EventFlowAPI.DB.Context
 {
@@ -27,6 +26,7 @@ namespace EventFlowAPI.DB.Context
         public DbSet<Festival_Sponsor> Festival_Sponsor { get; set; }
         public DbSet<FestivalDetails> FestivalDetails { get; set; }
         public DbSet<Hall> Hall { get; set; }
+        public DbSet<HallDetails> HallDetails { get; set; }
         public DbSet<HallRent> HallRent { get; set; }
         public DbSet<HallRent_AdditionalServices> HallRent_AdditionalServices { get; set; }
         public DbSet<HallType> HallType { get; set; }

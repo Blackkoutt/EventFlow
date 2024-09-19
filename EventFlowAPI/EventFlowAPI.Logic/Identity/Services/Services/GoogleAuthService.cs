@@ -1,15 +1,12 @@
 ﻿using EventFlowAPI.DB.Entities;
 using EventFlowAPI.Logic.Errors;
 using EventFlowAPI.Logic.Identity.DTO.ResponseDto;
-using EventFlowAPI.Logic.Identity.Helpers;
 using EventFlowAPI.Logic.Identity.Services.Interfaces;
 using EventFlowAPI.Logic.Identity.Services.Services.BaseServices;
 using EventFlowAPI.Logic.ResultObject;
-using Google.Apis.Auth.OAuth2.Responses;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
-using Newtonsoft.Json;
 using System.Text.Encodings.Web;
 using static Google.Apis.Auth.GoogleJsonWebSignature;
 

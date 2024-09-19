@@ -21,12 +21,12 @@ namespace EventFlowAPI.Logic.Helpers.PdfOptions.PdfInfoAndStatuteOptions
         public float HeaderPadBottom => 4f;
         public TextOptions Header => new TextOptions()
         {
-            Style = TextStyle.Default.FontFamily(defaultFontType).FontSize(11f)
+            Style = TextStyle.Default.FontFamily(defaultFontType).FontSize(9.5f)
         };
         public float ItemPadBottom => 2.3f;
         public TextOptions Item => new TextOptions()
         {
-            Style = TextStyle.Default.FontFamily(defaultFontType).FontSize(9f)
+            Style = TextStyle.Default.FontFamily(defaultFontType).FontSize(8.5f)
         };
 
 

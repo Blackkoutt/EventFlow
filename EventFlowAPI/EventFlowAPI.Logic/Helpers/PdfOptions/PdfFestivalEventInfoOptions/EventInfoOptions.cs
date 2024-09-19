@@ -39,7 +39,7 @@ namespace EventFlowAPI.Logic.Helpers.PdfOptions.PdfFestivalEventInfoOptions
         public TextOptions Name => new TextOptions
         {
             Text = $"{_reservation.Ticket.Event.Name.ToUpper()}",
-            Style = TextStyle.Default.FontFamily(defaultFontType).FontSize(16f).Bold(),
+            Style = TextStyle.Default.FontFamily(defaultFontType).FontSize(14f).Bold(),
             PaddingBottom = 0f
         };
     }

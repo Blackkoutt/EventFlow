@@ -14,7 +14,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Interfaces
             UserResponseDto
         >
     {
-        Task<Result<UserResponseDto>> GetCurrentUserInfo();
+        Task<Result<UserResponseDto>> GetCurrentUser();
         Task<Result<UserResponseDto>> GetOneAsync(string? id);
     }
 }

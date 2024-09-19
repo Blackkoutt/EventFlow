@@ -45,8 +45,8 @@ namespace EventFlowAPI.Controllers
         /// Sample request:
         /// 
         ///     {
-        ///         "email": "j.kowalski@gmail.com",
-        ///         "password": "789456123qaz"
+        ///         "email": "mateusz.strapczuk1@gmail.com",
+        ///         "password": "qazzaq1@WSX"
         ///     }
         ///       
         /// </remarks>
@@ -138,7 +138,7 @@ namespace EventFlowAPI.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<IActionResult> Info()
         {
-            var result = await _userService.GetCurrentUserInfo();
+            var result = await _userService.GetCurrentUser();
             return result.IsSuccessful ? Ok(result.Value) : BadRequest(result.Error.Details);
         }
 

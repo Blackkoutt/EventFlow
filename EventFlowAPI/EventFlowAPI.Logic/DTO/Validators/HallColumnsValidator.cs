@@ -6,7 +6,7 @@ namespace EventFlowAPI.Logic.DTO.Validators
 {
     public class HallColumnsValidator : HallAbstractValidator
     {
-        protected sealed override ValidationResult? ValidationRule(HallRequestDto hallObj)
+        protected sealed override ValidationResult? ValidationRule(HallDetailsRequestDto hallObj)
         {
             if (hallObj.MaxNumberOfSeatsColumns < hallObj.NumberOfSeatsColumns)
             {

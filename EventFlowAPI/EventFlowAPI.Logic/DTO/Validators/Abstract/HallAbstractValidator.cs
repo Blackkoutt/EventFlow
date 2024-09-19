@@ -1,5 +1,4 @@
 ﻿using EventFlowAPI.Logic.DTO.RequestDto;
-using EventFlowAPI.Logic.UnitOfWork;
 using System.ComponentModel.DataAnnotations;
 
 namespace EventFlowAPI.Logic.DTO.Validators.Abstract
@@ -8,12 +7,12 @@ namespace EventFlowAPI.Logic.DTO.Validators.Abstract
     {
         protected sealed override ValidationResult? IsValid(object? value, ValidationContext validationContext)
         {
-            if (validationContext.ObjectInstance is HallRequestDto hallObj)
+            if (validationContext.ObjectInstance is HallDetailsRequestDto hallObj)
             {
                 return ValidationRule(hallObj);
             }
             return ValidationResult.Success;
         }
-        protected abstract ValidationResult? ValidationRule(HallRequestDto hallObj);
+        protected abstract ValidationResult? ValidationRule(HallDetailsRequestDto hallObj);
     }
 }

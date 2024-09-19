@@ -13,6 +13,6 @@ namespace EventFlowAPI.Logic.DTO.ResponseDto
         public EventCategoryResponseDto? Category { get; set; }
         public EventDetailsResponseDto? Details { get; set; }
         public HallResponseDto? Hall { get; set; }
-        public ICollection<TicketResponseDto> Tickets { get; set; } = [];
+       // public ICollection<TicketResponseDto> Tickets { get; set; } = [];
     }
 }

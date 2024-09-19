@@ -13,5 +13,6 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Interfaces
         >
     {
         bool IsSeatHaveActiveReservationForEvent(Seat seatEntity, Event eventEntity);
+        Task<IEnumerable<Seat>> GetSeatsByListOfIds(List<int> seatsIds);
     }
 }

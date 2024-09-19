@@ -13,6 +13,8 @@ namespace EventFlowAPI.Logic.Repositories.Repositories
             var _table = _context.Seat
                                 .Include(s => s.Hall)
                                 .Include(s => s.SeatType)
+                                .Include(s => s.Reservations)
+                                    .ThenInclude(r => r.Ticket)
                                 .AsSplitQuery();
 
             return await (query != null ? query(_table).ToListAsync() : _table.ToListAsync());
@@ -24,6 +26,8 @@ namespace EventFlowAPI.Logic.Repositories.Repositories
                         .AsSplitQuery()
                         .Include(s => s.Hall)
                         .Include(s => s.SeatType)
+                        .Include(s => s.Reservations)
+                            .ThenInclude(r => r.Ticket)
                         .FirstOrDefaultAsync(e => e.Id == id);
         }
     }

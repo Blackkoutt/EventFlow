@@ -19,6 +19,7 @@ namespace EventFlowAPI.Logic.Repositories.Repositories
         public sealed override async Task<Hall?> GetOneAsync(int id)
         {
             return await _context.Hall
+                        .Include(h => h.HallDetails)
                         .Include(h => h.Type)
                         .Include(h => h.Seats)
                             .ThenInclude(s => s.SeatType)

@@ -113,12 +113,12 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             responseDto.Category = entity.Category?.AsDto<EventCategoryResponseDto>();
             responseDto.Details = entity.Details?.AsDto<EventDetailsResponseDto>();
             responseDto.Hall = entity.Hall?.AsDto<HallResponseDto>();
-            responseDto.Tickets = entity.Tickets.Select(ticket =>
+            /*responseDto.Tickets = entity.Tickets.Select(ticket =>
             {
                 var ticketDto = ticket.AsDto<TicketResponseDto>();
                 ticketDto.TicketType = ticket.TicketType.AsDto<TicketTypeResponseDto>();
                 return ticketDto;
-            }).ToList();
+            }).ToList();*/
             return responseDto;
         }
 

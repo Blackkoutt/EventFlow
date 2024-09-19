@@ -14,7 +14,6 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
         private FontCollection fontCollection = new();
         public Font GetFont(int fontSize, FontStyle fontStyle, FontType fontName)
         {
-
             var isFontExist = fontCollection.TryGet(fontName.ToString().Replace("_", "-"), out FontFamily fontFamily);
             if (!isFontExist)
             {
@@ -39,11 +38,14 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
             return await image.AsBitmap(imageFormat);
         }
 
-        public string GetOutputTestPath(TestsOutput outputName) => GetAssetPath(AssetType.Tests, outputName.ToString());
+        public string GetOutputTestPath(TestsOutput outputName) => 
+            GetAssetPath(AssetType.Tests, outputName.ToString());
 
-        public async Task<Image> GetTicketTemplate(Template templateName) => await LoadImageAsync(AssetType.Templates, templateName.ToString());
+        public async Task<Image> GetTicketTemplate(Template templateName) => 
+            await LoadImageAsync(AssetType.Templates, templateName.ToString());
 
-        private string GetAssetPath(AssetType assetType, string assetName) => Path.GetFullPath(_configuration.GetSection($"Assets:{assetType}")[assetName]!);
+        public string GetAssetPath(AssetType assetType, string assetName) => 
+            Path.GetFullPath(_configuration.GetSection($"Assets:{assetType}")[assetName]!);
 
         private async Task<Image> LoadImageAsync(AssetType assetType, string imageName)
         {

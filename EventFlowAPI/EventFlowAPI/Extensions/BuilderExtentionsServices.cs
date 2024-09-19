@@ -57,6 +57,7 @@ namespace EventFlowAPI.Extensions
             services.AddScoped<IFestivalTicketConfiguration, FestivalTicketConfiguration>();
             services.AddScoped<IAssetService, AssetService>();
             services.AddScoped<IPdfBuilderService, PdfBuilderService>();
+            services.AddScoped<IHtmlRendererService, HtmlRendererService>();
         }
     }
 }

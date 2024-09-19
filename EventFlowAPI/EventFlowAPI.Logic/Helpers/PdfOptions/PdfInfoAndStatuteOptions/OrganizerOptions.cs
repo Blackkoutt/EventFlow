@@ -12,7 +12,7 @@ namespace EventFlowAPI.Logic.Helpers.PdfOptions.PdfInfoAndStatuteOptions
         public TextOptions Content => new TextOptions
         {
             Text = "Ogranizatorem wydarzenia jest EventFlow",
-            Style = TextStyle.Default.FontFamily(FontType.Inter.ToString()).FontSize(11f)
+            Style = TextStyle.Default.FontFamily(FontType.Inter.ToString()).FontSize(9.5f)
         };
     }
 }

@@ -1,0 +1,49 @@
+﻿<html>
+  <body>
+    <div style="margin-top:20px;">
+        <img style="max-width:200px; min-width: 100px;" src="cid:@LogoContentId" alt="EventFlow Logo"/>
+      <h1>Twoje bilety EventFlow - zamówienie nr @ReservationId</h1>
+      <p>Otrzymujesz ten e-mail w związku z zamówieniem złożonym w serwisie EventFlow.</p>
+      <p>
+        <strong>
+            W załączniku znajduje plik PDF z zamówionym przez ciebie biletem.
+        </strong>   
+      </p>
+      <p>
+        Bilety należy okazać w punkcie kontroli przy wejściu na miejsce wydarzenia. Bilet
+        może być okazany na urządzeniu mobilnym lub wydrukowany na kartce papieru.
+      </p>
+      <p>
+        <strong>Nie pokazuj biletu osobom trzecim!</strong><br />
+        Kod biletu jest ważny jednorazowo. Powielanie biletu traktowane jest jako próba
+        oszustwa.
+      </p>
+      <p>
+        Bilet upoważnia do jednorazowego wstępu na wydarzenie na które został wystawiony.
+        Po opuszczeniu terenu wydarzenia bilet traci ważność. Wyjątkiem jest bilet
+        festiwalowy, który może zostać wymieniony na opaskę wielokrotnego wstępu lub inny
+        identyfikator wskazany przez organizatora.
+      </p>
+      <p>
+        Jeśli potrzebujesz pomocy skontaktuj się z nami drogą mailową:
+        eventflow.kontakt@gmail.com
+      </p>
+      <hr />
+      <p style="font-size: 10px">
+        Powyższy email wraz z załącznikami stanowi treść poufną. Jeżeli otrzymałeś ten
+        mail przez pomyłkę prosimy o powiadomienie nas o zaistniałej sytuacji oraz
+        usunięcie wiadomości wraz z wszystkimi załącznikami.
+      </p>
+      <p style="font-size: 10px">
+        Nadawcą tej wiadomości jest EventFlow. W razie jakichkolwiek pytań lub wątpliwości
+        prosimy skontaktować się z nami drogą elektroniczną: eventflow.kontakt@gmail.com
+      </p>
+      <p style="font-size: 10px">Wiadomość nadana dnia @DateTime.Now</p>
+    </div>
+  </body>
+</html>
+
+@code {
+    [Parameter] public int ReservationId { get; set; }
+    [Parameter] public string LogoContentId { get; set; } = string.Empty;
+}

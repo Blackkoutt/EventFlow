@@ -1,5 +1,4 @@
-﻿using EventFlowAPI.DB.Entities;
-using EventFlowAPI.DB.Entities.Abstract;
+﻿using EventFlowAPI.DB.Entities.Abstract;
 using EventFlowAPI.Logic.DTO.Interfaces;
 using EventFlowAPI.Logic.Errors;
 using EventFlowAPI.Logic.Mapper.Extensions;
@@ -7,7 +6,6 @@ using EventFlowAPI.Logic.Repositories.Interfaces.BaseInterfaces;
 using EventFlowAPI.Logic.ResultObject;
 using EventFlowAPI.Logic.Services.CRUDServices.Interfaces.BaseInterfaces;
 using EventFlowAPI.Logic.UnitOfWork;
-using Microsoft.AspNetCore.Identity;
 
 namespace EventFlowAPI.Logic.Services.CRUDServices.Services.BaseServices
 {

@@ -16,7 +16,7 @@ namespace EventFlowAPI.Logic.Helpers.PdfOptions.PdfSummaryOptions
         public TextOptions Header => new TextOptions
         {
             Text = "Typy biletów:",
-            Style = TextStyle.Default.FontFamily(defaultFontType).FontSize(10f)
+            Style = TextStyle.Default.FontFamily(defaultFontType).FontSize(9.5f)
         };
 
 
@@ -25,7 +25,7 @@ namespace EventFlowAPI.Logic.Helpers.PdfOptions.PdfSummaryOptions
             return new TextOptions
             {
                 Text = $"- {ticketType.Name}",
-                Style = TextStyle.Default.FontFamily(defaultFontType).FontSize(9f)
+                Style = TextStyle.Default.FontFamily(defaultFontType).FontSize(8.5f)
             };
         }
     }

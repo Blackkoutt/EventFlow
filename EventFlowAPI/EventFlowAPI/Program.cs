@@ -5,6 +5,7 @@ using EventFlowAPI.Logic.Mapper.Profiles;
 using EventFlowAPI.Logic.Services.OtherServices.Interfaces;
 using EventFlowAPI.Logic.Services.OtherServices.Services;
 using EventFlowAPI.Logic.UnitOfWork;
+using EventFlowAPI.Middleware;
 using QuestPDF.Infrastructure;
 
 
@@ -14,8 +15,11 @@ var builder = WebApplication.CreateBuilder(args);
 // Set QuestPDF License
 QuestPDF.Settings.License = LicenseType.Community;
 
-// Add API context options
-builder.AddConnectionToDB(connectionString: "EventFlowDB");
+// Add connection to DB
+builder.AddConnectionToDB(connectionString: "MSSQLEventFlowDB");
+
+// Add connection to Azure Blob Storage
+builder.AddConnectionToAzureBlobStorage(connectionString: "AzureBlobStorage");
 
 // Add Identity
 builder.AddIdentity();
@@ -108,6 +112,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.AddApplicationMiddleware();
 
 app.UseAuthentication();
 app.UseAuthorization();

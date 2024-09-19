@@ -1,7 +1,5 @@
 ﻿using EventFlowAPI.DB.Entities;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using System.Runtime.CompilerServices;
 
 namespace EventFlowAPI.DB.Extensions
 {
@@ -9,7 +7,7 @@ namespace EventFlowAPI.DB.Extensions
     {
         public static void Seed(this ModelBuilder modelBuilder)
         {
-            var today = new DateTime(2024, 8, 5);
+            var today = new DateTime(2024, 9, 19);
 
             modelBuilder.SeedUsersData();
             modelBuilder.SeedUsers();
@@ -379,6 +377,64 @@ namespace EventFlowAPI.DB.Extensions
                 }
             );
 
+            modelBuilder.Entity<HallDetails>().HasData(
+               new HallDetails
+               {
+                   Id = 1,
+                   TotalLength = 12m,
+                   TotalWidth = 10m,
+                   TotalArea = 120m,
+                   StageArea = 30m,
+                   NumberOfSeatsRows = 9,
+                   MaxNumberOfSeatsRows = 9,
+                   NumberOfSeatsColumns = 10,
+                   MaxNumberOfSeatsColumns = 10,
+                   NumberOfSeats = 90,
+                   MaxNumberOfSeats = 90,
+               },
+               new HallDetails
+               {
+                   Id = 2,
+                   TotalLength = 15m,
+                   TotalWidth = 10m,
+                   TotalArea = 150m,
+                   StageArea = null,
+                   NumberOfSeatsRows = 15,
+                   MaxNumberOfSeatsRows = 15,
+                   NumberOfSeatsColumns = 10,
+                   MaxNumberOfSeatsColumns = 10,
+                   NumberOfSeats = 150,
+                   MaxNumberOfSeats = 150,
+               },
+               new HallDetails
+               {
+                   Id = 3,
+                   TotalLength = 10m,
+                   TotalWidth = 8m,
+                   TotalArea = 80m,
+                   StageArea = 20m,
+                   NumberOfSeatsRows = 6,
+                   MaxNumberOfSeatsRows = 6,
+                   NumberOfSeatsColumns = 10,
+                   MaxNumberOfSeatsColumns = 10,
+                   NumberOfSeats = 60,
+                   MaxNumberOfSeats = 60,
+               },
+               new HallDetails
+               {
+                   Id = 4,
+                   TotalLength = 14m,
+                   TotalWidth = 10m,
+                   TotalArea = 140m,
+                   StageArea = 40m,
+                   NumberOfSeatsRows = 10,
+                   MaxNumberOfSeatsRows = 10,
+                   NumberOfSeatsColumns = 10,
+                   MaxNumberOfSeatsColumns = 10,
+                   NumberOfSeats = 100,
+                   MaxNumberOfSeats = 100,
+               }
+           );
 
             modelBuilder.Entity<Hall>().HasData(
                 new Hall
@@ -387,16 +443,6 @@ namespace EventFlowAPI.DB.Extensions
                     HallNr = 1,
                     RentalPricePerHour = 120.99m,
                     Floor = 2,
-                    TotalLength = 12m,
-                    TotalWidth = 10m,
-                    TotalArea = 120m,
-                    StageArea = 30m,
-                    NumberOfSeatsRows = 9,
-                    MaxNumberOfSeatsRows = 9,
-                    NumberOfSeatsColumns = 10,
-                    MaxNumberOfSeatsColumns = 10,
-                    NumberOfSeats = 90,
-                    MaxNumberOfSeats = 90,
                     HallTypeId = 1
                 },
                 new Hall
@@ -405,16 +451,6 @@ namespace EventFlowAPI.DB.Extensions
                     HallNr = 2,
                     RentalPricePerHour = 89.99m,
                     Floor = 1,
-                    TotalLength = 15m,
-                    TotalWidth = 10m,
-                    TotalArea = 150m,
-                    StageArea = null,
-                    NumberOfSeatsRows = 15,
-                    MaxNumberOfSeatsRows = 15,
-                    NumberOfSeatsColumns = 10,
-                    MaxNumberOfSeatsColumns = 10,
-                    NumberOfSeats = 150,
-                    MaxNumberOfSeats = 150,
                     HallTypeId = 2
                 },
                 new Hall
@@ -423,16 +459,6 @@ namespace EventFlowAPI.DB.Extensions
                     HallNr = 3,
                     RentalPricePerHour = 179.99m,
                     Floor = 2,
-                    TotalLength = 10m,
-                    TotalWidth = 8m,
-                    TotalArea = 80m,
-                    StageArea = 20m,
-                    NumberOfSeatsRows = 6,
-                    MaxNumberOfSeatsRows = 6,
-                    NumberOfSeatsColumns = 10,
-                    MaxNumberOfSeatsColumns = 10,
-                    NumberOfSeats = 60,
-                    MaxNumberOfSeats = 60,
                     HallTypeId = 3
                 },
                 new Hall
@@ -441,16 +467,6 @@ namespace EventFlowAPI.DB.Extensions
                     HallNr = 4,
                     RentalPricePerHour = 199.99m,
                     Floor = 1,
-                    TotalLength = 14m,
-                    TotalWidth = 10m,
-                    TotalArea = 140m,
-                    StageArea = 40m,
-                    NumberOfSeatsRows = 10,
-                    MaxNumberOfSeatsRows = 10,
-                    NumberOfSeatsColumns = 10,
-                    MaxNumberOfSeatsColumns = 10,
-                    NumberOfSeats = 100,
-                    MaxNumberOfSeats = 100,
                     HallTypeId = 4
                 }
             );

@@ -14,7 +14,10 @@ namespace EventFlowAPI.Logic.Repositories.Repositories
                         .Include(t => t.TicketType)
                         .Include(t => t.Event)
                             .ThenInclude(e => e.Category)
+                        .Include(t => t.Event)
+                            .ThenInclude(e => e.Hall)
                         .Include(t => t.Festival)
+                            .ThenInclude(f => f != null ? f.Events : null)
                         .AsSplitQuery();
 
             return await (query != null ? query(_table).ToListAsync() : _table.ToListAsync());
@@ -29,7 +32,7 @@ namespace EventFlowAPI.Logic.Repositories.Repositories
                         .Include(t => t.Event)
                             .ThenInclude(e => e.Hall)
                         .Include(t => t.Festival)
-                        .ThenInclude(f => f != null ? f.Events : null)
+                            .ThenInclude(f => f != null ? f.Events : null)
                         .FirstOrDefaultAsync(t => t.Id == id);
         }
     }

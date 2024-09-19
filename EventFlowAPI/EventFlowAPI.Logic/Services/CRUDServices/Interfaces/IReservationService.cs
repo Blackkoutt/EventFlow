@@ -13,6 +13,6 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Interfaces
             ReservationResponseDto
         >
     {
-        Task<Result<ReservationResponseDto>> MakeReservation(ReservationRequestDto? requestDto);
+        Task<Result<IEnumerable<ReservationResponseDto>>> MakeReservation(ReservationRequestDto? requestDto);
     }
 }

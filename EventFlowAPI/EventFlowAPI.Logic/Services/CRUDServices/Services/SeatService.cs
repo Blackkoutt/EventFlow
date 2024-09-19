@@ -15,9 +15,25 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
         >(unitOfWork),
         ISeatService
     {
-        public bool IsSeatHaveActiveReservationForEvent(Seat seatEntity, Event eventEntity) =>
-            seatEntity.Reservations.Any(r => r.IsReservationActive && r.Ticket?.Event.Id == eventEntity.Id);
+        public bool IsSeatHaveActiveReservationForEvent(Seat seatEntity, Event eventEntity)
+        {
+            foreach(var r in seatEntity.Reservations)
+            {
+                if (r.IsReservationActive && r.Ticket?.Event.Id == eventEntity.Id)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+            
 
+            
+
+        public async Task<IEnumerable<Seat>> GetSeatsByListOfIds(List<int> seatsIds)
+        {
+           return await _repository.GetAllAsync(q => q.Where(s => seatsIds.Contains(s.Id)));
+        }
         protected sealed override Task<bool> IsSameEntityExistInDatabase(SeatRequestDto entityDto, int? id = null)
         {
             throw new NotImplementedException();

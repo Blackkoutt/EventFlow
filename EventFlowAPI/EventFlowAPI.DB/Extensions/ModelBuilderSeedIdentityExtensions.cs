@@ -51,8 +51,22 @@ namespace EventFlowAPI.DB.Extensions
             };
             user3.PasswordHash = hasher.HashPassword(user3, "qwe123QWE!@#");
 
+            var user4 = new User
+            {
+                Id = "4",
+                Name = "Mateusz",
+                Surname = "Strapczuk",
+                Email = "mateusz.strapczuk1@gmail.com",
+                UserName = "mateusz.strapczuk1@gmail.com",
+                NormalizedEmail = "mateusz.strapczuk1@gmail.com".ToUpper(),
+                NormalizedUserName = "mateusz.strapczuk1@gmail.com".ToUpper(),
+                EmailConfirmed = true,
+                DateOfBirth = new DateTime(1979, 12, 11)
+            };
+            user4.PasswordHash = hasher.HashPassword(user4, "qazzaq1@WSX");
+
             modelBuilder.Entity<User>().HasData(
-                user1, user2, user3
+                user1, user2, user3, user4
             );
         }
 
@@ -92,6 +106,11 @@ namespace EventFlowAPI.DB.Extensions
                 {
                     UserId = "3",
                     RoleId = "2",
+                },
+                new IdentityUserRole<string>
+                {
+                    UserId = "4",
+                    RoleId = "2",
                 }
             );
         }
@@ -127,6 +146,16 @@ namespace EventFlowAPI.DB.Extensions
                    HouseNumber = 7,
                    FlatNumber = 21,
                    City = "Białystok",
+                   ZipCode = "14-453",
+                   PhoneNumber = "147852369"
+               },
+               new UserData
+               {
+                   Id = "4",
+                   Street = "Słoneczna",
+                   HouseNumber = 21,
+                   FlatNumber = 42,
+                   City = "Warszawa",
                    ZipCode = "14-453",
                    PhoneNumber = "147852369"
                }

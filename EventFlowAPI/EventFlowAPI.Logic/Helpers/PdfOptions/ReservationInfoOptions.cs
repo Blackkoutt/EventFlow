@@ -46,9 +46,18 @@ namespace EventFlowAPI.Logic.Helpers.PdfOptions
 
         public TextOptions OrderingPerson => new TextOptions
         {
-            Text = $"Osoba zamawiająca: {_reservation.User.Name} {_reservation.User.Surname}",
+            Text = GetOrderingPerson(),
             PaddingBottom = 0f,
             Style = TextStyle.Default.FontFamily(defaultFontType).FontSize(11f)
         };       
+
+        private string GetOrderingPerson()
+        {
+            if(string.IsNullOrEmpty(_reservation.User.Name) || string.IsNullOrEmpty(_reservation.User.Surname))
+            {
+                return $"Osoba zamawiająca: {_reservation.User.Email}";
+            }
+            return $"Osoba zamawiająca: {_reservation.User.Name} {_reservation.User.Surname}";
+        }
     }
 }

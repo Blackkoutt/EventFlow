@@ -21,14 +21,24 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
         IUserService
     {
         private readonly IAuthService _authService = authService;
-        public async Task<Result<UserResponseDto>> GetCurrentUserInfo()
+        public async Task<Result<UserResponseDto>> GetCurrentUser()
         {
-            var getUserIdResult = await _authService.GetCurrentUserId();
-            if (!getUserIdResult.IsSuccessful)
+            var currentUserIdResult = await _authService.GetCurrentUserId();
+            if (!currentUserIdResult.IsSuccessful)
             {
-                return Result<UserResponseDto>.Failure(getUserIdResult.Error);
+                return Result<UserResponseDto>.Failure(currentUserIdResult.Error);
             }
-            return await GetOneAsync(getUserIdResult.Value);
+            var user = await GetOneAsync(currentUserIdResult.Value);
+            if (user is null)
+            {
+                return Result<UserResponseDto>.Failure(UserError.UserNotFound);
+            }
+            if (string.IsNullOrEmpty(user.Value.Email))
+            {
+                return Result<UserResponseDto>.Failure(UserError.UserEmailNotFound);
+            }
+
+            return Result<UserResponseDto>.Success(user.Value);
         }
         protected sealed override UserResponseDto MapAsDto(User entity)
         {

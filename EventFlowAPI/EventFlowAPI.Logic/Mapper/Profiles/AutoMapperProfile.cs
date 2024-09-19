@@ -49,7 +49,7 @@ namespace EventFlowAPI.Logic.Mapper.Profiles
 
             CreateMap<Festival, Festival>();
             CreateMap<FestivalRequestDto, Festival>();
-            CreateMap<Festival, FestivalDetailsResponseDto>();
+            CreateMap<Festival, FestivalResponseDto>();
 
             CreateMap<HallRent, HallRent>();
             CreateMap<HallRentRequestDto, HallRent>();
@@ -58,6 +58,10 @@ namespace EventFlowAPI.Logic.Mapper.Profiles
             CreateMap<Hall, Hall>();
             CreateMap<HallRequestDto, Hall>();
             CreateMap<Hall, HallResponseDto>();
+
+            CreateMap<HallDetails, HallDetails>();
+            CreateMap<HallDetailsRequestDto, HallDetails>();
+            CreateMap<HallDetails, HallDetailsResponseDto>();
 
             CreateMap<HallType, HallType>();
             CreateMap<HallTypeRequestDto, HallType>();

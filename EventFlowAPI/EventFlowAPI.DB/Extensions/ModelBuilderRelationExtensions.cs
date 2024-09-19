@@ -13,6 +13,11 @@ namespace EventFlowAPI.DB.Extensions
                .WithOne(x => x.UserData)
                .HasForeignKey<UserData>(x => x.Id);
 
+            modelBuilder.Entity<HallDetails>()
+               .HasOne(x => x.Hall)
+               .WithOne(x => x.HallDetails)
+               .HasForeignKey<HallDetails>(x => x.Id);
+
             modelBuilder.Entity<Event>()
                 .HasOne(x => x.Details)
                 .WithOne(x => x.Event)

@@ -20,6 +20,11 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
         >(unitOfWork),
     IHallService
     {
+
+        // Jesli zmienilo sie ustawienie miesjc to update jako kopie i stare entity not visible
+        // jeśli zmieniło się coś innego to standardowy update
+
+
         private readonly ISeatService _seatService = seatService;
         // if it is update check before change numer of seats or delete seat that seat does not have reservation
         // before delete hall or update something check that there is no hall rent or event in the hall
@@ -206,6 +211,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
         protected sealed override HallResponseDto MapAsDto(Hall entity)
         {
             var responseDto = entity.AsDto<HallResponseDto>();
+            responseDto.HallDetails = entity.HallDetails?.AsDto<HallDetailsResponseDto>();
             responseDto.Type = entity.Type.AsDto<HallTypeResponseDto>();
             responseDto.Type.Equipments = entity.Type.Equipments.Select(eq =>
             {
@@ -226,6 +232,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
         protected sealed override Hall MapAsEntity(HallRequestDto requestDto)
         {
             var hallEntity = base.MapAsEntity(requestDto);
+            hallEntity.HallDetails = requestDto.HallDetails.AsEntity<HallDetails>();
             hallEntity.Seats = requestDto.Seats.Select(seat =>
             {
                 var seatEntity = seat.AsEntity<Seat>();
@@ -274,8 +281,8 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
 
         protected sealed override Hall PrepareEntityForAddOrUpdate(Hall newEntity, HallRequestDto requestDto, Hall? oldEntity = null)
         {
-            newEntity.NumberOfSeats = newEntity.Seats.Count;
-            newEntity.MaxNumberOfSeats = newEntity.MaxNumberOfSeatsRows * newEntity.MaxNumberOfSeatsColumns;
+            newEntity.HallDetails!.NumberOfSeats = newEntity.Seats.Count;
+            newEntity.HallDetails!.MaxNumberOfSeats = newEntity.HallDetails!.MaxNumberOfSeatsRows * newEntity.HallDetails!.MaxNumberOfSeatsColumns;
             return newEntity;
         }
         private async Task<Result<HallResponseDto>> MakeCopyOfHall(HallRequestDto requestDto, Event eventEntity, IEventRepository _eventRepository)
@@ -347,19 +354,19 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
         {
             foreach (var seat in requestDto.Seats)
             {
-                if (seat.Column > requestDto.NumberOfSeatsColumns)
+                if (seat.Column > requestDto.HallDetails.NumberOfSeatsColumns)
                 {
                     return SeatError.SeatColumnOutOfRange;
                 }
-                if (seat.GridColumn > requestDto.MaxNumberOfSeatsColumns)
+                if (seat.GridColumn > requestDto.HallDetails.MaxNumberOfSeatsColumns)
                 {
                     return SeatError.SeatGridColumnOutOfRange;
                 }
-                if (seat.Row > requestDto.NumberOfSeatsRows)
+                if (seat.Row > requestDto.HallDetails.NumberOfSeatsRows)
                 {
                     return SeatError.SeatRowOutOfRange;
                 }
-                if (seat.GridRow > requestDto.MaxNumberOfSeatsRows)
+                if (seat.GridRow > requestDto.HallDetails.MaxNumberOfSeatsRows)
                 {
                     return SeatError.SeatGridRowOutOfRange;
                 }
