@@ -1,4 +1,5 @@
 ﻿using EventFlowAPI.Logic.DTO.RequestDto;
+using EventFlowAPI.Logic.Query.Abstract;
 using EventFlowAPI.Logic.Services.CRUDServices.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
@@ -13,9 +14,9 @@ namespace EventFlowAPI.Controllers
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> GetEventPassTypes()
+        public async Task<IActionResult> GetEventPassTypes([FromQuery] QueryObject query)
         {
-            var result = await _eventPassTypeService.GetAllAsync();
+            var result = await _eventPassTypeService.GetAllAsync(query);
             return result.IsSuccessful ? Ok(result.Value) : BadRequest(result.Error.Details);
         }
 

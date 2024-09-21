@@ -1060,14 +1060,111 @@ namespace EventFlowAPI.DB.Extensions
                 }
             );
 
-            var firstFestivalGuid = Guid.NewGuid(); 
-            var secondFestivalGuid = Guid.NewGuid();    
+
+            var res1 = new Guid("53538b58-f885-4f4a-b675-a4aa4063ccf3");
+            var res2 = new Guid("ed8b9230-223b-4609-8d13-aa6017edad09");
+            var res3 = new Guid("f9a076c4-3475-4a28-a60c-6e0e3c03731a");
+            var res4 = new Guid("de1d6773-f027-4888-996a-0296e5c52708");
+            var firstFestivalGuid = new Guid("0b74ec7b-933b-4163-afa5-e0997681dccd");
+            var secondFestivalGuid = new Guid("806cade1-2685-43dc-8cfc-682fc4229db6");
+
+            modelBuilder.Entity<TicketJPG>().HasData(
+                new TicketJPG 
+                {
+                    Id = 1,
+                    FileName = $"eventflow_bilet_test_{res1}.jpg",
+                    ReservationGuid = res1,
+                },
+                new TicketJPG
+                {
+                    Id = 2,
+                    FileName = $"eventflow_bilet_test_{res2}.jpg",
+                    ReservationGuid = res2,
+                },
+                new TicketJPG
+                {
+                    Id = 3,
+                    FileName = $"eventflow_bilet_test_{res3}.jpg",
+                    ReservationGuid = res3,
+                },
+                new TicketJPG
+                {
+                    Id = 4,
+                    FileName = $"eventflow_bilet_test_{res4}.jpg",
+                    ReservationGuid = res4,
+                },
+                new TicketJPG
+                {
+                    Id = 5,
+                    FileName = $"eventflow_bilet_test_{firstFestivalGuid}_1.jpg",
+                    ReservationGuid = firstFestivalGuid,
+                },
+                new TicketJPG
+                {
+                    Id = 6,
+                    FileName = $"eventflow_bilet_test_{firstFestivalGuid}_2.jpg",
+                    ReservationGuid = firstFestivalGuid,
+                },
+                new TicketJPG
+                {
+                    Id = 7,
+                    FileName = $"eventflow_bilet_test_{secondFestivalGuid}_1.jpg",
+                    ReservationGuid = secondFestivalGuid,
+                },
+                new TicketJPG
+                {
+                    Id = 8,
+                    FileName = $"eventflow_bilet_test_{secondFestivalGuid}_2.jpg",
+                    ReservationGuid = secondFestivalGuid,
+                }
+            );
+
+
+            modelBuilder.Entity<TicketPDF>().HasData(
+                new TicketPDF
+                {
+                    Id = 1,
+                    FileName = $"eventflow_bilet_test_{res1}.pdf",
+                    ReservationGuid = res1,
+                },
+                new TicketPDF
+                {
+                    Id = 2,
+                    FileName = $"eventflow_bilet_test_{res2}.pdf",
+                    ReservationGuid = res2,
+                },
+                new TicketPDF
+                {
+                    Id = 3,
+                    FileName = $"eventflow_bilet_test_{res3}.pdf",
+                    ReservationGuid = res3,
+                },
+                new TicketPDF
+                {
+                    Id = 4,
+                    FileName = $"eventflow_bilet_test_{res4}.pdf",
+                    ReservationGuid = res4,
+                },
+                new TicketPDF
+                {
+                    Id = 5,
+                    FileName = $"eventflow_bilet_test_{firstFestivalGuid}.pdf",
+                    ReservationGuid = firstFestivalGuid,
+                },
+                new TicketPDF
+                {
+                    Id = 6,
+                    FileName = $"eventflow_bilet_test_{secondFestivalGuid}.pdf",
+                    ReservationGuid = secondFestivalGuid,
+                }
+            );
+
 
             modelBuilder.Entity<Reservation>().HasData(
                 new Reservation
                 {
                     Id = 1,
-                    ReservationGuid = Guid.NewGuid(),
+                    ReservationGuid = res1,
                     ReservationDate = today.AddDays(10),
                     StartOfReservationDate = today.AddMonths(1).AddDays(1),
                     EndOfReservationDate = today.AddMonths(1).AddDays(1).AddHours(1),
@@ -1077,12 +1174,13 @@ namespace EventFlowAPI.DB.Extensions
                     PaymentAmount = 24.99m,
                     UserId = "1",
                     PaymentTypeId = 1,
-                    TicketId = 1
+                    TicketId = 1,
+                    TicketPDFId = 1
                 },
                 new Reservation
                 {
                     Id = 2,
-                    ReservationGuid = Guid.NewGuid(),
+                    ReservationGuid = res2,
                     ReservationDate = today.AddDays(16),
                     StartOfReservationDate = today.AddMonths(1).AddDays(2),
                     EndOfReservationDate = today.AddMonths(1).AddDays(2).AddHours(3),
@@ -1092,12 +1190,13 @@ namespace EventFlowAPI.DB.Extensions
                     PaymentAmount = 34.99m,
                     UserId = "2",
                     PaymentTypeId = 2,
-                    TicketId = 2
+                    TicketId = 2,
+                    TicketPDFId = 2
                 },
                 new Reservation
                 {
                     Id = 3,
-                    ReservationGuid = Guid.NewGuid(),
+                    ReservationGuid = res3,
                     ReservationDate = today.AddDays(17),
                     StartOfReservationDate = today.AddMonths(1).AddDays(3),
                     EndOfReservationDate = today.AddMonths(1).AddDays(3).AddHours(2),
@@ -1107,12 +1206,13 @@ namespace EventFlowAPI.DB.Extensions
                     PaymentAmount = 29.99m,
                     UserId = "3",
                     PaymentTypeId = 3,
-                    TicketId = 3
+                    TicketId = 3,
+                    TicketPDFId = 3
                 },
                 new Reservation
                 {
                     Id = 4,
-                    ReservationGuid = Guid.NewGuid(),
+                    ReservationGuid = res4,
                     ReservationDate = today.AddDays(18),
                     StartOfReservationDate = today.AddMonths(1).AddDays(4),
                     EndOfReservationDate = today.AddMonths(1).AddDays(4).AddHours(3),
@@ -1122,7 +1222,8 @@ namespace EventFlowAPI.DB.Extensions
                     PaymentAmount = 19.99m,
                     UserId = "3",
                     PaymentTypeId = 2,
-                    TicketId = 4
+                    TicketId = 4,
+                    TicketPDFId = 4
                 },
                 new Reservation
                 {
@@ -1137,7 +1238,8 @@ namespace EventFlowAPI.DB.Extensions
                     PaymentAmount = 19.99m,
                     UserId = "2",
                     PaymentTypeId = 2,
-                    TicketId = 5
+                    TicketId = 5,
+                    TicketPDFId = 5
                 },
                 new Reservation
                 {
@@ -1152,7 +1254,8 @@ namespace EventFlowAPI.DB.Extensions
                     PaymentAmount = 19.99m,
                     UserId = "2",
                     PaymentTypeId = 2,
-                    TicketId = 6
+                    TicketId = 6,
+                    TicketPDFId = 5
                 },
                 new Reservation
                 {
@@ -1167,7 +1270,8 @@ namespace EventFlowAPI.DB.Extensions
                     PaymentAmount = 29.99m,
                     UserId = "2",
                     PaymentTypeId = 2,
-                    TicketId = 7
+                    TicketId = 7,
+                    TicketPDFId = 6
                 },
                 new Reservation
                 {
@@ -1182,7 +1286,71 @@ namespace EventFlowAPI.DB.Extensions
                     PaymentAmount = 29.99m,
                     UserId = "2",
                     PaymentTypeId = 2,
-                    TicketId = 7
+                    TicketId = 7,
+                    TicketPDFId = 6
+                }
+            );
+
+            modelBuilder.Entity<Reservation_TicketJPG>().HasData(
+                new Reservation_TicketJPG
+                {
+                    ReservationId = 1,
+                    TicketJPGId = 1,
+                },
+                new Reservation_TicketJPG
+                {
+                    ReservationId = 2,
+                    TicketJPGId = 2,
+                },
+                new Reservation_TicketJPG
+                {
+                    ReservationId = 3,
+                    TicketJPGId = 3,
+                },
+                new Reservation_TicketJPG
+                {
+                    ReservationId = 4,
+                    TicketJPGId = 4,
+                },
+                new Reservation_TicketJPG
+                {
+                    ReservationId = 5,
+                    TicketJPGId = 5,
+                },
+                new Reservation_TicketJPG
+                {
+                    ReservationId = 5,
+                    TicketJPGId = 6,
+                },
+                new Reservation_TicketJPG
+                {
+                    ReservationId = 6,
+                    TicketJPGId = 5,
+                },
+                new Reservation_TicketJPG
+                {
+                    ReservationId = 6,
+                    TicketJPGId = 6,
+                },
+                new Reservation_TicketJPG
+                {
+                    ReservationId = 7,
+                    TicketJPGId = 7,
+                },
+                new Reservation_TicketJPG
+                {
+                    ReservationId = 7,
+                    TicketJPGId = 8,
+                },
+                new Reservation_TicketJPG
+                {
+                    ReservationId = 8,
+                    TicketJPGId = 7,
+                },
+                new Reservation_TicketJPG
+                {
+                    ReservationId = 8,
+                    TicketJPGId = 8,
                 }
             );
 

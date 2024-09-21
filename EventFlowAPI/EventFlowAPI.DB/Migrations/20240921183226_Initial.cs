@@ -220,6 +220,34 @@ namespace EventFlowAPI.DB.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "TicketJPG",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    FileName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ReservationGuid = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_TicketJPG", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "TicketPDF",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    FileName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ReservationGuid = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_TicketPDF", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "TicketType",
                 columns: table => new
                 {
@@ -394,16 +422,6 @@ namespace EventFlowAPI.DB.Migrations
                     IsCopy = table.Column<bool>(type: "bit", nullable: false),
                     IsVisible = table.Column<bool>(type: "bit", nullable: false),
                     Floor = table.Column<decimal>(type: "NUMERIC(1,0)", nullable: false),
-                    TotalLength = table.Column<decimal>(type: "NUMERIC(4,2)", nullable: false),
-                    TotalWidth = table.Column<decimal>(type: "NUMERIC(4,2)", nullable: false),
-                    TotalArea = table.Column<decimal>(type: "NUMERIC(5,2)", nullable: false),
-                    StageArea = table.Column<decimal>(type: "NUMERIC(5,2)", nullable: true),
-                    NumberOfSeatsRows = table.Column<decimal>(type: "NUMERIC(2,0)", nullable: false),
-                    MaxNumberOfSeatsRows = table.Column<decimal>(type: "NUMERIC(2,0)", nullable: false),
-                    NumberOfSeatsColumns = table.Column<decimal>(type: "NUMERIC(2,0)", nullable: false),
-                    MaxNumberOfSeatsColumns = table.Column<decimal>(type: "NUMERIC(2,0)", nullable: false),
-                    NumberOfSeats = table.Column<decimal>(type: "NUMERIC(3,0)", nullable: false),
-                    MaxNumberOfSeats = table.Column<decimal>(type: "NUMERIC(3,0)", nullable: false),
                     HallTypeId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -589,6 +607,33 @@ namespace EventFlowAPI.DB.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "HallDetails",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false),
+                    TotalLength = table.Column<decimal>(type: "NUMERIC(4,2)", nullable: false),
+                    TotalWidth = table.Column<decimal>(type: "NUMERIC(4,2)", nullable: false),
+                    TotalArea = table.Column<decimal>(type: "NUMERIC(5,2)", nullable: false),
+                    StageArea = table.Column<decimal>(type: "NUMERIC(5,2)", nullable: true),
+                    NumberOfSeatsRows = table.Column<decimal>(type: "NUMERIC(2,0)", nullable: false),
+                    MaxNumberOfSeatsRows = table.Column<decimal>(type: "NUMERIC(2,0)", nullable: false),
+                    NumberOfSeatsColumns = table.Column<decimal>(type: "NUMERIC(2,0)", nullable: false),
+                    MaxNumberOfSeatsColumns = table.Column<decimal>(type: "NUMERIC(2,0)", nullable: false),
+                    NumberOfSeats = table.Column<decimal>(type: "NUMERIC(3,0)", nullable: false),
+                    MaxNumberOfSeats = table.Column<decimal>(type: "NUMERIC(3,0)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_HallDetails", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_HallDetails_Hall_Id",
+                        column: x => x.Id,
+                        principalTable: "Hall",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "HallRent",
                 columns: table => new
                 {
@@ -748,13 +793,15 @@ namespace EventFlowAPI.DB.Migrations
                     ReservationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     StartOfReservationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     EndOfReservationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    IsCanceled = table.Column<bool>(type: "bit", nullable: false),
                     PaymentDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     TotalAddtionalPaymentPercentage = table.Column<decimal>(type: "NUMERIC(5,2)", nullable: false),
                     TotalAdditionalPaymentAmount = table.Column<decimal>(type: "NUMERIC(6,2)", nullable: false),
                     PaymentAmount = table.Column<decimal>(type: "NUMERIC(7,2)", nullable: false),
                     UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     PaymentTypeId = table.Column<int>(type: "int", nullable: false),
-                    TicketId = table.Column<int>(type: "int", nullable: false)
+                    TicketId = table.Column<int>(type: "int", nullable: false),
+                    TicketPDFId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -771,6 +818,11 @@ namespace EventFlowAPI.DB.Migrations
                         principalTable: "PaymentType",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Reservation_TicketPDF_TicketPDFId",
+                        column: x => x.TicketPDFId,
+                        principalTable: "TicketPDF",
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_Reservation_Ticket_TicketId",
                         column: x => x.TicketId,
@@ -801,6 +853,30 @@ namespace EventFlowAPI.DB.Migrations
                         principalColumn: "Id");
                 });
 
+            migrationBuilder.CreateTable(
+                name: "Reservation_TicketJPG",
+                columns: table => new
+                {
+                    ReservationId = table.Column<int>(type: "int", nullable: false),
+                    TicketJPGId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Reservation_TicketJPG", x => new { x.ReservationId, x.TicketJPGId });
+                    table.ForeignKey(
+                        name: "FK_Reservation_TicketJPG_Reservation_ReservationId",
+                        column: x => x.ReservationId,
+                        principalTable: "Reservation",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Reservation_TicketJPG_TicketJPG_TicketJPGId",
+                        column: x => x.TicketJPGId,
+                        principalTable: "TicketJPG",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.InsertData(
                 table: "AdditionalServices",
                 columns: new[] { "Id", "Name", "Price" },
@@ -827,10 +903,10 @@ namespace EventFlowAPI.DB.Migrations
                 columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "DateOfBirth", "Email", "EmailConfirmed", "LockoutEnabled", "LockoutEnd", "Name", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "Surname", "TwoFactorEnabled", "UserName" },
                 values: new object[,]
                 {
-                    { "1", 0, "9da1421f-5680-4d68-8d2d-9aa4b39fb7a5", new DateTime(2000, 4, 3, 0, 0, 0, 0, DateTimeKind.Unspecified), "admin@gmail.com", true, false, null, "Admin", "ADMIN@GMAIL.COM", "ADMIN@GMAIL.COM", "AQAAAAIAAYagAAAAEOyk1tRnFAlWqVwDl/u+WwVDli9dUQ5c7pByuVRcas3bAOVbxeuH0wkIQvrYv2DkKA==", null, false, "994d8399-ffc3-4fdf-9acf-c7561c72775e", "Admin", false, "admin@gmail.com" },
-                    { "2", 0, "8514a7ff-b108-4e2a-881d-c2e8b25a2d4d", new DateTime(1985, 2, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "j.kowalski@gmail.com", true, false, null, "Jan", "J.KOWALSKI@GMAIL.COM", "J.KOWALSKI@GMAIL.COM", "AQAAAAIAAYagAAAAEEynKiGeW3PEVCxPWVDJvc5PPPOn3cKkJimIUE28IGikduq2lR00EUAIq5gVBZvkXw==", null, false, "2f1a8da2-f8f9-42be-843e-0248e193d741", "Kowalski", false, "j.kowalski@gmail.com" },
-                    { "3", 0, "a77e9294-4d85-4464-b32f-7e0247b300cf", new DateTime(1979, 12, 11, 0, 0, 0, 0, DateTimeKind.Unspecified), "a.kowalska@gmail.com", true, false, null, "Anna", "A.KOWALSKA@GMAIL.COM", "A.KOWALSKA@GMAIL.COM", "AQAAAAIAAYagAAAAEBXygKUbUXbF29K3Q8tvwiXykpLe9PTxLw/ddLn4BYP026h/i6hPvGySMMvW7eZjVg==", null, false, "a5064724-920e-481b-8c59-08862c5a8536", "Kowalska", false, "a.kowalska@gmail.com" },
-                    { "4", 0, "3e73df7d-fbd9-458f-ac1e-8fc7c89562c2", new DateTime(1979, 12, 11, 0, 0, 0, 0, DateTimeKind.Unspecified), "mateusz.strapczuk1@gmail.com", true, false, null, "Mateusz", "MATEUSZ.STRAPCZUK1@GMAIL.COM", "MATEUSZ.STRAPCZUK1@GMAIL.COM", "AQAAAAIAAYagAAAAEIOUTYWj0dk3B+YCiQqyN6WEiM9mserOaCma7btDrQfZn2je7Mr/fd/aGJjejgRFDA==", null, false, "9118a688-1a42-4421-9def-f19ae0f530ef", "Strapczuk", false, "mateusz.strapczuk1@gmail.com" }
+                    { "1", 0, "d683e424-fb5c-4682-bf4f-bd4242db0b0a", new DateTime(2000, 4, 3, 0, 0, 0, 0, DateTimeKind.Unspecified), "admin@gmail.com", true, false, null, "Admin", "ADMIN@GMAIL.COM", "ADMIN@GMAIL.COM", "AQAAAAIAAYagAAAAEMJz+z79tELMtpeJ7Vm87Sa7x+HbvsYPps9uchC/F1CqhF3z9/W93VTEwZjMJTPdig==", null, false, "167a7f9c-279a-43d9-8e9d-2d2bb97112ef", "Admin", false, "admin@gmail.com" },
+                    { "2", 0, "18b826c7-a948-4124-8c61-eabf6428a39a", new DateTime(1985, 2, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "j.kowalski@gmail.com", true, false, null, "Jan", "J.KOWALSKI@GMAIL.COM", "J.KOWALSKI@GMAIL.COM", "AQAAAAIAAYagAAAAEN/AngG+bpZ2BuvcnsWZvwvmGiVxVaCre3a531+rnyjdseccWypN8rahMabj5SdVmw==", null, false, "2ea7df58-05c6-4ed0-8491-3254070ac14f", "Kowalski", false, "j.kowalski@gmail.com" },
+                    { "3", 0, "ced34940-e04a-43fe-b3ba-cac970bf8180", new DateTime(1979, 12, 11, 0, 0, 0, 0, DateTimeKind.Unspecified), "a.kowalska@gmail.com", true, false, null, "Anna", "A.KOWALSKA@GMAIL.COM", "A.KOWALSKA@GMAIL.COM", "AQAAAAIAAYagAAAAEOJEF7mSyIrVojwTXCK4JmzImGtBLIeEoMuaKvlULkphf2B7GByu/orgXhr3A+whxQ==", null, false, "e3516077-70b2-4a3a-a53e-d02e4262b1a3", "Kowalska", false, "a.kowalska@gmail.com" },
+                    { "4", 0, "b99de320-6395-4d08-b9f5-a8d70a06a746", new DateTime(1979, 12, 11, 0, 0, 0, 0, DateTimeKind.Unspecified), "mateusz.strapczuk1@gmail.com", true, false, null, "Mateusz", "MATEUSZ.STRAPCZUK1@GMAIL.COM", "MATEUSZ.STRAPCZUK1@GMAIL.COM", "AQAAAAIAAYagAAAAENotuVbgd+UQt0GscfojMh0kWEpyv562VdDeClVQFdcI45mth2i91y6h1YwEXg6zlQ==", null, false, "2c6fd1e0-597f-47c4-bdce-c495311c36b3", "Strapczuk", false, "mateusz.strapczuk1@gmail.com" }
                 });
 
             migrationBuilder.InsertData(
@@ -953,6 +1029,34 @@ namespace EventFlowAPI.DB.Migrations
                 });
 
             migrationBuilder.InsertData(
+                table: "TicketJPG",
+                columns: new[] { "Id", "FileName", "ReservationGuid" },
+                values: new object[,]
+                {
+                    { 1, "eventflow_bilet_test_53538b58-f885-4f4a-b675-a4aa4063ccf3.jpg", new Guid("53538b58-f885-4f4a-b675-a4aa4063ccf3") },
+                    { 2, "eventflow_bilet_test_ed8b9230-223b-4609-8d13-aa6017edad09.jpg", new Guid("ed8b9230-223b-4609-8d13-aa6017edad09") },
+                    { 3, "eventflow_bilet_test_f9a076c4-3475-4a28-a60c-6e0e3c03731a.jpg", new Guid("f9a076c4-3475-4a28-a60c-6e0e3c03731a") },
+                    { 4, "eventflow_bilet_test_de1d6773-f027-4888-996a-0296e5c52708.jpg", new Guid("de1d6773-f027-4888-996a-0296e5c52708") },
+                    { 5, "eventflow_bilet_test_0b74ec7b-933b-4163-afa5-e0997681dccd_1.jpg", new Guid("0b74ec7b-933b-4163-afa5-e0997681dccd") },
+                    { 6, "eventflow_bilet_test_0b74ec7b-933b-4163-afa5-e0997681dccd_2.jpg", new Guid("0b74ec7b-933b-4163-afa5-e0997681dccd") },
+                    { 7, "eventflow_bilet_test_806cade1-2685-43dc-8cfc-682fc4229db6_1.jpg", new Guid("806cade1-2685-43dc-8cfc-682fc4229db6") },
+                    { 8, "eventflow_bilet_test_806cade1-2685-43dc-8cfc-682fc4229db6_2.jpg", new Guid("806cade1-2685-43dc-8cfc-682fc4229db6") }
+                });
+
+            migrationBuilder.InsertData(
+                table: "TicketPDF",
+                columns: new[] { "Id", "FileName", "ReservationGuid" },
+                values: new object[,]
+                {
+                    { 1, "eventflow_bilet_test_53538b58-f885-4f4a-b675-a4aa4063ccf3.pdf", new Guid("53538b58-f885-4f4a-b675-a4aa4063ccf3") },
+                    { 2, "eventflow_bilet_test_ed8b9230-223b-4609-8d13-aa6017edad09.pdf", new Guid("ed8b9230-223b-4609-8d13-aa6017edad09") },
+                    { 3, "eventflow_bilet_test_f9a076c4-3475-4a28-a60c-6e0e3c03731a.pdf", new Guid("f9a076c4-3475-4a28-a60c-6e0e3c03731a") },
+                    { 4, "eventflow_bilet_test_de1d6773-f027-4888-996a-0296e5c52708.pdf", new Guid("de1d6773-f027-4888-996a-0296e5c52708") },
+                    { 5, "eventflow_bilet_test_0b74ec7b-933b-4163-afa5-e0997681dccd.pdf", new Guid("0b74ec7b-933b-4163-afa5-e0997681dccd") },
+                    { 6, "eventflow_bilet_test_806cade1-2685-43dc-8cfc-682fc4229db6.pdf", new Guid("806cade1-2685-43dc-8cfc-682fc4229db6") }
+                });
+
+            migrationBuilder.InsertData(
                 table: "TicketType",
                 columns: new[] { "Id", "Name" },
                 values: new object[,]
@@ -995,13 +1099,13 @@ namespace EventFlowAPI.DB.Migrations
 
             migrationBuilder.InsertData(
                 table: "Hall",
-                columns: new[] { "Id", "Floor", "HallNr", "HallTypeId", "IsCopy", "IsVisible", "MaxNumberOfSeats", "MaxNumberOfSeatsColumns", "MaxNumberOfSeatsRows", "NumberOfSeats", "NumberOfSeatsColumns", "NumberOfSeatsRows", "RentalPricePerHour", "StageArea", "TotalArea", "TotalLength", "TotalWidth" },
+                columns: new[] { "Id", "Floor", "HallNr", "HallTypeId", "IsCopy", "IsVisible", "RentalPricePerHour" },
                 values: new object[,]
                 {
-                    { 1, 2m, 1, 1, false, true, 90m, 10m, 9m, 90m, 10m, 9m, 120.99m, 30m, 120m, 12m, 10m },
-                    { 2, 1m, 2, 2, false, true, 150m, 10m, 15m, 150m, 10m, 15m, 89.99m, null, 150m, 15m, 10m },
-                    { 3, 2m, 3, 3, false, true, 60m, 10m, 6m, 60m, 10m, 6m, 179.99m, 20m, 80m, 10m, 8m },
-                    { 4, 1m, 4, 4, false, true, 100m, 10m, 10m, 100m, 10m, 10m, 199.99m, 40m, 140m, 14m, 10m }
+                    { 1, 2m, 1, 1, false, true, 120.99m },
+                    { 2, 1m, 2, 2, false, true, 89.99m },
+                    { 3, 2m, 3, 3, false, true, 179.99m },
+                    { 4, 1m, 4, 4, false, true, 199.99m }
                 });
 
             migrationBuilder.InsertData(
@@ -1081,6 +1185,17 @@ namespace EventFlowAPI.DB.Migrations
                 });
 
             migrationBuilder.InsertData(
+                table: "HallDetails",
+                columns: new[] { "Id", "MaxNumberOfSeats", "MaxNumberOfSeatsColumns", "MaxNumberOfSeatsRows", "NumberOfSeats", "NumberOfSeatsColumns", "NumberOfSeatsRows", "StageArea", "TotalArea", "TotalLength", "TotalWidth" },
+                values: new object[,]
+                {
+                    { 1, 90m, 10m, 9m, 90m, 10m, 9m, 30m, 120m, 12m, 10m },
+                    { 2, 150m, 10m, 15m, 150m, 10m, 15m, null, 150m, 15m, 10m },
+                    { 3, 60m, 10m, 6m, 60m, 10m, 6m, 20m, 80m, 10m, 8m },
+                    { 4, 100m, 10m, 10m, 100m, 10m, 10m, 40m, 140m, 14m, 10m }
+                });
+
+            migrationBuilder.InsertData(
                 table: "HallRent",
                 columns: new[] { "Id", "DefaultHallId", "EndDate", "HallId", "PaymentAmount", "PaymentDate", "PaymentTypeId", "StartDate", "UserId" },
                 values: new object[,]
@@ -1154,17 +1269,17 @@ namespace EventFlowAPI.DB.Migrations
 
             migrationBuilder.InsertData(
                 table: "Reservation",
-                columns: new[] { "Id", "EndOfReservationDate", "PaymentAmount", "PaymentDate", "PaymentTypeId", "ReservationDate", "ReservationGuid", "StartOfReservationDate", "TicketId", "TotalAdditionalPaymentAmount", "TotalAddtionalPaymentPercentage", "UserId" },
+                columns: new[] { "Id", "EndOfReservationDate", "IsCanceled", "PaymentAmount", "PaymentDate", "PaymentTypeId", "ReservationDate", "ReservationGuid", "StartOfReservationDate", "TicketId", "TicketPDFId", "TotalAdditionalPaymentAmount", "TotalAddtionalPaymentPercentage", "UserId" },
                 values: new object[,]
                 {
-                    { 1, new DateTime(2024, 10, 20, 1, 0, 0, 0, DateTimeKind.Unspecified), 24.99m, new DateTime(2024, 9, 29, 0, 0, 0, 0, DateTimeKind.Unspecified), 1, new DateTime(2024, 9, 29, 0, 0, 0, 0, DateTimeKind.Unspecified), new Guid("47ca2cf2-8546-4175-a706-bcd143e07788"), new DateTime(2024, 10, 20, 0, 0, 0, 0, DateTimeKind.Unspecified), 1, 2.5m, 10m, "1" },
-                    { 2, new DateTime(2024, 10, 21, 3, 0, 0, 0, DateTimeKind.Unspecified), 34.99m, new DateTime(2024, 10, 5, 0, 0, 0, 0, DateTimeKind.Unspecified), 2, new DateTime(2024, 10, 5, 0, 0, 0, 0, DateTimeKind.Unspecified), new Guid("c49fa91a-602d-4ebb-9a2e-d7628211ef5c"), new DateTime(2024, 10, 21, 0, 0, 0, 0, DateTimeKind.Unspecified), 2, 0m, 0m, "2" },
-                    { 3, new DateTime(2024, 10, 22, 2, 0, 0, 0, DateTimeKind.Unspecified), 29.99m, new DateTime(2024, 10, 6, 0, 0, 0, 0, DateTimeKind.Unspecified), 3, new DateTime(2024, 10, 6, 0, 0, 0, 0, DateTimeKind.Unspecified), new Guid("e20f5c1b-0779-42ea-a841-c1d45f6361ea"), new DateTime(2024, 10, 22, 0, 0, 0, 0, DateTimeKind.Unspecified), 3, 7.5m, 25m, "3" },
-                    { 4, new DateTime(2024, 10, 23, 3, 0, 0, 0, DateTimeKind.Unspecified), 19.99m, new DateTime(2024, 10, 7, 0, 0, 0, 0, DateTimeKind.Unspecified), 2, new DateTime(2024, 10, 7, 0, 0, 0, 0, DateTimeKind.Unspecified), new Guid("ef37f4ed-33a7-438e-88f0-7603f9406e1a"), new DateTime(2024, 10, 23, 0, 0, 0, 0, DateTimeKind.Unspecified), 4, 0m, 0m, "3" },
-                    { 5, new DateTime(2024, 10, 20, 1, 0, 0, 0, DateTimeKind.Unspecified), 19.99m, new DateTime(2024, 10, 2, 0, 0, 0, 0, DateTimeKind.Unspecified), 2, new DateTime(2024, 10, 2, 0, 0, 0, 0, DateTimeKind.Unspecified), new Guid("1ab54166-cdbc-449e-b426-bc2d23057665"), new DateTime(2024, 10, 20, 0, 0, 0, 0, DateTimeKind.Unspecified), 5, 2m, 10m, "2" },
-                    { 6, new DateTime(2024, 11, 20, 1, 0, 0, 0, DateTimeKind.Unspecified), 19.99m, new DateTime(2024, 10, 3, 0, 0, 0, 0, DateTimeKind.Unspecified), 2, new DateTime(2024, 10, 3, 0, 0, 0, 0, DateTimeKind.Unspecified), new Guid("1ab54166-cdbc-449e-b426-bc2d23057665"), new DateTime(2024, 11, 20, 0, 0, 0, 0, DateTimeKind.Unspecified), 6, 2m, 10m, "2" },
-                    { 7, new DateTime(2024, 10, 21, 3, 0, 0, 0, DateTimeKind.Unspecified), 29.99m, new DateTime(2024, 10, 4, 0, 0, 0, 0, DateTimeKind.Unspecified), 2, new DateTime(2024, 10, 4, 0, 0, 0, 0, DateTimeKind.Unspecified), new Guid("9ee52f89-2f0a-46c7-bfda-313a948ccc7b"), new DateTime(2024, 10, 21, 0, 0, 0, 0, DateTimeKind.Unspecified), 7, 0m, 0m, "2" },
-                    { 8, new DateTime(2024, 11, 22, 2, 0, 0, 0, DateTimeKind.Unspecified), 29.99m, new DateTime(2024, 10, 4, 0, 0, 0, 0, DateTimeKind.Unspecified), 2, new DateTime(2024, 10, 4, 0, 0, 0, 0, DateTimeKind.Unspecified), new Guid("9ee52f89-2f0a-46c7-bfda-313a948ccc7b"), new DateTime(2024, 11, 22, 0, 0, 0, 0, DateTimeKind.Unspecified), 7, 7.5m, 25m, "2" }
+                    { 1, new DateTime(2024, 10, 20, 1, 0, 0, 0, DateTimeKind.Unspecified), false, 24.99m, new DateTime(2024, 9, 29, 0, 0, 0, 0, DateTimeKind.Unspecified), 1, new DateTime(2024, 9, 29, 0, 0, 0, 0, DateTimeKind.Unspecified), new Guid("53538b58-f885-4f4a-b675-a4aa4063ccf3"), new DateTime(2024, 10, 20, 0, 0, 0, 0, DateTimeKind.Unspecified), 1, 1, 2.5m, 10m, "1" },
+                    { 2, new DateTime(2024, 10, 21, 3, 0, 0, 0, DateTimeKind.Unspecified), false, 34.99m, new DateTime(2024, 10, 5, 0, 0, 0, 0, DateTimeKind.Unspecified), 2, new DateTime(2024, 10, 5, 0, 0, 0, 0, DateTimeKind.Unspecified), new Guid("ed8b9230-223b-4609-8d13-aa6017edad09"), new DateTime(2024, 10, 21, 0, 0, 0, 0, DateTimeKind.Unspecified), 2, 2, 0m, 0m, "2" },
+                    { 3, new DateTime(2024, 10, 22, 2, 0, 0, 0, DateTimeKind.Unspecified), false, 29.99m, new DateTime(2024, 10, 6, 0, 0, 0, 0, DateTimeKind.Unspecified), 3, new DateTime(2024, 10, 6, 0, 0, 0, 0, DateTimeKind.Unspecified), new Guid("f9a076c4-3475-4a28-a60c-6e0e3c03731a"), new DateTime(2024, 10, 22, 0, 0, 0, 0, DateTimeKind.Unspecified), 3, 3, 7.5m, 25m, "3" },
+                    { 4, new DateTime(2024, 10, 23, 3, 0, 0, 0, DateTimeKind.Unspecified), false, 19.99m, new DateTime(2024, 10, 7, 0, 0, 0, 0, DateTimeKind.Unspecified), 2, new DateTime(2024, 10, 7, 0, 0, 0, 0, DateTimeKind.Unspecified), new Guid("de1d6773-f027-4888-996a-0296e5c52708"), new DateTime(2024, 10, 23, 0, 0, 0, 0, DateTimeKind.Unspecified), 4, 4, 0m, 0m, "3" },
+                    { 5, new DateTime(2024, 10, 20, 1, 0, 0, 0, DateTimeKind.Unspecified), false, 19.99m, new DateTime(2024, 10, 2, 0, 0, 0, 0, DateTimeKind.Unspecified), 2, new DateTime(2024, 10, 2, 0, 0, 0, 0, DateTimeKind.Unspecified), new Guid("0b74ec7b-933b-4163-afa5-e0997681dccd"), new DateTime(2024, 10, 20, 0, 0, 0, 0, DateTimeKind.Unspecified), 5, 5, 2m, 10m, "2" },
+                    { 6, new DateTime(2024, 11, 20, 1, 0, 0, 0, DateTimeKind.Unspecified), false, 19.99m, new DateTime(2024, 10, 3, 0, 0, 0, 0, DateTimeKind.Unspecified), 2, new DateTime(2024, 10, 3, 0, 0, 0, 0, DateTimeKind.Unspecified), new Guid("0b74ec7b-933b-4163-afa5-e0997681dccd"), new DateTime(2024, 11, 20, 0, 0, 0, 0, DateTimeKind.Unspecified), 6, 5, 2m, 10m, "2" },
+                    { 7, new DateTime(2024, 10, 21, 3, 0, 0, 0, DateTimeKind.Unspecified), false, 29.99m, new DateTime(2024, 10, 4, 0, 0, 0, 0, DateTimeKind.Unspecified), 2, new DateTime(2024, 10, 4, 0, 0, 0, 0, DateTimeKind.Unspecified), new Guid("806cade1-2685-43dc-8cfc-682fc4229db6"), new DateTime(2024, 10, 21, 0, 0, 0, 0, DateTimeKind.Unspecified), 7, 6, 0m, 0m, "2" },
+                    { 8, new DateTime(2024, 11, 22, 2, 0, 0, 0, DateTimeKind.Unspecified), false, 29.99m, new DateTime(2024, 10, 4, 0, 0, 0, 0, DateTimeKind.Unspecified), 2, new DateTime(2024, 10, 4, 0, 0, 0, 0, DateTimeKind.Unspecified), new Guid("806cade1-2685-43dc-8cfc-682fc4229db6"), new DateTime(2024, 11, 22, 0, 0, 0, 0, DateTimeKind.Unspecified), 7, 6, 7.5m, 25m, "2" }
                 });
 
             migrationBuilder.InsertData(
@@ -1180,6 +1295,25 @@ namespace EventFlowAPI.DB.Migrations
                     { 6, 8 },
                     { 7, 12 },
                     { 8, 3 }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Reservation_TicketJPG",
+                columns: new[] { "ReservationId", "TicketJPGId" },
+                values: new object[,]
+                {
+                    { 1, 1 },
+                    { 2, 2 },
+                    { 3, 3 },
+                    { 4, 4 },
+                    { 5, 5 },
+                    { 5, 6 },
+                    { 6, 5 },
+                    { 6, 6 },
+                    { 7, 7 },
+                    { 7, 8 },
+                    { 8, 7 },
+                    { 8, 8 }
                 });
 
             migrationBuilder.CreateIndex(
@@ -1307,6 +1441,11 @@ namespace EventFlowAPI.DB.Migrations
                 column: "TicketId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Reservation_TicketPDFId",
+                table: "Reservation",
+                column: "TicketPDFId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Reservation_UserId",
                 table: "Reservation",
                 column: "UserId");
@@ -1315,6 +1454,11 @@ namespace EventFlowAPI.DB.Migrations
                 name: "IX_Reservation_Seat_SeatId",
                 table: "Reservation_Seat",
                 column: "SeatId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Reservation_TicketJPG_TicketJPGId",
+                table: "Reservation_TicketJPG",
+                column: "TicketJPGId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Seat_HallId",
@@ -1376,6 +1520,9 @@ namespace EventFlowAPI.DB.Migrations
                 name: "Festival_Sponsor");
 
             migrationBuilder.DropTable(
+                name: "HallDetails");
+
+            migrationBuilder.DropTable(
                 name: "HallRent_AdditionalServices");
 
             migrationBuilder.DropTable(
@@ -1383,6 +1530,9 @@ namespace EventFlowAPI.DB.Migrations
 
             migrationBuilder.DropTable(
                 name: "Reservation_Seat");
+
+            migrationBuilder.DropTable(
+                name: "Reservation_TicketJPG");
 
             migrationBuilder.DropTable(
                 name: "UserData");
@@ -1412,10 +1562,16 @@ namespace EventFlowAPI.DB.Migrations
                 name: "Equipment");
 
             migrationBuilder.DropTable(
+                name: "Seat");
+
+            migrationBuilder.DropTable(
                 name: "Reservation");
 
             migrationBuilder.DropTable(
-                name: "Seat");
+                name: "TicketJPG");
+
+            migrationBuilder.DropTable(
+                name: "SeatType");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");
@@ -1424,10 +1580,10 @@ namespace EventFlowAPI.DB.Migrations
                 name: "PaymentType");
 
             migrationBuilder.DropTable(
-                name: "Ticket");
+                name: "TicketPDF");
 
             migrationBuilder.DropTable(
-                name: "SeatType");
+                name: "Ticket");
 
             migrationBuilder.DropTable(
                 name: "Event");

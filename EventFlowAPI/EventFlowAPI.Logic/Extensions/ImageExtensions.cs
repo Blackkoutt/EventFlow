@@ -4,7 +4,7 @@ using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Drawing.Processing;
 using SixLabors.ImageSharp.Processing;
 
-namespace EventFlowAPI.Logic.Services.OtherServices.Extensions
+namespace EventFlowAPI.Logic.Extensions
 {
     public static class ImageExtensions
     {

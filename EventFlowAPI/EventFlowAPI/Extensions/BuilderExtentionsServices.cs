@@ -58,6 +58,8 @@ namespace EventFlowAPI.Extensions
             services.AddScoped<IAssetService, AssetService>();
             services.AddScoped<IPdfBuilderService, PdfBuilderService>();
             services.AddScoped<IHtmlRendererService, HtmlRendererService>();
+            services.AddSingleton<IBlobService, BlobService>();
+            services.AddScoped<IFileService, FileService>();
         }
     }
 }

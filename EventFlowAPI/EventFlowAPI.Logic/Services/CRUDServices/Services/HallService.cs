@@ -4,6 +4,7 @@ using EventFlowAPI.Logic.DTO.RequestDto;
 using EventFlowAPI.Logic.DTO.ResponseDto;
 using EventFlowAPI.Logic.Errors;
 using EventFlowAPI.Logic.Mapper.Extensions;
+using EventFlowAPI.Logic.Query.Abstract;
 using EventFlowAPI.Logic.Repositories.Interfaces;
 using EventFlowAPI.Logic.ResultObject;
 using EventFlowAPI.Logic.Services.CRUDServices.Interfaces;
@@ -157,7 +158,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             return Result<HallResponseDto>.Success();
         }
 
-        public sealed override async Task<Result<IEnumerable<HallResponseDto>>> GetAllAsync()
+        public sealed override async Task<Result<IEnumerable<HallResponseDto>>> GetAllAsync(QueryObject query)
         {
             var records = await _repository.GetAllAsync(q => q.Where(entity => entity.IsVisible));
             var response = MapAsDto(records);

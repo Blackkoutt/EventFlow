@@ -60,16 +60,10 @@ namespace EventFlowAPI.DB.Extensions
                 .WithMany(e => e.Reservations)
                 .UsingEntity<Reservation_Seat>();
 
-            /*            modelBuilder.Entity<Reservation_Seat>()
-                            .HasOne(rs => rs.Reservation)
-                            .WithMany(s => s.Seats)
-                            .HasForeignKey(rs => rs.ReservationId)
-                            .OnDelete(DeleteBehavior.NoAction);
-                        modelBuilder.Entity<Reservation_Seat>()
-                            .HasOne(rs => rs.Seat)
-                            .WithMany(r => r.Reservations)
-                            .HasForeignKey(rs => rs.SeatId)
-                            .OnDelete(DeleteBehavior.NoAction);*/
+            modelBuilder.Entity<Reservation>()
+                .HasMany(e => e.TicketsJPG)
+                .WithMany(e => e.Reservations)
+                .UsingEntity<Reservation_TicketJPG>();
 
             modelBuilder.Entity<HallType>()
                 .HasMany(e => e.Equipments)

@@ -1,5 +1,6 @@
 ﻿using EventFlowAPI.Logic.DTO.RequestDto;
 using EventFlowAPI.Logic.DTO.ResponseDto;
+using EventFlowAPI.Logic.Query.Abstract;
 using EventFlowAPI.Logic.ResultObject;
 using EventFlowAPI.Logic.Services.CRUDServices.Interfaces;
 using Microsoft.AspNetCore.Mvc;
@@ -15,9 +16,9 @@ namespace EventFlowAPI.Controllers
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> GetHalls()
+        public async Task<IActionResult> GetHalls([FromQuery] QueryObject query)
         {
-            var result = await _hallService.GetAllAsync();
+            var result = await _hallService.GetAllAsync(query);
             return result.IsSuccessful ? Ok(result.Value) : BadRequest(result.Error.Details);
         }
 

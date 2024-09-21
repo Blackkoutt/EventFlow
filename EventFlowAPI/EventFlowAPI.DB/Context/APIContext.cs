@@ -34,8 +34,11 @@ namespace EventFlowAPI.DB.Context
         public DbSet<PaymentType> PaymentType { get; set; }
         public DbSet<Reservation> Reservation { get; set; }
         public DbSet<Seat> Seat { get; set; }
+        public DbSet<TicketJPG> TicketJPG { get; set; }
+        public DbSet<TicketPDF> TicketPDF { get; set; }
         public DbSet<SeatType> SeatType { get; set; }
-        public DbSet<Reservation_Seat> Reservation_Seat { get; set; }  
+        public DbSet<Reservation_Seat> Reservation_Seat { get; set; }
+        public DbSet<Reservation_TicketJPG> Reservation_TicketJPG { get; set; }
         public DbSet<UserData> UserData { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

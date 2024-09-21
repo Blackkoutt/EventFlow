@@ -1,9 +1,12 @@
 ﻿namespace EventFlowAPI.Logic.Helpers
 {
-    public sealed record ContentType
+    public static class ContentType
     {
-        public static readonly string PDF = "application/pdf";
-        public static readonly string PNG = "image/png";
-        public static readonly string JSON = "application/json";
+        public const string PDF = "application/pdf";
+        public const string PNG = "image/png";
+        public const string JPEG = "image/jpeg";
+        public const string JSON = "application/json";
+        public const string ZIP = "application/zip";
+        public const string HTML = "text/html";
     }
 }

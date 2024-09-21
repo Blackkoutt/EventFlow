@@ -1,5 +1,4 @@
 ﻿using EventFlowAPI.DB.Context;
-using EventFlowAPI.DB.Entities.Abstract;
 using EventFlowAPI.Logic.Repositories.Interfaces.BaseInterfaces;
 using Microsoft.EntityFrameworkCore;
 
@@ -18,6 +17,8 @@ namespace EventFlowAPI.Logic.Repositories.Repositories.BaseRepositories
         }
 
         public async Task AddAsync(T entity) => await _table.AddAsync(entity);
+
+        public virtual IQueryable<T> GetAllQueryable() => _table.AsQueryable();
         public virtual async Task<IEnumerable<T>> GetAllAsync(Func<IQueryable<T>, IQueryable<T>>? query = null)
             => await (query?.Invoke(_table) ?? _table).ToListAsync();
         public virtual async Task<T?> GetOneAsync(int id) => await _table.FindAsync(id);

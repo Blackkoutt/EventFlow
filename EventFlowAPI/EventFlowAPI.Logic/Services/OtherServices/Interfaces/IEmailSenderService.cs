@@ -7,5 +7,6 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Interfaces
     {
         Task SendEmailAsync(EmailDto emailDto);
         Task SendTicketPDFAsync(Reservation reservation, byte[] ticketPDF);
+        Task SendInfoAboutCanceledReservation(Reservation reservation);
     }
 }

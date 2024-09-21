@@ -1,4 +1,5 @@
-﻿using EventFlowAPI.Logic.ResultObject;
+﻿using EventFlowAPI.Logic.Query.Abstract;
+using EventFlowAPI.Logic.ResultObject;
 
 namespace EventFlowAPI.Logic.Services.CRUDServices.Interfaces.BaseInterfaces
 {
@@ -8,10 +9,10 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Interfaces.BaseInterfaces
         where TResponseDto : class
     {
         Task<Result<TResponseDto>> AddAsync(TRequestDto? requestDto);
-        Task<Result<IEnumerable<TResponseDto>>> GetAllAsync();
+        Task<Result<IEnumerable<TResponseDto>>> GetAllAsync(QueryObject query);
         Task<Result<TResponseDto>> GetOneAsync(int id);
         Task<Result<TResponseDto>> UpdateAsync(int id, TRequestDto? requestDto);
-        Task<Result<TResponseDto>> DeleteAsync(int id);
+        Task<Result<object>> DeleteAsync(int id);
 
     }
 }

@@ -1,5 +1,4 @@
 ﻿using EventFlowAPI.DB.Entities;
-using EventFlowAPI.Logic.Exceptions;
 using EventFlowAPI.Logic.Helpers;
 using EventFlowAPI.Logic.Helpers.Enums;
 using EventFlowAPI.Logic.Services.OtherServices.Interfaces;
@@ -20,12 +19,65 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
         private readonly IHtmlRendererService _htmlRenderer = htmlRenderer;
         private readonly IAssetService _assetService = assetService;
         private string TicketMailSubject => $"Twoje bilety EventFlow - zamówienie nr {{0}}";
+        private string CancelReservationMailSubject => $"Anulowanie zamówienia EventFlow - zamówienie nr {{0}}";
         private string TicketMailPDFFileName => $"eventflow_bilety_{{0}}.pdf";
         private string LogoContentId => "logoImage";
 
+
+        public Task SendEmailAsync(EmailDto emailDto)
+        {
+            var client = GetSmtpClient();
+
+            var mailMessage = new MailMessage(
+                from: _configuration.GetSection("SmtpClient")["Email"]!,
+                to: emailDto.Email,
+                subject: emailDto.Subject,
+                body: emailDto.Body
+            );
+            mailMessage.IsBodyHtml = emailDto.IsBodyHTML;
+
+            if (mailMessage.IsBodyHtml)
+            {
+                AddAlternateView(mailMessage, ContentType.HTML, emailDto.LinkedResources);
+            }
+
+            if (emailDto.Attachments != null && emailDto.Attachments.Any())
+            {
+                AddAttachments(mailMessage, emailDto.Attachments);
+            }
+            return client.SendMailAsync(mailMessage);
+        }
+
+
+        public async Task SendInfoAboutCanceledReservation(Reservation reservation)
+        {
+            var paramDictionary = GetDefaultHTMLParams(reservation.Id);
+            var htmlStringEmailBody = await _htmlRenderer.RenderHtmlToStringAsync<ReservationCancelEmailBody>(paramDictionary);
+            var logoPath = _assetService.GetAssetPath(AssetType.Pictures, Picture.EventFlowLogo_Small.ToString());
+
+            var emailDto = new EmailDto
+            {
+                Email = reservation.User.Email!,
+                Subject =  string.Format(CancelReservationMailSubject, reservation.Id),
+                Body = htmlStringEmailBody,
+                IsBodyHTML = true,
+                LinkedResources =
+                {
+                    new LinkedResource(logoPath, ContentType.PNG)
+                    {
+                        ContentId = LogoContentId,
+                    }
+                },
+            };
+
+            await SendEmailAsync(emailDto);
+        }
+
+
         public async Task SendTicketPDFAsync(Reservation reservation, byte[] ticketPDF)
         {
-            var htmlStringEmailBody = await GetTicketPDFEmailBody(reservation.Id);
+            var paramDictionary = GetDefaultHTMLParams(reservation.Id);
+            var htmlStringEmailBody = await _htmlRenderer.RenderHtmlToStringAsync<TicketEmailBody>(paramDictionary);
             var logoPath = _assetService.GetAssetPath(AssetType.Pictures, Picture.EventFlowLogo_Small.ToString()); 
 
             var emailDto = new EmailDto
@@ -55,41 +107,16 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
             await SendEmailAsync(emailDto);
         }
 
-        public Task SendEmailAsync(EmailDto emailDto)
+
+        private Dictionary<string, object?> GetDefaultHTMLParams(int reservationId)
         {
-            var client = GetSmtpClient();
-
-            var mailMessage = new MailMessage(
-                from: _configuration.GetSection("SmtpClient")["Email"]!,
-                to: emailDto.Email,
-                subject: emailDto.Subject,
-                body: emailDto.Body
-            );
-            mailMessage.IsBodyHtml = emailDto.IsBodyHTML;
-
-            if (mailMessage.IsBodyHtml)
-            {
-                AddAlternateView(mailMessage, MailViewType.HTML, emailDto.LinkedResources);
-            }
-
-            if (emailDto.Attachments != null && emailDto.Attachments.Any())
-            {
-                AddAttachments(mailMessage, emailDto.Attachments);
-            }
-            return client.SendMailAsync(mailMessage);
-        }
-
-
-        private async Task<string> GetTicketPDFEmailBody(int reservationId)
-        {
-            var paramDictionary = new Dictionary<string, object?>()
+            return new Dictionary<string, object?>()
             {
                 { "ReservationId", reservationId },
                 { "LogoContentId", LogoContentId }
             };
-
-            return await _htmlRenderer.RenderHtmlToStringAsync<TicketEmailBody>(paramDictionary);
         }
+
 
         private SmtpClient GetSmtpClient()
         {         
@@ -103,6 +130,8 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
                 Credentials = new NetworkCredential(from, password)
             };
         }
+
+
         private void AddAttachments(MailMessage mailMessage, List<AttachmentDto> attachments)
         {
             foreach(AttachmentDto attachmentDto in attachments)
@@ -112,6 +141,8 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
                 mailMessage.Attachments.Add(attachment);
             }
         }
+
+
         private void AddAlternateView(MailMessage mailMessage, string viewType, List<LinkedResource> resources)
         {
             var alternateView = AlternateView.CreateAlternateViewFromString(mailMessage.Body, null, viewType);

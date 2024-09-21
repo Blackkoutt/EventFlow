@@ -1,6 +1,6 @@
 ﻿using EventFlowAPI.DB.Entities;
+using EventFlowAPI.Logic.Extensions;
 using EventFlowAPI.Logic.Helpers.Enums;
-using EventFlowAPI.Logic.Services.OtherServices.Extensions;
 using EventFlowAPI.Logic.Services.OtherServices.Interfaces;
 using EventFlowAPI.Logic.Services.OtherServices.Interfaces.TicketConfiguration;
 using SixLabors.ImageSharp;
@@ -19,7 +19,7 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
         private readonly IQRCodeGeneratorService _qrCoder = qrCoder;
         private readonly IAssetService _assetService = assetService;   
 
-        public async Task<byte[]> CreateEventTicketJPEG(Reservation reservation)
+        public async Task<byte[]> CreateEventTicket(Reservation reservation)
         {
             // TEST
             var outputPath = _assetService.GetOutputTestPath(TestsOutput.EventPath);
@@ -55,7 +55,7 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
             return await image.AsBitmap(ImageFormat.JPEG);         
         }
 
-        public async Task<List<byte[]>> CreateFestivalTicketPNG(Festival festival, List<Reservation> reservations)
+        public async Task<List<byte[]>> CreateFestivalTicket(Festival festival, List<Reservation> reservations)
         {
             List<byte[]> imagesBitmaps = [];
 

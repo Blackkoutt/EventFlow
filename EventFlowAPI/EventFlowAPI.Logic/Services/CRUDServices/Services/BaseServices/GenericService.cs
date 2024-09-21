@@ -1,7 +1,9 @@
 ﻿using EventFlowAPI.DB.Entities.Abstract;
 using EventFlowAPI.Logic.DTO.Interfaces;
 using EventFlowAPI.Logic.Errors;
+using EventFlowAPI.Logic.Extensions;
 using EventFlowAPI.Logic.Mapper.Extensions;
+using EventFlowAPI.Logic.Query.Abstract;
 using EventFlowAPI.Logic.Repositories.Interfaces.BaseInterfaces;
 using EventFlowAPI.Logic.ResultObject;
 using EventFlowAPI.Logic.Services.CRUDServices.Interfaces.BaseInterfaces;
@@ -28,17 +30,19 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services.BaseServices
             _repository = _unitOfWork.GetRepository<TEntity>();
         }
 
+        protected virtual async Task DefaultSaveChangesAsync() => await _unitOfWork.SaveChangesAsync();
 
-        public virtual async Task<Result<IEnumerable<TResponseDto>>> GetAllAsync()
+
+        public virtual async Task<Result<IEnumerable<TResponseDto>>> GetAllAsync(QueryObject query)
         {
-            var records = await _repository.GetAllAsync();
+            var records = await _repository.GetAllAsync(q => q.SortBy(query.SortBy, query.SortDirection));
             var response = MapAsDto(records);
 
             return Result<IEnumerable<TResponseDto>>.Success(response);
         }
 
 
-        public async Task<Result<TResponseDto>> GetOneAsync(int id)
+        public virtual async Task<Result<TResponseDto>> GetOneAsync(int id)
         {
             if (id < 0)
             {
@@ -71,7 +75,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services.BaseServices
             var preparedEntity = PrepareEntityForAddOrUpdate(entity, requestDto!);
 
             await _repository.AddAsync(preparedEntity);
-            await _unitOfWork.SaveChangesAsync();
+            await DefaultSaveChangesAsync();
 
             var preparedEntityAfterAddition = PrepareEnityAfterAddition(preparedEntity);
 
@@ -100,29 +104,30 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services.BaseServices
             var preparedEntity = PrepareEntityForAddOrUpdate((TEntity)newEntity, requestDto!, oldEntity);
 
             _repository.Update(preparedEntity);
-            await _unitOfWork.SaveChangesAsync();
+
+            await DefaultSaveChangesAsync();
 
             return Result<TResponseDto>.Success();
         }
 
-        public async Task<Result<TResponseDto>> DeleteAsync(int id)
+        public virtual async Task<Result<object>> DeleteAsync(int id)
         {
             if (id < 0)
             {
-                return Result<TResponseDto>.Failure(Error.RouteParamOutOfRange);
+                return Result<object>.Failure(Error.RouteParamOutOfRange);
             }
 
             var entity = await _repository.GetOneAsync(id);
 
             if (entity == null)
             {
-                return Result<TResponseDto>.Failure(Error.NotFound);
+                return Result<object>.Failure(Error.NotFound);
             }
 
             _repository.Delete(entity);
-            await _unitOfWork.SaveChangesAsync();
+            await DefaultSaveChangesAsync();
 
-            return Result<TResponseDto>.Success();
+            return Result<object>.Success();
         }
 
 

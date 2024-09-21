@@ -18,6 +18,7 @@ namespace EventFlowAPI.Extensions
         {
             var accountKey = builder.Configuration.GetSection("Authentication:Azure")["AccountKey"]!;
             var fullConnectionString = $"{builder.Configuration.GetConnectionString(connectionString)}AccountKey={accountKey};";
+          
             builder.Services.AddSingleton(x => new BlobServiceClient(fullConnectionString));
         }
     }

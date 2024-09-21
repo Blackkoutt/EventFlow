@@ -38,6 +38,9 @@ namespace EventFlowAPI.Logic.UnitOfWork
             _ticketTypes = new TicketTypeRepository(_context);
             _usersData = new UserDataRepository(_context);
             _users = new UserRepository(_context);
+            _ticketJPGs = new TicketJPGRepository(_context);
+            _ticketPDFs = new TicketPDFRepository(_context);
+            _reservation_Seats = new Reservation_SeatRepository(_context);
 
             _repositories = InitRepositoriesDictionary();
         }
@@ -89,6 +92,9 @@ namespace EventFlowAPI.Logic.UnitOfWork
                 { typeof(TicketType), _ticketTypes },
                 { typeof(UserData), _usersData },
                 { typeof(User), _users},
+                { typeof(TicketJPG), _ticketJPGs},
+                { typeof(TicketPDF), _ticketPDFs},
+                { typeof(Reservation_Seat), _reservation_Seats},
             };
         }
 
@@ -115,5 +121,8 @@ namespace EventFlowAPI.Logic.UnitOfWork
         private readonly ITicketTypeRepository _ticketTypes;
         private readonly IUserDataRepository _usersData;
         private readonly IUserRepository _users;
+        private readonly ITicketJPGRepository _ticketJPGs;
+        private readonly ITicketPDFRepository _ticketPDFs;
+        private readonly IReservation_SeatRepository _reservation_Seats;
     }
 }
