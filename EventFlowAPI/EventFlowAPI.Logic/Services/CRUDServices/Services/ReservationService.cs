@@ -1,13 +1,11 @@
 ﻿
 using EventFlowAPI.DB.Entities;
 using EventFlowAPI.DB.Entities.Abstract;
-using EventFlowAPI.Logic.DTO.Interfaces;
 using EventFlowAPI.Logic.DTO.RequestDto;
 using EventFlowAPI.Logic.DTO.ResponseDto;
 using EventFlowAPI.Logic.Errors;
 using EventFlowAPI.Logic.Extensions;
 using EventFlowAPI.Logic.Helpers;
-using EventFlowAPI.Logic.Helpers.Enums;
 using EventFlowAPI.Logic.Identity.Helpers;
 using EventFlowAPI.Logic.Mapper.Extensions;
 using EventFlowAPI.Logic.Query;
@@ -18,8 +16,6 @@ using EventFlowAPI.Logic.Services.CRUDServices.Interfaces;
 using EventFlowAPI.Logic.Services.CRUDServices.Services.BaseServices;
 using EventFlowAPI.Logic.Services.OtherServices.Interfaces;
 using EventFlowAPI.Logic.UnitOfWork;
-using Microsoft.EntityFrameworkCore;
-using System.ComponentModel.DataAnnotations;
 
 namespace EventFlowAPI.Logic.Services.CRUDServices.Services
 {
@@ -103,13 +99,11 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             if (!userResult.IsSuccessful)
                 return Result<IEnumerable<ReservationResponseDto>>.Failure(userResult.Error);
 
-            var resRepo = ((IReservationRepository)_repository);
-
             var user = userResult.Value;
             if (user.IsInRole(Roles.Admin))
             {
                 var allReservations = await _repository.GetAllAsync(q =>
-                                                resRepo.ReservationsByStatus(q, resQuery.Status)
+                                                q.ReservationsByStatus(resQuery.Status)
                                                 .SortBy(resQuery.SortBy, resQuery.SortDirection));
 
                 var allReservationsDto = MapAsDto(allReservations);
@@ -118,7 +112,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             else if (user.IsInRole(Roles.User))
             {
                 var userReservations = await _repository.GetAllAsync(q =>
-                                            resRepo.ReservationsByStatus(q, resQuery.Status)
+                                            q.ReservationsByStatus(resQuery.Status)
                                             .Where(r => r.User.Id == user.Id)
                                             .SortBy(resQuery.SortBy, resQuery.SortDirection));
 
@@ -144,7 +138,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
 
             var user = userResult.Value;
             var reservation = reservationResult.Value;
-            var premissionError = CheckUserPremissionToReservation(user, reservation);
+            var premissionError = CheckUserPremission(user, reservation);
             if (premissionError != Error.None)
                 return Result<ReservationResponseDto>.Failure(premissionError);
 
@@ -173,7 +167,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
 
             var user = userResult.Value;
 
-            var premissionError = CheckUserPremissionToReservation(user, MapAsDto(reservation));
+            var premissionError = CheckUserPremission(user, MapAsDto(reservation));
             if (premissionError != Error.None)
                 return Result<object>.Failure(premissionError);
 
@@ -212,16 +206,12 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             // Validation
             var validationError = await ValidateEntity(requestDto);
             if(validationError != Error.None)
-            {
                 return Result<IEnumerable<ReservationResponseDto>>.Failure(validationError);
-            }
 
             // User
             var userResult = await _userService.GetCurrentUser();
             if (!userResult.IsSuccessful)
-            {
                 return Result<IEnumerable<ReservationResponseDto>>.Failure(userResult.Error);    
-            }
 
             var user = userResult.Value;
             var seatsList = (await _seatService.GetSeatsByListOfIds(requestDto!.SeatsIds)).ToList();
@@ -261,9 +251,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             var eventTicketCreateAndSendError = await CreateTicketAndSendByMailAsync(reservationsList, festival);
 
             if (eventTicketCreateAndSendError != Error.None)
-            {
                 return Result<IEnumerable<ReservationResponseDto>>.Failure(eventTicketCreateAndSendError);
-            }
 
             return Result<IEnumerable<ReservationResponseDto>>.Success(responseDtoList);
         }
@@ -546,7 +534,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
         }
 
 
-        private Error CheckUserPremissionToReservation(UserResponseDto user, ReservationResponseDto reservation)
+        private Error CheckUserPremission(UserResponseDto user, ReservationResponseDto reservation)
         {
             if (user.IsInRole(Roles.User))
             {

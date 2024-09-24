@@ -26,7 +26,28 @@ namespace EventFlowAPI.Logic.Extensions.PdfBuilderExtensions
             });
         }
 
-        public static void AddInfoAndStatute(this IContainer container, InfoAndStatuteOptions options)
+        public static void AddEventPassInfoAndStatute(this IContainer container, InfoAndStatuteOptions options)
+        {
+            container
+            .Column(column =>
+            {
+                column.Item()
+                .Row(row =>
+                {
+                    row.Spacing(options.InfoAndStatuteRowSpacing);
+
+                    row.RelativeItem(options.Info.Width)
+                    .PaddingLeft(options.Info.PadLeft)
+                    .AddInfoStatuteContent(options.Info.EventPassInfoList, options);
+
+                    row.RelativeItem(options.Statute.Width)
+                    .PaddingRight(options.Statute.PadRight)
+                    .AddInfoStatuteContent(options.Statute.EventPassStatuteList, options);
+                });
+            });
+        }
+
+        public static void AddTicketInfoAndStatute(this IContainer container, InfoAndStatuteOptions options)
         {
             container
             .Column(column =>
@@ -38,11 +59,11 @@ namespace EventFlowAPI.Logic.Extensions.PdfBuilderExtensions
 
                      row.RelativeItem(options.Info.Width)
                      .PaddingLeft(options.Info.PadLeft)
-                     .AddInfoStatuteContent(options.Info.List, options);
+                     .AddInfoStatuteContent(options.Info.TicketInfoList, options);
 
                      row.RelativeItem(options.Statute.Width)
                      .PaddingRight(options.Statute.PadRight)
-                     .AddInfoStatuteContent(options.Statute.List, options);
+                     .AddInfoStatuteContent(options.Statute.TicketStatuteList, options);
                  });
 
                 column.Item()

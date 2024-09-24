@@ -1,5 +1,6 @@
 ﻿using EventFlowAPI.Logic.Helpers.PdfOptions.PdfSummaryOptions;
 using EventFlowAPI.Logic.Helpers.PdfOptions.PdfTextOptions;
+using Microsoft.Extensions.Options;
 using QuestPDF.Fluent;
 using QuestPDF.Infrastructure;
 
@@ -31,9 +32,16 @@ namespace EventFlowAPI.Logic.Extensions.PdfBuilderExtensions
             .Column(column =>
             {
                 column.Spacing(options.ColumnSpacing);
-                column.AddSummaryItem(options.TicketPrice);
-                column.AddSummaryItem(options.SeatsCount);
-                column.AddSummaryItem(options.AdditionalPayments);
+                column.AddSummaryItem(options.Price);
+                if(options is ReservationSummaryOptions resOptions)
+                {
+                    column.AddSummaryItem(resOptions.SeatsCount);
+                    column.AddSummaryItem(resOptions.AdditionalPayments);
+                }
+                if(options is EventPassSummaryOptions eventPassOptions)
+                {
+                    column.AddSummaryItem(eventPassOptions.Discount);
+                }
                 column.AddSummaryItem(options.TotalCost);
             });
         }
@@ -65,8 +73,33 @@ namespace EventFlowAPI.Logic.Extensions.PdfBuilderExtensions
             row
             .Row(row =>
             {
-                row.RelativeItem(options.DescriptionAdditionalPaymentRowWidth).AddAdditionalPayment(options.AdditionalPayment);
-                row.RelativeItem(options.DescriptionAdditionalPaymentRowWidth).AddTicketTypes(options.TicketType);
+                if(options is ReservationSummaryOptions resOptions)
+                {
+                    row.RelativeItem(resOptions.DescriptionAdditionalPaymentRowWidth)
+                    .AddAdditionalPayment(resOptions.AdditionalPayment);
+
+                    row.RelativeItem(resOptions.DescriptionAdditionalPaymentRowWidth)
+                    .AddTicketTypes(resOptions.TicketType);
+                }
+                else if (options is EventPassSummaryOptions eventPassOptions)
+                {
+                    row.RelativeItem()
+                    .AddEventPassTypes(eventPassOptions.EventPassType);
+                }
+            });
+        }
+        public static void AddEventPassTypes(this IContainer row, EventPassTypeOptions options)
+        {
+            row
+            .Column(column => {
+                column.Spacing(options.ColumnSpacing);
+
+                column.AddTextItem(options.Header);
+
+                foreach (var eventPassType in options.EventPassTypes)
+                {
+                    column.AddTextItem(options.GetEventPassTypeString(eventPassType));
+                }
             });
         }
 

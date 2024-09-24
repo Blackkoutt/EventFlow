@@ -6,6 +6,5 @@ namespace EventFlowAPI.Logic.Repositories.Interfaces
 {
     public interface IReservationRepository : IGenericRepository<Reservation>
     {
-        IQueryable<Reservation> ReservationsByStatus(IQueryable<Reservation> queryable, ReservationStatus? status);
     }
 }

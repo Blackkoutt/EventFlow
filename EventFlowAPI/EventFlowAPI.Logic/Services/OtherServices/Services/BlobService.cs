@@ -17,6 +17,43 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
         private string ticketJPGFileNameTemplate = @$"eventflow_bilet_{{0}}_{{1}}.jpg";
         private string ticketPDFFileNameTemplate = @$"eventflow_bilet_{{0}}.pdf";
 
+        private string eventPassJPGFileNameTemplate = @$"eventflow_karnet_{{0}}.jpg";
+        private string eventPassPDFFileNameTemplate = @$"eventflow_karnet_{{0}}.pdf";
+
+        public async Task<Result<string>> CreateEventPassBlob(Guid eventPassGuid, byte[] data, string contentType, bool isUpdate=false)
+        {
+            string container = string.Empty;
+            string fileName = string.Empty; 
+            switch (contentType)
+            {
+                case ContentType.PDF:
+                    container = BlobContainer.EventPassesPDF;
+                    fileName = string.Format(eventPassPDFFileNameTemplate, eventPassGuid);
+                    break;
+                case ContentType.JPEG:
+                    container = BlobContainer.EventPassesJPG;
+                    fileName = string.Format(eventPassJPGFileNameTemplate, eventPassGuid);
+                    break;
+                default:
+                    return Result<string>.Failure(BlobError.UnsupportedContentType);
+            }
+            var newBlob = new BlobRequestDto
+            {
+                ContainerName = container,
+                FileName = fileName,
+                ContentType = contentType,
+                Data = data
+            };
+            var uploadResult = await UploadAsync(newBlob, isUpdate: isUpdate);
+            if (!uploadResult.IsSuccessful)
+            {
+                return Result<string>.Failure(uploadResult.Error);
+            }
+
+            return Result<string>.Success(fileName);
+        }
+
+
         public async Task<Result<List<IFileEntity>>> CreateTicketBlobs(Guid reservationGuid,
             List<byte[]> dataList, string container, string contentType, bool isUpdate = false)
         {

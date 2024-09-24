@@ -14,6 +14,10 @@ namespace EventFlowAPI.DB.Entities
          Column(TypeName = "NUMERIC(2)")]
         public int ValidityPeriodInMonths { get; set; }
 
+        [Range(0.00, 99.99),
+        Column(TypeName = "NUMERIC(4,2)")]
+        public decimal RenewalDiscountPercentage { get; set; }
+
         [Range(0.00, 9999.99),
          Column(TypeName = "NUMERIC(6,2)")]
         public decimal Price { get; set; }

@@ -5,6 +5,6 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Interfaces
 {
     public interface IQRCodeGeneratorService 
     {
-        Image GenerateQRCode(Reservation reservation, byte size);
+        Image GenerateQRCode(string valueToEncode, byte size);
     }
 }

@@ -4,6 +4,7 @@
     {
         EventTicket,
         FestivalTicketFront,
-        FestivalTicketReverse
+        FestivalTicketReverse,
+        EventPass
     }
 }

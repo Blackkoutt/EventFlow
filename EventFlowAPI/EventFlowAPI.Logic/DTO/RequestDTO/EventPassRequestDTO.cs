@@ -9,10 +9,6 @@ namespace EventFlowAPI.Logic.DTO.RequestDto
         public int PassTypeId { get; set; }
 
         [Required(ErrorMessage = "Należy podać typ płatności.")]
-        public int PaymentTypeId { get; set; }
-
-        // Maybe not required
-        //public int UserId {  get; set; }
-        
+        public int PaymentTypeId { get; set; } 
     }
 }

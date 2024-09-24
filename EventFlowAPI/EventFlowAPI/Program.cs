@@ -1,5 +1,6 @@
 using EventFlowAPI.DB.Entities;
 using EventFlowAPI.Extensions;
+using EventFlowAPI.Logic.DTO.Interfaces;
 using EventFlowAPI.Logic.Helpers.Enums;
 using EventFlowAPI.Logic.Mapper.Profiles;
 using EventFlowAPI.Logic.Services.OtherServices.Interfaces;
@@ -53,55 +54,39 @@ var app = builder.Build();
 
     var pdfbuilder = new PdfBuilderService(assetService, unitOfWork);
 
-    var reservationEntity = new Reservation
+    var newEventPass = new EventPass
     {
-        Id = 1233141,
-        ReservationGuid = Guid.NewGuid(),
-        ReservationDate = DateTime.Now,
-        TotalAddtionalPaymentPercentage = 55m,
-        TotalAdditionalPaymentAmount = 25m,
+        Id = 1,
+        EventPassGuid = Guid.NewGuid(),
+        StartDate = DateTime.Now,
+        RenewalDate = null,
+        EndDate = DateTime.Now.AddMonths(1),
+        PaymentDate = DateTime.Now,
+        PaymentAmount = 50,
+        PassType = new EventPassType
+        {
+            Id = 1,
+            Name = "Karnet miesiêczny",
+            ValidityPeriodInMonths = 1,
+            Price = 50
+        },
         User = new User
         {
+            Id = "1",
             Name = "Mateusz",
-            Surname = "Strapczuk"
+            Surname = "Strapczuk",
+            Email = "mateusz.strapczuk@gmail.com"
         },
-        PaymentAmount = 125,
         PaymentType = new PaymentType
         {
+            Id = 1,
             Name = "P³atnoœæ kart¹"
-        },
-        Ticket = new Ticket
-        {
-            Event = new Event
-            {
-                Name="Nowe wydarzenie",
-                StartDate = DateTime.Now,
-                EndDate = DateTime.Now.AddDays(1),
-                Category = new EventCategory
-                {
-                    Name = "Koncert"
-                },
-                Hall = new Hall
-                {
-                    Id = 1,
-                    HallNr = 2
-                }
-            },
-            TicketType = new TicketType
-            {
-                Name = "Ulgowy"
-            },
-            Price = 25
-            
         }
     };
-    List<byte[]> tickets = [];
-    var ticketOut = await assetService.GetOutputBitmap(TestsOutput.EventPath, EventFlowAPI.Logic.Helpers.Enums.ImageFormat.JPEG);
-    tickets.Add(ticketOut);
-    tickets.Add(ticketOut);
-    tickets.Add(ticketOut);
 
-    await pdfbuilder.CreateTicketPdf(reservationEntity, tickets);
+    byte[] eventPassBitmap = await assetService.GetOutputBitmap(TestsOutput.EventPass, EventFlowAPI.Logic.Helpers.Enums.ImageFormat.JPEG);
+
+    await pdfbuilder.CreateEventPassPdf(newEventPass, eventPassBitmap);
 }*/
 
 // Configure the HTTP request pipeline.
@@ -123,5 +108,3 @@ app.UseAutoMapper();
 app.MapControllers();
 
 app.Run();
-
-

@@ -9,19 +9,157 @@ using System.Net.Mail;
 
 namespace EventFlowAPI.Logic.Services.OtherServices.Services
 {
-    public class EmailSenderService(
-        IConfiguration configuration,
-        IHtmlRendererService htmlRenderer,
-        IAssetService assetService
-        ) : IEmailSenderService
+    public class EmailSenderService : IEmailSenderService
     {
-        private readonly IConfiguration _configuration = configuration;
-        private readonly IHtmlRendererService _htmlRenderer = htmlRenderer;
-        private readonly IAssetService _assetService = assetService;
-        private string TicketMailSubject => $"Twoje bilety EventFlow - zamówienie nr {{0}}";
-        private string CancelReservationMailSubject => $"Anulowanie zamówienia EventFlow - zamówienie nr {{0}}";
-        private string TicketMailPDFFileName => $"eventflow_bilety_{{0}}.pdf";
+        private readonly IConfiguration _configuration;
+        private readonly IHtmlRendererService _htmlRenderer;
+        private readonly IAssetService _assetService;
+        private readonly string logoPath;
+        private LinkedResource logoResource;
+
+
+        public EmailSenderService(IConfiguration configuration, IHtmlRendererService htmlRenderer, IAssetService assetService)
+        {
+            _configuration = configuration;
+            _htmlRenderer = htmlRenderer;
+            _assetService = assetService;
+            logoPath = _assetService.GetAssetPath(AssetType.Pictures, Picture.EventFlowLogo_Small.ToString());
+            logoResource = new LinkedResource(logoPath, ContentType.PNG)
+            {
+                ContentId = LogoContentId,
+            };
+        }
+
+
+        // Ticket
+        private string TicketMailSubject => $"Twoje bilety EventFlow - rezerwacja nr {{0}}";
+        private string CancelReservationMailSubject => $"Anulowanie rezerwacji EventFlow - rezerwacja nr {{0}}";
+        private string TicketMailPDFFileName => $"eventflow_bilet_{{0}}.pdf";
+
+        // Event Pass
+        private string EventPassMailSubject => $"Twój karnet EventFlow - karnet nr {{0}}";
+        private string EventPassRenewMailSubject => $"Przedłużenie karnetu EventFlow - karnet nr {{0}}";
+        private string CancelEventPassMailSubject => $"Anulowanie karnetu EventFlow - karnet nr {{0}}";
+        private string EventPassMailPDFFileName => $"eventflow_karnet_{{0}}.pdf";
         private string LogoContentId => "logoImage";
+       
+
+
+        // EventPass
+        public async Task SendEventPassRenewPDFAsync(EventPass eventPass, byte[] eventPassPDF)
+        {
+            var paramDictionary = GetEventPassHTMLParams(eventPass.Id);
+            var htmlStringEmailBody = await _htmlRenderer.RenderHtmlToStringAsync<EventPassRenew>(paramDictionary);
+
+            var emailDto = new EmailDto
+            {
+                Email = eventPass.User.Email!,
+                Subject = string.Format(EventPassRenewMailSubject, eventPass.Id),
+                Body = htmlStringEmailBody,
+                IsBodyHTML = true,
+                LinkedResources = { logoResource },
+                Attachments =
+                {
+                    new AttachmentDto
+                    {
+                        Type = ContentType.PDF,
+                        FileName = string.Format(EventPassMailPDFFileName, eventPass.Id),
+                        Data = eventPassPDF
+                    }
+                }
+            };
+
+            await SendEmailAsync(emailDto);
+        }
+
+        public async Task SendEventPassPDFAsync(EventPass eventPass, byte[] eventPassPDF)
+        {
+            var paramDictionary = GetEventPassHTMLParams(eventPass.Id);
+            var htmlStringEmailBody = await _htmlRenderer.RenderHtmlToStringAsync<EventPassEmailBody>(paramDictionary);
+
+            var emailDto = new EmailDto
+            {
+                Email = eventPass.User.Email!,
+                Subject = string.Format(EventPassMailSubject, eventPass.Id),
+                Body = htmlStringEmailBody,
+                IsBodyHTML = true,
+                LinkedResources = { logoResource },
+                Attachments =
+                {
+                    new AttachmentDto
+                    {
+                        Type = ContentType.PDF,
+                        FileName = string.Format(EventPassMailPDFFileName, eventPass.Id),
+                        Data = eventPassPDF
+                    }
+                }
+            };
+
+            await SendEmailAsync(emailDto);
+        }
+
+        public async Task SendInfoAboutCanceledEventPass(EventPass eventPass)
+        {
+            var paramDictionary = GetEventPassHTMLParams(eventPass.Id);
+            var htmlStringEmailBody = await _htmlRenderer.RenderHtmlToStringAsync<EventPassCancelEmailBody>(paramDictionary);
+
+            var emailDto = new EmailDto
+            {
+                Email = eventPass.User.Email!,
+                Subject = string.Format(CancelEventPassMailSubject, eventPass.Id),
+                Body = htmlStringEmailBody,
+                IsBodyHTML = true,
+                LinkedResources = { logoResource }
+            };
+
+            await SendEmailAsync(emailDto);
+        }
+
+
+        // Reservation
+        public async Task SendInfoAboutCanceledReservation(Reservation reservation)
+        {
+            var paramDictionary = GetTicketHTMLParams(reservation.Id);
+            var htmlStringEmailBody = await _htmlRenderer.RenderHtmlToStringAsync<ReservationCancelEmailBody>(paramDictionary);
+
+            var emailDto = new EmailDto
+            {
+                Email = reservation.User.Email!,
+                Subject =  string.Format(CancelReservationMailSubject, reservation.Id),
+                Body = htmlStringEmailBody,
+                IsBodyHTML = true,
+                LinkedResources = { logoResource }
+            };
+
+            await SendEmailAsync(emailDto);
+        }
+
+
+        public async Task SendTicketPDFAsync(Reservation reservation, byte[] ticketPDF)
+        {
+            var paramDictionary = GetTicketHTMLParams(reservation.Id);
+            var htmlStringEmailBody = await _htmlRenderer.RenderHtmlToStringAsync<TicketEmailBody>(paramDictionary);
+
+            var emailDto = new EmailDto
+            {
+                Email = reservation.User.Email!,
+                Subject = string.Format(TicketMailSubject, reservation.Id),
+                Body = htmlStringEmailBody,
+                IsBodyHTML = true,
+                LinkedResources = { logoResource },
+                Attachments =
+                {
+                    new AttachmentDto
+                    {
+                        Type = ContentType.PDF,
+                        FileName = string.Format(TicketMailPDFFileName, reservation.Id),
+                        Data = ticketPDF
+                    }
+                }
+            };
+
+            await SendEmailAsync(emailDto);
+        }
 
 
         public Task SendEmailAsync(EmailDto emailDto)
@@ -46,75 +184,6 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
                 AddAttachments(mailMessage, emailDto.Attachments);
             }
             return client.SendMailAsync(mailMessage);
-        }
-
-
-        public async Task SendInfoAboutCanceledReservation(Reservation reservation)
-        {
-            var paramDictionary = GetDefaultHTMLParams(reservation.Id);
-            var htmlStringEmailBody = await _htmlRenderer.RenderHtmlToStringAsync<ReservationCancelEmailBody>(paramDictionary);
-            var logoPath = _assetService.GetAssetPath(AssetType.Pictures, Picture.EventFlowLogo_Small.ToString());
-
-            var emailDto = new EmailDto
-            {
-                Email = reservation.User.Email!,
-                Subject =  string.Format(CancelReservationMailSubject, reservation.Id),
-                Body = htmlStringEmailBody,
-                IsBodyHTML = true,
-                LinkedResources =
-                {
-                    new LinkedResource(logoPath, ContentType.PNG)
-                    {
-                        ContentId = LogoContentId,
-                    }
-                },
-            };
-
-            await SendEmailAsync(emailDto);
-        }
-
-
-        public async Task SendTicketPDFAsync(Reservation reservation, byte[] ticketPDF)
-        {
-            var paramDictionary = GetDefaultHTMLParams(reservation.Id);
-            var htmlStringEmailBody = await _htmlRenderer.RenderHtmlToStringAsync<TicketEmailBody>(paramDictionary);
-            var logoPath = _assetService.GetAssetPath(AssetType.Pictures, Picture.EventFlowLogo_Small.ToString()); 
-
-            var emailDto = new EmailDto
-            {
-                Email = reservation.User.Email!,
-                Subject = string.Format(TicketMailSubject, reservation.Id),
-                Body = htmlStringEmailBody,
-                IsBodyHTML = true,
-                LinkedResources =
-                {
-                    new LinkedResource(logoPath, ContentType.PNG)
-                    {
-                        ContentId = LogoContentId,
-                    }
-                },
-                Attachments =
-                {
-                    new AttachmentDto
-                    {
-                        Type = ContentType.PDF,
-                        FileName = string.Format(TicketMailPDFFileName, reservation.Id),
-                        Data = ticketPDF
-                    }
-                }
-            };
-
-            await SendEmailAsync(emailDto);
-        }
-
-
-        private Dictionary<string, object?> GetDefaultHTMLParams(int reservationId)
-        {
-            return new Dictionary<string, object?>()
-            {
-                { "ReservationId", reservationId },
-                { "LogoContentId", LogoContentId }
-            };
         }
 
 
@@ -151,6 +220,25 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
                 alternateView.LinkedResources.Add(resource);
             }
             mailMessage.AlternateViews.Add(alternateView);
+        }
+
+
+        private Dictionary<string, object?> GetEventPassHTMLParams(int eventPassId)
+        {
+            return new Dictionary<string, object?>()
+            {
+                { "EventPassId", eventPassId },
+                { "LogoContentId", LogoContentId }
+            };
+        }
+
+        private Dictionary<string, object?> GetTicketHTMLParams(int reservationId)
+        {
+            return new Dictionary<string, object?>()
+            {
+                { "ReservationId", reservationId },
+                { "LogoContentId", LogoContentId }
+            };
         }
     }
 }

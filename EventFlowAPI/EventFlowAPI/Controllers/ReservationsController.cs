@@ -62,7 +62,7 @@ namespace EventFlowAPI.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<IActionResult> GetTicktPdfByReservationId([FromRoute] int id)
+        public async Task<IActionResult> GetTicketPdfByReservationId([FromRoute] int id)
         {
             var result = await _fileService.GetTicketPDF(id);
             return result.IsSuccessful ?

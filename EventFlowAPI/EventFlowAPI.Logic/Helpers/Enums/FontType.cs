@@ -5,6 +5,7 @@
         Inter,
         //Inter_Bold,
         BigShouldersDisplay,
+        OpenSansCondensed
        // BigShouldersDisplay_Bold,
     }
 }

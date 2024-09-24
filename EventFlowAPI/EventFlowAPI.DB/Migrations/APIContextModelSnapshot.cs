@@ -356,6 +356,18 @@ namespace EventFlowAPI.DB.Migrations
                     b.Property<DateTime>("EndDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<Guid>("EventPassGuid")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("EventPassJPGName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("EventPassPDFName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsCanceled")
+                        .HasColumnType("bit");
+
                     b.Property<int>("PassTypeId")
                         .HasColumnType("int");
 
@@ -373,6 +385,12 @@ namespace EventFlowAPI.DB.Migrations
 
                     b.Property<DateTime>("StartDate")
                         .HasColumnType("datetime2");
+
+                    b.Property<decimal>("TotalDiscount")
+                        .HasColumnType("NUMERIC(5,2)");
+
+                    b.Property<decimal>("TotalDiscountPercentage")
+                        .HasColumnType("NUMERIC(4,2)");
 
                     b.Property<string>("UserId")
                         .IsRequired()
@@ -393,33 +411,51 @@ namespace EventFlowAPI.DB.Migrations
                         {
                             Id = 1,
                             EndDate = new DateTime(2025, 3, 19, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            EventPassGuid = new Guid("b00ca94a-e6b2-4d2e-b270-244b3e76048d"),
+                            EventPassJPGName = "eventflow_karnet_b00ca94a-e6b2-4d2e-b270-244b3e76048d.jpg",
+                            EventPassPDFName = "eventflow_karnet_b00ca94a-e6b2-4d2e-b270-244b3e76048d.pdf",
+                            IsCanceled = false,
                             PassTypeId = 3,
                             PaymentAmount = 499.99m,
                             PaymentDate = new DateTime(2024, 9, 19, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             PaymentTypeId = 1,
                             StartDate = new DateTime(2024, 9, 19, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TotalDiscount = 0m,
+                            TotalDiscountPercentage = 0m,
                             UserId = "1"
                         },
                         new
                         {
                             Id = 2,
                             EndDate = new DateTime(2025, 9, 19, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            EventPassGuid = new Guid("766245b4-8c08-49dd-9480-2606aaa590be"),
+                            EventPassJPGName = "eventflow_karnet_766245b4-8c08-49dd-9480-2606aaa590be.jpg",
+                            EventPassPDFName = "eventflow_karnet_766245b4-8c08-49dd-9480-2606aaa590be.pdf",
+                            IsCanceled = false,
                             PassTypeId = 4,
                             PaymentAmount = 999.99m,
                             PaymentDate = new DateTime(2024, 9, 19, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             PaymentTypeId = 2,
                             StartDate = new DateTime(2024, 9, 19, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TotalDiscount = 0m,
+                            TotalDiscountPercentage = 0m,
                             UserId = "2"
                         },
                         new
                         {
                             Id = 3,
                             EndDate = new DateTime(2024, 12, 19, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            EventPassGuid = new Guid("33610a0d-a1b7-4700-bffe-9e334b977e6a"),
+                            EventPassJPGName = "eventflow_karnet_33610a0d-a1b7-4700-bffe-9e334b977e6a.jpg",
+                            EventPassPDFName = "eventflow_karnet_33610a0d-a1b7-4700-bffe-9e334b977e6a.pdf",
+                            IsCanceled = false,
                             PassTypeId = 2,
                             PaymentAmount = 235.99m,
                             PaymentDate = new DateTime(2024, 9, 19, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             PaymentTypeId = 1,
                             StartDate = new DateTime(2024, 9, 19, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TotalDiscount = 0m,
+                            TotalDiscountPercentage = 0m,
                             UserId = "3"
                         });
                 });
@@ -440,6 +476,9 @@ namespace EventFlowAPI.DB.Migrations
                     b.Property<decimal>("Price")
                         .HasColumnType("NUMERIC(6,2)");
 
+                    b.Property<decimal>("RenewalDiscountPercentage")
+                        .HasColumnType("NUMERIC(4,2)");
+
                     b.Property<decimal>("ValidityPeriodInMonths")
                         .HasColumnType("NUMERIC(2)");
 
@@ -453,6 +492,7 @@ namespace EventFlowAPI.DB.Migrations
                             Id = 1,
                             Name = "Karnet miesięczny",
                             Price = 89.99m,
+                            RenewalDiscountPercentage = 5m,
                             ValidityPeriodInMonths = 1m
                         },
                         new
@@ -460,6 +500,7 @@ namespace EventFlowAPI.DB.Migrations
                             Id = 2,
                             Name = "Karnet kwartalny",
                             Price = 235.99m,
+                            RenewalDiscountPercentage = 10m,
                             ValidityPeriodInMonths = 3m
                         },
                         new
@@ -467,6 +508,7 @@ namespace EventFlowAPI.DB.Migrations
                             Id = 3,
                             Name = "Karnet półroczny",
                             Price = 499.99m,
+                            RenewalDiscountPercentage = 15m,
                             ValidityPeriodInMonths = 6m
                         },
                         new
@@ -474,6 +516,7 @@ namespace EventFlowAPI.DB.Migrations
                             Id = 4,
                             Name = "Karnet roczny",
                             Price = 999.99m,
+                            RenewalDiscountPercentage = 20m,
                             ValidityPeriodInMonths = 12m
                         });
                 });
@@ -2254,7 +2297,7 @@ namespace EventFlowAPI.DB.Migrations
                         {
                             Id = "1",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "d683e424-fb5c-4682-bf4f-bd4242db0b0a",
+                            ConcurrencyStamp = "8d474033-12e4-481b-a80e-17f1f97d1308",
                             DateOfBirth = new DateTime(2000, 4, 3, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "admin@gmail.com",
                             EmailConfirmed = true,
@@ -2262,9 +2305,9 @@ namespace EventFlowAPI.DB.Migrations
                             Name = "Admin",
                             NormalizedEmail = "ADMIN@GMAIL.COM",
                             NormalizedUserName = "ADMIN@GMAIL.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEMJz+z79tELMtpeJ7Vm87Sa7x+HbvsYPps9uchC/F1CqhF3z9/W93VTEwZjMJTPdig==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEEhAVpF+4d/RjDHJTyrZubIhkeR6aiKGQlPOkQ8FaeXSt++WGF33rNfTC56ZlhjVvw==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "167a7f9c-279a-43d9-8e9d-2d2bb97112ef",
+                            SecurityStamp = "32183c17-1343-4025-b886-c6ac94c7c608",
                             Surname = "Admin",
                             TwoFactorEnabled = false,
                             UserName = "admin@gmail.com"
@@ -2273,7 +2316,7 @@ namespace EventFlowAPI.DB.Migrations
                         {
                             Id = "2",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "18b826c7-a948-4124-8c61-eabf6428a39a",
+                            ConcurrencyStamp = "6d4298f7-1895-46dd-99d4-de9ecd534081",
                             DateOfBirth = new DateTime(1985, 2, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "j.kowalski@gmail.com",
                             EmailConfirmed = true,
@@ -2281,9 +2324,9 @@ namespace EventFlowAPI.DB.Migrations
                             Name = "Jan",
                             NormalizedEmail = "J.KOWALSKI@GMAIL.COM",
                             NormalizedUserName = "J.KOWALSKI@GMAIL.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEN/AngG+bpZ2BuvcnsWZvwvmGiVxVaCre3a531+rnyjdseccWypN8rahMabj5SdVmw==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEBfyTRjvuPtqml5LHaxn9IFq7FQ6DdOc+o2X3c9IVhtGOxCHmMGvzqolAGOvZKGKAw==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "2ea7df58-05c6-4ed0-8491-3254070ac14f",
+                            SecurityStamp = "9aea3556-3d6e-42f8-b89c-49a4b9e9dbaf",
                             Surname = "Kowalski",
                             TwoFactorEnabled = false,
                             UserName = "j.kowalski@gmail.com"
@@ -2292,7 +2335,7 @@ namespace EventFlowAPI.DB.Migrations
                         {
                             Id = "3",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "ced34940-e04a-43fe-b3ba-cac970bf8180",
+                            ConcurrencyStamp = "f9a23f33-0bea-46c0-ba2b-9afc53fad26c",
                             DateOfBirth = new DateTime(1979, 12, 11, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "a.kowalska@gmail.com",
                             EmailConfirmed = true,
@@ -2300,9 +2343,9 @@ namespace EventFlowAPI.DB.Migrations
                             Name = "Anna",
                             NormalizedEmail = "A.KOWALSKA@GMAIL.COM",
                             NormalizedUserName = "A.KOWALSKA@GMAIL.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEOJEF7mSyIrVojwTXCK4JmzImGtBLIeEoMuaKvlULkphf2B7GByu/orgXhr3A+whxQ==",
+                            PasswordHash = "AQAAAAIAAYagAAAAENT5SPRdtFz9J4KLJuHxIHXaT6B8bfAR4eMlpcgtYxBn2MIcMZ48VD9U6JVTdZnneA==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "e3516077-70b2-4a3a-a53e-d02e4262b1a3",
+                            SecurityStamp = "efa84eb7-99f3-4422-8d38-05d9b07aea31",
                             Surname = "Kowalska",
                             TwoFactorEnabled = false,
                             UserName = "a.kowalska@gmail.com"
@@ -2311,7 +2354,7 @@ namespace EventFlowAPI.DB.Migrations
                         {
                             Id = "4",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "b99de320-6395-4d08-b9f5-a8d70a06a746",
+                            ConcurrencyStamp = "f62303a7-38fa-40df-b2b0-8390ab0231df",
                             DateOfBirth = new DateTime(1979, 12, 11, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "mateusz.strapczuk1@gmail.com",
                             EmailConfirmed = true,
@@ -2319,9 +2362,9 @@ namespace EventFlowAPI.DB.Migrations
                             Name = "Mateusz",
                             NormalizedEmail = "MATEUSZ.STRAPCZUK1@GMAIL.COM",
                             NormalizedUserName = "MATEUSZ.STRAPCZUK1@GMAIL.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAENotuVbgd+UQt0GscfojMh0kWEpyv562VdDeClVQFdcI45mth2i91y6h1YwEXg6zlQ==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEOnnJiq/vVvgkLeuxD4yQFP9ElYgmCOgnpizfL2VExhrUopz+l+JnmfAV7iX039qyA==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "2c6fd1e0-597f-47c4-bdce-c495311c36b3",
+                            SecurityStamp = "36247996-81e3-43a5-909c-93ac855a0e87",
                             Surname = "Strapczuk",
                             TwoFactorEnabled = false,
                             UserName = "mateusz.strapczuk1@gmail.com"

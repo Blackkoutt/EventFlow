@@ -1,4 +1,5 @@
-﻿using EventFlowAPI.Logic.Helpers.Enums;
+﻿using EventFlowAPI.DB.Entities;
+using EventFlowAPI.Logic.Helpers.Enums;
 using System.Linq.Expressions;
 using System.Reflection;
 
@@ -43,6 +44,28 @@ namespace EventFlowAPI.Logic.Extensions
 
             }
             return query;
+        }
+
+        public static IQueryable<Reservation> ReservationsByStatus(this IQueryable<Reservation> queryable, ReservationStatus? status)
+        {
+            return status switch
+            {
+                ReservationStatus.Active => queryable.Where(r => (!r.IsCanceled && r.EndOfReservationDate > DateTime.Now)),
+                ReservationStatus.Expired => queryable.Where(r => (!r.IsCanceled && !(r.EndOfReservationDate > DateTime.Now))),
+                ReservationStatus.Canceled => queryable.Where(r => (r.IsCanceled)),
+                _ => queryable
+            };
+        }
+
+        public static IQueryable<EventPass> EventPassByStatus(this IQueryable<EventPass> queryable, EventPassStatus? status)
+        {
+            return status switch
+            {
+                EventPassStatus.Active => queryable.Where(r => (!r.IsCanceled && r.EndDate > DateTime.Now)),
+                EventPassStatus.Expired => queryable.Where(r => (!r.IsCanceled && !(r.EndDate > DateTime.Now))),
+                EventPassStatus.Canceled => queryable.Where(r => (r.IsCanceled)),
+                _ => queryable
+            };
         }
     }
 }

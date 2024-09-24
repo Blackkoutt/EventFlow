@@ -6,6 +6,7 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Interfaces
 {
     public interface IBlobService
     {
+        Task<Result<string>> CreateEventPassBlob(Guid eventPassGuid, byte[] data, string contentType, bool isUpdate = false);
         Task<Result<List<IFileEntity>>> CreateTicketBlobs(Guid reservationGuid,
             List<byte[]> dataList, string container, string contentType, bool isUpdate = false);
         Task<Result<object>> UploadAsync(BlobRequestDto blob, bool isUpdate = false);

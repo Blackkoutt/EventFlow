@@ -10,17 +10,6 @@ namespace EventFlowAPI.Logic.Repositories.Repositories
 {
     public sealed class ReservationRepository(APIContext context) : GenericRepository<Reservation>(context), IReservationRepository
     {
-        public IQueryable<Reservation> ReservationsByStatus(IQueryable<Reservation> queryable, ReservationStatus? status)
-        {
-            return status switch
-            {
-                ReservationStatus.Active => queryable.Where(r => (!r.IsCanceled && r.EndOfReservationDate > DateTime.Now)),
-                ReservationStatus.Expired => queryable.Where(r => (!r.IsCanceled && !(r.EndOfReservationDate > DateTime.Now))),
-                ReservationStatus.Canceled => queryable.Where(r => (r.IsCanceled)),
-                _ => queryable
-            };
-        }
-
         public sealed override async Task<IEnumerable<Reservation>> GetAllAsync(Func<IQueryable<Reservation>, IQueryable<Reservation>>? query = null)
         {
             var _table = _context.Reservation

@@ -10,5 +10,6 @@ namespace EventFlowAPI.Logic.Errors
         public static readonly Error BlobDataIsNullOrEmpty = new(new BadRequestResponse("Can not upload blob on server because it has empty data."));
         public static readonly Error BlobContentTypeIsNullOrEmpty = new(new BadRequestResponse("Can not upload blob on server because it has incorrect content type. Please provide correct content type."));
         public static readonly Error UnsupportedContentType = new(new BadRequestResponse("Unsupported content type was provided."));
+        public static readonly Error FileNameIsEmpty = new(new BadRequestResponse("File name is null or empty."));
     }
 }

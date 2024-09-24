@@ -69,7 +69,7 @@ namespace EventFlowAPI.Logic.Extensions
             }
         }
 
-        public static void Draw(this Image image, string text, TicketPrintingOptions options)
+        public static void Draw(this Image image, string text, PrintingOptions options)
         {
             if (options is TicketTitlePrintingOptions)
             {
@@ -92,7 +92,7 @@ namespace EventFlowAPI.Logic.Extensions
                 image.Mutate(ctx => ctx.DrawText(text, options.Font, options.BrushColor, options.Location));
             }
         }
-        public static void Draw(this Image image, Image img, TicketQRCodePrintingOptions options)
+        public static void Draw(this Image image, Image img, QRCodePrintingOptions options)
         {
             image.Mutate(ctx => ctx.DrawImage(img, options.Location, options.Opacity));
         }

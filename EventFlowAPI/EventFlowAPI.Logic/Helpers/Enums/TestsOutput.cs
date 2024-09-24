@@ -5,5 +5,6 @@
         EventPath,
         FestivalPathFront,
         FestivalPathReverse,
+        EventPass
     }
 }

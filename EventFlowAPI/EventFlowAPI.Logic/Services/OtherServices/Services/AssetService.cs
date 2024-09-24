@@ -41,7 +41,7 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
         public string GetOutputTestPath(TestsOutput outputName) => 
             GetAssetPath(AssetType.Tests, outputName.ToString());
 
-        public async Task<Image> GetTicketTemplate(Template templateName) => 
+        public async Task<Image> GetTemplate(Template templateName) => 
             await LoadImageAsync(AssetType.Templates, templateName.ToString());
 
         public string GetAssetPath(AssetType assetType, string assetName) => 

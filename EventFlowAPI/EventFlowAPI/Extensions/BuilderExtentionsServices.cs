@@ -3,9 +3,11 @@ using EventFlowAPI.Logic.Identity.Services.Services;
 using EventFlowAPI.Logic.Services.CRUDServices.Interfaces;
 using EventFlowAPI.Logic.Services.CRUDServices.Services;
 using EventFlowAPI.Logic.Services.OtherServices.Interfaces;
-using EventFlowAPI.Logic.Services.OtherServices.Interfaces.TicketConfiguration;
+using EventFlowAPI.Logic.Services.OtherServices.Interfaces.Configuration.PassConfiguration;
+using EventFlowAPI.Logic.Services.OtherServices.Interfaces.Configuration.TicketConfiguration;
 using EventFlowAPI.Logic.Services.OtherServices.Services;
-using EventFlowAPI.Logic.Services.OtherServices.Services.TicketConfiguration;
+using EventFlowAPI.Logic.Services.OtherServices.Services.Configuration.PassConfiguration;
+using EventFlowAPI.Logic.Services.OtherServices.Services.Configuration.TicketConfiguration;
 using EventFlowAPI.Logic.UnitOfWork;
 
 namespace EventFlowAPI.Extensions
@@ -51,7 +53,7 @@ namespace EventFlowAPI.Extensions
         public static void AddApplicationOtherServices(this IServiceCollection services)
         {
             services.AddScoped<IEmailSenderService, EmailSenderService>();
-            services.AddScoped<ITicketCreatorService, TicketCreatorService>();
+            services.AddScoped<IJPGCreatorService, JPGCreatorService>();
             services.AddScoped<IQRCodeGeneratorService, QRCodeGeneratorService>();
             services.AddScoped<IEventTicketConfiguration, EventTicketConfiguration>();
             services.AddScoped<IFestivalTicketConfiguration, FestivalTicketConfiguration>();
@@ -60,6 +62,7 @@ namespace EventFlowAPI.Extensions
             services.AddScoped<IHtmlRendererService, HtmlRendererService>();
             services.AddSingleton<IBlobService, BlobService>();
             services.AddScoped<IFileService, FileService>();
+            services.AddScoped<IEventPassConfiguration, EventPassConfiguration>();
         }
     }
 }

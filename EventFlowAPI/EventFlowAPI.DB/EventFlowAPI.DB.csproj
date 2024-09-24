@@ -13,8 +13,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Remove="Assets\Fonts\OpenSans-CondLight.ttf" />
     <None Remove="Assets\Pictures\EventFlowLogo_Big.png" />
     <None Remove="Assets\Pictures\EventFlowLogo_Small.png" />
+    <None Remove="Assets\Templates\event_pass.jpg" />
     <None Remove="Assets\Templates\festival_ticket_front.png" />
     <None Remove="Assets\Templates\festival_ticket_reverse.png" />
     <None Remove="Assets\ticket_template.png" />
@@ -35,8 +37,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Resource Include="Assets\Fonts\OpenSans-CondLight.ttf" />
     <Resource Include="Assets\Pictures\EventFlowLogo_Big.png" />
     <Resource Include="Assets\Pictures\EventFlowLogo_Small.png" />
+    <Resource Include="Assets\Templates\event_pass.jpg" />
     <Resource Include="Assets\Templates\festival_ticket_front.png" />
     <Resource Include="Assets\Templates\festival_ticket_reverse.png" />
   </ItemGroup>
