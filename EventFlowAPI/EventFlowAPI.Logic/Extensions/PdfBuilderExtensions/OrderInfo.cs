@@ -1,5 +1,4 @@
 ﻿using EventFlowAPI.Logic.Helpers.PdfOptions.PdfInfoOptions;
-using Microsoft.Extensions.Options;
 using QuestPDF.Fluent;
 using QuestPDF.Infrastructure;
 

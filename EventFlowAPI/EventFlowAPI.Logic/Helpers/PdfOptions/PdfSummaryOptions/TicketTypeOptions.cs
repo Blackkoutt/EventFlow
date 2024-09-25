@@ -6,11 +6,11 @@ using QuestPDF.Infrastructure;
 
 namespace EventFlowAPI.Logic.Helpers.PdfOptions.PdfSummaryOptions
 {
-    public class TicketTypeOptions(List<TicketType> ticketTypes)
+    public class TicketTypeOptions(List<Ticket> tickets)
     {
         private readonly string defaultFontType = FontType.Inter.ToString();
         public float ColumnSpacing => 1f;
-        public List<TicketType> TicketTypes => ticketTypes;
+        public List<Ticket> Tickets => tickets;
 
 
         public TextOptions Header => new TextOptions
@@ -20,11 +20,11 @@ namespace EventFlowAPI.Logic.Helpers.PdfOptions.PdfSummaryOptions
         };
 
 
-        public TextOptions GetTicketTypeString(TicketType ticketType)
+        public TextOptions GetTicketTypeString(Ticket ticket)
         {
             return new TextOptions
             {
-                Text = $"- {ticketType.Name}",
+                Text = $"- {ticket.TicketType.Name} {Math.Round(ticket.Price,2)} {Currency.PLN}",
                 Style = TextStyle.Default.FontFamily(defaultFontType).FontSize(8.5f)
             };
         }

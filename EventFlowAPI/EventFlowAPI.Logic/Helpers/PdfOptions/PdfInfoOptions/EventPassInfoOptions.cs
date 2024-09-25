@@ -5,10 +5,10 @@ using QuestPDF.Infrastructure;
 
 namespace EventFlowAPI.Logic.Helpers.PdfOptions.PdfInfoOptions
 {
-    public class EventPassInfoOptions(EventPass eventPass, EventPass? oldEventPass) : InfoOptions
+    public class EventPassInfoOptions(EventPass eventPass, EventPassType? oldEventPassType) : InfoOptions
     {
         private readonly EventPass _eventPass = eventPass;
-        private readonly EventPass? _oldEventPass = oldEventPass;
+        private readonly EventPassType? _oldEventPassType = oldEventPassType;
 
         protected override string OrderIdLabel => "Numer karnetu:";
         protected override string OrderId => $"{_eventPass.Id}";
@@ -21,7 +21,7 @@ namespace EventFlowAPI.Logic.Helpers.PdfOptions.PdfInfoOptions
 
         public TextOptions OldEventPassType => new TextOptions
         {
-            Text = $"Poprzedni typ karnetu: {(_oldEventPass != null ? _oldEventPass.PassType.Name : "Brak")}",
+            Text = $"Poprzedni typ karnetu: {(_oldEventPassType != null ? _oldEventPassType.Name : "Brak")}",
             PaddingBottom = 2.5f,
             Style = TextStyle.Default.FontFamily(defaultFontType).FontSize(11f)
         };

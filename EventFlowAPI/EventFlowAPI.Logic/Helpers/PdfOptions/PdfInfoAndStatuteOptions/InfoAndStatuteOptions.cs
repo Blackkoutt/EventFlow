@@ -14,6 +14,7 @@ namespace EventFlowAPI.Logic.Helpers.PdfOptions.PdfInfoAndStatuteOptions
             Info = new();
             Statute = new();
             Organizer = new();
+            EventPassInfo = new();
         }
 
         // Common 
@@ -40,5 +41,9 @@ namespace EventFlowAPI.Logic.Helpers.PdfOptions.PdfInfoAndStatuteOptions
 
         // Organizer
         public OrganizerOptions Organizer { get; private set; }
+
+
+        // EventPassInfo
+        public EventPassOptions EventPassInfo { get; private set; }
     }
 }

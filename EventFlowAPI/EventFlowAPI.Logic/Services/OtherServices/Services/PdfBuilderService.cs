@@ -18,21 +18,16 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
         private readonly IAssetService _assetService = assetService;
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
 
-        public async Task<byte[]> CreateEventPassPdf(EventPass eventPass, byte[] eventPassJPGBitmap)
+        public async Task<byte[]> CreateEventPassPdf(EventPass eventPass, byte[] eventPassJPGBitmap, EventPassType? oldEventPassType)
         {
             var logoSmall = await _assetService.GetPictureAsBitmap(Helpers.Enums.Picture.EventFlowLogo_Small, ImageFormat.PNG);
             var eventPassTypes = (await _unitOfWork.GetRepository<EventPassType>().GetAllAsync()).ToList();
-            EventPass? oldEventPass = null;
-            if(eventPass.RenewalDate != null)
-            {
-                oldEventPass = await _unitOfWork.GetRepository<EventPass>().GetOneAsync(eventPass.Id);
-            }
             
 
             PageOptions pageOptions = new();
             HeaderOptions headerOptions = new();
             CommonOptions commonOptions = new();
-            EventPassInfoOptions eventPassInfoOptions = new(eventPass, oldEventPass);
+            EventPassInfoOptions eventPassInfoOptions = new(eventPass, oldEventPassType);
             PictureOptions eventPassPictureOptions = new();
             EventPassSummaryOptions summaryOptions = new(eventPass, eventPassTypes);
             InfoAndStatuteOptions infoAndStatuteOptions = new();
@@ -78,10 +73,28 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
                 return memoryStream.ToArray();
             }            
         }
-        public async Task<byte[]> CreateTicketPdf(Reservation reservation, List<byte[]> tickets)
+
+        private async Task<List<Ticket>> GetTicketsForEventOrFestival(Reservation reservation)
         {
+            if (reservation.IsFestivalReservation)
+            {
+                return (await _unitOfWork.GetRepository<Ticket>().GetAllAsync(q =>
+                        q.Where(t =>
+                        t.FestivalId == reservation.Ticket.FestivalId))
+                        ).DistinctBy(t => t.TicketType)
+                        .ToList();
+            }
+            return (await _unitOfWork.GetRepository<Ticket>().GetAllAsync(q =>
+                    q.Where(t =>
+                    t.FestivalId == null &&
+                    t.EventId == reservation.Ticket.EventId))
+                    ).DistinctBy(t => t.TicketType)
+                    .ToList();
+        }
+        public async Task<byte[]> CreateTicketPdf(Reservation reservation, List<byte[]> tickets)
+        { 
             var seatTypes = (await _unitOfWork.GetRepository<SeatType>().GetAllAsync()).ToList();
-            var ticketTypes = (await _unitOfWork.GetRepository<TicketType>().GetAllAsync()).ToList();
+            var ticketsForEventOrFestival = await GetTicketsForEventOrFestival(reservation);
             var logoSmall = await _assetService.GetPictureAsBitmap(Helpers.Enums.Picture.EventFlowLogo_Small, ImageFormat.PNG);
 
             PageOptions pageOptions = new();
@@ -90,7 +103,7 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
             ReservationInfoOptions reservationInfoOptions = new(reservation);
             FestivalEventInfoOptions festivalEventInfoOptions = new(reservation);
             PictureOptions ticketPictureOptions = new();
-            ReservationSummaryOptions summaryOptions = new(reservation, seatTypes, ticketTypes);                                
+            ReservationSummaryOptions summaryOptions = new(reservation, seatTypes, ticketsForEventOrFestival);                                
             FooterOptions footerOptions = new();  
             InfoAndStatuteOptions infoAndStatuteOptions = new();
 
@@ -124,7 +137,7 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
                             .AddSummaryContainer(summaryOptions);
 
                             column.Item()
-                            .AddTicketInfoAndStatute(infoAndStatuteOptions);
+                            .AddTicketInfoAndStatute(reservation, infoAndStatuteOptions);
                         });
 
                         page.Footer()

@@ -6,6 +6,7 @@ using EventFlowAPI.Logic.Services.CRUDServices.Interfaces;
 using EventFlowAPI.Logic.Services.OtherServices.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Net;
 
 namespace EventFlowAPI.Controllers
 {
@@ -23,10 +24,21 @@ namespace EventFlowAPI.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<IActionResult> GetEventPasses([FromQuery] EventPassQuery query)
         {
             var result = await _eventPassService.GetAllAsync(query);
-            return result.IsSuccessful ? Ok(result.Value) : BadRequest(result.Error.Details);
+            if (!result.IsSuccessful)
+            {
+                return result.Error.Details!.Code switch
+                {
+                    HttpStatusCode.BadRequest => BadRequest(result.Error.Details),
+                    HttpStatusCode.Unauthorized => Unauthorized(result.Error.Details),
+                    HttpStatusCode.Forbidden => StatusCode((int)HttpStatusCode.Forbidden, result.Error.Details),
+                    _ => StatusCode((int)HttpStatusCode.InternalServerError, result.Error.Details)
+                };
+            }
+            return Ok(result.Value);
         }
 
         [Authorize]
@@ -34,10 +46,22 @@ namespace EventFlowAPI.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<IActionResult> GetEventPassById([FromRoute] int id)
         {
             var result = await _eventPassService.GetOneAsync(id);
-            return result.IsSuccessful ? Ok(result.Value) : BadRequest(result.Error.Details);
+            if (!result.IsSuccessful)
+            {
+                return result.Error.Details!.Code switch
+                {
+                    HttpStatusCode.BadRequest => BadRequest(result.Error.Details),
+                    HttpStatusCode.Unauthorized => Unauthorized(result.Error.Details),
+                    HttpStatusCode.Forbidden => StatusCode((int)HttpStatusCode.Forbidden, result.Error.Details),
+                    _ => StatusCode((int)HttpStatusCode.InternalServerError, result.Error.Details)
+                };
+            }
+
+            return Ok(result.Value);
         }
 
         /// <summary>
@@ -61,7 +85,16 @@ namespace EventFlowAPI.Controllers
         public async Task<IActionResult> CreateEventPass([FromBody] EventPassRequestDto eventPassReqestDto)
         {
             var result = await _eventPassService.BuyEventPass(eventPassReqestDto);
-            return result.IsSuccessful ? CreatedAtAction(nameof(GetEventPassById), new { id = result.Value.Id }, result.Value) : BadRequest(result.Error.Details);
+            if (!result.IsSuccessful)
+            {
+                return result.Error.Details!.Code switch
+                {
+                    HttpStatusCode.BadRequest => BadRequest(result.Error.Details),
+                    HttpStatusCode.Unauthorized => Unauthorized(result.Error.Details),
+                    _ => StatusCode((int)HttpStatusCode.InternalServerError, result.Error.Details)
+                };
+            }
+            return CreatedAtAction(nameof(GetEventPassById), new { id = result.Value.Id }, result.Value);
         }
 
         [Authorize(Roles = Roles.Admin)]
@@ -69,10 +102,21 @@ namespace EventFlowAPI.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<IActionResult> CancelEventPass([FromRoute] int id)
         {
             var result = await _eventPassService.DeleteAsync(id);
-            return result.IsSuccessful ? Ok(result.Value) : BadRequest(result.Error.Details);
+            if (!result.IsSuccessful)
+            {
+                return result.Error.Details!.Code switch
+                {
+                    HttpStatusCode.BadRequest => BadRequest(result.Error.Details),
+                    HttpStatusCode.Unauthorized => Unauthorized(result.Error.Details),
+                    HttpStatusCode.Forbidden => StatusCode((int)HttpStatusCode.Forbidden, result.Error.Details),
+                    _ => StatusCode((int)HttpStatusCode.InternalServerError, result.Error.Details)
+                };
+            }
+            return Ok(result.Value);
         }
 
         [Authorize]
@@ -80,10 +124,21 @@ namespace EventFlowAPI.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<IActionResult> RenewEventPass([FromRoute] int id, [FromBody] EventPassRequestDto eventPassReqestDto)
         {
             var result = await _eventPassService.UpdateAsync(id, eventPassReqestDto);
-            return result.IsSuccessful ? NoContent() : BadRequest(result.Error.Details);
+            if (!result.IsSuccessful)
+            {
+                return result.Error.Details!.Code switch
+                {
+                    HttpStatusCode.BadRequest => BadRequest(result.Error.Details),
+                    HttpStatusCode.Unauthorized => Unauthorized(result.Error.Details),
+                    HttpStatusCode.Forbidden => StatusCode((int)HttpStatusCode.Forbidden, result.Error.Details),
+                    _ => StatusCode((int)HttpStatusCode.InternalServerError, result.Error.Details)
+                };
+            }
+            return NoContent();
         }
 
         [Authorize]
@@ -91,12 +146,22 @@ namespace EventFlowAPI.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<IActionResult> GetEventPassPdfById([FromRoute] int id)
         {
             var result = await _fileService.GetEventPassFile(id, ContentType.PDF);
-            return result.IsSuccessful ?
-                File(result.Value.Data, result.Value.ContentType, result.Value.FileName) :
-                BadRequest(result.Error.Details);
+            if (!result.IsSuccessful)
+            {
+                return result.Error.Details!.Code switch
+                {
+                    HttpStatusCode.BadRequest => BadRequest(result.Error.Details),
+                    HttpStatusCode.Unauthorized => Unauthorized(result.Error.Details),
+                    HttpStatusCode.Forbidden => StatusCode((int)HttpStatusCode.Forbidden, result.Error.Details),
+                    _ => StatusCode((int)HttpStatusCode.InternalServerError, result.Error.Details)
+                };
+            }
+
+            return File(result.Value.Data, result.Value.ContentType, result.Value.FileName);
         }
 
         [Authorize]
@@ -104,12 +169,21 @@ namespace EventFlowAPI.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<IActionResult> GetEventPassJpgById([FromRoute] int id)
         {
             var result = await _fileService.GetEventPassFile(id, ContentType.JPEG);
-            return result.IsSuccessful ?
-                File(result.Value.Data, result.Value.ContentType, result.Value.FileName) :
-                BadRequest(result.Error.Details);
+            if (!result.IsSuccessful)
+            {
+                return result.Error.Details!.Code switch
+                {
+                    HttpStatusCode.BadRequest => BadRequest(result.Error.Details),
+                    HttpStatusCode.Unauthorized => Unauthorized(result.Error.Details),
+                    HttpStatusCode.Forbidden => StatusCode((int)HttpStatusCode.Forbidden, result.Error.Details),
+                    _ => StatusCode((int)HttpStatusCode.InternalServerError, result.Error.Details)
+                };
+            }
+            return File(result.Value.Data, result.Value.ContentType, result.Value.FileName);
         }
     }
 }

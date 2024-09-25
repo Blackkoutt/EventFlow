@@ -22,7 +22,7 @@ namespace EventFlowAPI.Logic.Helpers.PdfOptions.PdfSummaryOptions
         {
             return new TextOptions
             {
-                Text = $"- {eventPassType.Name}: {eventPassType.Price} {Currency.PLN} / {eventPassType.RenewalDiscountPercentage}%",
+                Text = $"- {eventPassType.Name}: {eventPassType.Price} {Currency.PLN} / -{eventPassType.RenewalDiscountPercentage}%",
                 Style = TextStyle.Default.FontFamily(defaultFontType).FontSize(8.5f)
             };
         }

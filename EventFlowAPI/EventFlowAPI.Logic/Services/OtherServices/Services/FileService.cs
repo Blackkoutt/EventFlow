@@ -237,9 +237,9 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
             return Result<(byte[] Bitmap, string FileName)>.Success((eventPassBitmap, fileName));
         }
 
-        public async Task<Result<(byte[] Bitmap, string FileName)>> CreateEventPassPDFBitmap(EventPass eventPass, byte[] eventPassJPGBitmap, bool isUpdate = false)
+        public async Task<Result<(byte[] Bitmap, string FileName)>> CreateEventPassPDFBitmap(EventPass eventPass, byte[] eventPassJPGBitmap, EventPassType? oldEventPassType, bool isUpdate = false)
         {
-            var eventPassPDFBitmap = await _pdfBuilder.CreateEventPassPdf(eventPass, eventPassJPGBitmap);
+            var eventPassPDFBitmap = await _pdfBuilder.CreateEventPassPdf(eventPass, eventPassJPGBitmap, oldEventPassType);
 
             var eventPassBlobResult = await _blobService.CreateEventPassBlob(
                                             eventPassGuid: eventPass.EventPassGuid,

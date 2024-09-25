@@ -10,13 +10,14 @@ namespace EventFlowAPI.Logic.Helpers.PdfOptions.PdfSummaryOptions
     {
         private readonly Reservation _reservation;
 
-        public ReservationSummaryOptions(Reservation reservation, List<SeatType> seatTypes, List<TicketType> ticketTypes)
+        public ReservationSummaryOptions(Reservation reservation, List<SeatType> seatTypes, List<Ticket> tickets)
         {
             _reservation = reservation;
             AdditionalPayment = new AdditionalPaymentOptions(seatTypes);
-            TicketType = new TicketTypeOptions(ticketTypes);
+            TicketType = new TicketTypeOptions(tickets);
         }
 
+        public Reservation Reservation => _reservation;
 
         // Summary Description
         public float DescriptionAdditionalPaymentRowWidth => 1.5f;
@@ -44,6 +45,18 @@ namespace EventFlowAPI.Logic.Helpers.PdfOptions.PdfSummaryOptions
         {
             Label = $"Dodatkowe opłaty (+{_reservation.TotalAddtionalPaymentPercentage}%)",
             Value = $"+ {_reservation.TotalAdditionalPaymentAmount} {Currency.PLN}",
+            TextBackgound = "#ededed",
+            Style = TextStyle.Default.FontFamily(defaultFontType).FontSize(11f),
+            PadHorizontal = 8,
+            PadVertical = 4,
+            LabelWidth = 2,
+            ValueWidth = 1
+        };
+
+        public SummaryTextOptions EventPassDiscount => new SummaryTextOptions
+        {
+            Label = $"Aktywny karnet EventFlow",
+            Value = $"- {Math.Round(_reservation.TotalDiscount, 2)} {Currency.PLN}",
             TextBackgound = "#ededed",
             Style = TextStyle.Default.FontFamily(defaultFontType).FontSize(11f),
             PadHorizontal = 8,

@@ -24,7 +24,7 @@ namespace EventFlowAPI.Logic.Helpers.PdfOptions.PdfSummaryOptions
 
         public SummaryTextOptions Discount => new SummaryTextOptions
         {
-            Label = $"Zniżka ({_eventPass.TotalDiscountPercentage}):",
+            Label = $"Zniżka ({_eventPass.TotalDiscountPercentage} %):",
             Value = $"{_eventPass.TotalDiscount} {Currency.PLN}",
             TextBackgound = "#ededed",
             Style = TextStyle.Default.FontFamily(defaultFontType).FontSize(11f),

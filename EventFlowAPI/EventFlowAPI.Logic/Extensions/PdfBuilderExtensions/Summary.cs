@@ -1,4 +1,5 @@
-﻿using EventFlowAPI.Logic.Helpers.PdfOptions.PdfSummaryOptions;
+﻿using EventFlowAPI.DB.Entities;
+using EventFlowAPI.Logic.Helpers.PdfOptions.PdfSummaryOptions;
 using EventFlowAPI.Logic.Helpers.PdfOptions.PdfTextOptions;
 using Microsoft.Extensions.Options;
 using QuestPDF.Fluent;
@@ -35,8 +36,15 @@ namespace EventFlowAPI.Logic.Extensions.PdfBuilderExtensions
                 column.AddSummaryItem(options.Price);
                 if(options is ReservationSummaryOptions resOptions)
                 {
-                    column.AddSummaryItem(resOptions.SeatsCount);
-                    column.AddSummaryItem(resOptions.AdditionalPayments);
+                    if(!resOptions.Reservation.IsFestivalReservation)
+                    {
+                        column.AddSummaryItem(resOptions.SeatsCount);
+                        column.AddSummaryItem(resOptions.AdditionalPayments);
+                    }
+                    if(resOptions.Reservation.EventPass != null)
+                    {
+                        column.AddSummaryItem(resOptions.EventPassDiscount);
+                    }
                 }
                 if(options is EventPassSummaryOptions eventPassOptions)
                 {
@@ -75,8 +83,11 @@ namespace EventFlowAPI.Logic.Extensions.PdfBuilderExtensions
             {
                 if(options is ReservationSummaryOptions resOptions)
                 {
-                    row.RelativeItem(resOptions.DescriptionAdditionalPaymentRowWidth)
-                    .AddAdditionalPayment(resOptions.AdditionalPayment);
+                    if(!resOptions.Reservation.IsFestivalReservation) 
+                    {
+                        row.RelativeItem(resOptions.DescriptionAdditionalPaymentRowWidth)
+                            .AddAdditionalPayment(resOptions.AdditionalPayment);
+                    }
 
                     row.RelativeItem(resOptions.DescriptionAdditionalPaymentRowWidth)
                     .AddTicketTypes(resOptions.TicketType);
@@ -125,9 +136,9 @@ namespace EventFlowAPI.Logic.Extensions.PdfBuilderExtensions
                 column.Spacing(options.ColumnSpacing);
 
                 column.AddTextItem(options.Header);
-                foreach (var ticketType in options.TicketTypes)
+                foreach (var ticket in options.Tickets)
                 {
-                    column.AddTextItem(options.GetTicketTypeString(ticketType));
+                    column.AddTextItem(options.GetTicketTypeString(ticket));
                 }
             });
         }

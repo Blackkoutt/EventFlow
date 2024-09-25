@@ -10,6 +10,7 @@ namespace EventFlowAPI.DB.Entities
         public DateTime StartDate { get; set; }
         public DateTime? RenewalDate { get; set; }
         public DateTime EndDate { get; set; }
+        public DateTime? CancelDate { get; set; }
 
         [NotMapped]
         public bool IsExpired => EndDate < DateTime.Now;
@@ -35,5 +36,6 @@ namespace EventFlowAPI.DB.Entities
         public EventPassType PassType { get; set; } = default!;
         public User User { get; set; } = default!;
         public PaymentType PaymentType { get; set; } = default!;
+        public ICollection<Reservation> Reservations { get; set; } = [];
     }
 }

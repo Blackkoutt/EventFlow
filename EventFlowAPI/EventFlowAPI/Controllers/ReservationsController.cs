@@ -24,10 +24,21 @@ namespace EventFlowAPI.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<IActionResult> GetReservations([FromQuery] ReservationQuery query)
         {
             var result = await _reservationService.GetAllAsync(query);
-            return result.IsSuccessful ? Ok(result.Value) : BadRequest(result.Error.Details);
+            if (!result.IsSuccessful)
+            {
+                return result.Error.Details!.Code switch
+                {
+                    HttpStatusCode.BadRequest => BadRequest(result.Error.Details),
+                    HttpStatusCode.Unauthorized => Unauthorized(result.Error.Details),
+                    HttpStatusCode.Forbidden => StatusCode((int)HttpStatusCode.Forbidden, result.Error.Details),
+                    _ => StatusCode((int)HttpStatusCode.InternalServerError, result.Error.Details)
+                };
+            }
+            return Ok(result.Value);
         }
 
 
@@ -36,10 +47,21 @@ namespace EventFlowAPI.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<IActionResult> GetReservationById([FromRoute] int id)
         {
             var result = await _reservationService.GetOneAsync(id);
-            return result.IsSuccessful ? Ok(result.Value) : BadRequest(result.Error.Details);
+            if (!result.IsSuccessful)
+            {
+                return result.Error.Details!.Code switch
+                {
+                    HttpStatusCode.BadRequest => BadRequest(result.Error.Details),
+                    HttpStatusCode.Unauthorized => Unauthorized(result.Error.Details),
+                    HttpStatusCode.Forbidden => StatusCode((int)HttpStatusCode.Forbidden, result.Error.Details),
+                    _ => StatusCode((int)HttpStatusCode.InternalServerError, result.Error.Details)
+                };
+            }
+            return Ok(result.Value);
         }
 
 
@@ -48,12 +70,21 @@ namespace EventFlowAPI.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<IActionResult> GetTicketsZIPByReservationId([FromRoute] int id)
         {
             var result = await _fileService.GetTicketsJPGsInZIPArchive(id);
-            return result.IsSuccessful ?
-                File(result.Value.Data, result.Value.ContentType, result.Value.FileName) :
-                BadRequest(result.Error.Details);
+            if (!result.IsSuccessful)
+            {
+                return result.Error.Details!.Code switch
+                {
+                    HttpStatusCode.BadRequest => BadRequest(result.Error.Details),
+                    HttpStatusCode.Unauthorized => Unauthorized(result.Error.Details),
+                    HttpStatusCode.Forbidden => StatusCode((int)HttpStatusCode.Forbidden, result.Error.Details),
+                    _ => StatusCode((int)HttpStatusCode.InternalServerError, result.Error.Details)
+                };
+            }
+            return File(result.Value.Data, result.Value.ContentType, result.Value.FileName);
         }
 
 
@@ -62,12 +93,22 @@ namespace EventFlowAPI.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<IActionResult> GetTicketPdfByReservationId([FromRoute] int id)
         {
             var result = await _fileService.GetTicketPDF(id);
-            return result.IsSuccessful ?
-                File(result.Value.Data, result.Value.ContentType, result.Value.FileName) :
-                BadRequest(result.Error.Details);
+            if (!result.IsSuccessful)
+            {
+                return result.Error.Details!.Code switch
+                {
+                    HttpStatusCode.BadRequest => BadRequest(result.Error.Details),
+                    HttpStatusCode.Unauthorized => Unauthorized(result.Error.Details),
+                    HttpStatusCode.Forbidden => StatusCode((int)HttpStatusCode.Forbidden, result.Error.Details),
+                    _ => StatusCode((int)HttpStatusCode.InternalServerError, result.Error.Details)
+                };
+            }
+            return File(result.Value.Data, result.Value.ContentType, result.Value.FileName);
+                
         }
 
         /// <summary>
@@ -81,6 +122,7 @@ namespace EventFlowAPI.Controllers
         ///     {
         ///         "paymentTypeId": 2,
         ///         "ticketId": 1,
+        ///         "isReservationForFestival": false,
         ///         "seatsIds": [
         ///             6,7
         ///          ]

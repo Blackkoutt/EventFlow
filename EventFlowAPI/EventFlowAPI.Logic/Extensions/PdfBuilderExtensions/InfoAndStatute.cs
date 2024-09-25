@@ -1,4 +1,5 @@
-﻿using EventFlowAPI.Logic.Helpers.PdfOptions.PdfInfoAndStatuteOptions;
+﻿using EventFlowAPI.DB.Entities;
+using EventFlowAPI.Logic.Helpers.PdfOptions.PdfInfoAndStatuteOptions;
 using QuestPDF.Fluent;
 using QuestPDF.Infrastructure;
 
@@ -47,7 +48,7 @@ namespace EventFlowAPI.Logic.Extensions.PdfBuilderExtensions
             });
         }
 
-        public static void AddTicketInfoAndStatute(this IContainer container, InfoAndStatuteOptions options)
+        public static void AddTicketInfoAndStatute(this IContainer container, Reservation reservation, InfoAndStatuteOptions options)
         {
             container
             .Column(column =>
@@ -70,7 +71,16 @@ namespace EventFlowAPI.Logic.Extensions.PdfBuilderExtensions
                 .PaddingLeft(options.Organizer.PadLeft)
                 .PaddingTop(options.Organizer.PadTop)
                 .Text(options.Organizer.Content.Text)
-                .Style(options.Organizer.Content.Style);          
+                .Style(options.Organizer.Content.Style);
+
+                if(reservation.EventPass != null)
+                {
+                    column.Item()
+                    .PaddingLeft(options.EventPassInfo.PadLeft)
+                    .PaddingTop(options.EventPassInfo.PadTop)
+                    .Text(options.EventPassInfo.Content.Text)
+                    .Style(options.EventPassInfo.Content.Style);
+                }             
             });
         }
     }

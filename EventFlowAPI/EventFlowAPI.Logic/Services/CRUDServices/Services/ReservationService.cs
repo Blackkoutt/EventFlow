@@ -177,6 +177,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             foreach(var res in allReservationsWithSameGuid)
             {
                 res.IsCanceled = true;
+                res.CancelDate = DateTime.Now;
                 _repository.Update(res);
             }
             //_repository.Delete(reservation);     
@@ -211,23 +212,35 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             // User
             var userResult = await _userService.GetCurrentUser();
             if (!userResult.IsSuccessful)
-                return Result<IEnumerable<ReservationResponseDto>>.Failure(userResult.Error);    
+                return Result<IEnumerable<ReservationResponseDto>>.Failure(userResult.Error);
 
             var user = userResult.Value;
+            
+            // Event Pass
+            var userActiveEventPass = (await _unitOfWork.GetRepository<EventPass>().GetAllAsync(q =>
+                                            q.Where(ep =>
+                                            ep.UserId == user.Id &&
+                                            !ep.IsCanceled &&
+                                            ep.EndDate > DateTime.Now))).FirstOrDefault();
+
             var seatsList = (await _seatService.GetSeatsByListOfIds(requestDto!.SeatsIds)).ToList();
             var ticketRepository = (ITicketRepository)_unitOfWork.GetRepository<Ticket>();
             var ticket = await ticketRepository.GetOneAsync(requestDto.TicketId);
             var festival = ticket!.Festival;
             List<Reservation> reservationsList = [];
+            var eventSeatsDict = await GetListOfSeatsForEachEventTicket(festival, seatsList);
 
-            if (festival != null)
+            var paymentType = await _unitOfWork.GetRepository<PaymentType>().GetOneAsync(requestDto!.PaymentTypeId);
+
+            if (festival != null && requestDto.IsReservationForFestival)
             {
                 // Reservation for festival
-                var reservations = await CreateReservationEntitiesForFestival(
-                                        festival: festival,
-                                        seatsList: seatsList,
-                                        userId: user.Id,
-                                        paymentTypeId: requestDto.PaymentTypeId);
+                var reservations = CreateReservationEntitiesForFestival(
+                     eventSeatsDict: eventSeatsDict!,
+                     userId: user.Id,
+                     paymentTypeId: requestDto.PaymentTypeId,
+                     eventPass: (paymentType!.Name.ToLower() == "karnet" ? userActiveEventPass : null));
+
 
                 reservationsList.AddRange(reservations);
             }
@@ -235,10 +248,11 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             {
                 // Reservation for event
                 var reservationEntity = CreateReservationEntityForEvent(
-                                            ticket: ticket,
-                                            seatsList: seatsList,
-                                            userId: user.Id,
-                                            paymentTypeId: requestDto.PaymentTypeId);
+                    ticket: ticket,
+                    seatsList: seatsList,
+                    userId: user.Id,
+                    paymentTypeId: requestDto.PaymentTypeId,
+                    eventPass: (paymentType!.Name.ToLower() == "karnet" ? userActiveEventPass : null));
 
                 reservationsList.Add(reservationEntity);
             }
@@ -248,10 +262,11 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
 
 
             // Create and send Tickets
-            var eventTicketCreateAndSendError = await CreateTicketAndSendByMailAsync(reservationsList, festival);
+            var eventTicketCreateAndSendError = await CreateTicketAndSendByMailAsync(reservationsList, festival, isUpdate: false);
 
             if (eventTicketCreateAndSendError != Error.None)
                 return Result<IEnumerable<ReservationResponseDto>>.Failure(eventTicketCreateAndSendError);
+
 
             return Result<IEnumerable<ReservationResponseDto>>.Success(responseDtoList);
         }
@@ -277,7 +292,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
         }
 
 
-        private async Task<Error> CreateTicketAndSendByMailAsync(List<Reservation> reservationsList, Festival? festival)
+        private async Task<Error> CreateTicketAndSendByMailAsync(List<Reservation> reservationsList, Festival? festival, bool isUpdate = false)
         {
             if (reservationsList.Count == 0)
                 return ReservationError.ReservationListIsEmpty;
@@ -285,7 +300,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             Reservation reservationEntity = reservationsList.First();
 
             // Create Ticket JPGs
-            var ticketJPGFilesResult = await _fileService.CreateTicketJPGBitmapsAndEntities(festival, reservationsList, isUpdate: false);
+            var ticketJPGFilesResult = await _fileService.CreateTicketJPGBitmapsAndEntities(festival, reservationsList, isUpdate);
             if (!ticketJPGFilesResult.IsSuccessful)
                 return ticketJPGFilesResult.Error;
 
@@ -293,7 +308,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             var ticketJPGEntityList = ticketJPGFilesResult.Value.FileEntities;
 
             // Create Ticket PDF 
-            var ticketPDFFileResult = await _fileService.CreateTicketPDFBitmapAndEntity(reservationEntity, ticketJPGBitmaps, isUpdate: false);
+            var ticketPDFFileResult = await _fileService.CreateTicketPDFBitmapAndEntity(reservationEntity, ticketJPGBitmaps, isUpdate);
             if (!ticketPDFFileResult.IsSuccessful)
                 return ticketPDFFileResult.Error;
 
@@ -306,6 +321,8 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
 
             // Send email with pdf
             await _emailSender.SendTicketPDFAsync(reservationEntity, ticketPDFBitmap);
+
+
 
             return Error.None;
         }
@@ -386,53 +403,82 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
         }
 
 
-        private Reservation CreateReservationEntityForEvent(Ticket ticket, List<Seat> seatsList, string userId, int paymentTypeId)
+        private Reservation CreateReservationEntityForEvent(Ticket ticket, List<Seat> seatsList,
+            string userId, int paymentTypeId, EventPass? eventPass = null)
         {
             var ticketPaymentResult = CalculateEventTicketPayment(ticket, seatsList);
+            decimal AddPaymentPercent = ticketPaymentResult.AddPaymentPercent;
+            decimal TotalAddPayment = ticketPaymentResult.TotalAddPayment;
+            decimal TotalPayment = ticketPaymentResult.TotalPayment;
+            decimal TotalDiscount = 0;
+
+
+            int? eventPassId = eventPass?.Id;
+            if (eventPassId != null)
+            {
+                TotalDiscount = TotalPayment;
+                TotalPayment = 0;
+            }
 
             return new Reservation
             {
                 ReservationGuid = Guid.NewGuid(),
+                IsFestivalReservation = false,
                 ReservationDate = DateTime.Now,
                 StartOfReservationDate = ticket.Event.StartDate,
                 EndOfReservationDate = ticket.Event.EndDate,
                 PaymentDate = DateTime.Now,
-                TotalAddtionalPaymentPercentage = ticketPaymentResult.AddPaymentPercent,
-                TotalAdditionalPaymentAmount = Math.Round(ticketPaymentResult.TotalAddPayment, 2),
-                PaymentAmount = Math.Round(ticketPaymentResult.TotalPayment, 2),
+                TotalAddtionalPaymentPercentage = AddPaymentPercent,
+                TotalAdditionalPaymentAmount = Math.Round(TotalAddPayment, 2),
+                PaymentAmount = Math.Round(TotalPayment, 2),
+                TotalDiscount = TotalDiscount,
                 UserId = userId,
                 PaymentTypeId = paymentTypeId,
                 TicketId = ticket.Id,
                 Ticket = ticket,
                 Seats = seatsList,
+                EventPassId = eventPassId
             };
         }
 
-        private async Task<List<Reservation>> CreateReservationEntitiesForFestival(Festival festival,
-                List<Seat> seatsList, string userId, int paymentTypeId)
+        private List<Reservation> CreateReservationEntitiesForFestival(Dictionary<Ticket, List<Seat>> eventSeatsDict, 
+            string userId, int paymentTypeId, EventPass? eventPass = null)
         {
             List<Reservation> reservationEntitites = [];
 
-            var eventSeatsDict = await GetListOfSeatsForEachEventTicket(festival.Id, seatsList);
             var festivalGuid = Guid.NewGuid();
+
+            int? eventPassId = eventPass?.Id;
+            decimal TotalPayment = 0;
+            decimal TotalDiscount = 0;
 
             foreach (var (eventTicket, seats) in eventSeatsDict)
             {
+                TotalPayment = eventTicket.Price;
+                TotalDiscount = 0;
+                if (eventPassId != null)
+                {
+                    TotalDiscount = TotalPayment;
+                    TotalPayment = 0;
+                }
                 var reservationEntity = new Reservation
                 {
                     ReservationGuid = festivalGuid,
+                    IsFestivalReservation = true,
                     ReservationDate = DateTime.Now,
                     StartOfReservationDate = eventTicket.Event.StartDate,
                     EndOfReservationDate = eventTicket.Event.EndDate,
                     PaymentDate = DateTime.Now,
-                    PaymentAmount = Math.Round(eventTicket.Price, 2),
+                    PaymentAmount = Math.Round(TotalPayment, 2),
                     TotalAddtionalPaymentPercentage = 0m,
                     TotalAdditionalPaymentAmount = 0m,
+                    TotalDiscount = TotalDiscount,
                     UserId = userId,
                     PaymentTypeId = paymentTypeId,
                     TicketId = eventTicket.Id,
                     Ticket = eventTicket,
                     Seats = seats,
+                    EventPassId = eventPassId,
                 };
                 reservationEntitites.Add(reservationEntity);
             }
@@ -461,8 +507,6 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
         }
 
 
-
-
         protected sealed override async Task<Error> ValidateEntity(ReservationRequestDto? requestDto, int? id = null)
         {
             if (id != null && id < 0)
@@ -486,6 +530,15 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
                 return TicketError.TicketNotFound;
             }
 
+            var userResult = await _userService.GetCurrentUser();
+            if (!userResult.IsSuccessful)
+                return userResult.Error;
+
+            Festival? Festival = ticket.Festival;
+            Event Event = ticket.Event;
+            if (requestDto.IsReservationForFestival && Festival == null)
+                return ReservationError.CannotMakeReservationForFestivalOnEventTicket;
+
             var eventList = GetTicketEventList(ticket);
             foreach(var eventEntity in eventList)
             {
@@ -496,7 +549,19 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             }
 
             var seats = await _seatService.GetSeatsByListOfIds(requestDto.SeatsIds);
+            var seatsError = ValidateSeats(requestDto, seats, eventList);
+            if(seatsError != Error.None)
+                return seatsError;
 
+            var eventPassError = await ValidateEventPass(requestDto, userResult.Value, Festival, Event, seats.ToList(), ticket);
+            if(eventPassError != Error.None)
+                return eventPassError;
+
+            return Error.None;
+        }
+
+        private Error ValidateSeats(ReservationRequestDto requestDto, IEnumerable<Seat> seats, List<Event> eventList)
+        {
             if (seats.Count() != requestDto.SeatsIds.Count)
             {
                 return SeatError.SeatNotFound;
@@ -506,23 +571,70 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
                 return SeatError.SeatsDuplicate;
             }
 
+            int correctSeatsCount = 0;
             foreach (var eventEntity in eventList)
             {
                 foreach (var seat in seats)
                 {
+                    if (eventEntity.Hall.Seats.Any(s => s.Id == seat.Id)) correctSeatsCount++;
                     if (_seatService.IsSeatHaveActiveReservationForEvent(seat, eventEntity))
-                    {
                         return SeatError.SeatNotAvailable;
-                    }
                 }
             }
+            if (correctSeatsCount != seats.Count())
+                return SeatError.SeatsAreNotInGivenEventHall;
 
             return Error.None;
         }
 
-        private async Task<Dictionary<Ticket, List<Seat>>> GetListOfSeatsForEachEventTicket(int festivalId, List<Seat> seatsList)
+        private async Task<Error> ValidateEventPass(ReservationRequestDto requestDto, UserResponseDto user,
+            Festival? festivalEntity, Event eventEntity, List<Seat> seats, Ticket ticket)
+        {      
+            var paymentType = await _unitOfWork.GetRepository<PaymentType>().GetOneAsync(requestDto!.PaymentTypeId);
+            var userActiveEventPass = (await _unitOfWork.GetRepository<EventPass>().GetAllAsync(q =>
+                                           q.Where(ep =>
+                                           ep.UserId == user.Id &&
+                                           !ep.IsCanceled &&
+                                           ep.EndDate > DateTime.Now))).FirstOrDefault();
+
+            if (paymentType!.Name.ToLower() == "karnet")
+            {
+                if (userActiveEventPass == null)
+                    return EventPassError.UserDoesNotHaveActiveEventPass;
+                if ((festivalEntity != null && userActiveEventPass.EndDate < festivalEntity.EndDate) || (userActiveEventPass.EndDate < eventEntity.EndDate))
+                    return EventPassError.EventPassExpireBeforeEndOfEvent;
+
+                if (!requestDto.IsReservationForFestival && requestDto.SeatsIds.Count > 1)
+                    return EventPassError.OnlyOneSeatPerEvent;
+
+                var activeReservationsForEventPass = await _repository.GetAllAsync(q =>
+                                                    q.Where(r => 
+                                                    r.EventPassId == userActiveEventPass.Id &&
+                                                    !r.IsCanceled &&
+                                                    r.EndOfReservationDate > DateTime.Now));
+
+                var isAnyActiveReservationForEvent = activeReservationsForEventPass.Any(r => r.Ticket.EventId == ticket.EventId);
+                if (isAnyActiveReservationForEvent)
+                    return ReservationError.CannotMakeReservationForSameEventByEventPass;
+
+                var eventSeatsDict = await GetListOfSeatsForEachEventTicket(festivalEntity, seats);
+                if (requestDto.IsReservationForFestival && eventSeatsDict != null)
+                {
+                    foreach ((var ticketKey, var seatsValue) in eventSeatsDict!)
+                    {
+                        if (seatsValue.Count > 1)
+                            return EventPassError.OnlyOneSeatPerEvent;
+                    }
+                }
+            }
+            return Error.None;
+        }
+
+        private async Task<Dictionary<Ticket, List<Seat>>?> GetListOfSeatsForEachEventTicket(Festival? festival, List<Seat> seatsList)
         {
-            var ticketsForFestival = await _ticketRepository.GetAllAsync(q => q.Where(t => t.FestivalId == festivalId));
+            if (festival == null) return null;
+
+            var ticketsForFestival = await _ticketRepository.GetAllAsync(q => q.Where(t => t.FestivalId == festival.Id));
 
             Dictionary<Ticket, List<Seat>> eventSeatsDict = [];
             foreach (var eventTicket in ticketsForFestival)

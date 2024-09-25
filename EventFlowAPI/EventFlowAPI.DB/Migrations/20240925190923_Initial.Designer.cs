@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EventFlowAPI.DB.Migrations
 {
     [DbContext(typeof(APIContext))]
-    [Migration("20240924002221_Initial")]
+    [Migration("20240925190923_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -355,6 +355,9 @@ namespace EventFlowAPI.DB.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime?>("CancelDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<DateTime>("EndDate")
                         .HasColumnType("datetime2");
@@ -1314,6 +1317,11 @@ namespace EventFlowAPI.DB.Migrations
                         {
                             Id = 4,
                             Name = "Zapłać później"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            Name = "Karnet"
                         });
                 });
 
@@ -1325,10 +1333,19 @@ namespace EventFlowAPI.DB.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<DateTime?>("CancelDate")
+                        .HasColumnType("datetime2");
+
                     b.Property<DateTime>("EndOfReservationDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<int?>("EventPassId")
+                        .HasColumnType("int");
+
                     b.Property<bool>("IsCanceled")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsFestivalReservation")
                         .HasColumnType("bit");
 
                     b.Property<decimal>("PaymentAmount")
@@ -1361,11 +1378,16 @@ namespace EventFlowAPI.DB.Migrations
                     b.Property<decimal>("TotalAddtionalPaymentPercentage")
                         .HasColumnType("NUMERIC(5,2)");
 
+                    b.Property<decimal>("TotalDiscount")
+                        .HasColumnType("NUMERIC(7,2)");
+
                     b.Property<string>("UserId")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("EventPassId");
 
                     b.HasIndex("PaymentTypeId");
 
@@ -1383,6 +1405,7 @@ namespace EventFlowAPI.DB.Migrations
                             Id = 1,
                             EndOfReservationDate = new DateTime(2024, 10, 20, 1, 0, 0, 0, DateTimeKind.Unspecified),
                             IsCanceled = false,
+                            IsFestivalReservation = false,
                             PaymentAmount = 24.99m,
                             PaymentDate = new DateTime(2024, 9, 29, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             PaymentTypeId = 1,
@@ -1393,6 +1416,7 @@ namespace EventFlowAPI.DB.Migrations
                             TicketPDFId = 1,
                             TotalAdditionalPaymentAmount = 2.5m,
                             TotalAddtionalPaymentPercentage = 10m,
+                            TotalDiscount = 0m,
                             UserId = "1"
                         },
                         new
@@ -1400,6 +1424,7 @@ namespace EventFlowAPI.DB.Migrations
                             Id = 2,
                             EndOfReservationDate = new DateTime(2024, 10, 21, 3, 0, 0, 0, DateTimeKind.Unspecified),
                             IsCanceled = false,
+                            IsFestivalReservation = false,
                             PaymentAmount = 34.99m,
                             PaymentDate = new DateTime(2024, 10, 5, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             PaymentTypeId = 2,
@@ -1410,6 +1435,7 @@ namespace EventFlowAPI.DB.Migrations
                             TicketPDFId = 2,
                             TotalAdditionalPaymentAmount = 0m,
                             TotalAddtionalPaymentPercentage = 0m,
+                            TotalDiscount = 0m,
                             UserId = "2"
                         },
                         new
@@ -1417,6 +1443,7 @@ namespace EventFlowAPI.DB.Migrations
                             Id = 3,
                             EndOfReservationDate = new DateTime(2024, 10, 22, 2, 0, 0, 0, DateTimeKind.Unspecified),
                             IsCanceled = false,
+                            IsFestivalReservation = false,
                             PaymentAmount = 29.99m,
                             PaymentDate = new DateTime(2024, 10, 6, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             PaymentTypeId = 3,
@@ -1427,6 +1454,7 @@ namespace EventFlowAPI.DB.Migrations
                             TicketPDFId = 3,
                             TotalAdditionalPaymentAmount = 7.5m,
                             TotalAddtionalPaymentPercentage = 25m,
+                            TotalDiscount = 0m,
                             UserId = "3"
                         },
                         new
@@ -1434,6 +1462,7 @@ namespace EventFlowAPI.DB.Migrations
                             Id = 4,
                             EndOfReservationDate = new DateTime(2024, 10, 23, 3, 0, 0, 0, DateTimeKind.Unspecified),
                             IsCanceled = false,
+                            IsFestivalReservation = false,
                             PaymentAmount = 19.99m,
                             PaymentDate = new DateTime(2024, 10, 7, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             PaymentTypeId = 2,
@@ -1444,6 +1473,7 @@ namespace EventFlowAPI.DB.Migrations
                             TicketPDFId = 4,
                             TotalAdditionalPaymentAmount = 0m,
                             TotalAddtionalPaymentPercentage = 0m,
+                            TotalDiscount = 0m,
                             UserId = "3"
                         },
                         new
@@ -1451,6 +1481,7 @@ namespace EventFlowAPI.DB.Migrations
                             Id = 5,
                             EndOfReservationDate = new DateTime(2024, 10, 20, 1, 0, 0, 0, DateTimeKind.Unspecified),
                             IsCanceled = false,
+                            IsFestivalReservation = true,
                             PaymentAmount = 19.99m,
                             PaymentDate = new DateTime(2024, 10, 2, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             PaymentTypeId = 2,
@@ -1461,6 +1492,7 @@ namespace EventFlowAPI.DB.Migrations
                             TicketPDFId = 5,
                             TotalAdditionalPaymentAmount = 2m,
                             TotalAddtionalPaymentPercentage = 10m,
+                            TotalDiscount = 0m,
                             UserId = "2"
                         },
                         new
@@ -1468,6 +1500,7 @@ namespace EventFlowAPI.DB.Migrations
                             Id = 6,
                             EndOfReservationDate = new DateTime(2024, 11, 20, 1, 0, 0, 0, DateTimeKind.Unspecified),
                             IsCanceled = false,
+                            IsFestivalReservation = true,
                             PaymentAmount = 19.99m,
                             PaymentDate = new DateTime(2024, 10, 3, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             PaymentTypeId = 2,
@@ -1478,6 +1511,7 @@ namespace EventFlowAPI.DB.Migrations
                             TicketPDFId = 5,
                             TotalAdditionalPaymentAmount = 2m,
                             TotalAddtionalPaymentPercentage = 10m,
+                            TotalDiscount = 0m,
                             UserId = "2"
                         },
                         new
@@ -1485,6 +1519,7 @@ namespace EventFlowAPI.DB.Migrations
                             Id = 7,
                             EndOfReservationDate = new DateTime(2024, 10, 21, 3, 0, 0, 0, DateTimeKind.Unspecified),
                             IsCanceled = false,
+                            IsFestivalReservation = true,
                             PaymentAmount = 29.99m,
                             PaymentDate = new DateTime(2024, 10, 4, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             PaymentTypeId = 2,
@@ -1495,6 +1530,7 @@ namespace EventFlowAPI.DB.Migrations
                             TicketPDFId = 6,
                             TotalAdditionalPaymentAmount = 0m,
                             TotalAddtionalPaymentPercentage = 0m,
+                            TotalDiscount = 0m,
                             UserId = "2"
                         },
                         new
@@ -1502,16 +1538,18 @@ namespace EventFlowAPI.DB.Migrations
                             Id = 8,
                             EndOfReservationDate = new DateTime(2024, 11, 22, 2, 0, 0, 0, DateTimeKind.Unspecified),
                             IsCanceled = false,
+                            IsFestivalReservation = true,
                             PaymentAmount = 29.99m,
                             PaymentDate = new DateTime(2024, 10, 4, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             PaymentTypeId = 2,
                             ReservationDate = new DateTime(2024, 10, 4, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             ReservationGuid = new Guid("806cade1-2685-43dc-8cfc-682fc4229db6"),
                             StartOfReservationDate = new DateTime(2024, 11, 22, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            TicketId = 7,
+                            TicketId = 8,
                             TicketPDFId = 6,
-                            TotalAdditionalPaymentAmount = 7.5m,
-                            TotalAddtionalPaymentPercentage = 25m,
+                            TotalAdditionalPaymentAmount = 0m,
+                            TotalAddtionalPaymentPercentage = 0m,
+                            TotalDiscount = 0m,
                             UserId = "2"
                         });
                 });
@@ -2300,7 +2338,7 @@ namespace EventFlowAPI.DB.Migrations
                         {
                             Id = "1",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "8d474033-12e4-481b-a80e-17f1f97d1308",
+                            ConcurrencyStamp = "8fcab4be-49a1-4434-a148-9427a1c769d8",
                             DateOfBirth = new DateTime(2000, 4, 3, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "admin@gmail.com",
                             EmailConfirmed = true,
@@ -2308,9 +2346,9 @@ namespace EventFlowAPI.DB.Migrations
                             Name = "Admin",
                             NormalizedEmail = "ADMIN@GMAIL.COM",
                             NormalizedUserName = "ADMIN@GMAIL.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEEhAVpF+4d/RjDHJTyrZubIhkeR6aiKGQlPOkQ8FaeXSt++WGF33rNfTC56ZlhjVvw==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEFb34DOZPUMKmSn0fiU21YdeyoPyt/GDX4BNEIcXsDM08kbF6VMG5hiQZQrVtV/K0A==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "32183c17-1343-4025-b886-c6ac94c7c608",
+                            SecurityStamp = "5e35a14e-cc99-4440-950a-3ef15595bbe9",
                             Surname = "Admin",
                             TwoFactorEnabled = false,
                             UserName = "admin@gmail.com"
@@ -2319,7 +2357,7 @@ namespace EventFlowAPI.DB.Migrations
                         {
                             Id = "2",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "6d4298f7-1895-46dd-99d4-de9ecd534081",
+                            ConcurrencyStamp = "fe4f903a-4631-480a-9130-f273e2a51453",
                             DateOfBirth = new DateTime(1985, 2, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "j.kowalski@gmail.com",
                             EmailConfirmed = true,
@@ -2327,9 +2365,9 @@ namespace EventFlowAPI.DB.Migrations
                             Name = "Jan",
                             NormalizedEmail = "J.KOWALSKI@GMAIL.COM",
                             NormalizedUserName = "J.KOWALSKI@GMAIL.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEBfyTRjvuPtqml5LHaxn9IFq7FQ6DdOc+o2X3c9IVhtGOxCHmMGvzqolAGOvZKGKAw==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEKR+9JJPh5XYd74T16zUIdcf4KwibdtZS0FZju9jGDy0/PvvP7ViCxYXa6VOeBkhIA==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "9aea3556-3d6e-42f8-b89c-49a4b9e9dbaf",
+                            SecurityStamp = "5395e792-9b0c-4df1-9311-a4a68ab97f2a",
                             Surname = "Kowalski",
                             TwoFactorEnabled = false,
                             UserName = "j.kowalski@gmail.com"
@@ -2338,7 +2376,7 @@ namespace EventFlowAPI.DB.Migrations
                         {
                             Id = "3",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "f9a23f33-0bea-46c0-ba2b-9afc53fad26c",
+                            ConcurrencyStamp = "6aa5e74b-016c-4ee6-922e-555fb1e7fb4f",
                             DateOfBirth = new DateTime(1979, 12, 11, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "a.kowalska@gmail.com",
                             EmailConfirmed = true,
@@ -2346,9 +2384,9 @@ namespace EventFlowAPI.DB.Migrations
                             Name = "Anna",
                             NormalizedEmail = "A.KOWALSKA@GMAIL.COM",
                             NormalizedUserName = "A.KOWALSKA@GMAIL.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAENT5SPRdtFz9J4KLJuHxIHXaT6B8bfAR4eMlpcgtYxBn2MIcMZ48VD9U6JVTdZnneA==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEPuo2D/QnNjmpBcByVNlYmSB/UmguRp7xOo9qUPe/WW5NA48juiG8JD4zfvPlD8DAg==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "efa84eb7-99f3-4422-8d38-05d9b07aea31",
+                            SecurityStamp = "bf7c834b-efc6-4aab-9714-065300324b12",
                             Surname = "Kowalska",
                             TwoFactorEnabled = false,
                             UserName = "a.kowalska@gmail.com"
@@ -2357,7 +2395,7 @@ namespace EventFlowAPI.DB.Migrations
                         {
                             Id = "4",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "f62303a7-38fa-40df-b2b0-8390ab0231df",
+                            ConcurrencyStamp = "6f16c948-dc0e-4d32-920d-e331ebfe5f5d",
                             DateOfBirth = new DateTime(1979, 12, 11, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "mateusz.strapczuk1@gmail.com",
                             EmailConfirmed = true,
@@ -2365,9 +2403,9 @@ namespace EventFlowAPI.DB.Migrations
                             Name = "Mateusz",
                             NormalizedEmail = "MATEUSZ.STRAPCZUK1@GMAIL.COM",
                             NormalizedUserName = "MATEUSZ.STRAPCZUK1@GMAIL.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEOnnJiq/vVvgkLeuxD4yQFP9ElYgmCOgnpizfL2VExhrUopz+l+JnmfAV7iX039qyA==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEHjOrTwoeR+/3jWYVpxsZdqiyxFDbeZ/50DIJrKftTA0K0gadT+JodkbpbSEc0m0Qg==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "36247996-81e3-43a5-909c-93ac855a0e87",
+                            SecurityStamp = "731ede83-e032-462f-8011-230b1263c7f8",
                             Surname = "Strapczuk",
                             TwoFactorEnabled = false,
                             UserName = "mateusz.strapczuk1@gmail.com"
@@ -2786,6 +2824,10 @@ namespace EventFlowAPI.DB.Migrations
 
             modelBuilder.Entity("EventFlowAPI.DB.Entities.Reservation", b =>
                 {
+                    b.HasOne("EventFlowAPI.DB.Entities.EventPass", "EventPass")
+                        .WithMany("Reservations")
+                        .HasForeignKey("EventPassId");
+
                     b.HasOne("EventFlowAPI.DB.Entities.PaymentType", "PaymentType")
                         .WithMany("Reservations")
                         .HasForeignKey("PaymentTypeId")
@@ -2807,6 +2849,8 @@ namespace EventFlowAPI.DB.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("EventPass");
 
                     b.Navigation("PaymentType");
 
@@ -2970,6 +3014,11 @@ namespace EventFlowAPI.DB.Migrations
             modelBuilder.Entity("EventFlowAPI.DB.Entities.EventDetails", b =>
                 {
                     b.Navigation("Event");
+                });
+
+            modelBuilder.Entity("EventFlowAPI.DB.Entities.EventPass", b =>
+                {
+                    b.Navigation("Reservations");
                 });
 
             modelBuilder.Entity("EventFlowAPI.DB.Entities.EventPassType", b =>

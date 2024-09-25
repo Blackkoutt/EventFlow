@@ -282,6 +282,11 @@ namespace EventFlowAPI.DB.Extensions
                 {
                     Id = 4,
                     Name = "Zapłać później",
+                },
+                new PaymentType
+                {
+                    Id = 5,
+                    Name = "Karnet",
                 }
             );
 
@@ -1187,6 +1192,7 @@ namespace EventFlowAPI.DB.Extensions
                 {
                     Id = 1,
                     ReservationGuid = res1,
+                    IsFestivalReservation = false,
                     ReservationDate = today.AddDays(10),
                     StartOfReservationDate = today.AddMonths(1).AddDays(1),
                     EndOfReservationDate = today.AddMonths(1).AddDays(1).AddHours(1),
@@ -1203,6 +1209,7 @@ namespace EventFlowAPI.DB.Extensions
                 {
                     Id = 2,
                     ReservationGuid = res2,
+                    IsFestivalReservation = false,
                     ReservationDate = today.AddDays(16),
                     StartOfReservationDate = today.AddMonths(1).AddDays(2),
                     EndOfReservationDate = today.AddMonths(1).AddDays(2).AddHours(3),
@@ -1219,6 +1226,7 @@ namespace EventFlowAPI.DB.Extensions
                 {
                     Id = 3,
                     ReservationGuid = res3,
+                    IsFestivalReservation = false,
                     ReservationDate = today.AddDays(17),
                     StartOfReservationDate = today.AddMonths(1).AddDays(3),
                     EndOfReservationDate = today.AddMonths(1).AddDays(3).AddHours(2),
@@ -1235,6 +1243,7 @@ namespace EventFlowAPI.DB.Extensions
                 {
                     Id = 4,
                     ReservationGuid = res4,
+                    IsFestivalReservation = false,
                     ReservationDate = today.AddDays(18),
                     StartOfReservationDate = today.AddMonths(1).AddDays(4),
                     EndOfReservationDate = today.AddMonths(1).AddDays(4).AddHours(3),
@@ -1251,6 +1260,7 @@ namespace EventFlowAPI.DB.Extensions
                 {
                     Id = 5,
                     ReservationGuid = firstFestivalGuid,
+                    IsFestivalReservation = true,
                     ReservationDate = today.AddDays(13),
                     StartOfReservationDate = today.AddMonths(1).AddDays(1),
                     EndOfReservationDate = today.AddMonths(1).AddDays(1).AddHours(1),
@@ -1267,6 +1277,7 @@ namespace EventFlowAPI.DB.Extensions
                 {
                     Id = 6,
                     ReservationGuid = firstFestivalGuid,
+                    IsFestivalReservation = true,
                     ReservationDate = today.AddDays(14),
                     StartOfReservationDate = today.AddMonths(2).AddDays(1),
                     EndOfReservationDate = today.AddMonths(2).AddDays(1).AddHours(1),
@@ -1283,6 +1294,7 @@ namespace EventFlowAPI.DB.Extensions
                 {
                     Id = 7,
                     ReservationGuid = secondFestivalGuid,
+                    IsFestivalReservation = true,
                     ReservationDate = today.AddDays(15),
                     StartOfReservationDate = today.AddMonths(1).AddDays(2),
                     EndOfReservationDate = today.AddMonths(1).AddDays(2).AddHours(3),
@@ -1299,16 +1311,17 @@ namespace EventFlowAPI.DB.Extensions
                 {
                     Id = 8,
                     ReservationGuid = secondFestivalGuid,
+                    IsFestivalReservation = true,
                     ReservationDate = today.AddDays(15),
                     StartOfReservationDate = today.AddMonths(2).AddDays(3),
                     EndOfReservationDate = today.AddMonths(2).AddDays(3).AddHours(2),
                     PaymentDate = today.AddDays(15),
-                    TotalAddtionalPaymentPercentage = 25m,
-                    TotalAdditionalPaymentAmount = 7.5m,
+                    TotalAddtionalPaymentPercentage = 0m,
+                    TotalAdditionalPaymentAmount = 0m,
                     PaymentAmount = 29.99m,
                     UserId = "2",
                     PaymentTypeId = 2,
-                    TicketId = 7,
+                    TicketId = 8,
                     TicketPDFId = 6
                 }
             );

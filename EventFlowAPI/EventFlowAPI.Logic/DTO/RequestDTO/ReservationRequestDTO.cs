@@ -10,6 +10,7 @@ namespace EventFlowAPI.Logic.DTO.RequestDto
 
         [Required(ErrorMessage = "Należy wybrać bilet.")]
         public int TicketId { get; set; }
+        public bool IsReservationForFestival { get; set; } = false;
 
         [Required(ErrorMessage = "Wybierz co najmniej jedno miejsce.")]
         public List<int> SeatsIds { get; set; } = [];

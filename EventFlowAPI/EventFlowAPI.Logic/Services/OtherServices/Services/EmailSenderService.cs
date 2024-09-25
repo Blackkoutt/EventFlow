@@ -138,7 +138,11 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
         public async Task SendTicketPDFAsync(Reservation reservation, byte[] ticketPDF)
         {
             var paramDictionary = GetTicketHTMLParams(reservation.Id);
-            var htmlStringEmailBody = await _htmlRenderer.RenderHtmlToStringAsync<TicketEmailBody>(paramDictionary);
+            string htmlStringEmailBody = string.Empty;
+            if (reservation.EventPass == null)
+                htmlStringEmailBody = await _htmlRenderer.RenderHtmlToStringAsync<TicketEmailBody>(paramDictionary);
+            else
+                htmlStringEmailBody = await _htmlRenderer.RenderHtmlToStringAsync<TicketEventPassEmailBody>(paramDictionary);
 
             var emailDto = new EmailDto
             {

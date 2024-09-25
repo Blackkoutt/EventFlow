@@ -13,8 +13,10 @@ namespace EventFlowAPI.Logic.Errors
         public static readonly Error CannotExchangeCodeForToken = new(new UnauthorizedResponse("Can't exchange code for Google Bearer token."));
         public static readonly Error FailedToGetUserData = new(new UnauthorizedResponse("Failed to get user data."));
         public static readonly Error FailedToGetUserEmail = new(new UnauthorizedResponse("Failed to get user email."));
-        public static readonly Error UserDoesNotHaveSpecificRole = new(new UnauthorizedResponse("User does not have specific role to access this resource."));
-        public static readonly Error UserDoesNotHavePremissionToResource = new(new UnauthorizedResponse("User does not have premission to access this resource."));
+        
+        public static readonly Error UserDoesNotHaveSpecificRole = new(new ForbiddenResponse("User does not have specific role to access this resource."));
+        public static readonly Error UserDoesNotHavePremissionToResource = new(new ForbiddenResponse("User does not have premission to access this resource."));
+       
         public static readonly Error HttpContextNotAvailable = new(new BadRequestResponse("Can't access http context."));
     }
 }
