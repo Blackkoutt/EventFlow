@@ -1,19 +1,86 @@
 ﻿@using EventFlowAPI.DB.Entities
+@using EventFlowAPI.Logic.Helpers
 <html>
 <body>
     <div style="margin-top:20px;">
         <img style="max-width:200px; min-width: 100px;" src="cid:@LogoContentId" alt="EventFlow Logo" />
-        <h1>Wydarzenie odwołane - zamówienie nr @ReservationId</h1>
-        <p>Otrzymujesz ten e-mail w związku z odwołaniem wydarzenia, na które dokonałeś rezerwacji w serwisie EventFlow.</p>
+        @if (EventEntity == null)
+        {
+            <h1>Odwołanie wydarzeń - EventFlow</h1>
+            <p>
+                Z przykrością informujemy, że pewne wydarzenia na które zakupiłeś bilety zostały odwołane.
+            </p>
+            <strong>Poniżej przedstawione zostały szczegóły dotyczące odwołanych wydarzeń i numerów rezerwacji związnaych z nimi.</strong>
+
+            {
+                var eventReservations = ReservationList.Where(r => !r.IsFestivalReservation);
+                var festivalReservations = ReservationList.Where(r => r.IsFestivalReservation);
+                var eventGroups = eventReservations.GroupBy(r => r.Ticket.Event)
+                                    .Select(g => new
+                                    {
+                                        Event = g.Key,
+                                        Reservations = g.ToList()
+                                    });
+
+                var festivalGroups = festivalReservations.GroupBy(r => r.Ticket.Festival)
+                                    .Select(g => new
+                                    {
+                                        Festival = g.Key,
+                                        Reservations = g.ToList()
+                                    });
+                int i = 0; 
+                foreach(var group in eventGroups)
+                {
+                    var eventEnity = group.Event;
+                    var reservations = group.Reservations;
+                    <p style="margin:0;">
+                        <strong>@(i + 1).</strong>
+                        @eventEnity.Category.Name @eventEnity.Name,
+                        @eventEnity.StartDate.ToString(DateFormat.DateTime) - @eventEnity.EndDate.ToString(DateFormat.DateTime),
+                        sala nr @eventEnity.Hall.HallNr
+                    </p>
+                    <p>
+                        Rezerwacje nr: @string.Join(", ", reservations.Select(r => r.Id))
+                    </p>
+                    i++;
+                }
+                i = 0;
+                foreach (var group in festivalGroups)
+                {
+                    var festivalEnity = group.Festival;
+                    var reservations = group.Reservations;
+                    <p style="margin:0;">
+                        <strong>@(i + 1).</strong>
+                        Festiwal: @festivalEnity!.Name,
+                        @festivalEnity!.StartDate.ToString(DateFormat.DateTime) - @festivalEnity!.EndDate.ToString(DateFormat.DateTime)
+                    </p>
+                    <p>
+                        Rezerwacje nr: @string.Join(", ", reservations.Select(r => r.Id))
+                    </p>
+                    i++;
+                }
+            }
+        }
+        else
+        {
+            <h1>Odwołanie wydarzenia - EventFlow</h1>
+            <p>
+                Otrzymujesz ten e-mail w związku z odwołaniem wydarzenia,
+                na które dokonałeś rezerwacji w serwisie EventFlow.
+                <strong>Wiadomość dotyczy rezerwacji o numerach: @string.Join(", ", ReservationList.Select(r => r.Id)).</strong>
+            </p>
+            <p>
+                <strong>
+                    Z przykrością informujemy, że wydarzenie @EventEntity.Name odbywające się dnia @EventEntity.StartDate.ToString("dd.MM.yyyy")
+                    o godz. @EventEntity.StartDate.ToString("HH:mm") w sali nr @EventEntity.Hall.HallNr, na które zakupiłeś bilety, zostało odwołane.
+                </strong>
+            </p>
+        }
+
         <p>
-            <strong>
-                Z przykrością informujemy, że wydarzenie @EventEntity.Name odbywające się dnia @EventEntity.StartDate.ToString("dd.MM.yyyy")
-                o godz. @EventEntity.StartDate.ToString("HH:mm") w sali nr @EventEntity.Hall.HallNr, na które zakupiłeś bilet, zostało odwołane.
-            </strong>
+            Serdecznie przepraszamy za zaistniałą sytuację.
         </p>
-        <p>
-            Przepraszamy za wszytskie utrudnienia.
-        </p>
+
         <p>
             W przypadku dokonania płatności, środki zostaną zwrócone na konto, z którego została
             zrealizowana płatność, w ciągu najbliższych kilku dni roboczych.
@@ -35,7 +102,7 @@
 </html>
 
 @code {
-    [Parameter] public int ReservationId { get; set; }
+    [Parameter] public List<Reservation> ReservationList { get; set; } = [];
     [Parameter] public string LogoContentId { get; set; } = string.Empty;
-    [Parameter] public Event EventEntity { get; set; } = default!;
+    [Parameter] public Event? EventEntity { get; set; } = default!;
 }

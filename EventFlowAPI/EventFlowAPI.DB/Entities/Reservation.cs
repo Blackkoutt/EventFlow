@@ -15,7 +15,7 @@ namespace EventFlowAPI.DB.Entities
         [NotMapped]
         public bool IsReservationActive => EndOfReservationDate > DateTime.Now;
         public bool IsCanceled { get; set; } = false;
-        public bool IsFestivalReservation{ get; set; }
+        public bool IsFestivalReservation { get; set; }
         public DateTime PaymentDate { get; set; }
 
         [Range(0.00, 999.99),

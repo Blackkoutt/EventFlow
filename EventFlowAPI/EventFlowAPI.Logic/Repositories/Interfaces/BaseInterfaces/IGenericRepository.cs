@@ -10,5 +10,6 @@ namespace EventFlowAPI.Logic.Repositories.Interfaces.BaseInterfaces
         Task<T?> GetOneAsync(int id);
         void Update(T entity);
         void Delete(T entity);
+        void Detach(T entity);
     }
 }

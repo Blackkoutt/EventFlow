@@ -10,6 +10,7 @@ namespace EventFlowAPI.DB.Entities
         [Range(0.00, 999.99),
          Column(TypeName = "NUMERIC(5,2)")]
         public decimal Price { get; set; }
+        public bool IsDeleted { get; set; } = false;
         public int TicketTypeId { get; set; }
         public int EventId { get; set; }
         public int? FestivalId { get; set; }

@@ -1,13 +1,11 @@
 ﻿using EventFlowAPI.Logic.DTO.Interfaces;
 using System.ComponentModel.DataAnnotations;
-using System.Text.Json.Serialization;
 
 namespace EventFlowAPI.Logic.DTO.RequestDto
 {
     // rows and columns and max number of seats needs to be reduced 
     public class HallRequestDto : IRequestDto
     {
-        // custom validator to verify that hall with given number does not exist
         [Required(ErrorMessage = "Numer sali jest wymagany.")]
         public int HallNr { get; set; }
 
@@ -24,12 +22,6 @@ namespace EventFlowAPI.Logic.DTO.RequestDto
 
         [Required(ErrorMessage = "Typ sali jest wymagany.")]
         public int HallTypeId { get; set; }
-
-        [JsonIgnore]
-        public bool IsCopy { get; set; }
-
-        [JsonIgnore]
-        public bool IsVisible { get; set; }
 
         public ICollection<SeatRequestDto> Seats { get; set; } = [];
     }

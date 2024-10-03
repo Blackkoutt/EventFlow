@@ -14,7 +14,6 @@ using EventFlowAPI.Logic.Services.CRUDServices.Services.BaseServices;
 using EventFlowAPI.Logic.Services.OtherServices.Interfaces;
 using EventFlowAPI.Logic.UnitOfWork;
 using EventFlowAPI.Logic.Helpers;
-using System.ComponentModel.DataAnnotations;
 
 namespace EventFlowAPI.Logic.Services.CRUDServices.Services
 {
@@ -83,7 +82,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
 
             var user = userResult.Value;
             var eventPass = eventPassResult.Value;
-            var premissionError = CheckUserPremission(user, eventPass);
+            var premissionError = CheckUserPremission(user, eventPass.User!.Id);
             if (premissionError != Error.None)
                 return Result<EventPassResponseDto>.Failure(premissionError);
 
@@ -319,24 +318,6 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             return Result<byte[]>.Success(pdfBitmap);
         }
 
-        private Error CheckUserPremission(UserResponseDto user, EventPassResponseDto eventPass)
-        {
-            if (user.IsInRole(Roles.User))
-            {
-                if (eventPass.User!.Id == user.Id)
-                    return Error.None;
-                else
-                    return AuthError.UserDoesNotHavePremissionToResource;
-            }
-            else if (user.IsInRole(Roles.Admin))
-            {
-                return Error.None;
-            }
-            else
-            {
-                return AuthError.UserDoesNotHaveSpecificRole;
-            }
-        }
 
         protected sealed override IEnumerable<EventPassResponseDto> MapAsDto(IEnumerable<EventPass> records)
         {

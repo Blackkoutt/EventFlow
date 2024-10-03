@@ -11,11 +11,7 @@ namespace EventFlowAPI.Logic.DTO.Validators
         {
             if(hallObj.StageArea != null)
             {
-                if (hallObj.TotalLength * hallObj.TotalWidth != hallObj.TotalArea)
-                {
-                    return new ValidationResult("Podano niepoprawną powierzchnię sali.");
-                }
-                if (hallObj.TotalArea - 100 < hallObj.StageArea)
+                if (hallObj.TotalLength * hallObj.TotalWidth - 100 < hallObj.StageArea)
                 {
                     return new ValidationResult("Powierzchnia sceny jest zbyt duża względem rozmiaru sali.");
                 }

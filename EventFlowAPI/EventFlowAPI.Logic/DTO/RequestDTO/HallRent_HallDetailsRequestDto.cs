@@ -5,16 +5,8 @@ using System.ComponentModel.DataAnnotations;
 
 namespace EventFlowAPI.Logic.DTO.RequestDto
 {
-    public class HallDetailsRequestDto : IRequestDto, IHallDetailsRequestDto
+    public class HallRent_HallDetailsRequestDto : IRequestDto, IHallDetailsRequestDto
     {
-        [Required(ErrorMessage = "Długość sali jest wymagana.")]
-        [Range(4, 99.99, ErrorMessage = "Długość sali nie może być mniejsza niż 4 metry i większa niż 99.99 metrów.")]
-        public decimal TotalLength { get; set; }
-
-        [Required(ErrorMessage = "Szerokość sali jest wymagana.")]
-        [Range(4, 99.99, ErrorMessage = "Szerokość sali nie może być mniejsza niż 4 metry i większa niż 99.99 metrów.")]
-        public decimal TotalWidth { get; set; }
-
         // input in frontend 
         [Range(10.00, 400.00, ErrorMessage = "Powierzchnia sceny nie może być mniejsza niż 10 m2 lub większa niż 400 m2.")]
         public decimal? StageArea { get; set; }

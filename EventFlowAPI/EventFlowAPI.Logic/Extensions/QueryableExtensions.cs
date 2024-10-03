@@ -67,5 +67,27 @@ namespace EventFlowAPI.Logic.Extensions
                 _ => queryable
             };
         }
+
+        public static IQueryable<Event> EventByStatus(this IQueryable<Event> queryable, EventStatus? status)
+        {
+            return status switch
+            {
+                EventStatus.Active => queryable.Where(r => (!r.IsCanceled && r.EndDate > DateTime.Now)),
+                EventStatus.Expired => queryable.Where(r => (!r.IsCanceled && !(r.EndDate > DateTime.Now))),
+                EventStatus.Canceled => queryable.Where(r => (r.IsCanceled)),
+                _ => queryable
+            };
+        }
+
+        public static IQueryable<HallRent> HallRentByStatus(this IQueryable<HallRent> queryable, HallRentStatus? status)
+        {
+            return status switch
+            {
+                HallRentStatus.Active => queryable.Where(r => (!r.IsCanceled && r.EndDate > DateTime.Now)),
+                HallRentStatus.Expired => queryable.Where(r => (!r.IsCanceled && !(r.EndDate > DateTime.Now))),
+                HallRentStatus.Canceled => queryable.Where(r => (r.IsCanceled)),
+                _ => queryable
+            };
+        }
     }
 }

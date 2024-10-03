@@ -6,6 +6,7 @@ namespace EventFlowAPI.DB.Entities
 {
     public class Hall : BaseEntity
     {
+        public int? DefaultId { get; set; }
         public int HallNr { get; set; }
 
         [Range(0.00, 999.99),

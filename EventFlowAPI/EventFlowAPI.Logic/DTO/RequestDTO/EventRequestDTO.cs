@@ -6,7 +6,7 @@ using System.Text.Json.Serialization;
 namespace EventFlowAPI.Logic.DTO.RequestDto
 {
     // Need to add custom validators to dates
-    public class EventRequestDto : StartEndDateAbstract, IRequestDto, INameableRequestDto
+    public class EventRequestDto : StartEndDateAbstract, IRequestDto, INameableRequestDto, ICollisionalRequestDto
     {
 
         [Required(ErrorMessage = "Nazwa wydarzenia jest wymagana.")]
@@ -28,7 +28,6 @@ namespace EventFlowAPI.Logic.DTO.RequestDto
         [Range(0, int.MaxValue, ErrorMessage = "Id hali musi być większe lub równe 0.")]
         public int HallId { get; set; }
 
-        //public HallRequestDto? HallDto { get; set; }
-
+        public ICollection<Event_FestivalTicketRequestDto> EventTickets { get; set; } = [];
     }
 }

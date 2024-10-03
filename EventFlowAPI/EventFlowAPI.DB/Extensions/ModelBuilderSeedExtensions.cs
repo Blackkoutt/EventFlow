@@ -7,7 +7,7 @@ namespace EventFlowAPI.DB.Extensions
     {
         public static void Seed(this ModelBuilder modelBuilder)
         {
-            var today = new DateTime(2024, 9, 19);
+            var today = new DateTime(2024, 9, 30);
 
             modelBuilder.SeedUsersData();
             modelBuilder.SeedUsers();
@@ -449,6 +449,7 @@ namespace EventFlowAPI.DB.Extensions
                 new Hall
                 {
                     Id = 1,
+                    DefaultId = 1,
                     HallNr = 1,
                     RentalPricePerHour = 120.99m,
                     Floor = 2,
@@ -457,6 +458,7 @@ namespace EventFlowAPI.DB.Extensions
                 new Hall
                 {
                     Id = 2,
+                    DefaultId = 2,
                     HallNr = 2,
                     RentalPricePerHour = 89.99m,
                     Floor = 1,
@@ -465,6 +467,7 @@ namespace EventFlowAPI.DB.Extensions
                 new Hall
                 {
                     Id = 3,
+                    DefaultId = 3,
                     HallNr = 3,
                     RentalPricePerHour = 179.99m,
                     Floor = 2,
@@ -473,6 +476,7 @@ namespace EventFlowAPI.DB.Extensions
                 new Hall
                 {
                     Id = 4,
+                    DefaultId = 4,
                     HallNr = 4,
                     RentalPricePerHour = 199.99m,
                     Floor = 1,
@@ -620,7 +624,6 @@ namespace EventFlowAPI.DB.Extensions
                     EndDate = today.AddMonths(1).AddDays(1).AddHours(1),
                     Duration = today.AddMonths(1).AddDays(1) - today.AddMonths(1).AddDays(1).AddHours(1),
                     CategoryId = 1,
-                    DefaultHallId = 2,
                     HallId = 2,
                 },
                 new Event
@@ -632,7 +635,6 @@ namespace EventFlowAPI.DB.Extensions
                     EndDate = today.AddMonths(1).AddDays(2).AddHours(3),
                     Duration = today.AddMonths(1).AddDays(2) - today.AddMonths(1).AddDays(2).AddHours(3),
                     CategoryId = 3,
-                    DefaultHallId = 3,
                     HallId = 3,
                 },
                 new Event
@@ -644,7 +646,6 @@ namespace EventFlowAPI.DB.Extensions
                     EndDate = today.AddMonths(1).AddDays(3).AddHours(2),
                     Duration = today.AddMonths(1).AddDays(3) - today.AddMonths(1).AddDays(3).AddHours(2),
                     CategoryId = 2,
-                    DefaultHallId = 1,
                     HallId = 1,
                 },
                 new Event
@@ -656,7 +657,6 @@ namespace EventFlowAPI.DB.Extensions
                     EndDate = today.AddMonths(1).AddDays(4).AddHours(3),
                     Duration = today.AddMonths(1).AddDays(4) - today.AddMonths(1).AddDays(4).AddHours(3),
                     CategoryId = 4,
-                    DefaultHallId = 4,
                     HallId = 4,
                 },
                 new Event
@@ -668,7 +668,6 @@ namespace EventFlowAPI.DB.Extensions
                     EndDate = today.AddMonths(2).AddDays(1).AddHours(1),
                     Duration = today.AddMonths(2).AddDays(1) - today.AddMonths(2).AddDays(1).AddHours(1),
                     CategoryId = 1,
-                    DefaultHallId = 2,
                     HallId = 2,
                 },
                 new Event
@@ -680,7 +679,6 @@ namespace EventFlowAPI.DB.Extensions
                     EndDate = today.AddMonths(2).AddDays(3).AddHours(2),
                     Duration = today.AddMonths(2).AddDays(3) - today.AddMonths(2).AddDays(3).AddHours(2),
                     CategoryId = 2,
-                    DefaultHallId = 1,
                     HallId = 1,
                 },
                 new Event
@@ -692,7 +690,6 @@ namespace EventFlowAPI.DB.Extensions
                     EndDate = today.AddMonths(2).AddDays(4).AddHours(3),
                     Duration = today.AddMonths(2).AddDays(4) - today.AddMonths(2).AddDays(4).AddHours(3),
                     CategoryId = 4,
-                    DefaultHallId = 4,
                     HallId = 4,
                 }
             );
@@ -903,54 +900,66 @@ namespace EventFlowAPI.DB.Extensions
                 }
             );
 
+            var hrGuid1 = Guid.NewGuid(); 
+            var hrGuid2 = Guid.NewGuid(); 
+            var hrGuid3 = Guid.NewGuid(); 
+            var hrGuid4 = Guid.NewGuid(); 
 
             modelBuilder.Entity<HallRent>().HasData(
                 new HallRent
                 {
                     Id = 1,
+                    HallRentGuid = hrGuid1,
                     StartDate = today.AddMonths(1).AddDays(1),
                     EndDate = today.AddMonths(1).AddDays(1).AddHours(8),
-                    PaymentDate = today.AddDays(-1),
+                    Duration = today.AddMonths(1).AddDays(1).AddHours(8) - today.AddMonths(1).AddDays(1),
+                    RentDate = today,
+                    PaymentDate = today,
                     PaymentAmount = 899.99m,
                     PaymentTypeId = 1,
                     HallId = 1,
-                    DefaultHallId = 1,
                     UserId = "1"
                 },
                 new HallRent
                 {
                     Id = 2,
+                    HallRentGuid = hrGuid2,
                     StartDate = today.AddMonths(1).AddDays(2),
                     EndDate = today.AddMonths(1).AddDays(2).AddHours(4),
-                    PaymentDate = today.AddDays(-2),
+                    Duration = today.AddMonths(1).AddDays(2).AddHours(4) - today.AddMonths(1).AddDays(2),
+                    RentDate = today,
+                    PaymentDate = today,
                     PaymentAmount = 699.99m,
                     PaymentTypeId = 2,
                     HallId = 3,
-                    DefaultHallId = 3,
                     UserId = "3"
                 },
                 new HallRent
                 {
                     Id = 3,
+                    HallRentGuid = hrGuid3,
                     StartDate = today.AddMonths(1).AddDays(3),
                     EndDate = today.AddMonths(1).AddDays(3).AddHours(2),
-                    PaymentDate = today.AddDays(-3),
+                    Duration = today.AddMonths(1).AddDays(3).AddHours(2) - today.AddMonths(1).AddDays(3),
+                    RentDate = today,
+                    PaymentDate = today,
                     PaymentAmount = 399.99m,
                     PaymentTypeId = 3,
                     HallId = 3,
-                    DefaultHallId = 3,
                     UserId = "3"
                 },
                 new HallRent
                 {
                     Id = 4,
+                    HallRentGuid = hrGuid4,
                     StartDate = today.AddMonths(1).AddDays(4),
                     EndDate = today.AddMonths(1).AddDays(4).AddHours(1),
-                    PaymentDate = today.AddDays(-3),
+                    Duration = today.AddMonths(1).AddDays(4).AddHours(1) - today.AddMonths(1).AddDays(4),
+                    RentDate = today,
+                    PaymentDate = today,
                     PaymentAmount = 150.99m,
                     PaymentTypeId = 2,
                     HallId = 4,
-                    DefaultHallId = 4,
                     UserId = "2"
                 }
             );
@@ -1193,10 +1202,10 @@ namespace EventFlowAPI.DB.Extensions
                     Id = 1,
                     ReservationGuid = res1,
                     IsFestivalReservation = false,
-                    ReservationDate = today.AddDays(10),
+                    ReservationDate = today,
                     StartOfReservationDate = today.AddMonths(1).AddDays(1),
                     EndOfReservationDate = today.AddMonths(1).AddDays(1).AddHours(1),
-                    PaymentDate = today.AddDays(10),
+                    PaymentDate = today,
                     TotalAddtionalPaymentPercentage = 10m,
                     TotalAdditionalPaymentAmount = 2.5m,
                     PaymentAmount = 24.99m,
@@ -1210,10 +1219,10 @@ namespace EventFlowAPI.DB.Extensions
                     Id = 2,
                     ReservationGuid = res2,
                     IsFestivalReservation = false,
-                    ReservationDate = today.AddDays(16),
+                    ReservationDate = today,
                     StartOfReservationDate = today.AddMonths(1).AddDays(2),
                     EndOfReservationDate = today.AddMonths(1).AddDays(2).AddHours(3),
-                    PaymentDate = today.AddDays(16),
+                    PaymentDate = today,
                     TotalAddtionalPaymentPercentage = 0m,
                     TotalAdditionalPaymentAmount = 0m,
                     PaymentAmount = 34.99m,
@@ -1227,10 +1236,10 @@ namespace EventFlowAPI.DB.Extensions
                     Id = 3,
                     ReservationGuid = res3,
                     IsFestivalReservation = false,
-                    ReservationDate = today.AddDays(17),
+                    ReservationDate = today,
                     StartOfReservationDate = today.AddMonths(1).AddDays(3),
                     EndOfReservationDate = today.AddMonths(1).AddDays(3).AddHours(2),
-                    PaymentDate = today.AddDays(17),
+                    PaymentDate = today,
                     TotalAddtionalPaymentPercentage = 25m,
                     TotalAdditionalPaymentAmount = 7.5m,
                     PaymentAmount = 29.99m,
@@ -1244,10 +1253,10 @@ namespace EventFlowAPI.DB.Extensions
                     Id = 4,
                     ReservationGuid = res4,
                     IsFestivalReservation = false,
-                    ReservationDate = today.AddDays(18),
+                    ReservationDate = today,
                     StartOfReservationDate = today.AddMonths(1).AddDays(4),
                     EndOfReservationDate = today.AddMonths(1).AddDays(4).AddHours(3),
-                    PaymentDate = today.AddDays(18),
+                    PaymentDate = today,
                     TotalAddtionalPaymentPercentage = 0m,
                     TotalAdditionalPaymentAmount = 0m,
                     PaymentAmount = 19.99m,
@@ -1261,10 +1270,10 @@ namespace EventFlowAPI.DB.Extensions
                     Id = 5,
                     ReservationGuid = firstFestivalGuid,
                     IsFestivalReservation = true,
-                    ReservationDate = today.AddDays(13),
+                    ReservationDate = today,
                     StartOfReservationDate = today.AddMonths(1).AddDays(1),
                     EndOfReservationDate = today.AddMonths(1).AddDays(1).AddHours(1),
-                    PaymentDate = today.AddDays(13),
+                    PaymentDate = today,
                     TotalAddtionalPaymentPercentage = 10m,
                     TotalAdditionalPaymentAmount = 2m,
                     PaymentAmount = 19.99m,
@@ -1278,10 +1287,10 @@ namespace EventFlowAPI.DB.Extensions
                     Id = 6,
                     ReservationGuid = firstFestivalGuid,
                     IsFestivalReservation = true,
-                    ReservationDate = today.AddDays(14),
+                    ReservationDate = today,
                     StartOfReservationDate = today.AddMonths(2).AddDays(1),
                     EndOfReservationDate = today.AddMonths(2).AddDays(1).AddHours(1),
-                    PaymentDate = today.AddDays(14),
+                    PaymentDate = today,
                     TotalAddtionalPaymentPercentage = 10m,
                     TotalAdditionalPaymentAmount = 2m,
                     PaymentAmount = 19.99m,
@@ -1295,10 +1304,10 @@ namespace EventFlowAPI.DB.Extensions
                     Id = 7,
                     ReservationGuid = secondFestivalGuid,
                     IsFestivalReservation = true,
-                    ReservationDate = today.AddDays(15),
+                    ReservationDate = today,
                     StartOfReservationDate = today.AddMonths(1).AddDays(2),
                     EndOfReservationDate = today.AddMonths(1).AddDays(2).AddHours(3),
-                    PaymentDate = today.AddDays(15),
+                    PaymentDate = today,
                     TotalAddtionalPaymentPercentage = 0m,
                     TotalAdditionalPaymentAmount = 0m,
                     PaymentAmount = 29.99m,
@@ -1312,10 +1321,10 @@ namespace EventFlowAPI.DB.Extensions
                     Id = 8,
                     ReservationGuid = secondFestivalGuid,
                     IsFestivalReservation = true,
-                    ReservationDate = today.AddDays(15),
+                    ReservationDate = today,
                     StartOfReservationDate = today.AddMonths(2).AddDays(3),
                     EndOfReservationDate = today.AddMonths(2).AddDays(3).AddHours(2),
-                    PaymentDate = today.AddDays(15),
+                    PaymentDate = today,
                     TotalAddtionalPaymentPercentage = 0m,
                     TotalAdditionalPaymentAmount = 0m,
                     PaymentAmount = 29.99m,

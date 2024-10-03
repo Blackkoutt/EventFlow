@@ -119,6 +119,21 @@ namespace EventFlowAPI.Controllers
             return Ok(result.Value);
         }
 
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="eventPassReqestDto"></param>
+        /// <returns></returns>
+        /// <remarks>
+        /// Sample request:
+        /// 
+        ///     {
+        ///         "passTypeId": 3,
+        ///         "paymentTypeId": 1
+        ///     }
+        /// </remarks>
         [Authorize]
         [HttpPut("{id:int}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]

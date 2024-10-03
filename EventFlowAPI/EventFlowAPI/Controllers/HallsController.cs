@@ -1,9 +1,10 @@
 ﻿using EventFlowAPI.Logic.DTO.RequestDto;
-using EventFlowAPI.Logic.DTO.ResponseDto;
-using EventFlowAPI.Logic.Query.Abstract;
-using EventFlowAPI.Logic.ResultObject;
+using EventFlowAPI.Logic.Identity.Helpers;
+using EventFlowAPI.Logic.Query;
 using EventFlowAPI.Logic.Services.CRUDServices.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Net;
 
 namespace EventFlowAPI.Controllers
 {
@@ -16,7 +17,7 @@ namespace EventFlowAPI.Controllers
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> GetHalls([FromQuery] QueryObject query)
+        public async Task<IActionResult> GetHalls([FromQuery] HallQuery query)
         {
             var result = await _hallService.GetAllAsync(query);
             return result.IsSuccessful ? Ok(result.Value) : BadRequest(result.Error.Details);
@@ -33,43 +34,66 @@ namespace EventFlowAPI.Controllers
         }
 
 
+        [Authorize]
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<IActionResult> CreateHall([FromBody] HallRequestDto hallReqestDto)
         {
             var result = await _hallService.AddAsync(hallReqestDto);
-            return result.IsSuccessful ? CreatedAtAction(nameof(GetHallById), new { id = result.Value.Id }, result.Value) : BadRequest(result.Error.Details);
+            if (!result.IsSuccessful)
+            {
+                return result.Error.Details!.Code switch
+                {
+                    HttpStatusCode.BadRequest => BadRequest(result.Error.Details),
+                    HttpStatusCode.Unauthorized => Unauthorized(result.Error.Details),
+                    _ => StatusCode((int)HttpStatusCode.InternalServerError, result.Error.Details)
+                };
+            }
+            return CreatedAtAction(nameof(GetHallById), new { id = result.Value.Id }, result.Value);
         }
 
 
+        [Authorize(Roles = Roles.Admin)]
         [HttpPut("{id:int}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> UpdateHall([FromRoute] int id, [FromBody] HallRequestDto hallReqestDto, [FromQuery] int? eventId = null)
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<IActionResult> UpdateHall([FromRoute] int id, [FromBody] HallRequestDto hallReqestDto)
         {
-            Result<HallResponseDto> result;
-            
-            if (eventId.HasValue)
+            var result = await _hallService.UpdateAsync(id, hallReqestDto);
+            if (!result.IsSuccessful)
             {
-                result = await _hallService.UpdateHallForEvent(id, eventId.Value, hallReqestDto);
+                return result.Error.Details!.Code switch
+                {
+                    HttpStatusCode.BadRequest => BadRequest(result.Error.Details),
+                    HttpStatusCode.Unauthorized => Unauthorized(result.Error.Details),
+                    _ => StatusCode((int)HttpStatusCode.InternalServerError, result.Error.Details)
+                };
             }
-            else
-            {
-                result = await _hallService.UpdateAsync(id, hallReqestDto);
-            }
-            
-            return result.IsSuccessful ? NoContent() : BadRequest(result.Error.Details);
+            return NoContent();
         }
 
 
+        [Authorize(Roles = Roles.Admin)]
         [HttpDelete("{id:int}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> DeleteHall([FromRoute] int id)
         {
             var result = await _hallService.DeleteAsync(id);
-            return result.IsSuccessful ? NoContent() : BadRequest(result.Error.Details);
+            if (!result.IsSuccessful)
+            {
+                return result.Error.Details!.Code switch
+                {
+                    HttpStatusCode.BadRequest => BadRequest(result.Error.Details),
+                    HttpStatusCode.Unauthorized => Unauthorized(result.Error.Details),
+                    _ => StatusCode((int)HttpStatusCode.InternalServerError, result.Error.Details)
+                };
+            }
+            return Ok(result.Value);
         }
     }
 }

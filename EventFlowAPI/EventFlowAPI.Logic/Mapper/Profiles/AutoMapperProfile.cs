@@ -57,10 +57,14 @@ namespace EventFlowAPI.Logic.Mapper.Profiles
 
             CreateMap<Hall, Hall>();
             CreateMap<HallRequestDto, Hall>();
+            CreateMap<EventHallRequestDto, Hall>();
+            CreateMap<HallRent_HallRequestDto, Hall>();
             CreateMap<Hall, HallResponseDto>();
 
             CreateMap<HallDetails, HallDetails>();
             CreateMap<HallDetailsRequestDto, HallDetails>();
+            CreateMap<EventHallDetailsRequestDto, HallDetails>();
+            CreateMap<HallRent_HallDetailsRequestDto, HallDetails>();
             CreateMap<HallDetails, HallDetailsResponseDto>();
 
             CreateMap<HallType, HallType>();

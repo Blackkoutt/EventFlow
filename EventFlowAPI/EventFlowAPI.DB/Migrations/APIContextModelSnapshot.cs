@@ -128,10 +128,13 @@ namespace EventFlowAPI.DB.Migrations
                     b.Property<int>("Id")
                         .HasColumnType("int");
 
-                    b.Property<int>("CategoryId")
-                        .HasColumnType("int");
+                    b.Property<DateTime>("AddDate")
+                        .HasColumnType("datetime2");
 
-                    b.Property<int>("DefaultHallId")
+                    b.Property<DateTime?>("CancelDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("CategoryId")
                         .HasColumnType("int");
 
                     b.Property<TimeSpan>("Duration")
@@ -142,6 +145,9 @@ namespace EventFlowAPI.DB.Migrations
 
                     b.Property<int>("HallId")
                         .HasColumnType("int");
+
+                    b.Property<bool>("IsCanceled")
+                        .HasColumnType("bit");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -168,86 +174,93 @@ namespace EventFlowAPI.DB.Migrations
                         new
                         {
                             Id = 1,
+                            AddDate = new DateTime(2024, 10, 2, 12, 23, 48, 222, DateTimeKind.Local).AddTicks(6190),
                             CategoryId = 1,
-                            DefaultHallId = 2,
                             Duration = new TimeSpan(0, -1, 0, 0, 0),
-                            EndDate = new DateTime(2024, 10, 20, 1, 0, 0, 0, DateTimeKind.Unspecified),
+                            EndDate = new DateTime(2024, 10, 31, 1, 0, 0, 0, DateTimeKind.Unspecified),
                             HallId = 2,
+                            IsCanceled = false,
                             Name = "Koncert: Mystic Waves",
                             ShortDescription = "Jedyna taka okazja na usłyszenie Mystic Waves na żywo.",
-                            StartDate = new DateTime(2024, 10, 20, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            StartDate = new DateTime(2024, 10, 31, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             Id = 2,
+                            AddDate = new DateTime(2024, 10, 2, 12, 23, 48, 222, DateTimeKind.Local).AddTicks(6300),
                             CategoryId = 3,
-                            DefaultHallId = 3,
                             Duration = new TimeSpan(0, -3, 0, 0, 0),
-                            EndDate = new DateTime(2024, 10, 21, 3, 0, 0, 0, DateTimeKind.Unspecified),
+                            EndDate = new DateTime(2024, 11, 1, 3, 0, 0, 0, DateTimeKind.Unspecified),
                             HallId = 3,
+                            IsCanceled = false,
                             Name = "Cień Przeszłośći",
                             ShortDescription = "Cień Przeszłości to jedyny taki spektakl.",
-                            StartDate = new DateTime(2024, 10, 21, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            StartDate = new DateTime(2024, 11, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             Id = 3,
+                            AddDate = new DateTime(2024, 10, 2, 12, 23, 48, 222, DateTimeKind.Local).AddTicks(6315),
                             CategoryId = 2,
-                            DefaultHallId = 1,
                             Duration = new TimeSpan(0, -2, 0, 0, 0),
-                            EndDate = new DateTime(2024, 10, 22, 2, 0, 0, 0, DateTimeKind.Unspecified),
+                            EndDate = new DateTime(2024, 11, 2, 2, 0, 0, 0, DateTimeKind.Unspecified),
                             HallId = 1,
+                            IsCanceled = false,
                             Name = "Królestwo planety małp",
                             ShortDescription = "Nowy film Królestwo planety małp już w kinach!.",
-                            StartDate = new DateTime(2024, 10, 22, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            StartDate = new DateTime(2024, 11, 2, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             Id = 4,
+                            AddDate = new DateTime(2024, 10, 2, 12, 23, 48, 222, DateTimeKind.Local).AddTicks(6320),
                             CategoryId = 4,
-                            DefaultHallId = 4,
                             Duration = new TimeSpan(0, -3, 0, 0, 0),
-                            EndDate = new DateTime(2024, 10, 23, 3, 0, 0, 0, DateTimeKind.Unspecified),
+                            EndDate = new DateTime(2024, 11, 3, 3, 0, 0, 0, DateTimeKind.Unspecified),
                             HallId = 4,
+                            IsCanceled = false,
                             Name = "Nowe inspiracje",
                             ShortDescription = "Nowe inspiracje to nowoczesna wystawa sztuki.",
-                            StartDate = new DateTime(2024, 10, 23, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            StartDate = new DateTime(2024, 11, 3, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             Id = 5,
+                            AddDate = new DateTime(2024, 10, 2, 12, 23, 48, 222, DateTimeKind.Local).AddTicks(6324),
                             CategoryId = 1,
-                            DefaultHallId = 2,
                             Duration = new TimeSpan(0, -1, 0, 0, 0),
-                            EndDate = new DateTime(2024, 11, 20, 1, 0, 0, 0, DateTimeKind.Unspecified),
+                            EndDate = new DateTime(2024, 12, 1, 1, 0, 0, 0, DateTimeKind.Unspecified),
                             HallId = 2,
+                            IsCanceled = false,
                             Name = "Koncert: New Era",
                             ShortDescription = "Jedyna taka okazja na usłyszenie New Era na żywo.",
-                            StartDate = new DateTime(2024, 11, 20, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            StartDate = new DateTime(2024, 12, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             Id = 6,
+                            AddDate = new DateTime(2024, 10, 2, 12, 23, 48, 222, DateTimeKind.Local).AddTicks(9894),
                             CategoryId = 2,
-                            DefaultHallId = 1,
                             Duration = new TimeSpan(0, -2, 0, 0, 0),
-                            EndDate = new DateTime(2024, 11, 22, 2, 0, 0, 0, DateTimeKind.Unspecified),
+                            EndDate = new DateTime(2024, 12, 3, 2, 0, 0, 0, DateTimeKind.Unspecified),
                             HallId = 1,
+                            IsCanceled = false,
                             Name = "Gladiator",
                             ShortDescription = "Nowy film Gladiator już w kinach!.",
-                            StartDate = new DateTime(2024, 11, 22, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            StartDate = new DateTime(2024, 12, 3, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             Id = 7,
+                            AddDate = new DateTime(2024, 10, 2, 12, 23, 48, 222, DateTimeKind.Local).AddTicks(9909),
                             CategoryId = 4,
-                            DefaultHallId = 4,
                             Duration = new TimeSpan(0, -3, 0, 0, 0),
-                            EndDate = new DateTime(2024, 11, 23, 3, 0, 0, 0, DateTimeKind.Unspecified),
+                            EndDate = new DateTime(2024, 12, 4, 3, 0, 0, 0, DateTimeKind.Unspecified),
                             HallId = 4,
+                            IsCanceled = false,
                             Name = "Nowa sztuka",
                             ShortDescription = "Nowe sztuka to nowoczesna wystawa sztuki.",
-                            StartDate = new DateTime(2024, 11, 23, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            StartDate = new DateTime(2024, 12, 4, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         });
                 });
 
@@ -413,16 +426,16 @@ namespace EventFlowAPI.DB.Migrations
                         new
                         {
                             Id = 1,
-                            EndDate = new DateTime(2025, 3, 19, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            EndDate = new DateTime(2025, 3, 30, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             EventPassGuid = new Guid("b00ca94a-e6b2-4d2e-b270-244b3e76048d"),
                             EventPassJPGName = "eventflow_karnet_b00ca94a-e6b2-4d2e-b270-244b3e76048d.jpg",
                             EventPassPDFName = "eventflow_karnet_b00ca94a-e6b2-4d2e-b270-244b3e76048d.pdf",
                             IsCanceled = false,
                             PassTypeId = 3,
                             PaymentAmount = 499.99m,
-                            PaymentDate = new DateTime(2024, 9, 19, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            PaymentDate = new DateTime(2024, 9, 30, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             PaymentTypeId = 1,
-                            StartDate = new DateTime(2024, 9, 19, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            StartDate = new DateTime(2024, 9, 30, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             TotalDiscount = 0m,
                             TotalDiscountPercentage = 0m,
                             UserId = "1"
@@ -430,16 +443,16 @@ namespace EventFlowAPI.DB.Migrations
                         new
                         {
                             Id = 2,
-                            EndDate = new DateTime(2025, 9, 19, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            EndDate = new DateTime(2025, 9, 30, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             EventPassGuid = new Guid("766245b4-8c08-49dd-9480-2606aaa590be"),
                             EventPassJPGName = "eventflow_karnet_766245b4-8c08-49dd-9480-2606aaa590be.jpg",
                             EventPassPDFName = "eventflow_karnet_766245b4-8c08-49dd-9480-2606aaa590be.pdf",
                             IsCanceled = false,
                             PassTypeId = 4,
                             PaymentAmount = 999.99m,
-                            PaymentDate = new DateTime(2024, 9, 19, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            PaymentDate = new DateTime(2024, 9, 30, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             PaymentTypeId = 2,
-                            StartDate = new DateTime(2024, 9, 19, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            StartDate = new DateTime(2024, 9, 30, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             TotalDiscount = 0m,
                             TotalDiscountPercentage = 0m,
                             UserId = "2"
@@ -447,16 +460,16 @@ namespace EventFlowAPI.DB.Migrations
                         new
                         {
                             Id = 3,
-                            EndDate = new DateTime(2024, 12, 19, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            EndDate = new DateTime(2024, 12, 30, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             EventPassGuid = new Guid("33610a0d-a1b7-4700-bffe-9e334b977e6a"),
                             EventPassJPGName = "eventflow_karnet_33610a0d-a1b7-4700-bffe-9e334b977e6a.jpg",
                             EventPassPDFName = "eventflow_karnet_33610a0d-a1b7-4700-bffe-9e334b977e6a.pdf",
                             IsCanceled = false,
                             PassTypeId = 2,
                             PaymentAmount = 235.99m,
-                            PaymentDate = new DateTime(2024, 9, 19, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            PaymentDate = new DateTime(2024, 9, 30, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             PaymentTypeId = 1,
-                            StartDate = new DateTime(2024, 9, 19, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            StartDate = new DateTime(2024, 9, 30, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             TotalDiscount = 0m,
                             TotalDiscountPercentage = 0m,
                             UserId = "3"
@@ -529,11 +542,17 @@ namespace EventFlowAPI.DB.Migrations
                     b.Property<int>("Id")
                         .HasColumnType("int");
 
+                    b.Property<DateTime?>("CancelDate")
+                        .HasColumnType("datetime2");
+
                     b.Property<TimeSpan>("Duration")
                         .HasColumnType("time");
 
                     b.Property<DateTime>("EndDate")
                         .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsCanceled")
+                        .HasColumnType("bit");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -557,28 +576,31 @@ namespace EventFlowAPI.DB.Migrations
                         {
                             Id = 1,
                             Duration = new TimeSpan(-32, -1, 0, 0, 0),
-                            EndDate = new DateTime(2024, 11, 20, 1, 0, 0, 0, DateTimeKind.Unspecified),
+                            EndDate = new DateTime(2024, 12, 1, 1, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsCanceled = false,
                             Name = "Festiwal muzyki współczesnej",
                             ShortDescription = "Festiwal muzyki współczesnej to nowy festiwal organizowany przez XYZ.",
-                            StartDate = new DateTime(2024, 10, 20, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            StartDate = new DateTime(2024, 10, 31, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             Id = 2,
                             Duration = new TimeSpan(-32, -2, 0, 0, 0),
-                            EndDate = new DateTime(2024, 11, 22, 2, 0, 0, 0, DateTimeKind.Unspecified),
+                            EndDate = new DateTime(2024, 12, 3, 2, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsCanceled = false,
                             Name = "Festiwal filmowy",
                             ShortDescription = "Festiwal filmowy to festiwal na którym można obejrzeć filmy.",
-                            StartDate = new DateTime(2024, 10, 21, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            StartDate = new DateTime(2024, 11, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             Id = 3,
                             Duration = new TimeSpan(-31, -3, 0, 0, 0),
-                            EndDate = new DateTime(2024, 11, 23, 3, 0, 0, 0, DateTimeKind.Unspecified),
+                            EndDate = new DateTime(2024, 12, 4, 3, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsCanceled = false,
                             Name = "Festiwal sztuki abstrakcyjnej",
                             ShortDescription = "Festiwal sztuki abstrakcyjnej to festiwal na którym można zobaczyć sztukę.",
-                            StartDate = new DateTime(2024, 10, 23, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            StartDate = new DateTime(2024, 11, 3, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         });
                 });
 
@@ -812,6 +834,9 @@ namespace EventFlowAPI.DB.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<int?>("DefaultId")
+                        .HasColumnType("int");
+
                     b.Property<decimal>("Floor")
                         .HasColumnType("NUMERIC(1)");
 
@@ -840,6 +865,7 @@ namespace EventFlowAPI.DB.Migrations
                         new
                         {
                             Id = 1,
+                            DefaultId = 1,
                             Floor = 2m,
                             HallNr = 1,
                             HallTypeId = 1,
@@ -850,6 +876,7 @@ namespace EventFlowAPI.DB.Migrations
                         new
                         {
                             Id = 2,
+                            DefaultId = 2,
                             Floor = 1m,
                             HallNr = 2,
                             HallTypeId = 2,
@@ -860,6 +887,7 @@ namespace EventFlowAPI.DB.Migrations
                         new
                         {
                             Id = 3,
+                            DefaultId = 3,
                             Floor = 2m,
                             HallNr = 3,
                             HallTypeId = 3,
@@ -870,6 +898,7 @@ namespace EventFlowAPI.DB.Migrations
                         new
                         {
                             Id = 4,
+                            DefaultId = 4,
                             Floor = 1m,
                             HallNr = 4,
                             HallTypeId = 4,
@@ -984,14 +1013,23 @@ namespace EventFlowAPI.DB.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("DefaultHallId")
-                        .HasColumnType("int");
+                    b.Property<DateTime?>("CancelDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<DateTime>("EndDate")
                         .HasColumnType("datetime2");
 
                     b.Property<int>("HallId")
                         .HasColumnType("int");
+
+                    b.Property<Guid>("HallRentGuid")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("HallRentPDFName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsCanceled")
+                        .HasColumnType("bit");
 
                     b.Property<decimal>("PaymentAmount")
                         .HasColumnType("NUMERIC(7,2)");
@@ -1023,49 +1061,57 @@ namespace EventFlowAPI.DB.Migrations
                         new
                         {
                             Id = 1,
-                            DefaultHallId = 1,
-                            EndDate = new DateTime(2024, 10, 20, 8, 0, 0, 0, DateTimeKind.Unspecified),
+                            EndDate = new DateTime(2024, 10, 31, 8, 0, 0, 0, DateTimeKind.Unspecified),
                             HallId = 1,
+                            HallRentGuid = new Guid("d1f37aef-6946-4516-b531-371a9f08a8cb"),
+                            HallRentPDFName = "",
+                            IsCanceled = false,
                             PaymentAmount = 899.99m,
-                            PaymentDate = new DateTime(2024, 9, 18, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            PaymentDate = new DateTime(2024, 9, 29, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             PaymentTypeId = 1,
-                            StartDate = new DateTime(2024, 10, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            StartDate = new DateTime(2024, 10, 31, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             UserId = "1"
                         },
                         new
                         {
                             Id = 2,
-                            DefaultHallId = 3,
-                            EndDate = new DateTime(2024, 10, 21, 4, 0, 0, 0, DateTimeKind.Unspecified),
+                            EndDate = new DateTime(2024, 11, 1, 4, 0, 0, 0, DateTimeKind.Unspecified),
                             HallId = 3,
+                            HallRentGuid = new Guid("93b8376e-7588-419a-9dc6-2f8791e75e80"),
+                            HallRentPDFName = "",
+                            IsCanceled = false,
                             PaymentAmount = 699.99m,
-                            PaymentDate = new DateTime(2024, 9, 17, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            PaymentDate = new DateTime(2024, 9, 28, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             PaymentTypeId = 2,
-                            StartDate = new DateTime(2024, 10, 21, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            StartDate = new DateTime(2024, 11, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             UserId = "3"
                         },
                         new
                         {
                             Id = 3,
-                            DefaultHallId = 3,
-                            EndDate = new DateTime(2024, 10, 22, 2, 0, 0, 0, DateTimeKind.Unspecified),
+                            EndDate = new DateTime(2024, 11, 2, 2, 0, 0, 0, DateTimeKind.Unspecified),
                             HallId = 3,
+                            HallRentGuid = new Guid("492851c9-4cf6-4627-9d36-5c27219f0c48"),
+                            HallRentPDFName = "",
+                            IsCanceled = false,
                             PaymentAmount = 399.99m,
-                            PaymentDate = new DateTime(2024, 9, 16, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            PaymentDate = new DateTime(2024, 9, 27, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             PaymentTypeId = 3,
-                            StartDate = new DateTime(2024, 10, 22, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            StartDate = new DateTime(2024, 11, 2, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             UserId = "3"
                         },
                         new
                         {
                             Id = 4,
-                            DefaultHallId = 4,
-                            EndDate = new DateTime(2024, 10, 23, 1, 0, 0, 0, DateTimeKind.Unspecified),
+                            EndDate = new DateTime(2024, 11, 3, 1, 0, 0, 0, DateTimeKind.Unspecified),
                             HallId = 4,
+                            HallRentGuid = new Guid("1430de14-f0e4-47fa-886f-1410fbe4d97e"),
+                            HallRentPDFName = "",
+                            IsCanceled = false,
                             PaymentAmount = 150.99m,
-                            PaymentDate = new DateTime(2024, 9, 16, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            PaymentDate = new DateTime(2024, 9, 27, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             PaymentTypeId = 2,
-                            StartDate = new DateTime(2024, 10, 23, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            StartDate = new DateTime(2024, 11, 3, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             UserId = "2"
                         });
                 });
@@ -1400,15 +1446,15 @@ namespace EventFlowAPI.DB.Migrations
                         new
                         {
                             Id = 1,
-                            EndOfReservationDate = new DateTime(2024, 10, 20, 1, 0, 0, 0, DateTimeKind.Unspecified),
+                            EndOfReservationDate = new DateTime(2024, 10, 31, 1, 0, 0, 0, DateTimeKind.Unspecified),
                             IsCanceled = false,
                             IsFestivalReservation = false,
                             PaymentAmount = 24.99m,
-                            PaymentDate = new DateTime(2024, 9, 29, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            PaymentDate = new DateTime(2024, 9, 30, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             PaymentTypeId = 1,
-                            ReservationDate = new DateTime(2024, 9, 29, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            ReservationDate = new DateTime(2024, 9, 30, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             ReservationGuid = new Guid("53538b58-f885-4f4a-b675-a4aa4063ccf3"),
-                            StartOfReservationDate = new DateTime(2024, 10, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            StartOfReservationDate = new DateTime(2024, 10, 31, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             TicketId = 1,
                             TicketPDFId = 1,
                             TotalAdditionalPaymentAmount = 2.5m,
@@ -1419,15 +1465,15 @@ namespace EventFlowAPI.DB.Migrations
                         new
                         {
                             Id = 2,
-                            EndOfReservationDate = new DateTime(2024, 10, 21, 3, 0, 0, 0, DateTimeKind.Unspecified),
+                            EndOfReservationDate = new DateTime(2024, 11, 1, 3, 0, 0, 0, DateTimeKind.Unspecified),
                             IsCanceled = false,
                             IsFestivalReservation = false,
                             PaymentAmount = 34.99m,
-                            PaymentDate = new DateTime(2024, 10, 5, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            PaymentDate = new DateTime(2024, 9, 30, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             PaymentTypeId = 2,
-                            ReservationDate = new DateTime(2024, 10, 5, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            ReservationDate = new DateTime(2024, 9, 30, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             ReservationGuid = new Guid("ed8b9230-223b-4609-8d13-aa6017edad09"),
-                            StartOfReservationDate = new DateTime(2024, 10, 21, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            StartOfReservationDate = new DateTime(2024, 11, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             TicketId = 2,
                             TicketPDFId = 2,
                             TotalAdditionalPaymentAmount = 0m,
@@ -1438,15 +1484,15 @@ namespace EventFlowAPI.DB.Migrations
                         new
                         {
                             Id = 3,
-                            EndOfReservationDate = new DateTime(2024, 10, 22, 2, 0, 0, 0, DateTimeKind.Unspecified),
+                            EndOfReservationDate = new DateTime(2024, 11, 2, 2, 0, 0, 0, DateTimeKind.Unspecified),
                             IsCanceled = false,
                             IsFestivalReservation = false,
                             PaymentAmount = 29.99m,
-                            PaymentDate = new DateTime(2024, 10, 6, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            PaymentDate = new DateTime(2024, 9, 30, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             PaymentTypeId = 3,
-                            ReservationDate = new DateTime(2024, 10, 6, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            ReservationDate = new DateTime(2024, 9, 30, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             ReservationGuid = new Guid("f9a076c4-3475-4a28-a60c-6e0e3c03731a"),
-                            StartOfReservationDate = new DateTime(2024, 10, 22, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            StartOfReservationDate = new DateTime(2024, 11, 2, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             TicketId = 3,
                             TicketPDFId = 3,
                             TotalAdditionalPaymentAmount = 7.5m,
@@ -1457,15 +1503,15 @@ namespace EventFlowAPI.DB.Migrations
                         new
                         {
                             Id = 4,
-                            EndOfReservationDate = new DateTime(2024, 10, 23, 3, 0, 0, 0, DateTimeKind.Unspecified),
+                            EndOfReservationDate = new DateTime(2024, 11, 3, 3, 0, 0, 0, DateTimeKind.Unspecified),
                             IsCanceled = false,
                             IsFestivalReservation = false,
                             PaymentAmount = 19.99m,
-                            PaymentDate = new DateTime(2024, 10, 7, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            PaymentDate = new DateTime(2024, 9, 30, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             PaymentTypeId = 2,
-                            ReservationDate = new DateTime(2024, 10, 7, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            ReservationDate = new DateTime(2024, 9, 30, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             ReservationGuid = new Guid("de1d6773-f027-4888-996a-0296e5c52708"),
-                            StartOfReservationDate = new DateTime(2024, 10, 23, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            StartOfReservationDate = new DateTime(2024, 11, 3, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             TicketId = 4,
                             TicketPDFId = 4,
                             TotalAdditionalPaymentAmount = 0m,
@@ -1476,15 +1522,15 @@ namespace EventFlowAPI.DB.Migrations
                         new
                         {
                             Id = 5,
-                            EndOfReservationDate = new DateTime(2024, 10, 20, 1, 0, 0, 0, DateTimeKind.Unspecified),
+                            EndOfReservationDate = new DateTime(2024, 10, 31, 1, 0, 0, 0, DateTimeKind.Unspecified),
                             IsCanceled = false,
                             IsFestivalReservation = true,
                             PaymentAmount = 19.99m,
-                            PaymentDate = new DateTime(2024, 10, 2, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            PaymentDate = new DateTime(2024, 9, 30, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             PaymentTypeId = 2,
-                            ReservationDate = new DateTime(2024, 10, 2, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            ReservationDate = new DateTime(2024, 9, 30, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             ReservationGuid = new Guid("0b74ec7b-933b-4163-afa5-e0997681dccd"),
-                            StartOfReservationDate = new DateTime(2024, 10, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            StartOfReservationDate = new DateTime(2024, 10, 31, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             TicketId = 5,
                             TicketPDFId = 5,
                             TotalAdditionalPaymentAmount = 2m,
@@ -1495,15 +1541,15 @@ namespace EventFlowAPI.DB.Migrations
                         new
                         {
                             Id = 6,
-                            EndOfReservationDate = new DateTime(2024, 11, 20, 1, 0, 0, 0, DateTimeKind.Unspecified),
+                            EndOfReservationDate = new DateTime(2024, 12, 1, 1, 0, 0, 0, DateTimeKind.Unspecified),
                             IsCanceled = false,
                             IsFestivalReservation = true,
                             PaymentAmount = 19.99m,
-                            PaymentDate = new DateTime(2024, 10, 3, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            PaymentDate = new DateTime(2024, 9, 30, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             PaymentTypeId = 2,
-                            ReservationDate = new DateTime(2024, 10, 3, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            ReservationDate = new DateTime(2024, 9, 30, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             ReservationGuid = new Guid("0b74ec7b-933b-4163-afa5-e0997681dccd"),
-                            StartOfReservationDate = new DateTime(2024, 11, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            StartOfReservationDate = new DateTime(2024, 12, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             TicketId = 6,
                             TicketPDFId = 5,
                             TotalAdditionalPaymentAmount = 2m,
@@ -1514,15 +1560,15 @@ namespace EventFlowAPI.DB.Migrations
                         new
                         {
                             Id = 7,
-                            EndOfReservationDate = new DateTime(2024, 10, 21, 3, 0, 0, 0, DateTimeKind.Unspecified),
+                            EndOfReservationDate = new DateTime(2024, 11, 1, 3, 0, 0, 0, DateTimeKind.Unspecified),
                             IsCanceled = false,
                             IsFestivalReservation = true,
                             PaymentAmount = 29.99m,
-                            PaymentDate = new DateTime(2024, 10, 4, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            PaymentDate = new DateTime(2024, 9, 30, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             PaymentTypeId = 2,
-                            ReservationDate = new DateTime(2024, 10, 4, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            ReservationDate = new DateTime(2024, 9, 30, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             ReservationGuid = new Guid("806cade1-2685-43dc-8cfc-682fc4229db6"),
-                            StartOfReservationDate = new DateTime(2024, 10, 21, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            StartOfReservationDate = new DateTime(2024, 11, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             TicketId = 7,
                             TicketPDFId = 6,
                             TotalAdditionalPaymentAmount = 0m,
@@ -1533,15 +1579,15 @@ namespace EventFlowAPI.DB.Migrations
                         new
                         {
                             Id = 8,
-                            EndOfReservationDate = new DateTime(2024, 11, 22, 2, 0, 0, 0, DateTimeKind.Unspecified),
+                            EndOfReservationDate = new DateTime(2024, 12, 3, 2, 0, 0, 0, DateTimeKind.Unspecified),
                             IsCanceled = false,
                             IsFestivalReservation = true,
                             PaymentAmount = 29.99m,
-                            PaymentDate = new DateTime(2024, 10, 4, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            PaymentDate = new DateTime(2024, 9, 30, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             PaymentTypeId = 2,
-                            ReservationDate = new DateTime(2024, 10, 4, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            ReservationDate = new DateTime(2024, 9, 30, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             ReservationGuid = new Guid("806cade1-2685-43dc-8cfc-682fc4229db6"),
-                            StartOfReservationDate = new DateTime(2024, 11, 22, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            StartOfReservationDate = new DateTime(2024, 12, 3, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             TicketId = 8,
                             TicketPDFId = 6,
                             TotalAdditionalPaymentAmount = 0m,
@@ -2011,6 +2057,9 @@ namespace EventFlowAPI.DB.Migrations
                     b.Property<int?>("FestivalId")
                         .HasColumnType("int");
 
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
                     b.Property<decimal>("Price")
                         .HasColumnType("NUMERIC(5,2)");
 
@@ -2032,6 +2081,7 @@ namespace EventFlowAPI.DB.Migrations
                         {
                             Id = 1,
                             EventId = 1,
+                            IsDeleted = false,
                             Price = 24.99m,
                             TicketTypeId = 1
                         },
@@ -2039,6 +2089,7 @@ namespace EventFlowAPI.DB.Migrations
                         {
                             Id = 2,
                             EventId = 2,
+                            IsDeleted = false,
                             Price = 34.99m,
                             TicketTypeId = 2
                         },
@@ -2046,6 +2097,7 @@ namespace EventFlowAPI.DB.Migrations
                         {
                             Id = 3,
                             EventId = 3,
+                            IsDeleted = false,
                             Price = 29.99m,
                             TicketTypeId = 3
                         },
@@ -2053,6 +2105,7 @@ namespace EventFlowAPI.DB.Migrations
                         {
                             Id = 4,
                             EventId = 4,
+                            IsDeleted = false,
                             Price = 19.99m,
                             TicketTypeId = 3
                         },
@@ -2061,6 +2114,7 @@ namespace EventFlowAPI.DB.Migrations
                             Id = 5,
                             EventId = 1,
                             FestivalId = 1,
+                            IsDeleted = false,
                             Price = 19.99m,
                             TicketTypeId = 1
                         },
@@ -2069,6 +2123,7 @@ namespace EventFlowAPI.DB.Migrations
                             Id = 6,
                             EventId = 5,
                             FestivalId = 1,
+                            IsDeleted = false,
                             Price = 19.99m,
                             TicketTypeId = 1
                         },
@@ -2077,6 +2132,7 @@ namespace EventFlowAPI.DB.Migrations
                             Id = 7,
                             EventId = 2,
                             FestivalId = 2,
+                            IsDeleted = false,
                             Price = 29.99m,
                             TicketTypeId = 2
                         },
@@ -2085,6 +2141,7 @@ namespace EventFlowAPI.DB.Migrations
                             Id = 8,
                             EventId = 6,
                             FestivalId = 2,
+                            IsDeleted = false,
                             Price = 29.99m,
                             TicketTypeId = 2
                         });
@@ -2335,7 +2392,7 @@ namespace EventFlowAPI.DB.Migrations
                         {
                             Id = "1",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "8fcab4be-49a1-4434-a148-9427a1c769d8",
+                            ConcurrencyStamp = "673a5670-68e8-4bff-9b36-7e0db58e03da",
                             DateOfBirth = new DateTime(2000, 4, 3, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "admin@gmail.com",
                             EmailConfirmed = true,
@@ -2343,9 +2400,9 @@ namespace EventFlowAPI.DB.Migrations
                             Name = "Admin",
                             NormalizedEmail = "ADMIN@GMAIL.COM",
                             NormalizedUserName = "ADMIN@GMAIL.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEFb34DOZPUMKmSn0fiU21YdeyoPyt/GDX4BNEIcXsDM08kbF6VMG5hiQZQrVtV/K0A==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEI1LQ18YvtpvaihIx0qDZ/1YbOuC1ZywCACgReluU7sC0aGd5df+4JjFy72vik/jsA==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "5e35a14e-cc99-4440-950a-3ef15595bbe9",
+                            SecurityStamp = "3942ac4a-5c8f-4e4a-acf0-6daa4431ad84",
                             Surname = "Admin",
                             TwoFactorEnabled = false,
                             UserName = "admin@gmail.com"
@@ -2354,7 +2411,7 @@ namespace EventFlowAPI.DB.Migrations
                         {
                             Id = "2",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "fe4f903a-4631-480a-9130-f273e2a51453",
+                            ConcurrencyStamp = "0949d842-566c-40f0-b916-49f24de3b118",
                             DateOfBirth = new DateTime(1985, 2, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "j.kowalski@gmail.com",
                             EmailConfirmed = true,
@@ -2362,9 +2419,9 @@ namespace EventFlowAPI.DB.Migrations
                             Name = "Jan",
                             NormalizedEmail = "J.KOWALSKI@GMAIL.COM",
                             NormalizedUserName = "J.KOWALSKI@GMAIL.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEKR+9JJPh5XYd74T16zUIdcf4KwibdtZS0FZju9jGDy0/PvvP7ViCxYXa6VOeBkhIA==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEANqoc0KlS5xomb4B9pUggdjf0R76IINZQkFdbgJGqrf51CxB7rrFVm3n/v3M8+4kQ==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "5395e792-9b0c-4df1-9311-a4a68ab97f2a",
+                            SecurityStamp = "80ee6c25-60d7-47de-b466-d5b81c253aa3",
                             Surname = "Kowalski",
                             TwoFactorEnabled = false,
                             UserName = "j.kowalski@gmail.com"
@@ -2373,7 +2430,7 @@ namespace EventFlowAPI.DB.Migrations
                         {
                             Id = "3",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "6aa5e74b-016c-4ee6-922e-555fb1e7fb4f",
+                            ConcurrencyStamp = "d0c049ce-3b74-4ccd-9079-6b1fcee76847",
                             DateOfBirth = new DateTime(1979, 12, 11, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "a.kowalska@gmail.com",
                             EmailConfirmed = true,
@@ -2381,9 +2438,9 @@ namespace EventFlowAPI.DB.Migrations
                             Name = "Anna",
                             NormalizedEmail = "A.KOWALSKA@GMAIL.COM",
                             NormalizedUserName = "A.KOWALSKA@GMAIL.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEPuo2D/QnNjmpBcByVNlYmSB/UmguRp7xOo9qUPe/WW5NA48juiG8JD4zfvPlD8DAg==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEKkzYrQT6PuriLCpjuhLMCQPzrya9wmd69abrmuPiei1RHJ9kdHtkw04vTeC7IuI+Q==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "bf7c834b-efc6-4aab-9714-065300324b12",
+                            SecurityStamp = "3490d5fe-5dbd-4840-b506-4470f09a4923",
                             Surname = "Kowalska",
                             TwoFactorEnabled = false,
                             UserName = "a.kowalska@gmail.com"
@@ -2392,7 +2449,7 @@ namespace EventFlowAPI.DB.Migrations
                         {
                             Id = "4",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "6f16c948-dc0e-4d32-920d-e331ebfe5f5d",
+                            ConcurrencyStamp = "3081b24c-5f6d-44bf-b61b-cf8ee102307a",
                             DateOfBirth = new DateTime(1979, 12, 11, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "mateusz.strapczuk1@gmail.com",
                             EmailConfirmed = true,
@@ -2400,9 +2457,9 @@ namespace EventFlowAPI.DB.Migrations
                             Name = "Mateusz",
                             NormalizedEmail = "MATEUSZ.STRAPCZUK1@GMAIL.COM",
                             NormalizedUserName = "MATEUSZ.STRAPCZUK1@GMAIL.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEHjOrTwoeR+/3jWYVpxsZdqiyxFDbeZ/50DIJrKftTA0K0gadT+JodkbpbSEc0m0Qg==",
+                            PasswordHash = "AQAAAAIAAYagAAAAECXIGnygzmAQnNL2TVq9BtHRvqeXQ6RBvQo5lIlo2aJt+DrtkSK3w5ycbFE+C0mGCw==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "731ede83-e032-462f-8011-230b1263c7f8",
+                            SecurityStamp = "72189e26-e18f-478b-894c-3fd77777c994",
                             Surname = "Strapczuk",
                             TwoFactorEnabled = false,
                             UserName = "mateusz.strapczuk1@gmail.com"

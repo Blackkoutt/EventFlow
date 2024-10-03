@@ -51,7 +51,7 @@ namespace EventFlowAPI.Logic.Mapper.Extensions
                 throw;
             }
         }
-        public static IEntity MakeCopyFrom(this IEntity targetEntity, IEntity fromEntity)
+        /*public static IEntity MakeCopyFrom(this IEntity targetEntity, IEntity fromEntity)
         {
             try
             {
@@ -61,7 +61,7 @@ namespace EventFlowAPI.Logic.Mapper.Extensions
             {
                 throw;
             }
-        }
+        }*/
 
         public static IRequestDto MapTo(this IEntity entity, IRequestDto dto)
         {

@@ -63,6 +63,7 @@ namespace EventFlowAPI.Extensions
             services.AddSingleton<IBlobService, BlobService>();
             services.AddScoped<IFileService, FileService>();
             services.AddScoped<IEventPassConfiguration, EventPassConfiguration>();
+            services.AddScoped<ICollisionCheckerService, CollisionCheckerService>();
         }
     }
 }

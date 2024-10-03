@@ -1,6 +1,8 @@
 ﻿using EventFlowAPI.DB.Entities;
 using EventFlowAPI.Logic.DTO.RequestDto;
 using EventFlowAPI.Logic.DTO.ResponseDto;
+using EventFlowAPI.Logic.Errors;
+using EventFlowAPI.Logic.Helpers;
 using EventFlowAPI.Logic.ResultObject;
 using EventFlowAPI.Logic.Services.CRUDServices.Interfaces.BaseInterfaces;
 
@@ -14,5 +16,9 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Interfaces
         >
     {
         Task<Result<IEnumerable<ReservationResponseDto>>> MakeReservation(ReservationRequestDto? requestDto);
+        Task<Error> UpdateTicketAndSendByMailAsync(List<Reservation> userReservations, OldEventInfo oldEventInfo);
+        Task<IEnumerable<Reservation>> GetActiveReservationsForEvent(int eventId);
+        Task<Error> SoftDeleteReservation(Reservation reservation);
+        Task SendMailsAboutUpdatedReservations(IEnumerable<Reservation> reservationsForEvent, OldEventInfo oldEventInfo);
     }
 }

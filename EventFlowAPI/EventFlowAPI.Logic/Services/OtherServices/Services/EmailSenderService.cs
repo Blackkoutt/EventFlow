@@ -33,8 +33,13 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
 
         // Ticket
         private string TicketMailSubject => $"Twoje bilety EventFlow - rezerwacja nr {{0}}";
-        private string CancelReservationMailSubject => $"Anulowanie rezerwacji EventFlow - rezerwacja nr {{0}}";
+        private string CancelReservationMailSubject => $"Anulowanie rezerwacji EventFlow - rezerwacja nr {{0}}";     
+        private string CancelEventMailSubject => $"Odwołanie wydarzenia - EventFlow";
+        private string CancelEventsMailSubject => $"Odwołanie wydarzeń - EventFlow";
+        private string UpdateTicketMailSubject => $"Zmiana organizacji wydarzenia {{0}}";
         private string TicketMailPDFFileName => $"eventflow_bilet_{{0}}.pdf";
+       
+
 
         // Event Pass
         private string EventPassMailSubject => $"Twój karnet EventFlow - karnet nr {{0}}";
@@ -49,7 +54,7 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
         public async Task SendEventPassRenewPDFAsync(EventPass eventPass, byte[] eventPassPDF)
         {
             var paramDictionary = GetEventPassHTMLParams(eventPass.Id);
-            var htmlStringEmailBody = await _htmlRenderer.RenderHtmlToStringAsync<EventPassRenew>(paramDictionary);
+            var htmlStringEmailBody = await _htmlRenderer.RenderHtmlToStringAsync<EventPassRenewEmailBody>(paramDictionary);
 
             var emailDto = new EmailDto
             {
@@ -116,7 +121,57 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
         }
 
 
-        // Reservation
+        public async Task SendInfoAboutCanceledEvents(List<Reservation> reservationList, Event? eventEntity = null)
+        {
+            var reservation = reservationList.First();
+            var paramDictionary = GetCancelEventHTMLParams(reservationList, eventEntity);
+            var htmlStringEmailBody = await _htmlRenderer.RenderHtmlToStringAsync<EventCancelEmailBody>(paramDictionary);
+
+            var emailDto = new EmailDto
+            {
+                Email = reservation.User.Email!,
+                Subject = eventEntity == null ? CancelEventsMailSubject : CancelEventMailSubject,
+                Body = htmlStringEmailBody,
+                IsBodyHTML = true,
+                LinkedResources = { logoResource },
+            };
+            await SendEmailAsync(emailDto);
+        }
+        private Dictionary<string, object?> GetCancelEventHTMLParams(List<Reservation> reservationList, Event? eventEntity = null)
+        {
+            return new Dictionary<string, object?>()
+            {
+                { "ReservationList", reservationList },
+                { "LogoContentId", LogoContentId },
+                { "EventEntity", eventEntity }
+            };
+        }
+
+      
+        public async Task SendUpdatedTicketsAsync(List<(Reservation, byte[])> tupleList, OldEventInfo oldEventInfo)
+        {
+            var reservationList = tupleList.Select(t => t.Item1);
+            var reservation = reservationList.First();
+            var newEventInfo = reservation.Ticket.Event;
+            var reservationIds = string.Join(", ", reservationList.Select(r => r.Id));
+
+            var paramDictionary = GetUpdatedTicketHTMLParams(reservationIds, oldEventInfo, newEventInfo);
+
+            string htmlStringEmailBody = await _htmlRenderer.RenderHtmlToStringAsync<EventUpdateEmailBody>(paramDictionary);
+
+            var eventName = oldEventInfo.Name == null ? newEventInfo.Name : oldEventInfo.Name;
+            var emailDto = new EmailDto
+            {
+                Email = reservation.User.Email!,
+                Subject = string.Format(UpdateTicketMailSubject, eventName),
+                Body = htmlStringEmailBody,
+                IsBodyHTML = true,
+                LinkedResources = { logoResource },
+                Attachments = GetListOfUpdatedTicketsAttachments(tupleList)
+            };
+            await SendEmailAsync(emailDto);
+        }
+
         public async Task SendInfoAboutCanceledReservation(Reservation reservation)
         {
             var paramDictionary = GetTicketHTMLParams(reservation.Id);
@@ -125,7 +180,7 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
             var emailDto = new EmailDto
             {
                 Email = reservation.User.Email!,
-                Subject =  string.Format(CancelReservationMailSubject, reservation.Id),
+                Subject = string.Format(CancelReservationMailSubject, reservation.Id),
                 Body = htmlStringEmailBody,
                 IsBodyHTML = true,
                 LinkedResources = { logoResource }
@@ -134,6 +189,35 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
             await SendEmailAsync(emailDto);
         }
 
+        private Dictionary<string, object?> GetUpdatedTicketHTMLParams(string reservationIds, OldEventInfo oldEventInfo, Event newEventInfo)
+        {
+            return new Dictionary<string, object?>()
+            {
+                { "ReservationIds", reservationIds },
+                { "LogoContentId", LogoContentId },
+                { "OldEventInfo", oldEventInfo },
+                { "NewEventInfo", newEventInfo }
+            };
+        }
+
+        private List<AttachmentDto> GetListOfUpdatedTicketsAttachments(List<(Reservation, byte[])> tupleList)
+        {
+            List<AttachmentDto> attachmentList = [];
+            foreach(var tuple in tupleList)
+            {
+                var reservation = tuple.Item1;
+                var ticketPDF = tuple.Item2;
+
+                var attachmentDto = new AttachmentDto
+                {
+                    Type = ContentType.PDF,
+                    FileName = string.Format(TicketMailPDFFileName, reservation.Id),
+                    Data = ticketPDF
+                };
+                attachmentList.Add(attachmentDto);
+            }
+            return attachmentList;
+        }
 
         public async Task SendTicketPDFAsync(Reservation reservation, byte[] ticketPDF)
         {
@@ -244,5 +328,6 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
                 { "LogoContentId", LogoContentId }
             };
         }
+
     }
 }

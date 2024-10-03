@@ -1,7 +1,9 @@
 ﻿using EventFlowAPI.DB.Entities.Abstract;
 using EventFlowAPI.Logic.DTO.Interfaces;
+using EventFlowAPI.Logic.DTO.ResponseDto;
 using EventFlowAPI.Logic.Errors;
 using EventFlowAPI.Logic.Extensions;
+using EventFlowAPI.Logic.Identity.Helpers;
 using EventFlowAPI.Logic.Mapper.Extensions;
 using EventFlowAPI.Logic.Query.Abstract;
 using EventFlowAPI.Logic.Repositories.Interfaces.BaseInterfaces;
@@ -45,16 +47,12 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services.BaseServices
         public virtual async Task<Result<TResponseDto>> GetOneAsync(int id)
         {
             if (id < 0)
-            {
                 return Result<TResponseDto>.Failure(Error.RouteParamOutOfRange);
-            }
 
             var record = await _repository.GetOneAsync(id);
 
             if (record == null)
-            {
                 return Result<TResponseDto>.Failure(Error.NotFound);
-            }
 
             var response = MapAsDto(record);
 
@@ -62,13 +60,11 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services.BaseServices
         }
 
 
-        public async Task<Result<TResponseDto>> AddAsync(TRequestDto? requestDto)
+        public virtual async Task<Result<TResponseDto>> AddAsync(TRequestDto? requestDto)
         {
             var error = await ValidateEntity(requestDto);
             if (error != Error.None)
-            {
                 return Result<TResponseDto>.Failure(error);
-            }
 
             var entity = MapAsEntity(requestDto!);
 
@@ -89,15 +85,11 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services.BaseServices
         {
             var error = await ValidateEntity(requestDto, id);
             if (error != Error.None)
-            {
                 return Result<TResponseDto>.Failure(error);
-            }
 
             var oldEntity = await _repository.GetOneAsync(id);
             if (oldEntity == null)
-            {
                 return Result<TResponseDto>.Failure(Error.NotFound);
-            }
 
             var newEntity = MapToEntity(requestDto!, oldEntity);
 
@@ -113,16 +105,12 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services.BaseServices
         public virtual async Task<Result<object>> DeleteAsync(int id)
         {
             if (id < 0)
-            {
                 return Result<object>.Failure(Error.RouteParamOutOfRange);
-            }
 
             var entity = await _repository.GetOneAsync(id);
 
             if (entity == null)
-            {
                 return Result<object>.Failure(Error.NotFound);
-            }
 
             _repository.Delete(entity);
             await DefaultSaveChangesAsync();
@@ -130,6 +118,25 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services.BaseServices
             return Result<object>.Success();
         }
 
+
+        protected Error CheckUserPremission(UserResponseDto user, string userId)
+        {
+            if (user.IsInRole(Roles.User))
+            {
+                if (userId == user.Id)
+                    return Error.None;
+                else
+                    return AuthError.UserDoesNotHavePremissionToResource;
+            }
+            else if (user.IsInRole(Roles.Admin))
+            {
+                return Error.None;
+            }
+            else
+            {
+                return AuthError.UserDoesNotHaveSpecificRole;
+            }
+        }
 
 
         protected abstract Task<bool> IsSameEntityExistInDatabase(TRequestDto entityDto, int? id = null);
@@ -168,20 +175,15 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services.BaseServices
 
         protected virtual async Task<Error> ValidateEntity(TRequestDto? requestDto, int? id = null)
         {
-            if (id != null && id < 0)
-            {
+            if (id != null && id < 0) 
                 return Error.RouteParamOutOfRange;
-            }
 
-            if (requestDto == null)
-            {
+            if (requestDto == null) 
                 return Error.NullParameter;
-            }
 
-            if (await IsSameEntityExistInDatabase(requestDto, id))
-            {
+            if (await IsSameEntityExistInDatabase(requestDto, id))  
                 return Error.SuchEntityExistInDb;
-            }
+
             return Error.None;
         }
     }
