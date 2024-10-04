@@ -13,5 +13,6 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Interfaces
             TicketResponseDto
         >
     {
+        Task DeleteTickets(ICollection<Event> eventsToDelete, ICollection<Festival> festivalsToDelete);
     }
 }

@@ -26,8 +26,7 @@ namespace EventFlowAPI.Logic.Extensions.PdfBuilderExtensions
                 }   
             });
         }
-
-        public static void AddEventPassInfoAndStatute(this IContainer container, InfoAndStatuteOptions options)
+        public static void AddInfoAndStatute(this IContainer container, InfoAndStatuteOptions options, Reservation? reservation = null)
         {
             container
             .Column(column =>
@@ -37,50 +36,33 @@ namespace EventFlowAPI.Logic.Extensions.PdfBuilderExtensions
                 {
                     row.Spacing(options.InfoAndStatuteRowSpacing);
 
-                    row.RelativeItem(options.Info.Width)
-                    .PaddingLeft(options.Info.PadLeft)
-                    .AddInfoStatuteContent(options.Info.EventPassInfoList, options);
+                    row.RelativeItem(options.InfoWidth)
+                    .PaddingLeft(options.InfoPadLeft)
+                    .AddInfoStatuteContent(options.Info, options);
 
-                    row.RelativeItem(options.Statute.Width)
-                    .PaddingRight(options.Statute.PadRight)
-                    .AddInfoStatuteContent(options.Statute.EventPassStatuteList, options);
+                    row.RelativeItem(options.StatuteWidth)
+                    .PaddingRight(options.StatutePadRight)
+                    .AddInfoStatuteContent(options.Statute, options);
                 });
-            });
-        }
 
-        public static void AddTicketInfoAndStatute(this IContainer container, Reservation reservation, InfoAndStatuteOptions options)
-        {
-            container
-            .Column(column =>
-            {
-                column.Item()
-                .Row(row =>
-                 {
-                     row.Spacing(options.InfoAndStatuteRowSpacing);
-
-                     row.RelativeItem(options.Info.Width)
-                     .PaddingLeft(options.Info.PadLeft)
-                     .AddInfoStatuteContent(options.Info.TicketInfoList, options);
-
-                     row.RelativeItem(options.Statute.Width)
-                     .PaddingRight(options.Statute.PadRight)
-                     .AddInfoStatuteContent(options.Statute.TicketStatuteList, options);
-                 });
-
-                column.Item()
-                .PaddingLeft(options.Organizer.PadLeft)
-                .PaddingTop(options.Organizer.PadTop)
-                .Text(options.Organizer.Content.Text)
-                .Style(options.Organizer.Content.Style);
-
-                if(reservation.EventPass != null)
+                if(options is InfoAndStatuteTicketOptions ticketOptions)
                 {
                     column.Item()
-                    .PaddingLeft(options.EventPassInfo.PadLeft)
-                    .PaddingTop(options.EventPassInfo.PadTop)
-                    .Text(options.EventPassInfo.Content.Text)
-                    .Style(options.EventPassInfo.Content.Style);
-                }             
+                    .PaddingLeft(ticketOptions.AdditionalContentPadLeft)
+                    .PaddingTop(ticketOptions.AdditionalContentPadTop)
+                    .Text(ticketOptions.OrganizerContent.Text)
+                    .Style(ticketOptions.OrganizerContent.Style);
+
+                    if (reservation is not null && reservation.EventPass is not null)
+                    {
+                        column.Item()
+                        .PaddingLeft(ticketOptions.AdditionalContentPadLeft)
+                        .PaddingTop(ticketOptions.AdditionalContentPadTop)
+                        .Text(ticketOptions.PaymentAsEventPassContent.Text)
+                        .Style(ticketOptions.PaymentAsEventPassContent.Style);
+                    }
+                }
+                
             });
         }
     }

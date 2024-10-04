@@ -5,17 +5,9 @@ using QuestPDF.Infrastructure;
 
 namespace EventFlowAPI.Logic.Helpers.PdfOptions.PdfInfoAndStatuteOptions
 {
-    public class InfoAndStatuteOptions
+    public abstract class InfoAndStatuteOptions
     {
         private readonly string defaultFontType = FontType.Inter.ToString();
-
-        public InfoAndStatuteOptions()
-        {
-            Info = new();
-            Statute = new();
-            Organizer = new();
-            EventPassInfo = new();
-        }
 
         // Common 
         public float InfoAndStatuteRowSpacing => 20f;
@@ -30,20 +22,19 @@ namespace EventFlowAPI.Logic.Helpers.PdfOptions.PdfInfoAndStatuteOptions
             Style = TextStyle.Default.FontFamily(defaultFontType).FontSize(8.5f)
         };
 
-
         // Info
-        public InfoOptions Info { get; private set; }
-
+        public abstract List<string> Info { get; }
+        public float InfoWidth => 1f;
+        public float InfoPadLeft => 10f;
 
         // Statute
-        public StatuteOptions Statute { get; private set; }
+        public abstract List<string> Statute { get; }
+        public float StatuteWidth => 1f;
+        public float StatutePadRight => 10f;
 
 
-        // Organizer
-        public OrganizerOptions Organizer { get; private set; }
-
-
-        // EventPassInfo
-        public EventPassOptions EventPassInfo { get; private set; }
+        // AdditonalContent
+        public float AdditionalContentPadLeft => 10f;
+        public float AdditionalContentPadTop => 10f;
     }
 }

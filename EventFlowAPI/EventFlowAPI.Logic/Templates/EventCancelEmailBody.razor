@@ -4,8 +4,10 @@
 <body>
     <div style="margin-top:20px;">
         <img style="max-width:200px; min-width: 100px;" src="cid:@LogoContentId" alt="EventFlow Logo" />
+        
         @if (EventEntity == null)
         {
+            // cancel hall
             <h1>Odwołanie wydarzeń - EventFlow</h1>
             <p>
                 Z przykrością informujemy, że pewne wydarzenia na które zakupiłeś bilety zostały odwołane.
@@ -13,68 +15,96 @@
             <strong>Poniżej przedstawione zostały szczegóły dotyczące odwołanych wydarzeń i numerów rezerwacji związnaych z nimi.</strong>
 
             {
-                var eventReservations = ReservationList.Where(r => !r.IsFestivalReservation);
-                var festivalReservations = ReservationList.Where(r => r.IsFestivalReservation);
-                var eventGroups = eventReservations.GroupBy(r => r.Ticket.Event)
-                                    .Select(g => new
-                                    {
-                                        Event = g.Key,
-                                        Reservations = g.ToList()
-                                    });
+                var reservations = DeleteReservationsInfo.Select(x => x.Item1).ToList();
+                for (var i = 0; i<DeleteReservationsInfo.Count; i++)
+                {
 
-                var festivalGroups = festivalReservations.GroupBy(r => r.Ticket.Festival)
-                                    .Select(g => new
-                                    {
-                                        Festival = g.Key,
-                                        Reservations = g.ToList()
-                                    });
-                int i = 0; 
-                foreach(var group in eventGroups)
-                {
-                    var eventEnity = group.Event;
-                    var reservations = group.Reservations;
-                    <p style="margin:0;">
-                        <strong>@(i + 1).</strong>
-                        @eventEnity.Category.Name @eventEnity.Name,
-                        @eventEnity.StartDate.ToString(DateFormat.DateTime) - @eventEnity.EndDate.ToString(DateFormat.DateTime),
-                        sala nr @eventEnity.Hall.HallNr
-                    </p>
-                    <p>
-                        Rezerwacje nr: @string.Join(", ", reservations.Select(r => r.Id))
-                    </p>
-                    i++;
-                }
-                i = 0;
-                foreach (var group in festivalGroups)
-                {
-                    var festivalEnity = group.Festival;
-                    var reservations = group.Reservations;
-                    <p style="margin:0;">
-                        <strong>@(i + 1).</strong>
-                        Festiwal: @festivalEnity!.Name,
-                        @festivalEnity!.StartDate.ToString(DateFormat.DateTime) - @festivalEnity!.EndDate.ToString(DateFormat.DateTime)
-                    </p>
-                    <p>
-                        Rezerwacje nr: @string.Join(", ", reservations.Select(r => r.Id))
-                    </p>
-                    i++;
+                    var reservation = DeleteReservationsInfo.ElementAt(i).Item1;
+                    var isFestivalDeleted = DeleteReservationsInfo.ElementAt(i).Item2;
+                    var eventEnity = reservation.Ticket.Event;
+                    var festivalEntity = reservation.Ticket.Festival;
+
+                    if (!reservations.Contains(reservation)) continue;
+
+                    if (reservation.IsFestivalReservation && isFestivalDeleted)
+                    {
+                        var festivalReservations = reservations.Where(r => r.IsFestivalReservation && r.Ticket.FestivalId == festivalEntity?.Id);
+
+                        <p style="margin:0;">
+                            <strong>@(i + 1).</strong>
+                            Festiwal: @festivalEntity!.Name,
+                            @festivalEntity!.StartDate.ToString(DateFormat.DateTime) - @festivalEntity!.EndDate.ToString(DateFormat.DateTime)
+                        </p>
+                        <p>
+                            Rezerwacje nr: @string.Join(", ", reservations.Select(r => r.Id))
+                        </p>
+
+                        reservations.RemoveAll(r => festivalReservations.Contains(r));
+                    }
+                    else
+                    {
+                        var eventReservations = reservations.Where(r => !r.IsFestivalReservation && r.Ticket.EventId == eventEnity.Id);
+                        var festivalReservations = reservations.Where(r => r.IsFestivalReservation && r.Ticket.FestivalId == festivalEntity?.Id);
+
+                        <p style="margin:0;">
+                            <strong>@(i + 1).</strong>
+                            @eventEnity.Category.Name @eventEnity.Name,
+                            @eventEnity.StartDate.ToString(DateFormat.DateTime) - @eventEnity.EndDate.ToString(DateFormat.DateTime),
+                            sala nr @eventEnity.Hall.HallNr
+                        </p>
+                        if (reservation.IsFestivalReservation)
+                        {
+
+                            <p> Dotyczy rezerwacji nr @festivalReservations.FirstOrDefault(r => r.Ticket.EventId == reservation.Ticket.EventId) na festiwal @reservation.Ticket.Festival?.Name </p>
+                            reservations.RemoveAll(r => festivalReservations.Contains(r));
+                        }
+                        else
+                        {
+                            <p> Rezerwacje nr: @string.Join(", ", eventReservations.Select(r => r.Id)) </p>
+                            reservations.RemoveAll(r => eventReservations.Contains(r));
+                        }     
+                    }
                 }
             }
         }
         else
         {
+            // cancel event
+            var reservations = DeleteReservationsInfo.Select(x => x.Item1).ToList();
+
             <h1>Odwołanie wydarzenia - EventFlow</h1>
             <p>
                 Otrzymujesz ten e-mail w związku z odwołaniem wydarzenia,
                 na które dokonałeś rezerwacji w serwisie EventFlow.
-                <strong>Wiadomość dotyczy rezerwacji o numerach: @string.Join(", ", ReservationList.Select(r => r.Id)).</strong>
+                <strong>Wiadomość dotyczy rezerwacji o numerach: @string.Join(", ", reservations.Select(r => r.Id)).</strong>
             </p>
             <p>
                 <strong>
                     Z przykrością informujemy, że wydarzenie @EventEntity.Name odbywające się dnia @EventEntity.StartDate.ToString("dd.MM.yyyy")
-                    o godz. @EventEntity.StartDate.ToString("HH:mm") w sali nr @EventEntity.Hall.HallNr, na które zakupiłeś bilety, zostało odwołane.
+                    o godz. @EventEntity.StartDate.ToString("HH:mm") w sali nr @EventEntity.Hall.HallNr, na które dokonałeś rezerwacji, zostało odwołane.
                 </strong>
             </p>
+
+            var deletedFestivals = DeleteReservationsInfo.Where(x =>
+                                    x.res.IsFestivalReservation &&
+                                    x.isFestivalDeleted)
+                                    .DistinctBy(x => x.Item1.ReservationGuid)
+                                    .Select(x => x.res.Ticket.Festival);
+
+            if (deletedFestivals.Any())
+            {
+                <p>
+                    W związku z odwołaniem wydarzenia <strong>@EventEntity.Name</strong>
+                    byliśmy zmuszeni odwołać także następujące festiwale na które zakupiłeś bilety: 
+                </p>
+                for(var i=0; i < deletedFestivals.Count(); i++)
+                {
+                    var festival = deletedFestivals.ElementAt(i);
+                    <p>
+                        @(i + 1). @festival!.Name odbywający się w dniach @festival!.StartDate - festival!.Festival.EndDate
+                    </p>
+                }
+            }
         }
 
         <p>
@@ -102,7 +132,7 @@
 </html>
 
 @code {
-    [Parameter] public List<Reservation> ReservationList { get; set; } = [];
+    [Parameter] public List<(Reservation res, bool isFestivalDeleted)> DeleteReservationsInfo { get; set; } = [];
     [Parameter] public string LogoContentId { get; set; } = string.Empty;
     [Parameter] public Event? EventEntity { get; set; } = default!;
 }

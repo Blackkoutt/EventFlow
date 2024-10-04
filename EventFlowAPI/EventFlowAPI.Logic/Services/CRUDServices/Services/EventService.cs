@@ -14,6 +14,9 @@ using EventFlowAPI.Logic.Extensions;
 using EventFlowAPI.Logic.Helpers;
 using EventFlowAPI.Logic.Identity.Helpers;
 using EventFlowAPI.Logic.Services.OtherServices.Interfaces;
+using Microsoft.AspNetCore.Mvc;
+using AutoMapper;
+using Microsoft.AspNetCore.Mvc.TagHelpers;
 
 namespace EventFlowAPI.Logic.Services.CRUDServices.Services
 {
@@ -23,7 +26,9 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
         IReservationService reservationService,
         IUserService userService,
         IEmailSenderService emailSender,
-        ICollisionCheckerService collisionChecker
+        ICollisionCheckerService collisionChecker,
+        IFestivalService festivalService, 
+        ITicketService ticketService
         ) :
         GenericService<
             Event,
@@ -38,6 +43,8 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
         private readonly IEmailSenderService _emailSender = emailSender;
         private readonly IReservationService _reservationService = reservationService;
         private readonly ICollisionCheckerService _collisionChecker = collisionChecker;
+        private readonly IFestivalService _festivalService = festivalService;
+        private readonly ITicketService _ticketService = ticketService;
 
         public sealed override async Task<Result<IEnumerable<EventResponseDto>>> GetAllAsync(QueryObject query)
         {
@@ -177,61 +184,36 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             var reservationsForEvent = await _reservationService.GetActiveReservationsForEvent(eventEntity.Id);
             if (reservationsForEvent.Any())
             {
-                var cancelError = await CancelReservationsForEvent(reservationsForEvent, eventEntity);
-                if(cancelError != Error.None)
-                    return Result<object>.Failure(cancelError);
+                var festivalsToDelete = await _festivalService.CancelFestivalIfEssential(new List<Event> { eventEntity });
+                await _ticketService.DeleteTickets(new List<Event> { eventEntity }, festivalsToDelete);
+                await _unitOfWork.SaveChangesAsync();
 
-                await SoftDeleteTicketsForEvent(eventEntity.Id);
-
-                eventEntity.CancelDate = DateTime.Now;
-                eventEntity.IsCanceled = true;
-                _repository.Update(eventEntity);
+                var cancelReservationError = await _reservationService.CancelReservationsInCauseOfDeleteEventOrHall(reservationsForEvent, eventEntity);
+                if(cancelReservationError != Error.None)
+                    return Result<object>.Failure(cancelReservationError);
             }
             else
             {
-                _unitOfWork.GetRepository<Hall>().Delete(eventEntity.Hall);
-                _repository.Delete(eventEntity);   
+                foreach (var seat in eventEntity.Hall.Seats)
+                {
+                    _unitOfWork.GetRepository<Seat>().Delete(seat);
+                }
             }
+
+            eventEntity.CancelDate = DateTime.Now;
+            eventEntity.IsCanceled = true;
+            _repository.Update(eventEntity);
+
             await _unitOfWork.SaveChangesAsync();
 
             return Result<object>.Success();
         }
 
 
-        private async Task SoftDeleteTicketsForEvent(int eventId)
-        {
-            var eventTickets = await _unitOfWork.GetRepository<Ticket>()
-                                   .GetAllAsync(q => q.Where(t => t.EventId == eventId));
-
-            foreach (var eventTicket in eventTickets)
-            {
-                eventTicket.IsDeleted = true;
-                _unitOfWork.GetRepository<Ticket>().Update(eventTicket);
-            }
-        }
+        
 
 
-        private async Task<Error> CancelReservationsForEvent(IEnumerable<Reservation> reservationsForEvent, Event eventEntity)
-        {
-            var reservationsGroupByUser = reservationsForEvent.GroupBy(r => r.UserId)
-                                            .Select(g => new
-                                            {
-                                                UserId = g.Key,
-                                                ReservationList = g.ToList(),
-                                            });
-
-            foreach (var group in reservationsGroupByUser)
-            {
-                foreach (var reservation in group.ReservationList)
-                {
-                    var deleteError = await _reservationService.SoftDeleteReservation(reservation);
-                    if (deleteError != Error.None)
-                        return deleteError;
-                }
-                await _emailSender.SendInfoAboutCanceledEvents(group.ReservationList, eventEntity);
-            }
-            return Error.None;
-        }
+        
 
         private void UpdateStartAndEndDateOfReservations(IEnumerable<Reservation> reservationsForEvent, DateTime startDate, DateTime endDate)
         {
@@ -326,6 +308,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
                             while (newReservationSeat == null)
                             {
                                 newReservationSeat = availableSeats.FirstOrDefault(s => s.Key.Row == targetRow).Value;
+                                
                                 if (targetRow >= defaultTargetRow) targetRow += 1;
                                 else targetRow -= 1;
 
@@ -353,7 +336,6 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
                     }
                 }
             }
-           // await _unitOfWork.SaveChangesAsync();
             return Result<Hall>.Success(newHall);
         }
 
@@ -446,8 +428,15 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
                 var ticketsToDelete = oldEvent.Tickets.Except(updatedTickets);
                 foreach (var ticket in ticketsToDelete)
                 {
-                    ticket.IsDeleted = true;
-                    _unitOfWork.GetRepository<Ticket>().Update(ticket);
+                    if (ticket.Reservations.Any())
+                    {
+                        ticket.IsDeleted = true;
+                        _unitOfWork.GetRepository<Ticket>().Update(ticket);
+                    }
+                    else
+                    {
+                        _unitOfWork.GetRepository<Ticket>().Delete(ticket);
+                    }         
                 }
             }
         }

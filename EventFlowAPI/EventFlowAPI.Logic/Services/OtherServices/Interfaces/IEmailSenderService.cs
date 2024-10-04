@@ -12,6 +12,6 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Interfaces
         Task SendEmailAsync(EmailDto emailDto);
         Task SendTicketPDFAsync(Reservation reservation, byte[] ticketPDF);
         Task SendInfoAboutCanceledReservation(Reservation reservation);
-        Task SendInfoAboutCanceledEvents(List<Reservation> reservationList, Event? eventEntity = null);
+        Task SendInfoAboutCanceledEvents(ICollection<(Reservation, bool)> deleteReservationsInfo, Event? eventEntity = null);
     }
 }

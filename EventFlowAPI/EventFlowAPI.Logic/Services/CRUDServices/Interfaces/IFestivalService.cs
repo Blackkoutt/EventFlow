@@ -12,5 +12,6 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Interfaces
             FestivalResponseDto
         >
     {
+        Task<ICollection<Festival>> CancelFestivalIfEssential(IEnumerable<Event> eventsToDelete);
     }
 }

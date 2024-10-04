@@ -16,6 +16,31 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
         >(unitOfWork),
         ITicketService
     {
+        public async Task DeleteTickets(ICollection<Event> eventsToDelete, ICollection<Festival> festivalsToDelete)
+        {
+            var eventIds = eventsToDelete.Select(e => e.Id);
+            var festivalIds = festivalsToDelete.Select(f => (int?)f.Id);
+
+            var tickets = await _unitOfWork.GetRepository<Ticket>()
+                                   .GetAllAsync(q => q.Where(t =>
+                                   eventIds.Contains(t.EventId) ||
+                                   festivalIds.Contains(t.FestivalId)));
+
+            foreach (var ticket in tickets)
+            {
+                if (ticket.Reservations.Any())
+                {
+                    ticket.IsDeleted = true;
+                    _unitOfWork.GetRepository<Ticket>().Update(ticket);
+                }
+                else
+                {
+                    _unitOfWork.GetRepository<Ticket>().Delete(ticket);
+                }
+            }
+        }
+
+
         protected sealed override IEnumerable<TicketResponseDto> MapAsDto(IEnumerable<Ticket> records)
         {
             return records.Select(entity =>

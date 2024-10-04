@@ -183,7 +183,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             if (premissionError != Error.None)
                 return Result<object>.Failure(premissionError);
 
-            var deleteError = await SoftDeleteReservation(reservation);
+            var deleteError = await SoftDeleteReservationAndFileTickets(reservation, deleteForFestival: true);
             if (deleteError != Error.None)
                 return Result<object>.Failure(deleteError);
 
@@ -194,23 +194,80 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             return Result<object>.Success();
         }
 
-        public async Task<Error> SoftDeleteReservation(Reservation reservation)
-        {
-            var allReservationsWithSameGuid = await _repository.GetAllAsync(q =>
-                                                q.Where(r => r.ReservationGuid == reservation.ReservationGuid));
 
-            foreach (var res in allReservationsWithSameGuid)
+
+        public async Task<Error> CancelReservationsInCauseOfDeleteEventOrHall(IEnumerable<Reservation> reservations, Event? eventEntity = null)
+        {
+            var reservationsGroupByUser = reservations.GroupBy(r => r.UserId)
+                                            .Select(g => new
+                                            {
+                                                UserId = g.Key,
+                                                ReservationList = g.ToList(),
+                                            });
+
+            ICollection<(Reservation, bool)> deleteReservationsInfo = [];
+            foreach (var group in reservationsGroupByUser)
             {
-                res.IsCanceled = true;
-                res.CancelDate = DateTime.Now;
-                _repository.Update(res);
+                deleteReservationsInfo.Clear();
+                foreach (var reservation in group.ReservationList)
+                {
+                    bool deleteFestival = false;
+                    var eventsInFestival = await _unitOfWork.GetRepository<Reservation>()
+                                                    .GetAllAsync(q => q.Where(r =>
+                                                    r.IsFestivalReservation &&
+                                                    r.ReservationGuid == reservation.ReservationGuid &&
+                                                    !r.Ticket.IsDeleted));
+
+                    if (reservation.IsFestivalReservation && eventsInFestival.Count() <= 2)
+                        deleteFestival = true;
+
+                    var deleteEventReservationsError = await SoftDeleteReservationAndFileTickets(reservation, deleteForFestival: deleteFestival);
+                    if (deleteEventReservationsError != Error.None)
+                        return deleteEventReservationsError;
+
+                    deleteReservationsInfo.Add((reservation, deleteFestival));
+                }
+                await _emailSender.SendInfoAboutCanceledEvents(deleteReservationsInfo, eventEntity);
+            }
+            return Error.None;
+        }
+
+
+
+        public async Task<Error> SoftDeleteReservationAndFileTickets(Reservation reservation, bool deleteForFestival = false)
+        {
+            if (reservation.IsFestivalReservation && deleteForFestival)
+            {
+                var allReservationsWithSameGuid = await _repository.GetAllAsync(q =>
+                                               q.Where(r => r.ReservationGuid == reservation.ReservationGuid));
+
+                foreach (var res in allReservationsWithSameGuid)
+                {
+                    SoftDeleteReservation(res);
+                }
+                var ticketFileDeleteError = await HardDeleteTicketFiles(reservation.Id);
+                if (ticketFileDeleteError != Error.None)
+                    return ticketFileDeleteError;
+            }
+            else
+            {
+                SoftDeleteReservation(reservation);
+
+                if (!reservation.IsFestivalReservation)
+                {
+                    var ticketFileDeleteError = await HardDeleteTicketFiles(reservation.Id);
+                    if (ticketFileDeleteError != Error.None)
+                        return ticketFileDeleteError;
+                }
             }
 
-            var ticketFileDeleteError = await HardDeleteTicketFiles(reservation.Id);
-            if (ticketFileDeleteError != Error.None)
-                return ticketFileDeleteError;
-
             return Error.None;
+        }
+        private void SoftDeleteReservation(Reservation reservation)
+        {
+            reservation.IsCanceled = true;
+            reservation.CancelDate = DateTime.Now;
+            _repository.Update(reservation);
         }
 
         private async Task<Error> HardDeleteTicketFiles(int reservationId)

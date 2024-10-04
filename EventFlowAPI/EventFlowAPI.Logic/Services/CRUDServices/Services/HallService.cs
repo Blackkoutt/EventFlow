@@ -14,6 +14,8 @@ using EventFlowAPI.Logic.Services.CRUDServices.Interfaces;
 using EventFlowAPI.Logic.Services.CRUDServices.Services.BaseServices;
 using EventFlowAPI.Logic.Services.OtherServices.Interfaces;
 using EventFlowAPI.Logic.UnitOfWork;
+using Microsoft.EntityFrameworkCore.SqlServer.Query.Internal;
+using System;
 
 namespace EventFlowAPI.Logic.Services.CRUDServices.Services
 {
@@ -22,7 +24,9 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
         IUserService userService,
         ISeatService seatService,
         IReservationService reservationService,
-        IEmailSenderService emailSender) :
+        IEmailSenderService emailSender, 
+        IFestivalService festivalService,
+        ITicketService ticketService) :
         GenericService<
             Hall,
             HallRequestDto,
@@ -34,6 +38,8 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
         private readonly ISeatService _seatService = seatService;
         private readonly IReservationService _reservationService = reservationService;
         private readonly IEmailSenderService _emailSender = emailSender;
+        private readonly IFestivalService _festivalService = festivalService;
+        private readonly ITicketService _ticketService = ticketService;
 
         public sealed override async Task<Result<IEnumerable<HallResponseDto>>> GetAllAsync(QueryObject query)
         {
@@ -56,6 +62,8 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
 
             var hallEntity = MapAsEntity(requestDto!);
 
+            var area = requestDto!.HallDetails.TotalLength * requestDto!.HallDetails.TotalWidth;
+            hallEntity.HallDetails!.TotalArea = Math.Round(area, 2);
             await _repository.AddAsync(hallEntity);
             await _unitOfWork.SaveChangesAsync();
 
@@ -119,16 +127,17 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
                                             hr.EndDate > DateTime.Now));
             
             // seats i hall type nie ma znaczenia bo update ogolny
-            if (hallEntity.HallNr != requestDto!.HallNr)
+            if (allActiveReservations.Any() && hallEntity.HallNr != requestDto!.HallNr)
             {
                 OldEventInfo oldEventInfo = new();
                 oldEventInfo.HallNr = hallEntity.HallNr;
                 await _reservationService.SendMailsAboutUpdatedReservations(allActiveReservations, oldEventInfo);
             }
-
-            if (hallEntity.HallNr != requestDto!.HallNr ||
+            
+            if (allActiveHallRents.Any() && 
+                (hallEntity.HallNr != requestDto!.HallNr ||
                 hallEntity.HallDetails!.TotalLength != requestDto!.HallDetails!.TotalLength ||
-                hallEntity.HallDetails!.TotalWidth != requestDto!.HallDetails!.TotalWidth)
+                hallEntity.HallDetails!.TotalWidth != requestDto!.HallDetails!.TotalWidth))
             {
                 // send mail to all active hall rents !!
             }
@@ -189,32 +198,37 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
 
         public sealed override async Task<Result<object>> DeleteAsync(int id)
         {
-            var userResult = await _userService.GetCurrentUser();
-            if (!userResult.IsSuccessful)
-                return Result<object>.Failure(userResult.Error);
+            var validationResult = await ValidateBeforeDelete(id);
+            if (!validationResult.IsSuccessful)
+                return Result<object>.Failure(validationResult.Error);
 
-            var user = userResult.Value;
-            if (!user.UserRoles.Contains(Roles.Admin))
-                return Result<object>.Failure(AuthError.UserDoesNotHaveSpecificRole);
+            var hall = validationResult.Value;
 
-            if (id < 0)
-                return Result<object>.Failure(Error.RouteParamOutOfRange);
-
-            var hall = await _repository.GetOneAsync(id);
-            if (hall == null || !hall.IsVisible)
-                return Result<object>.Failure(Error.NotFound);
-
-            var allCopiesOfHall = (await _repository.GetAllAsync(q => q.Where(h =>
+            var allCopiesOfHall = await _repository.GetAllAsync(q => q.Where(h =>
                                                                     h.Id != hall.Id &&
-                                                                    h.DefaultId == hall.Id)));
+                                                                    h.DefaultId == hall.Id));
 
             var allCopiesOfHallId = allCopiesOfHall.Select(h => h.Id).ToList();
 
-            if (allCopiesOfHallId.Count() != 0)
+            if (allCopiesOfHallId.Any())
             {   
                 await CancelHallRentsOnHall(allCopiesOfHallId);
-                await CancelEventsInHallAndTickets(allCopiesOfHallId);
-                await CancelReservationsInHall(allCopiesOfHallId);         
+
+                var reservations = await _unitOfWork.GetRepository<Reservation>()
+                                    .GetAllAsync(q =>
+                                    q.Where(r =>
+                                    !r.IsCanceled &&
+                                    r.EndOfReservationDate > DateTime.Now &&
+                                    allCopiesOfHallId.Contains(r.Ticket.Event.HallId)));
+
+                var eventsToDelete = await CancelEventsInHall(allCopiesOfHallId);
+                var festivalsToDelete = await _festivalService.CancelFestivalIfEssential(eventsToDelete);
+                await _ticketService.DeleteTickets(eventsToDelete, festivalsToDelete);
+                await _unitOfWork.SaveChangesAsync();
+
+                var cancelReservationError = await _reservationService.CancelReservationsInCauseOfDeleteEventOrHall(reservations);
+                if (cancelReservationError != Error.None)
+                    return Result<object>.Failure(cancelReservationError);     
             }
             foreach(var hallCopy in allCopiesOfHall)
             {
@@ -227,40 +241,49 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             return Result<object>.Success();
         }
 
-        private async Task CancelReservationsInHall(List<int> allCopiesOfHallId)
+        private async Task<Result<Hall>> ValidateBeforeDelete(int id)
         {
-            var reservationRepo = _unitOfWork.GetRepository<Reservation>();
+            var userResult = await _userService.GetCurrentUser();
+            if (!userResult.IsSuccessful)
+                return Result<Hall>.Failure(userResult.Error);
 
-            var reservations = await reservationRepo
-                                    .GetAllAsync(q =>
-                                    q.Where(r =>
-                                    !r.IsCanceled &&
-                                    r.EndOfReservationDate > DateTime.Now &&
-                                    allCopiesOfHallId.Contains(r.Ticket.Event.HallId)));
+            var user = userResult.Value;
+            if (!user.UserRoles.Contains(Roles.Admin))
+                return Result<Hall>.Failure(AuthError.UserDoesNotHaveSpecificRole);
 
-            var reservationsGroupByUser = reservations.GroupBy(r => r.UserId)
-                                            .Select(g => new
-                                            {
-                                                UserId = g.Key,
-                                                ReservationList = g.ToList(),
-                                            });
+            if (id < 0)
+                return Result<Hall>.Failure(Error.RouteParamOutOfRange);
 
-            foreach (var group in reservationsGroupByUser)
-            {
-                var userReservations = group.ReservationList;
-                var userReservationsNotForFestival = userReservations.Where(r => !r.IsFestivalReservation);
-                var userReservationsForFestivals = userReservations.Where(r => r.IsFestivalReservation).DistinctBy(r => r.ReservationGuid);
-                var reservationList = userReservationsForFestivals.Union(userReservationsNotForFestival);
+            var hall = await _repository.GetOneAsync(id);
+            if (hall == null || !hall.IsVisible)
+                return Result<Hall>.Failure(Error.NotFound);
 
-                await _emailSender.SendInfoAboutCanceledEvents(group.ReservationList);
-                foreach (var reservation in userReservations)
-                {
-                    reservation.CancelDate = DateTime.Now;
-                    reservation.IsCanceled = true;
-                    reservationRepo.Update(reservation);
-                }
-            }
+            return Result<Hall>.Success(hall);
         }
+       
+
+        
+
+        private async Task<ICollection<Event>> CancelEventsInHall(IEnumerable<int> allCopiesOfHallId)
+        {
+            var eventsToDelete = await _unitOfWork.GetRepository<Event>()
+                                .GetAllAsync(q =>
+                                q.Where(e =>
+                                !e.IsCanceled &&
+                                e.EndDate > DateTime.Now &&
+                                allCopiesOfHallId.Contains(e.HallId)));
+
+            foreach (var eventEntity in eventsToDelete)
+            {
+                eventEntity.CancelDate = DateTime.Now;
+                eventEntity.IsCanceled = true;
+                _unitOfWork.GetRepository<Event>().Update(eventEntity);
+            }
+
+            return eventsToDelete.ToList();
+        }
+
+
 
         private async Task CancelHallRentsOnHall(List<int> allCopiesOfHallId)
         {
@@ -271,7 +294,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
                                     q.Where(hr =>
                                     !hr.IsCanceled &&
                                     hr.StartDate > DateTime.Now.AddHours(3) &&
-                                    allCopiesOfHallId.Contains(hr.Id)));
+                                    allCopiesOfHallId.Contains(hr.HallId)));
 
             // cancel all hall rents 
             foreach (var hallRent in hallRents)
@@ -283,34 +306,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             }
         }
 
-        private async Task CancelEventsInHallAndTickets(List<int> allCopiesOfHallId)
-        {
-            var activeEvents = await _unitOfWork.GetRepository<Event>()
-                                .GetAllAsync(q =>
-                                q.Where(e =>
-                                !e.IsCanceled &&
-                                e.EndDate > DateTime.Now &&
-                                allCopiesOfHallId.Contains(e.HallId)));
-
-            foreach (var eventEntity in activeEvents)
-            {
-                eventEntity.CancelDate = DateTime.Now;
-                eventEntity.IsCanceled = true;
-                _unitOfWork.GetRepository<Event>().Update(eventEntity);
-            }
-
-            var activeEventsIds = activeEvents.Select(e => e.Id);
-
-            var eventTickets = await _unitOfWork.GetRepository<Ticket>()
-                                   .GetAllAsync(q => q.Where(t => activeEventsIds.Contains(t.EventId)));
-
-            foreach (var eventTicket in eventTickets)
-            {
-                eventTicket.IsDeleted = true;
-                _unitOfWork.GetRepository<Ticket>().Update(eventTicket);
-            }
-        }
-
+        
 
         public async Task<Result<Hall>> MakeCopyOfHall(int hallId)
         {
@@ -459,10 +455,10 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
                 return HallRentError.NotFound;
 
             if (rentEntity.IsCanceled)
-                return HallRentError.EventIsCanceled;
+                return HallRentError.HallRentIsCanceled;
 
             if (rentEntity.IsExpired)
-                return HallRentError.EventIsExpired;
+                return HallRentError.HallRentIsExpired;
 
             if (!await IsEntityExistInDB<HallType>(hallRequestDto.HallTypeId))
                 return HallError.HallTypeNotFound;

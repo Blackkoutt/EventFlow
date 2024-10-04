@@ -121,10 +121,11 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
         }
 
 
-        public async Task SendInfoAboutCanceledEvents(List<Reservation> reservationList, Event? eventEntity = null)
+        public async Task SendInfoAboutCanceledEvents(ICollection<(Reservation, bool)> deleteReservationsInfo, Event? eventEntity = null)
         {
+            var reservationList = deleteReservationsInfo.Select(x => x.Item1);
             var reservation = reservationList.First();
-            var paramDictionary = GetCancelEventHTMLParams(reservationList, eventEntity);
+            var paramDictionary = GetCancelEventHTMLParams(deleteReservationsInfo.ToList(), eventEntity);
             var htmlStringEmailBody = await _htmlRenderer.RenderHtmlToStringAsync<EventCancelEmailBody>(paramDictionary);
 
             var emailDto = new EmailDto
@@ -137,11 +138,11 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
             };
             await SendEmailAsync(emailDto);
         }
-        private Dictionary<string, object?> GetCancelEventHTMLParams(List<Reservation> reservationList, Event? eventEntity = null)
+        private Dictionary<string, object?> GetCancelEventHTMLParams(List<(Reservation, bool)> deleteReservationsInfo, Event? eventEntity = null)
         {
             return new Dictionary<string, object?>()
             {
-                { "ReservationList", reservationList },
+                { "DeleteReservationsInfo", deleteReservationsInfo },
                 { "LogoContentId", LogoContentId },
                 { "EventEntity", eventEntity }
             };

@@ -7,22 +7,22 @@ using QuestPDF.Infrastructure;
 
 namespace EventFlowAPI.Logic.Helpers.PdfOptions.PdfSummaryOptions
 {
-    public sealed class EventPassTypeOptions(List<EventPassType> eventPassTypes) : DescriptionOptions
+    public sealed class AdditionalServicesOptions(List<AdditionalServices> additionalServices) : DescriptionOptions
     {
         public sealed override TextOptions Header => new TextOptions
         {
-            Text = "Typy karnetów (cena / zniżka przy przedłużeniu):",
+            Text = "Dodatkowe usługi:",
             Style = TextStyle.Default.FontFamily(defaultFontType).FontSize(9.5f)
         };
 
-        public sealed override List<IEntity> GetList => eventPassTypes.Select(st => (IEntity)st).ToList();
+        public sealed override List<IEntity> GetList => additionalServices.Select(st => (IEntity)st).ToList();
 
         public sealed override TextOptions GetListItemString(IEntity item)
         {
-            var eventPassType = (EventPassType)item;
+            var additionalService = (AdditionalServices)item;
             return new TextOptions
             {
-                Text = $"- {eventPassType.Name}: {eventPassType.Price} {Currency.PLN} / -{eventPassType.RenewalDiscountPercentage}%",
+                Text = $"- {additionalService.Name}: {additionalService.Price} {Currency.PLN}",
                 Style = TextStyle.Default.FontFamily(defaultFontType).FontSize(8.5f)
             };
         }

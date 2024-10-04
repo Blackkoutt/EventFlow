@@ -18,11 +18,60 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
         private readonly IAssetService _assetService = assetService;
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
 
+        public async Task<byte[]> CreateHallRentPdf(HallRent hallRent)
+        {
+            var logoSmall = await _assetService.GetPictureAsBitmap(Helpers.Enums.Picture.EventFlowLogo_Small, ImageFormat.PNG);
+            var additionalServices = (await _unitOfWork.GetRepository<AdditionalServices>().GetAllAsync()).ToList();
+
+            PageOptions pageOptions = new();
+            CommonOptions commonOptions = new();
+            HeaderOptions headerOptions = new();
+            HallRentInfoOptions hallRentInfoOptions = new(hallRent);
+            HallRentSummaryOptions summaryOptions = new(hallRent, additionalServices);
+            InfoAndStatuteHallRentOptions infoAndStatuteOptions = new();
+
+            FooterOptions footerOptions = new();
+
+            using (var memoryStream = new MemoryStream())
+            {
+                Document.Create(container =>
+                {
+                    container.Page(page =>
+                    {
+                        page.ConfigurePage(pageOptions);
+
+                        page.Header()
+                        .AddBottomLine(commonOptions)
+                        .AddHeaderLogo(logoSmall, headerOptions);
+
+                        page.Content()
+                        .Column(column =>
+                        {
+                            column.Item()
+                            .AddBottomLine(commonOptions)
+                            .AddOrderInfo(hallRentInfoOptions);
+
+                            column.Item()
+                            .AddBottomLine(commonOptions)
+                            .AddSummaryContainer(summaryOptions);
+
+                            column.Item()
+                            .AddInfoAndStatute(infoAndStatuteOptions);
+                        });
+
+                        page.Footer()
+                        .AddTopLine(commonOptions)
+                        .AddFooterLogoAndPageNumber(logoSmall, footerOptions);
+                    });
+                }).GeneratePdf(memoryStream);
+
+                return memoryStream.ToArray();
+            }
+        }
         public async Task<byte[]> CreateEventPassPdf(EventPass eventPass, byte[] eventPassJPGBitmap, EventPassType? oldEventPassType)
         {
             var logoSmall = await _assetService.GetPictureAsBitmap(Helpers.Enums.Picture.EventFlowLogo_Small, ImageFormat.PNG);
-            var eventPassTypes = (await _unitOfWork.GetRepository<EventPassType>().GetAllAsync()).ToList();
-            
+            var eventPassTypes = (await _unitOfWork.GetRepository<EventPassType>().GetAllAsync()).ToList();   
 
             PageOptions pageOptions = new();
             HeaderOptions headerOptions = new();
@@ -30,7 +79,7 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
             EventPassInfoOptions eventPassInfoOptions = new(eventPass, oldEventPassType);
             PictureOptions eventPassPictureOptions = new();
             EventPassSummaryOptions summaryOptions = new(eventPass, eventPassTypes);
-            InfoAndStatuteOptions infoAndStatuteOptions = new();
+            InfoAndStatuteEventPassOptions infoAndStatuteOptions = new();
             FooterOptions footerOptions = new();
 
             using (var memoryStream = new MemoryStream())
@@ -61,7 +110,7 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
                             .AddSummaryContainer(summaryOptions);
 
                             column.Item()
-                            .AddEventPassInfoAndStatute(infoAndStatuteOptions);
+                            .AddInfoAndStatute(infoAndStatuteOptions);
                         });
 
                         page.Footer()
@@ -105,7 +154,7 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
             PictureOptions ticketPictureOptions = new();
             ReservationSummaryOptions summaryOptions = new(reservation, seatTypes, ticketsForEventOrFestival);                                
             FooterOptions footerOptions = new();  
-            InfoAndStatuteOptions infoAndStatuteOptions = new();
+            InfoAndStatuteTicketOptions infoAndStatuteOptions = new();
 
             using(var memoryStream = new MemoryStream())
             {
@@ -137,7 +186,7 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
                             .AddSummaryContainer(summaryOptions);
 
                             column.Item()
-                            .AddTicketInfoAndStatute(reservation, infoAndStatuteOptions);
+                            .AddInfoAndStatute(infoAndStatuteOptions, reservation);
                         });
 
                         page.Footer()

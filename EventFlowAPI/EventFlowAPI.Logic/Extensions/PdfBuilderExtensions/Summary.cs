@@ -1,7 +1,5 @@
-﻿using EventFlowAPI.DB.Entities;
-using EventFlowAPI.Logic.Helpers.PdfOptions.PdfSummaryOptions;
+﻿using EventFlowAPI.Logic.Helpers.PdfOptions.PdfSummaryOptions;
 using EventFlowAPI.Logic.Helpers.PdfOptions.PdfTextOptions;
-using Microsoft.Extensions.Options;
 using QuestPDF.Fluent;
 using QuestPDF.Infrastructure;
 
@@ -50,6 +48,15 @@ namespace EventFlowAPI.Logic.Extensions.PdfBuilderExtensions
                 {
                     column.AddSummaryItem(eventPassOptions.Discount);
                 }
+                if(options is HallRentSummaryOptions hallRentOptions)
+                {
+                    column.AddSummaryItem(hallRentOptions.Hours);
+                    column.AddSummaryItem(hallRentOptions.AdditionalServicesHeader);
+                    foreach (var additionalService in hallRentOptions.AdditionalServicesList)
+                    {
+                        column.AddSummaryItem(hallRentOptions.GetAdditionalServiceCost(additionalService));
+                    }
+                }
                 column.AddSummaryItem(options.TotalCost);
             });
         }
@@ -86,20 +93,26 @@ namespace EventFlowAPI.Logic.Extensions.PdfBuilderExtensions
                     if(!resOptions.Reservation.IsFestivalReservation) 
                     {
                         row.RelativeItem(resOptions.DescriptionAdditionalPaymentRowWidth)
-                            .AddAdditionalPayment(resOptions.AdditionalPayment);
+                            .AddDescriptionItem(resOptions.AdditionalPayment);
                     }
 
                     row.RelativeItem(resOptions.DescriptionAdditionalPaymentRowWidth)
-                    .AddTicketTypes(resOptions.TicketType);
+                    .AddDescriptionItem(resOptions.TicketType);
                 }
                 else if (options is EventPassSummaryOptions eventPassOptions)
                 {
                     row.RelativeItem()
-                    .AddEventPassTypes(eventPassOptions.EventPassType);
+                    .AddDescriptionItem(eventPassOptions.EventPassType);
+                }
+                else if (options is HallRentSummaryOptions hallRentOptions)
+                {
+                    row.RelativeItem()
+                    .AddDescriptionItem(hallRentOptions.AdditionalServices);
                 }
             });
         }
-        public static void AddEventPassTypes(this IContainer row, EventPassTypeOptions options)
+
+        public static void AddDescriptionItem(this IContainer row, DescriptionOptions options)
         {
             row
             .Column(column => {
@@ -107,40 +120,11 @@ namespace EventFlowAPI.Logic.Extensions.PdfBuilderExtensions
 
                 column.AddTextItem(options.Header);
 
-                foreach (var eventPassType in options.EventPassTypes)
+                foreach (var descriptionItem in options.GetList)
                 {
-                    column.AddTextItem(options.GetEventPassTypeString(eventPassType));
+                    column.AddTextItem(options.GetListItemString(descriptionItem));
                 }
             });
-        }
-
-        public static void AddAdditionalPayment(this IContainer row, AdditionalPaymentOptions options)
-        {
-            row
-            .Column(column => {
-                column.Spacing(options.ColumnSpacing);
-
-                column.AddTextItem(options.Header);
-
-                foreach(var seatType in options.SeatTypes)
-                {
-                    column.AddTextItem(options.GetSeatTypeString(seatType));
-                }
-            });
-        }
-
-        public static void AddTicketTypes(this IContainer row, TicketTypeOptions options)
-        {
-            row
-            .Column(column => {
-                column.Spacing(options.ColumnSpacing);
-
-                column.AddTextItem(options.Header);
-                foreach (var ticket in options.Tickets)
-                {
-                    column.AddTextItem(options.GetTicketTypeString(ticket));
-                }
-            });
-        }
+        }   
     }
 }

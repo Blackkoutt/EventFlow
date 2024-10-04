@@ -18,7 +18,8 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Interfaces
         Task<Result<IEnumerable<ReservationResponseDto>>> MakeReservation(ReservationRequestDto? requestDto);
         Task<Error> UpdateTicketAndSendByMailAsync(List<Reservation> userReservations, OldEventInfo oldEventInfo);
         Task<IEnumerable<Reservation>> GetActiveReservationsForEvent(int eventId);
-        Task<Error> SoftDeleteReservation(Reservation reservation);
+        Task<Error> SoftDeleteReservationAndFileTickets(Reservation reservation, bool deleteForFestival = false);
         Task SendMailsAboutUpdatedReservations(IEnumerable<Reservation> reservationsForEvent, OldEventInfo oldEventInfo);
+        Task<Error> CancelReservationsInCauseOfDeleteEventOrHall(IEnumerable<Reservation> reservations, Event? eventEntity = null);
     }
 }
