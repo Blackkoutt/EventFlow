@@ -9,9 +9,15 @@ namespace EventFlowAPI.Logic.DTO.Validators
     {
         protected sealed override ValidationResult? ValidationRule(HallDetailsRequestDto hallObj)
         {
-            if(hallObj.StageArea != null)
+            if (hallObj.StageLength != null && hallObj.StageWidth == null)
+                return new ValidationResult("Należy podać szerokość sceny.");
+
+            if (hallObj.StageWidth != null && hallObj.StageLength == null)
+                return new ValidationResult("Należy podać długość sceny.");
+
+            if (hallObj.StageWidth != null && hallObj.StageLength != null)
             {
-                if (hallObj.TotalLength * hallObj.TotalWidth - 100 < hallObj.StageArea)
+                if (hallObj.TotalLength * hallObj.TotalWidth - 100 < (decimal)(hallObj.StageWidth * hallObj.StageLength))
                 {
                     return new ValidationResult("Powierzchnia sceny jest zbyt duża względem rozmiaru sali.");
                 }

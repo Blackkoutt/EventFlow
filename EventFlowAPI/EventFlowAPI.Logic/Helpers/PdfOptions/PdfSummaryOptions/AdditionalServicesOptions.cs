@@ -12,7 +12,7 @@ namespace EventFlowAPI.Logic.Helpers.PdfOptions.PdfSummaryOptions
         public sealed override TextOptions Header => new TextOptions
         {
             Text = "Dodatkowe usługi:",
-            Style = TextStyle.Default.FontFamily(defaultFontType).FontSize(9.5f)
+            Style = TextStyle.Default.FontFamily(defaultFontType).FontSize(10f)
         };
 
         public sealed override List<IEntity> GetList => additionalServices.Select(st => (IEntity)st).ToList();
@@ -23,7 +23,7 @@ namespace EventFlowAPI.Logic.Helpers.PdfOptions.PdfSummaryOptions
             return new TextOptions
             {
                 Text = $"- {additionalService.Name}: {additionalService.Price} {Currency.PLN}",
-                Style = TextStyle.Default.FontFamily(defaultFontType).FontSize(8.5f)
+                Style = TextStyle.Default.FontFamily(defaultFontType).FontSize(9f)
             };
         }
     }

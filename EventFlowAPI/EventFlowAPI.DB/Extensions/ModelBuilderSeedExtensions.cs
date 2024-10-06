@@ -297,12 +297,14 @@ namespace EventFlowAPI.DB.Extensions
                     Id = 1,
                     Name = "Miejsce VIP",
                     Description = "Opis miejsca VIP",
+                    SeatColor = "#9803fc",
                     AddtionalPaymentPercentage = 25.00m
                 },
                 new SeatType
                 {
                     Id = 2,
                     Name = "Miejsce klasy premium",
+                    SeatColor = "#ffa600",
                     Description = "Opis miejsca klasy premium",
                     AddtionalPaymentPercentage = 10.00m
                 },
@@ -310,6 +312,7 @@ namespace EventFlowAPI.DB.Extensions
                 {
                     Id = 3,
                     Name = "Miejsce zwykłe",
+                    SeatColor = "#039aff",
                     Description = "Opis miejsca zwykłego",
                     AddtionalPaymentPercentage = 0.00m
                 }
@@ -393,7 +396,8 @@ namespace EventFlowAPI.DB.Extensions
                    TotalLength = 12m,
                    TotalWidth = 10m,
                    TotalArea = 120m,
-                   StageArea = 30m,
+                   StageWidth = 5f,
+                   StageLength = 6f,
                    NumberOfSeatsRows = 9,
                    MaxNumberOfSeatsRows = 9,
                    NumberOfSeatsColumns = 10,
@@ -407,7 +411,8 @@ namespace EventFlowAPI.DB.Extensions
                    TotalLength = 15m,
                    TotalWidth = 10m,
                    TotalArea = 150m,
-                   StageArea = null,
+                   StageWidth = null,
+                   StageLength = null,
                    NumberOfSeatsRows = 15,
                    MaxNumberOfSeatsRows = 15,
                    NumberOfSeatsColumns = 10,
@@ -421,7 +426,8 @@ namespace EventFlowAPI.DB.Extensions
                    TotalLength = 10m,
                    TotalWidth = 8m,
                    TotalArea = 80m,
-                   StageArea = 20m,
+                   StageWidth = 5f,
+                   StageLength = 4f,
                    NumberOfSeatsRows = 6,
                    MaxNumberOfSeatsRows = 6,
                    NumberOfSeatsColumns = 10,
@@ -435,7 +441,8 @@ namespace EventFlowAPI.DB.Extensions
                    TotalLength = 14m,
                    TotalWidth = 10m,
                    TotalArea = 140m,
-                   StageArea = 40m,
+                   StageWidth = 8f,
+                   StageLength = 5f,
                    NumberOfSeatsRows = 10,
                    MaxNumberOfSeatsRows = 10,
                    NumberOfSeatsColumns = 10,
@@ -443,7 +450,7 @@ namespace EventFlowAPI.DB.Extensions
                    NumberOfSeats = 100,
                    MaxNumberOfSeats = 100,
                }
-           );
+           );;
 
             modelBuilder.Entity<Hall>().HasData(
                 new Hall
@@ -860,7 +867,7 @@ namespace EventFlowAPI.DB.Extensions
                     TotalDiscountPercentage = 0m,
                     EventPassJPGName = $"eventflow_karnet_{epGuid1}.jpg",
                     EventPassPDFName = $"eventflow_karnet_{epGuid1}.pdf",
-                    UserId = "1",
+                    UserId = "2",
                     PaymentTypeId = 1
                 },
 
@@ -878,7 +885,7 @@ namespace EventFlowAPI.DB.Extensions
                     TotalDiscountPercentage = 0m,
                     EventPassJPGName = $"eventflow_karnet_{epGuid2}.jpg",
                     EventPassPDFName = $"eventflow_karnet_{epGuid2}.pdf",
-                    UserId = "2",
+                    UserId = "3",
                     PaymentTypeId = 2
                 },
                 new EventPass
@@ -895,7 +902,7 @@ namespace EventFlowAPI.DB.Extensions
                     TotalDiscountPercentage = 0m,
                     EventPassJPGName = $"eventflow_karnet_{epGuid3}.jpg",
                     EventPassPDFName = $"eventflow_karnet_{epGuid3}.pdf",
-                    UserId = "3",
+                    UserId = "4",
                     PaymentTypeId = 1
                 }
             );
@@ -918,7 +925,7 @@ namespace EventFlowAPI.DB.Extensions
                     PaymentAmount = 899.99m,
                     PaymentTypeId = 1,
                     HallId = 1,
-                    UserId = "1"
+                    UserId = "4"
                 },
                 new HallRent
                 {
@@ -1209,7 +1216,7 @@ namespace EventFlowAPI.DB.Extensions
                     TotalAddtionalPaymentPercentage = 10m,
                     TotalAdditionalPaymentAmount = 2.5m,
                     PaymentAmount = 24.99m,
-                    UserId = "1",
+                    UserId = "4",
                     PaymentTypeId = 1,
                     TicketId = 1,
                     TicketPDFId = 1

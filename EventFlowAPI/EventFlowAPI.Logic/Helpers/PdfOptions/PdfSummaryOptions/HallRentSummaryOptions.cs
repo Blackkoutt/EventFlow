@@ -18,7 +18,8 @@ namespace EventFlowAPI.Logic.Helpers.PdfOptions.PdfSummaryOptions
         }
         public AdditionalServicesOptions AdditionalServices { get; private set; }
         public List<AdditionalServices> AdditionalServicesList => _additionalServices;
-        protected override string PriceLabel => "Cena wynajmu (za 1h)";
+        public HallRent HallRent => _hallRent;
+        protected override string PriceLabel => "Cena wynajmu (za 1h):";
         protected override string PriceValue => $"{_hallRent.Hall.RentalPricePerHour} {Currency.PLN}";
         protected override string TotalCostValue => $"{_hallRent.PaymentAmount} {Currency.PLN}";
 
@@ -34,12 +35,24 @@ namespace EventFlowAPI.Logic.Helpers.PdfOptions.PdfSummaryOptions
             ValueWidth = 1
         };
 
+        public SummaryTextOptions SubTotal => new SummaryTextOptions
+        {
+            Label = $"Podsuma:",
+            Value = $"{Math.Round(_hallRent.Hall.RentalPricePerHour * (decimal)Math.Ceiling((_hallRent.EndDate - _hallRent.StartDate).TotalHours), 2)} {Currency.PLN}",
+            TextBackgound = "#ededed",
+            Style = TextStyle.Default.FontFamily(defaultFontType).SemiBold().FontSize(11f),
+            PadHorizontal = 8,
+            PadVertical = 4,
+            LabelWidth = 2,
+            ValueWidth = 1
+        };
+
         public SummaryTextOptions AdditionalServicesHeader => new SummaryTextOptions
         {
             Label = $"Dodatkowe usługi:",
             Value = "",
             TextBackgound = "#ededed",
-            Style = TextStyle.Default.FontFamily(defaultFontType).FontSize(11f),
+            Style = TextStyle.Default.FontFamily(defaultFontType).SemiBold().FontSize(11f),
             PadHorizontal = 8,
             PadVertical = 4,
             LabelWidth = 2,
@@ -47,16 +60,16 @@ namespace EventFlowAPI.Logic.Helpers.PdfOptions.PdfSummaryOptions
         };
 
         public SummaryTextOptions GetAdditionalServiceCost(AdditionalServices additionalService) => 
-        new SummaryTextOptions
-        {
-            Label = additionalService.Name,
-            Value = $"{Math.Round(additionalService.Price), 2} ",
-            TextBackgound = "#ededed",
-            Style = TextStyle.Default.FontFamily(defaultFontType).FontSize(11f),
-            PadHorizontal = 8,
-            PadVertical = 4,
-            LabelWidth = 2,
-            ValueWidth = 1
-        };
+            new SummaryTextOptions
+            {
+                Label = $"{additionalService.Name}: ",
+                Value = $"+ {Math.Round(additionalService.Price), 2} {Currency.PLN}",
+                TextBackgound = "#ededed",
+                Style = TextStyle.Default.FontFamily(defaultFontType).FontSize(11f),
+                PadHorizontal = 8,
+                PadVertical = 4,
+                LabelWidth = 2,
+                ValueWidth = 1
+            };
     }
 }

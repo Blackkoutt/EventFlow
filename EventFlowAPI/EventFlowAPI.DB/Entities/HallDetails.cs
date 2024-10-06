@@ -18,9 +18,13 @@ namespace EventFlowAPI.DB.Entities
          Column(TypeName = "NUMERIC(5,2)")]
         public decimal TotalArea { get; set; }
 
-        [Range(10.00, 400.00),
-            Column(TypeName = "NUMERIC(5,2)")]
-        public decimal? StageArea { get; set; }
+        [Range(10.00, 30.00),
+            Column(TypeName = "NUMERIC(4,2)")]
+        public float? StageLength { get; set; }
+
+        [Range(10.00, 30.00),
+            Column(TypeName = "NUMERIC(4,2)")]
+        public float? StageWidth { get; set; }
 
         [Range(0, 99),
          Column(TypeName = "NUMERIC(2)")]

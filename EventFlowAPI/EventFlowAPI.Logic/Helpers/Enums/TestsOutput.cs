@@ -5,6 +5,7 @@
         EventPath,
         FestivalPathFront,
         FestivalPathReverse,
-        EventPass
+        EventPass,
+        HallRent
     }
 }

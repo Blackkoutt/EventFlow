@@ -2,14 +2,14 @@
 
 namespace EventFlowAPI.Logic.Helpers.PdfOptions.PdfContentOptions
 {
-    public class FestivalEventInfoOptions
+    public class ContentFestivalEventOptions
     {
         private readonly Reservation _reservation;
-        public FestivalEventInfoOptions(Reservation reservation)
+        public ContentFestivalEventOptions(Reservation reservation)
         {
             _reservation = reservation;
-            Festival = new FestivalInfoOptions(_reservation);
-            Event = new EventInfoOptions(_reservation);
+            Festival = new ContentFestivalOptions(_reservation);
+            Event = new ContentEventOptions(_reservation);
         }
 
         //Common       
@@ -17,9 +17,9 @@ namespace EventFlowAPI.Logic.Helpers.PdfOptions.PdfContentOptions
         public float PadLeft => 10f;
 
         //Festival
-        public FestivalInfoOptions Festival { get; private set; }
+        public ContentFestivalOptions Festival { get; private set; }
 
         // Event
-        public EventInfoOptions Event { get; private set; }
+        public ContentEventOptions Event { get; private set; }
     }
 }

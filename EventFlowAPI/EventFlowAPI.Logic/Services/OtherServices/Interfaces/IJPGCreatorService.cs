@@ -7,5 +7,6 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Interfaces
         Task<byte[]> CreateEventPass(EventPass eventPass);
         Task<byte[]> CreateEventTicket(Reservation reservation);
         Task<List<byte[]>> CreateFestivalTicket(Festival festival, List<Reservation> reservations);
+        Task<int> CreateHallJPG(Hall hall);
     }
 }

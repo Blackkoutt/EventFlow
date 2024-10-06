@@ -26,12 +26,12 @@ namespace EventFlowAPI.DB.Extensions
             var user2 = new User
             {
                 Id = "2",
-                Name = "Jan",
-                Surname = "Kowalski",
-                Email = "j.kowalski@gmail.com",
-                UserName = "j.kowalski@gmail.com",
-                NormalizedEmail = "j.kowalski@gmail.com".ToUpper(),
-                NormalizedUserName = "j.kowalski@gmail.com".ToUpper(),
+                Name = "Mateusz2",
+                Surname = "Strapczuk2",
+                Email = "mateusz.strapczuk2@gmail.com",
+                UserName = "mateusz.strapczuk2@gmail.com",
+                NormalizedEmail = "mateusz.strapczuk2@gmail.com".ToUpper(),
+                NormalizedUserName = "mateusz.strapczuk2@gmail.com".ToUpper(),
                 EmailConfirmed = true,
                 DateOfBirth = new DateTime(1985, 2, 1)
             };
@@ -40,12 +40,12 @@ namespace EventFlowAPI.DB.Extensions
             var user3 = new User
             {
                 Id = "3",
-                Name = "Anna",
-                Surname = "Kowalska",
-                Email = "a.kowalska@gmail.com",
-                UserName = "a.kowalska@gmail.com",
-                NormalizedEmail = "a.kowalska@gmail.com".ToUpper(),
-                NormalizedUserName = "a.kowalska@gmail.com".ToUpper(),
+                Name = "Mateusz3",
+                Surname = "Strapczuk3",
+                Email = "mateusz.strapczuk3@gmail.com",
+                UserName = "mateusz.strapczuk3@gmail.com",
+                NormalizedEmail = "mateusz.strapczuk3@gmail.com".ToUpper(),
+                NormalizedUserName = "mateusz.strapczuk3@gmail.com".ToUpper(),
                 EmailConfirmed = true,
                 DateOfBirth = new DateTime(1979, 12, 11)
             };
@@ -54,6 +54,20 @@ namespace EventFlowAPI.DB.Extensions
             var user4 = new User
             {
                 Id = "4",
+                Name = "Mateusz3",
+                Surname = "Strapczuk3",
+                Email = "mateusz.strapczuk3@gmail.com",
+                UserName = "mateusz.strapczuk3@gmail.com",
+                NormalizedEmail = "mateusz.strapczuk3@gmail.com".ToUpper(),
+                NormalizedUserName = "mateusz.strapczuk3@gmail.com".ToUpper(),
+                EmailConfirmed = true,
+                DateOfBirth = new DateTime(1979, 12, 11)
+            };
+            user4.PasswordHash = hasher.HashPassword(user3, "qwe123QWE!@#");
+
+            var user5 = new User
+            {
+                Id = "5",
                 Name = "Mateusz",
                 Surname = "Strapczuk",
                 Email = "mateusz.strapczuk1@gmail.com",
@@ -63,10 +77,10 @@ namespace EventFlowAPI.DB.Extensions
                 EmailConfirmed = true,
                 DateOfBirth = new DateTime(1979, 12, 11)
             };
-            user4.PasswordHash = hasher.HashPassword(user4, "qazzaq1@WSX");
+            user5.PasswordHash = hasher.HashPassword(user4, "qazzaq1@WSX");
 
             modelBuilder.Entity<User>().HasData(
-                user1, user2, user3, user4
+                user1, user2, user3, user4, user5
             );
         }
 
@@ -110,6 +124,11 @@ namespace EventFlowAPI.DB.Extensions
                 new IdentityUserRole<string>
                 {
                     UserId = "4",
+                    RoleId = "2",
+                },
+                new IdentityUserRole<string>
+                {
+                    UserId = "5",
                     RoleId = "2",
                 }
             );

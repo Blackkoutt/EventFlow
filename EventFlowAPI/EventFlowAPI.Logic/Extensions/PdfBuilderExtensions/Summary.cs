@@ -51,11 +51,15 @@ namespace EventFlowAPI.Logic.Extensions.PdfBuilderExtensions
                 if(options is HallRentSummaryOptions hallRentOptions)
                 {
                     column.AddSummaryItem(hallRentOptions.Hours);
-                    column.AddSummaryItem(hallRentOptions.AdditionalServicesHeader);
-                    foreach (var additionalService in hallRentOptions.AdditionalServicesList)
+                    if (hallRentOptions.HallRent.AdditionalServices.Any())
                     {
-                        column.AddSummaryItem(hallRentOptions.GetAdditionalServiceCost(additionalService));
-                    }
+                        column.AddSummaryItem(hallRentOptions.SubTotal);
+                        column.AddSummaryItem(hallRentOptions.AdditionalServicesHeader);
+                        foreach (var additionalService in hallRentOptions.HallRent.AdditionalServices)
+                        {
+                            column.AddSummaryItem(hallRentOptions.GetAdditionalServiceCost(additionalService));
+                        }
+                    }           
                 }
                 column.AddSummaryItem(options.TotalCost);
             });

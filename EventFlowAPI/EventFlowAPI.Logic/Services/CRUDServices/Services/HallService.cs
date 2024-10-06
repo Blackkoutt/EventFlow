@@ -107,12 +107,14 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
                     hall.Floor = requestDto!.Floor;
                     hall.HallDetails!.TotalLength = requestDto!.HallDetails.TotalLength;
                     hall.HallDetails!.TotalWidth = requestDto!.HallDetails.TotalWidth;
-                    var area = requestDto!.HallDetails.TotalLength * requestDto!.HallDetails.TotalWidth;
-                    hall.HallDetails!.TotalArea = Math.Round(area, 2);
+                    decimal copyHallArea = requestDto!.HallDetails.TotalLength * requestDto!.HallDetails.TotalWidth;
+                    hall.HallDetails!.TotalArea = Math.Round(copyHallArea, 2);
 
                     _repository.Update(hall);
                 }
             }
+
+            await _unitOfWork.SaveChangesAsync();
 
             var allActiveReservations = await _unitOfWork.GetRepository<Reservation>().GetAllAsync(q =>
                                             q.Where(r =>
@@ -144,6 +146,8 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
 
             // Other changes -> update only this hallEntity, only for new resrvations and hall rents
             var newHallEntity = (Hall)MapToEntity(requestDto, hallEntity);
+            decimal area = requestDto!.HallDetails.TotalLength * requestDto!.HallDetails.TotalWidth;
+            newHallEntity.HallDetails!.TotalArea = Math.Round(area, 2);
 
             _repository.Update(newHallEntity);
 
@@ -241,28 +245,6 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             return Result<object>.Success();
         }
 
-        private async Task<Result<Hall>> ValidateBeforeDelete(int id)
-        {
-            var userResult = await _userService.GetCurrentUser();
-            if (!userResult.IsSuccessful)
-                return Result<Hall>.Failure(userResult.Error);
-
-            var user = userResult.Value;
-            if (!user.UserRoles.Contains(Roles.Admin))
-                return Result<Hall>.Failure(AuthError.UserDoesNotHaveSpecificRole);
-
-            if (id < 0)
-                return Result<Hall>.Failure(Error.RouteParamOutOfRange);
-
-            var hall = await _repository.GetOneAsync(id);
-            if (hall == null || !hall.IsVisible)
-                return Result<Hall>.Failure(Error.NotFound);
-
-            return Result<Hall>.Success(hall);
-        }
-       
-
-        
 
         private async Task<ICollection<Event>> CancelEventsInHall(IEnumerable<int> allCopiesOfHallId)
         {
@@ -342,6 +324,245 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
         }      
 
 
+        private static List<Seat> GetListOfChangedSeats(ICollection<Seat> seatsFromEntity, ICollection<SeatRequestDto> seatsFromRequest)
+        {
+            List<Seat> changedSeats = [];
+
+            foreach (var seat in seatsFromEntity)
+            {
+                var isSeatNoChanged = seatsFromRequest.Any(s =>
+                                        s.SeatNr == seat.SeatNr &&
+                                        s.Row == seat.Row &&
+                                        s.GridRow == seat.GridRow &&
+                                        s.Column == seat.Column &&
+                                        s.GridColumn == seat.GridColumn &&
+                                        s.SeatTypeId == seat.SeatTypeId);
+                if (!isSeatNoChanged)
+                    changedSeats.Add(seat);
+            }
+
+            return changedSeats;
+        }
+
+        private bool IsSeatNumbersInHallAreUnique(ICollection<SeatRequestDto> seats) =>
+            seats.Count == seats.Select(seat => seat.SeatNr).Distinct().Count();
+
+        private async Task<bool> IsAllSeatTypesExistInDB(ICollection<SeatRequestDto> seats)
+        {
+            var seatTypeIds = seats.Select(seat => seat.SeatTypeId).Distinct().ToList();
+            foreach (var seatTypeId in seatTypeIds)
+            {
+                if (!await IsEntityExistInDB<SeatType>(seatTypeId))
+                    return false;
+            }
+            return true;
+        }
+
+
+        private List<Seat> MapSeats(ICollection<Seat> seatsFromEntity, ICollection<SeatRequestDto> seatsFromRequest)
+        {
+            var seatDictionary = seatsFromEntity.ToDictionary(s => s.SeatNr);
+
+            List<Seat> newSeats = [];
+            Seat? seatEntity;
+
+            foreach (var requestSeat in seatsFromRequest)
+            {
+                if (seatDictionary.TryGetValue(requestSeat.SeatNr, out var seat))
+                {
+                    seatEntity = (Seat)requestSeat.MapTo(seat);
+                }
+                else
+                {
+                    seatEntity = requestSeat.AsEntity<Seat>();
+                }
+                newSeats.Add(seatEntity);
+            }
+            return newSeats;
+        }
+
+
+        private async Task<Error> ValidateBeforeUpdateHallForRent(HallRent_HallRequestDto? hallRequestDto, int rentId)
+        {
+            var userResult = await _userService.GetCurrentUser();
+            if (!userResult.IsSuccessful)
+                return userResult.Error;
+
+            var user = userResult.Value;
+            if (!user.UserRoles.Contains(Roles.Admin))
+                return AuthError.UserDoesNotHaveSpecificRole;
+
+            if (rentId < 0)
+                return Error.QueryParamOutOfRange;
+
+            if (hallRequestDto == null)
+                return Error.NullParameter;
+
+            var rentEntity = await _unitOfWork.GetRepository<HallRent>().GetOneAsync(rentId);
+            if (rentEntity == null)
+                return HallRentError.NotFound;
+
+            if (rentEntity.IsCanceled)
+                return HallRentError.HallRentIsCanceled;
+
+            if (rentEntity.IsExpired)
+                return HallRentError.HallRentIsExpired;
+
+            if (!await IsEntityExistInDB<HallType>(hallRequestDto.HallTypeId))
+                return HallError.HallTypeNotFound;
+
+            if (!IsSeatNumbersInHallAreUnique(hallRequestDto.Seats))
+                return HallError.SeatNumbersInHallAreNotUniqe;
+
+            if (!await IsAllSeatTypesExistInDB(hallRequestDto.Seats))
+                return SeatTypeError.SeatTypeNotFound;
+
+
+            var isValidSeatsRowAndColumnError = IsValidSeatsRowAndColumn(hallRequestDto.Seats, hallRequestDto.HallDetails);
+            if (isValidSeatsRowAndColumnError != Error.None)
+                return isValidSeatsRowAndColumnError;
+
+            return Error.None;
+        }
+
+        private async Task<Error> ValidateBeforeUpdateHallForEvent(EventHallRequestDto? hallRequestDto, int eventId)
+        {
+            var userResult = await _userService.GetCurrentUser();
+            if (!userResult.IsSuccessful)
+                return userResult.Error;
+
+            var user = userResult.Value;
+            if (!user.UserRoles.Contains(Roles.Admin))
+                return AuthError.UserDoesNotHaveSpecificRole;
+
+            if (eventId < 0)
+                return Error.QueryParamOutOfRange;
+
+            if (hallRequestDto == null)
+                return Error.NullParameter;
+
+            var eventEntity = await _unitOfWork.GetRepository<Event>().GetOneAsync(eventId);
+            if (eventEntity == null)
+                return EventError.NotFound;
+
+            if (eventEntity.IsCanceled)
+                return EventError.EventIsCanceled;
+
+            if (eventEntity.IsExpired)
+                return EventError.EventIsExpired;
+
+            if (!await IsEntityExistInDB<HallType>(hallRequestDto.HallTypeId))
+                return HallError.HallTypeNotFound;
+
+            if (!IsSeatNumbersInHallAreUnique(hallRequestDto.Seats))
+                return HallError.SeatNumbersInHallAreNotUniqe;
+
+            if (!await IsAllSeatTypesExistInDB(hallRequestDto.Seats))
+                return SeatTypeError.SeatTypeNotFound;
+
+
+            var isValidSeatsRowAndColumnError = IsValidSeatsRowAndColumn(hallRequestDto.Seats, hallRequestDto.HallDetails);
+            if (isValidSeatsRowAndColumnError != Error.None)
+                return isValidSeatsRowAndColumnError;
+
+            var changedSeats = GetListOfChangedSeats(eventEntity.Hall.Seats, hallRequestDto.Seats);
+
+            var haveNotAvailableSeatChanged = changedSeats.Any(seat =>
+                _seatService.IsSeatHaveActiveReservationForEvent(seat, eventEntity));
+
+            if (haveNotAvailableSeatChanged)
+                return SeatError.NotAvailableSeatChanged;
+
+            return Error.None;
+        }
+
+        private async Task<Result<Hall>> ValidateBeforeDelete(int id)
+        {
+            var userResult = await _userService.GetCurrentUser();
+            if (!userResult.IsSuccessful)
+                return Result<Hall>.Failure(userResult.Error);
+
+            var user = userResult.Value;
+            if (!user.UserRoles.Contains(Roles.Admin))
+                return Result<Hall>.Failure(AuthError.UserDoesNotHaveSpecificRole);
+
+            if (id < 0)
+                return Result<Hall>.Failure(Error.RouteParamOutOfRange);
+
+            var hall = await _repository.GetOneAsync(id);
+            if (hall == null || !hall.IsVisible)
+                return Result<Hall>.Failure(Error.NotFound);
+
+            return Result<Hall>.Success(hall);
+        }
+
+        private static Error IsValidSeatsRowAndColumn(ICollection<SeatRequestDto> seatsFromRequest, IHallDetailsRequestDto hallDetails)
+        {
+            foreach (var seat in seatsFromRequest)
+            {
+                if (seat.Column > hallDetails.NumberOfSeatsColumns)
+                    return SeatError.SeatColumnOutOfRange;
+
+                if (seat.GridColumn > hallDetails.MaxNumberOfSeatsColumns)
+                    return SeatError.SeatGridColumnOutOfRange;
+
+                if (seat.Row > hallDetails.NumberOfSeatsRows)
+                    return SeatError.SeatRowOutOfRange;
+
+                if (seat.GridRow > hallDetails.MaxNumberOfSeatsRows)
+                    return SeatError.SeatGridRowOutOfRange;
+
+                var isSeatWithRowOrColumnExists = seatsFromRequest.Any(s =>
+                                                    s != seat &&
+                                                    s.Row == seat.Row &&
+                                                    s.Column == seat.Column);
+                if (isSeatWithRowOrColumnExists)
+                    return SeatError.SeatWithSuchRowAndColumnAlreadyExist;
+
+                var isSeatWithGridRowOrColumnExists = seatsFromRequest.Any(s =>
+                                                        s != seat &&
+                                                        s.GridRow == seat.GridRow &&
+                                                        s.GridColumn == seat.GridColumn);
+
+                if (isSeatWithGridRowOrColumnExists)
+                    return SeatError.OtherSeatExistInSamePosition;
+            }
+            return Error.None;
+        }
+
+        protected sealed override async Task<Error> ValidateEntity(HallRequestDto? requestDto, int? id = null)
+        {
+            var userResult = await _userService.GetCurrentUser();
+            if (!userResult.IsSuccessful)
+                return userResult.Error;
+
+            var user = userResult.Value;
+            if (!user.UserRoles.Contains(Roles.Admin))
+                return AuthError.UserDoesNotHaveSpecificRole;
+
+            var baseValidationError = await base.ValidateEntity(requestDto, id);
+            if (baseValidationError != Error.None)
+                return baseValidationError;
+
+            if (!await IsEntityExistInDB<HallType>(requestDto!.HallTypeId))
+                return HallError.HallTypeNotFound;
+
+            if (!IsSeatNumbersInHallAreUnique(requestDto!.Seats))
+                return HallError.SeatNumbersInHallAreNotUniqe;
+
+            if (!await IsAllSeatTypesExistInDB(requestDto!.Seats))
+                return SeatTypeError.SeatTypeNotFound;
+
+            // Maybe hall details validation
+
+            var isValidSeatsRowAndColumnError = IsValidSeatsRowAndColumn(requestDto.Seats, requestDto.HallDetails);
+            if (isValidSeatsRowAndColumnError != Error.None)
+                return isValidSeatsRowAndColumnError;
+
+            return Error.None;
+        }
+
+
         protected sealed override IEnumerable<HallResponseDto> MapAsDto(IEnumerable<Hall> records)
         {
             return records.Select(entity =>
@@ -417,7 +638,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             return hallEntity;
         }
 
-       
+
         protected sealed override IEntity MapToEntity(HallRequestDto requestDto, Hall oldEntity)
         {
             var hallEntity = (Hall)requestDto.MapTo(oldEntity);
@@ -431,231 +652,6 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             hallEntity.Seats = MapSeats(oldEntity.Seats, requestDto.Seats);
 
             return hallEntity;
-        }
-
-
-        private async Task<Error> ValidateBeforeUpdateHallForRent(HallRent_HallRequestDto? hallRequestDto, int rentId)
-        {
-            var userResult = await _userService.GetCurrentUser();
-            if (!userResult.IsSuccessful)
-                return userResult.Error;
-
-            var user = userResult.Value;
-            if (!user.UserRoles.Contains(Roles.Admin))
-                return AuthError.UserDoesNotHaveSpecificRole;
-
-            if (rentId < 0)
-                return Error.QueryParamOutOfRange;
-
-            if (hallRequestDto == null)
-                return Error.NullParameter;
-
-            var rentEntity = await _unitOfWork.GetRepository<HallRent>().GetOneAsync(rentId);
-            if (rentEntity == null)
-                return HallRentError.NotFound;
-
-            if (rentEntity.IsCanceled)
-                return HallRentError.HallRentIsCanceled;
-
-            if (rentEntity.IsExpired)
-                return HallRentError.HallRentIsExpired;
-
-            if (!await IsEntityExistInDB<HallType>(hallRequestDto.HallTypeId))
-                return HallError.HallTypeNotFound;
-
-            if (!IsSeatNumbersInHallAreUnique(hallRequestDto.Seats))
-                return HallError.SeatNumbersInHallAreNotUniqe;
-
-            if (!await IsAllSeatTypesExistInDB(hallRequestDto.Seats))
-                return SeatTypeError.SeatTypeNotFound;
-
-
-            var isValidSeatsRowAndColumnError = IsValidSeatsRowAndColumn(hallRequestDto.Seats, hallRequestDto.HallDetails);
-            if (isValidSeatsRowAndColumnError != Error.None)
-                return isValidSeatsRowAndColumnError;
-
-            return Error.None;
-        }
-
-
-        private async Task<Error> ValidateBeforeUpdateHallForEvent(EventHallRequestDto? hallRequestDto, int eventId)
-        {
-            var userResult = await _userService.GetCurrentUser();
-            if (!userResult.IsSuccessful)
-                return userResult.Error;
-
-            var user = userResult.Value;
-            if (!user.UserRoles.Contains(Roles.Admin))
-                return AuthError.UserDoesNotHaveSpecificRole;
-
-            if (eventId < 0)
-                return Error.QueryParamOutOfRange;
-
-            if (hallRequestDto == null)
-                return Error.NullParameter;
-
-            var eventEntity = await _unitOfWork.GetRepository<Event>().GetOneAsync(eventId);
-            if (eventEntity == null)
-                return EventError.NotFound;
-
-            if (eventEntity.IsCanceled)
-                return EventError.EventIsCanceled;
-
-            if (eventEntity.IsExpired)
-                return EventError.EventIsExpired;
-
-            if (!await IsEntityExistInDB<HallType>(hallRequestDto.HallTypeId))
-                return HallError.HallTypeNotFound;
-
-            if (!IsSeatNumbersInHallAreUnique(hallRequestDto.Seats))
-                return HallError.SeatNumbersInHallAreNotUniqe;
-
-            if (!await IsAllSeatTypesExistInDB(hallRequestDto.Seats))
-                return SeatTypeError.SeatTypeNotFound;
-
-
-            var isValidSeatsRowAndColumnError = IsValidSeatsRowAndColumn(hallRequestDto.Seats, hallRequestDto.HallDetails);
-            if (isValidSeatsRowAndColumnError != Error.None)
-                return isValidSeatsRowAndColumnError;
-
-            var changedSeats = GetListOfChangedSeats(eventEntity.Hall.Seats, hallRequestDto.Seats);
-
-            var haveNotAvailableSeatChanged = changedSeats.Any(seat =>
-                _seatService.IsSeatHaveActiveReservationForEvent(seat, eventEntity));
-
-            if (haveNotAvailableSeatChanged)
-                return SeatError.NotAvailableSeatChanged;
-
-            return Error.None;
-        }
-
-        
-        private static List<Seat> GetListOfChangedSeats(ICollection<Seat> seatsFromEntity, ICollection<SeatRequestDto> seatsFromRequest)
-        {
-            List<Seat> changedSeats = [];
-
-            foreach (var seat in seatsFromEntity)
-            {
-                var isSeatNoChanged = seatsFromRequest.Any(s =>
-                                        s.SeatNr == seat.SeatNr &&
-                                        s.Row == seat.Row &&
-                                        s.GridRow == seat.GridRow &&
-                                        s.Column == seat.Column &&
-                                        s.GridColumn == seat.GridColumn &&
-                                        s.SeatTypeId == seat.SeatTypeId);
-                if (!isSeatNoChanged)
-                    changedSeats.Add(seat);
-            }
-
-            return changedSeats;
-        }
-
-
-
-        protected sealed override async Task<Error> ValidateEntity(HallRequestDto? requestDto, int? id = null)
-        {
-            var userResult = await _userService.GetCurrentUser();
-            if (!userResult.IsSuccessful)
-                return userResult.Error;
-
-            var user = userResult.Value;
-            if (!user.UserRoles.Contains(Roles.Admin))
-                return AuthError.UserDoesNotHaveSpecificRole;
-
-            var baseValidationError = await base.ValidateEntity(requestDto, id);
-            if (baseValidationError != Error.None)
-                return baseValidationError;
-
-            if (!await IsEntityExistInDB<HallType>(requestDto!.HallTypeId))
-                return HallError.HallTypeNotFound;
-
-            if (!IsSeatNumbersInHallAreUnique(requestDto!.Seats))
-                return HallError.SeatNumbersInHallAreNotUniqe;
-
-            if (!await IsAllSeatTypesExistInDB(requestDto!.Seats))
-                return SeatTypeError.SeatTypeNotFound;
-
-            // Maybe hall details validation
-
-            var isValidSeatsRowAndColumnError = IsValidSeatsRowAndColumn(requestDto.Seats, requestDto.HallDetails);
-            if (isValidSeatsRowAndColumnError != Error.None)
-                return isValidSeatsRowAndColumnError;
-
-            return Error.None;
-        }
-
-
-        private bool IsSeatNumbersInHallAreUnique(ICollection<SeatRequestDto> seats) =>
-            seats.Count == seats.Select(seat => seat.SeatNr).Distinct().Count();
-
-        private async Task<bool> IsAllSeatTypesExistInDB(ICollection<SeatRequestDto> seats)
-        {
-            var seatTypeIds = seats.Select(seat => seat.SeatTypeId).Distinct().ToList();
-            foreach (var seatTypeId in seatTypeIds)
-            {
-                if (!await IsEntityExistInDB<SeatType>(seatTypeId))
-                    return false;
-            }
-            return true;
-        }
-
-
-        private static Error IsValidSeatsRowAndColumn(ICollection<SeatRequestDto> seatsFromRequest, IHallDetailsRequestDto hallDetails)
-        {
-            foreach (var seat in seatsFromRequest)
-            {
-                if (seat.Column > hallDetails.NumberOfSeatsColumns)
-                    return SeatError.SeatColumnOutOfRange;
-
-                if (seat.GridColumn > hallDetails.MaxNumberOfSeatsColumns)
-                    return SeatError.SeatGridColumnOutOfRange;
-
-                if (seat.Row > hallDetails.NumberOfSeatsRows)
-                    return SeatError.SeatRowOutOfRange;
-
-                if (seat.GridRow > hallDetails.MaxNumberOfSeatsRows)
-                    return SeatError.SeatGridRowOutOfRange;
-
-                var isSeatWithRowOrColumnExists = seatsFromRequest.Any(s =>
-                                                    s != seat &&
-                                                    s.Row == seat.Row &&
-                                                    s.Column == seat.Column);
-                if (isSeatWithRowOrColumnExists)
-                    return SeatError.SeatWithSuchRowAndColumnAlreadyExist;
-
-                var isSeatWithGridRowOrColumnExists = seatsFromRequest.Any(s =>
-                                                        s != seat &&
-                                                        s.GridRow == seat.GridRow &&
-                                                        s.GridColumn == seat.GridColumn);
-
-                if (isSeatWithGridRowOrColumnExists)
-                    return SeatError.OtherSeatExistInSamePosition;
-            }
-            return Error.None;
-        }
-
-
-
-        private List<Seat> MapSeats(ICollection<Seat> seatsFromEntity, ICollection<SeatRequestDto> seatsFromRequest)
-        {
-            var seatDictionary = seatsFromEntity.ToDictionary(s => s.SeatNr);
-
-            List<Seat> newSeats = [];
-            Seat? seatEntity;
-
-            foreach (var requestSeat in seatsFromRequest)
-            {
-                if (seatDictionary.TryGetValue(requestSeat.SeatNr, out var seat))
-                {
-                    seatEntity = (Seat)requestSeat.MapTo(seat);
-                }
-                else
-                {
-                    seatEntity = requestSeat.AsEntity<Seat>();
-                }
-                newSeats.Add(seatEntity);
-            }
-            return newSeats;
         }
 
         protected sealed override async Task<bool> IsSameEntityExistInDatabase(HallRequestDto entityDto, int? id = null)

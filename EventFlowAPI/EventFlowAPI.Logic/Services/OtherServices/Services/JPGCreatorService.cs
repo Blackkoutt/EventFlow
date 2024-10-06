@@ -2,26 +2,62 @@
 using EventFlowAPI.Logic.Extensions;
 using EventFlowAPI.Logic.Helpers.Enums;
 using EventFlowAPI.Logic.Services.OtherServices.Interfaces;
+using EventFlowAPI.Logic.Services.OtherServices.Interfaces.Configuration.HallConfiguration;
 using EventFlowAPI.Logic.Services.OtherServices.Interfaces.Configuration.PassConfiguration;
 using EventFlowAPI.Logic.Services.OtherServices.Interfaces.Configuration.TicketConfiguration;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Drawing.Processing;
-using System.IO;
+using SixLabors.ImageSharp.PixelFormats;
+using SixLabors.ImageSharp.Processing;
 
 namespace EventFlowAPI.Logic.Services.OtherServices.Services
 {
     public class JPGCreatorService(
         IFestivalTicketConfiguration festivalTicketConfig,
         IEventTicketConfiguration eventTicketConfig,
+        IHallSeatsConfiguration hallSeatsConfig,
         IEventPassConfiguration eventPassConfig,
         IQRCodeGeneratorService qrCoder,
         IAssetService assetService) : IJPGCreatorService
     {
         private readonly IFestivalTicketConfiguration _festivalTicketConfig = festivalTicketConfig;
         private readonly IEventTicketConfiguration _eventTicketConfig = eventTicketConfig;
+        private readonly IHallSeatsConfiguration _hallSeatsConfig = hallSeatsConfig;
         private readonly IEventPassConfiguration _eventPassConfig = eventPassConfig;
         private readonly IQRCodeGeneratorService _qrCoder = qrCoder;
-        private readonly IAssetService _assetService = assetService;   
+        private readonly IAssetService _assetService = assetService;
+
+        public async Task<int> CreateHallJPG(Hall hall)
+        {
+            var logo = await _assetService.GetPicture(Picture.EventFlowLogo_Big);
+            _hallSeatsConfig.SetCanvasDimensions(hall, logo, isDefault: false);
+
+            var canvasWidth = _hallSeatsConfig.CanvasWidth;
+            var canvasHeight = _hallSeatsConfig.CanvasHeight;
+            var canvasColor = _hallSeatsConfig.CanvasBackgroundColor;        
+
+            using (Image<Rgba32> canvas = new Image<Rgba32>(canvasWidth, canvasHeight, canvasColor))
+            {
+                // Canvas border
+                DrawCanvasBorder(canvas);
+
+                // Stage
+                DrawStage(canvas, hall.HallDetails!);
+
+                // Seats
+                DrawSeats(canvas, hall);
+
+                // Legend
+                DrawLegend(canvas, hall);
+
+                // Watermark
+                DrawWatermark(canvas, logo);
+
+                var outputPath = _assetService.GetOutputTestPath(TestsOutput.HallRent);
+                await canvas.SaveAsJpegAsync(outputPath);
+            }
+            return 1;
+        }
 
         public async Task<byte[]> CreateEventPass(EventPass eventPass)
         {
@@ -31,17 +67,17 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
             var image = await _assetService.GetTemplate(Template.EventPass);
 
             var passTypeOptions = _eventPassConfig.EventPassTypePrintingOptions;
-            image.Draw(eventPass.PassType.Name, passTypeOptions);
+            image.DrawText(eventPass.PassType.Name, passTypeOptions);
 
             var passOwnerOptions = _eventPassConfig.EventPassOwnerPrintingOptions;
-            image.Draw($"{eventPass.User.Name} {eventPass.User.Surname}", passOwnerOptions);
+            image.DrawText($"{eventPass.User.Name} {eventPass.User.Surname}", passOwnerOptions);
 
             var passDateOptions = _eventPassConfig.EventPassDatePrintingOptions;
-            image.Draw($"{eventPass.EndDate.ToString(passDateOptions.DateFormat)}", passDateOptions);
+            image.DrawText($"{eventPass.EndDate.ToString(passDateOptions.DateFormat)}", passDateOptions);
 
             var qrCodeOptions =_eventPassConfig.EventPassQrCodePrintingOptions;
             var qrCode = _qrCoder.GenerateQRCode(eventPass.EventPassGuid.ToString(), qrCodeOptions.Size);
-            image.Draw(qrCode, qrCodeOptions);
+            image.DrawImage(qrCode, qrCodeOptions);
 
             await image.SaveAsJpegAsync(outputPath);
 
@@ -57,26 +93,26 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
             var eventEntity = reservation.Ticket.Event;
 
             var titleOptions = _eventTicketConfig.GetTitlePrintingOptions(eventEntity);     
-            image.Draw(eventEntity.Name, titleOptions);
+            image.DrawText(eventEntity.Name, titleOptions);
 
             var dateOptions = _eventTicketConfig.GetDatePrintingOptions();
-            image.Draw($"{eventEntity.StartDate.ToString(dateOptions.DateFormat)}", dateOptions);
+            image.DrawText($"{eventEntity.StartDate.ToString(dateOptions.DateFormat)}", dateOptions);
 
             var priceOptions = _eventTicketConfig.GetPricePrintingOptions(reservation);
-            image.Draw($"{reservation.Ticket.Price} {priceOptions.Currency}", priceOptions);
+            image.DrawText($"{reservation.Ticket.Price} {priceOptions.Currency}", priceOptions);
 
             var hallOptions = _eventTicketConfig.GetHallPrintingOptions();
-            image.Draw(eventEntity.Hall.HallNr.ToString(), hallOptions);
+            image.DrawText(eventEntity.Hall.HallNr.ToString(), hallOptions);
 
             var durationOptions = _eventTicketConfig.GetDurationPrintingOpitons(eventEntity);
-            image.Draw($"{eventEntity.Duration.TotalMinutes} min", durationOptions);
+            image.DrawText($"{eventEntity.Duration.TotalMinutes} min", durationOptions);
  
             var seatsOptions = _eventTicketConfig.GetSeatsPrintingOptions();
-            image.Draw(string.Join(", ", reservation.Seats.Select(s => s.SeatNr)), seatsOptions);
+            image.DrawText(string.Join(", ", reservation.Seats.Select(s => s.SeatNr)), seatsOptions);
 
             var qrCodeOptions = _eventTicketConfig.GetQRCodePrintingOptions();
             var qrCode = _qrCoder.GenerateQRCode(reservation.ReservationGuid.ToString(), qrCodeOptions.Size);
-            image.Draw(qrCode, qrCodeOptions);
+            image.DrawImage(qrCode, qrCodeOptions);
                 
             // TEST
             await image.SaveAsJpegAsync(outputPath);
@@ -124,15 +160,15 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
         private Image CreateFestivalFrontOfTicket(Image template, Festival festival, Reservation reservation)
         {
             var titleOptions = _festivalTicketConfig.GetTitlePrintingOptions(festival);
-            template.Draw(festival.Name, titleOptions);
+            template.DrawText(festival.Name, titleOptions);
 
             var dateOptions = _festivalTicketConfig.GetDatePrintingOptions();
-            template.Draw($"{festival.StartDate.ToString(dateOptions.DateFormat)} - " +
+            template.DrawText($"{festival.StartDate.ToString(dateOptions.DateFormat)} - " +
                 $"{festival.EndDate.ToString(dateOptions.DateFormat)}", dateOptions);
 
             var qrCodeOptions = _festivalTicketConfig.GetQRCodePrintingOptions();
             var qrCode = _qrCoder.GenerateQRCode(reservation.ReservationGuid.ToString(), qrCodeOptions.Size);
-            template.Draw(qrCode, qrCodeOptions);
+            template.DrawImage(qrCode, qrCodeOptions);
 
             return template;
         }
@@ -160,13 +196,13 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
                     var seatsString = _festivalTicketConfig.GetSeatsString(reservations[rIndex]);
 
                     var tabNrOptions = _festivalTicketConfig.GetTabNumberPrintingOptions();
-                    template.Draw($"{tabNr}.", tabNrOptions);
+                    template.DrawText($"{tabNr}.", tabNrOptions);
 
                     var eventInfoOptions = _festivalTicketConfig.GetEventInfoPrintingOpitons();
-                    template.Draw(eventInfo, eventInfoOptions);
+                    template.DrawText(eventInfo, eventInfoOptions);
 
                     var seatsOptions = _festivalTicketConfig.GetSeatsPrintingOpitons();
-                    template.Draw(seatsString, seatsOptions);
+                    template.DrawText(seatsString, seatsOptions);
 
                     _festivalTicketConfig.MoveCursorToNextTab(tabNr);
 
@@ -179,6 +215,140 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
                 reverseOfTickets.Add(template);
             }
             return reverseOfTickets;
+        }
+
+
+        private void DrawCanvasBorder(Image<Rgba32> canvas)
+        {
+            var canvasBorderOptions = _hallSeatsConfig.CanvasBorderPrintingOptions;
+            canvas.DrawRectangle(canvasBorderOptions);
+        }
+        private void DrawStage(Image<Rgba32> canvas, HallDetails hallDetails)
+        {
+            var stageOptions = _hallSeatsConfig.GetStageRectanglePrintingOptions(hallDetails.StageWidth, hallDetails.StageLength, (float)hallDetails.TotalWidth, (float)hallDetails.TotalLength);
+            if (stageOptions is not null)
+            {
+                canvas.DrawRectangle(stageOptions);
+            }
+            var stageTextOptions = _hallSeatsConfig.GetStageTextPrintingOptions(hallDetails.StageWidth, hallDetails.StageLength);
+            if (stageTextOptions is not null)
+            {
+                var stageWidth = hallDetails.StageWidth;
+                var stageLength = hallDetails.StageLength;
+                canvas.DrawText($"SCENA ({stageWidth}m x {stageLength}m)", stageTextOptions);
+            }
+        }
+
+        private void DrawSeatRowNumber(Image<Rgba32> canvas)
+        {
+            _hallSeatsConfig.SetSeatCursorToPrintRowNumber();
+            var rowNumberOptions = _hallSeatsConfig.RowColNumberPrintingOptions;
+            var rowNr = _hallSeatsConfig.RowNr;
+            var romanRowNumber = _hallSeatsConfig.ConvertToRoman(rowNr);
+
+            canvas.DrawText(romanRowNumber, rowNumberOptions);
+
+            _hallSeatsConfig.SetSeatCursorAfterPrintRowNumber();
+        }
+        private void DrawSeatColNumber(Image<Rgba32> canvas)
+        {
+            _hallSeatsConfig.SetSeatCursorToPrintColNumber();
+
+            var colNr = _hallSeatsConfig.ColNr;
+            var romanColNumber = _hallSeatsConfig.ConvertToRoman(colNr);
+            var colNumberOptions = _hallSeatsConfig.RowColNumberPrintingOptions;
+
+            canvas.DrawText(romanColNumber, colNumberOptions);
+
+            _hallSeatsConfig.SetSeatCursorAfterPrintColNumber();
+        }
+
+        private void DrawActiveSeat(Image<Rgba32> canvas, Seat seat)
+        {
+            var activeSeatOptions = _hallSeatsConfig.GetActiveSeatRectanglePrintingOptions(seat.SeatType);
+            canvas.DrawRectangle(activeSeatOptions);
+
+            var seatNumberOptions = _hallSeatsConfig.GetSeatNumberPrintingOptions(seat.SeatNr);
+            canvas.DrawText(seat.SeatNr.ToString(), seatNumberOptions);
+        }
+        private void DrawNonActiveSeat(Image<Rgba32> canvas)
+        {
+            var nonActiveSeatOptions = _hallSeatsConfig.NonActiveSeatRectanglePrintingOptions;
+            canvas.DrawRectangle(nonActiveSeatOptions);
+        }
+
+        private void DrawSeats(Image<Rgba32> canvas, Hall hall)
+        {
+            _hallSeatsConfig.PrepareToPrintSeats(hall.HallDetails!.MaxNumberOfSeatsColumns);
+
+            var seatsInHall = hall.Seats
+                                .OrderBy(s => s.GridRow)
+                                .ThenBy(s => s.GridColumn)
+                                .ToDictionary(s => (s.GridRow, s.GridColumn), s => s);
+
+            for (int gridRow = 1; gridRow <= hall.HallDetails!.MaxNumberOfSeatsRows; gridRow++)
+            {
+                _hallSeatsConfig.SetSeatCursorXDefault();
+                if (seatsInHall.Any(s => s.Key.GridRow == gridRow))
+                {
+                    DrawSeatRowNumber(canvas);
+                }
+
+                for (int gridCol = 1; gridCol <= hall.HallDetails.MaxNumberOfSeatsColumns; gridCol++)
+                {
+                    if (gridRow == 1 && seatsInHall.Any(s => s.Key.GridColumn == gridCol))
+                    {
+                        DrawSeatColNumber(canvas);
+                    }
+
+                    var seat = seatsInHall.FirstOrDefault(s => s.Key.GridRow == gridRow && s.Key.GridColumn == gridCol).Value;
+
+                    if (seat is not null)
+                    {
+                        DrawActiveSeat(canvas, seat);
+                    }
+                    else
+                    {
+                        DrawNonActiveSeat(canvas);
+                    }
+                    _hallSeatsConfig.SetCursorToPrintNextSeatCol();
+                }
+                _hallSeatsConfig.SetCursorToPrintNextSeatsRow();
+            }
+        }
+
+        private void DrawLegend(Image<Rgba32> canvas, Hall hall)
+        {
+            var legendHeaderOptions = _hallSeatsConfig.GetLegendHeaderPrintingOptions();
+            canvas.DrawText("Legenda:", legendHeaderOptions);
+
+            var nonActiveSeatBlockOptions = _hallSeatsConfig.GetNonActiveSeatColorBlockPrintingOptions();
+            canvas.DrawRectangle(nonActiveSeatBlockOptions);
+
+            var legendItemOptions = _hallSeatsConfig.GetLegendItemDescription();
+            canvas.DrawText("- nieaktywne miejsce", legendItemOptions);
+
+            var seatsInHall = hall.Seats
+                            .OrderBy(s => s.GridRow)
+                            .ThenBy(s => s.GridColumn)
+                            .ToDictionary(s => (s.GridRow, s.GridColumn), s => s);
+            var seatTypes = seatsInHall.Select(x => x.Value.SeatType).DistinctBy(x => x.Name);
+
+            foreach (var seatType in seatTypes)
+            {
+                var activeSeatBlockOptions = _hallSeatsConfig.GetActiveSeatColorBlockPrintingOptions(seatType);
+                canvas.DrawRectangle(activeSeatBlockOptions);
+
+                legendItemOptions = _hallSeatsConfig.GetLegendItemDescription();
+                canvas.DrawText($"- aktywne miejsce typu {seatType.Name}", legendItemOptions);
+            }
+        }
+        private void DrawWatermark(Image<Rgba32> canvas, Image logo)
+        {
+            _hallSeatsConfig.CreateWatermark();
+            var watermarkOptions = _hallSeatsConfig.GetWaterMarkPrintingOptions(logo);
+            var resizedLogo = _hallSeatsConfig.ResizedLogo;
+            canvas.DrawImage(resizedLogo!, watermarkOptions);
         }
     }
 }

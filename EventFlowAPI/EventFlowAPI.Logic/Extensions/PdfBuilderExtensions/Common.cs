@@ -29,5 +29,22 @@ namespace EventFlowAPI.Logic.Extensions.PdfBuilderExtensions
             .Text(options.Text)
             .Style(options.Style);
         }
+        public static void AddTextItem(this ColumnDescriptor column, LabelValueTextOptions options)
+        {
+            column.Item()
+            .PaddingTop(options.PaddingTop)
+            .PaddingBottom(options.PaddingBottom)
+            .Row(row =>
+            {
+                row.AutoItem()
+                .Text(options.Label)
+                .Style(options.LabelStyle);
+
+                row.AutoItem()
+                .PaddingLeft(5)
+               .Text(options.Value)
+               .Style(options.ValueStyle);
+            });      
+        }
     }
 }

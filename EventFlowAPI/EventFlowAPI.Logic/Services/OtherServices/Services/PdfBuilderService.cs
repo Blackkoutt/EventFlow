@@ -10,6 +10,7 @@ using EventFlowAPI.Logic.Helpers.PdfOptions.PdfSummaryOptions;
 using EventFlowAPI.Logic.Services.OtherServices.Interfaces;
 using EventFlowAPI.Logic.UnitOfWork;
 using QuestPDF.Fluent;
+using QuestPDF.Previewer;
 
 namespace EventFlowAPI.Logic.Services.OtherServices.Services
 {
@@ -18,7 +19,7 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
         private readonly IAssetService _assetService = assetService;
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
 
-        public async Task<byte[]> CreateHallRentPdf(HallRent hallRent)
+        public async Task<int> CreateHallRentPdf(HallRent hallRent)
         {
             var logoSmall = await _assetService.GetPictureAsBitmap(Helpers.Enums.Picture.EventFlowLogo_Small, ImageFormat.PNG);
             var additionalServices = (await _unitOfWork.GetRepository<AdditionalServices>().GetAllAsync()).ToList();
@@ -26,47 +27,54 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
             PageOptions pageOptions = new();
             CommonOptions commonOptions = new();
             HeaderOptions headerOptions = new();
+            ContentHallRentOptions festivalEventContentOptions = new(hallRent);
             HallRentInfoOptions hallRentInfoOptions = new(hallRent);
             HallRentSummaryOptions summaryOptions = new(hallRent, additionalServices);
             InfoAndStatuteHallRentOptions infoAndStatuteOptions = new();
 
             FooterOptions footerOptions = new();
 
-            using (var memoryStream = new MemoryStream())
+            Document.Create(container =>
             {
-                Document.Create(container =>
+                container.Page(page =>
                 {
-                    container.Page(page =>
+                    page.ConfigurePage(pageOptions);
+
+                    page.Header()
+                    .AddBottomLine(commonOptions)
+                    .AddHeaderLogo(logoSmall, headerOptions);
+
+                    page.Content()
+                    .Column(column =>
                     {
-                        page.ConfigurePage(pageOptions);
-
-                        page.Header()
+                        column.Item()
                         .AddBottomLine(commonOptions)
-                        .AddHeaderLogo(logoSmall, headerOptions);
+                        .AddOrderInfo(hallRentInfoOptions);
 
-                        page.Content()
-                        .Column(column =>
-                        {
-                            column.Item()
-                            .AddBottomLine(commonOptions)
-                            .AddOrderInfo(hallRentInfoOptions);
+                        column.Item()
+                        .AddBottomLine(commonOptions)
+                        .AddHallRentContent(festivalEventContentOptions);
 
-                            column.Item()
-                            .AddBottomLine(commonOptions)
-                            .AddSummaryContainer(summaryOptions);
+                        column.Item()
+                        .AddBottomLine(commonOptions)
+                        .AddSummaryContainer(summaryOptions);
 
-                            column.Item()
-                            .AddInfoAndStatute(infoAndStatuteOptions);
-                        });
-
-                        page.Footer()
-                        .AddTopLine(commonOptions)
-                        .AddFooterLogoAndPageNumber(logoSmall, footerOptions);
+                        column.Item()
+                        .AddInfoAndStatute(infoAndStatuteOptions);
                     });
-                }).GeneratePdf(memoryStream);
 
-                return memoryStream.ToArray();
-            }
+                    page.Footer()
+                    .AddTopLine(commonOptions)
+                    .AddFooterLogoAndPageNumber(logoSmall, footerOptions);
+                });
+            }).ShowInPreviewer(); //.GeneratePdf(memoryStream);
+            /* using (var memoryStream = new MemoryStream())
+             {
+
+
+                 return memoryStream.ToArray();
+             }*/
+            return 1;
         }
         public async Task<byte[]> CreateEventPassPdf(EventPass eventPass, byte[] eventPassJPGBitmap, EventPassType? oldEventPassType)
         {
@@ -150,7 +158,7 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
             HeaderOptions headerOptions = new();
             CommonOptions commonOptions = new();
             ReservationInfoOptions reservationInfoOptions = new(reservation);
-            FestivalEventInfoOptions festivalEventInfoOptions = new(reservation);
+            ContentFestivalEventOptions festivalEventContentOptions = new(reservation);
             PictureOptions ticketPictureOptions = new();
             ReservationSummaryOptions summaryOptions = new(reservation, seatTypes, ticketsForEventOrFestival);                                
             FooterOptions footerOptions = new();  
@@ -176,7 +184,7 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
                             .AddOrderInfo(reservationInfoOptions);
 
                             column.Item()
-                            .AddEventOrFestivalInfo(festivalEventInfoOptions);
+                            .AddEventOrFestivalContent(festivalEventContentOptions);
 
                             column.Item()
                             .AddTicketPictures(tickets, ticketPictureOptions, commonOptions);

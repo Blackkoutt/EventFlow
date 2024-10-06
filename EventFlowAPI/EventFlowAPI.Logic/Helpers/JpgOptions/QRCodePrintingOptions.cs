@@ -1,11 +1,9 @@
-﻿using SixLabors.ImageSharp;
+﻿using EventFlowAPI.Logic.Helpers.JpgOptions;
 
 namespace EventFlowAPI.Logic.Helpers.TicketOptions
 {
-    public class QRCodePrintingOptions
-    {
-        public Point Location { get; set; } 
-        public float Opacity { get; set; }
+    public class QRCodePrintingOptions : ImagePrintingOptions
+    {     
         public byte Size { get; set; }
     }
 }

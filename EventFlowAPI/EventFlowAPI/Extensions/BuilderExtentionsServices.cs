@@ -3,9 +3,11 @@ using EventFlowAPI.Logic.Identity.Services.Services;
 using EventFlowAPI.Logic.Services.CRUDServices.Interfaces;
 using EventFlowAPI.Logic.Services.CRUDServices.Services;
 using EventFlowAPI.Logic.Services.OtherServices.Interfaces;
+using EventFlowAPI.Logic.Services.OtherServices.Interfaces.Configuration.HallConfiguration;
 using EventFlowAPI.Logic.Services.OtherServices.Interfaces.Configuration.PassConfiguration;
 using EventFlowAPI.Logic.Services.OtherServices.Interfaces.Configuration.TicketConfiguration;
 using EventFlowAPI.Logic.Services.OtherServices.Services;
+using EventFlowAPI.Logic.Services.OtherServices.Services.Configuration.HallConfiguration;
 using EventFlowAPI.Logic.Services.OtherServices.Services.Configuration.PassConfiguration;
 using EventFlowAPI.Logic.Services.OtherServices.Services.Configuration.TicketConfiguration;
 using EventFlowAPI.Logic.UnitOfWork;
@@ -64,6 +66,7 @@ namespace EventFlowAPI.Extensions
             services.AddScoped<IFileService, FileService>();
             services.AddScoped<IEventPassConfiguration, EventPassConfiguration>();
             services.AddScoped<ICollisionCheckerService, CollisionCheckerService>();
+            services.AddScoped<IHallSeatsConfiguration, HallSeatsConfiguration>();
         }
     }
 }

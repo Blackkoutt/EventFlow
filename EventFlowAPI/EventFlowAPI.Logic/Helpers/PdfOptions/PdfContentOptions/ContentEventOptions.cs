@@ -6,7 +6,7 @@ using QuestPDF.Infrastructure;
 
 namespace EventFlowAPI.Logic.Helpers.PdfOptions.PdfContentOptions
 {
-    public class EventInfoOptions(Reservation reservation)
+    public class ContentEventOptions(Reservation reservation)
     {
         private readonly string defaultFontType = FontType.Inter.ToString();
         private readonly Reservation _reservation = reservation;

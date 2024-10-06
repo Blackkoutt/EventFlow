@@ -14,9 +14,6 @@ using EventFlowAPI.Logic.Extensions;
 using EventFlowAPI.Logic.Helpers;
 using EventFlowAPI.Logic.Identity.Helpers;
 using EventFlowAPI.Logic.Services.OtherServices.Interfaces;
-using Microsoft.AspNetCore.Mvc;
-using AutoMapper;
-using Microsoft.AspNetCore.Mvc.TagHelpers;
 
 namespace EventFlowAPI.Logic.Services.CRUDServices.Services
 {
@@ -158,28 +155,14 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             return Result<EventResponseDto>.Success(newEventEntityDto);
         }
 
+        
         public sealed override async Task<Result<object>> DeleteAsync(int id)
         {
-            if (id < 0)
-                return Result<object>.Failure(Error.RouteParamOutOfRange);
+            var validationResult = await ValidateBeforeDelete(id);
+            if (!validationResult.IsSuccessful)
+                return Result<object>.Failure(validationResult.Error);
 
-            var eventEntity = await _repository.GetOneAsync(id);
-            if (eventEntity == null)
-                return Result<object>.Failure(Error.NotFound);
-
-            if (eventEntity.IsCanceled)
-                return Result<object>.Failure(EventError.EventIsCanceled);
-
-            if (eventEntity.IsExpired)
-                return Result<object>.Failure(EventError.EventIsExpired);
-
-            var userResult = await _userService.GetCurrentUser();
-            if (!userResult.IsSuccessful)
-                return Result<object>.Failure(userResult.Error);
-
-            var user = userResult.Value;
-            if (!user.IsInRole(Roles.Admin))
-                return Result<object>.Failure(AuthError.UserDoesNotHavePremissionToResource);
+            var eventEntity = validationResult.Value;
 
             var reservationsForEvent = await _reservationService.GetActiveReservationsForEvent(eventEntity.Id);
             if (reservationsForEvent.Any())
@@ -191,6 +174,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
                 var cancelReservationError = await _reservationService.CancelReservationsInCauseOfDeleteEventOrHall(reservationsForEvent, eventEntity);
                 if(cancelReservationError != Error.None)
                     return Result<object>.Failure(cancelReservationError);
+
             }
             else
             {
@@ -208,10 +192,6 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
 
             return Result<object>.Success();
         }
-
-
-        
-
 
         
 
@@ -439,6 +419,32 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
                     }         
                 }
             }
+        }
+
+        private async Task<Result<Event>> ValidateBeforeDelete(int id)
+        {
+            if (id < 0)
+                return Result<Event>.Failure(Error.RouteParamOutOfRange);
+
+            var eventEntity = await _repository.GetOneAsync(id);
+            if (eventEntity == null)
+                return Result<Event>.Failure(Error.NotFound);
+
+            if (eventEntity.IsCanceled)
+                return Result<Event>.Failure(EventError.EventIsCanceled);
+
+            if (eventEntity.IsExpired)
+                return Result<Event>.Failure(EventError.EventIsExpired);
+
+            var userResult = await _userService.GetCurrentUser();
+            if (!userResult.IsSuccessful)
+                return Result<Event>.Failure(userResult.Error);
+
+            var user = userResult.Value;
+            if (!user.IsInRole(Roles.Admin))
+                return Result<Event>.Failure(AuthError.UserDoesNotHavePremissionToResource);
+
+            return Result<Event>.Success(eventEntity);
         }
 
         protected sealed override async Task<Error> ValidateEntity(EventRequestDto? requestDto, int? id = null)
