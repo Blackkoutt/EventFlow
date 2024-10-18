@@ -8,15 +8,14 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services.Configuration.HallC
         private readonly Color canvasBorderColor = Color.LightSlateGray;
         private const float canvasBorderThickness = 10f;
         private readonly PointF canvasBorderLocation = new PointF(x: 0f, y: 0f);
-        private readonly SizeF canvasBorderSize = new SizeF(width: 0f, height: 0f);
         public float CanvasBorderThickness => canvasBorderThickness;
 
-        public OutlineRectanglePrintingOptions CanvasBorderPrintingOptions =>
+        public OutlineRectanglePrintingOptions GetCanvasBorderPrintingOptions(float width, float height) =>
             new OutlineRectanglePrintingOptions
             {
                 Color = canvasBorderColor,
                 Thickness = canvasBorderThickness,
-                Rectangle = new RectangleF(canvasBorderLocation, canvasBorderSize)
+                Rectangle = new RectangleF(canvasBorderLocation, new SizeF(width, height))
             };
     }
 }

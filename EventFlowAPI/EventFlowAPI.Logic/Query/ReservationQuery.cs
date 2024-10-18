@@ -5,6 +5,6 @@ namespace EventFlowAPI.Logic.Query
 {
     public sealed class ReservationQuery : QueryObject
     {
-        public ReservationStatus? Status { get; set; }
+        public Status? Status { get; set; }
     }
 }

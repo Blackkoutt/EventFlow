@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace EventFlowAPI.DB.Entities
 {
-    public class AdditionalServices : BaseEntity, INameableEntity
+    public class AdditionalServices : BaseEntity
     {
         [MaxLength(40)]
         public string Name { get; set; } = string.Empty;

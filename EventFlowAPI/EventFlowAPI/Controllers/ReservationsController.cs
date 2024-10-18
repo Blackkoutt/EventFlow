@@ -1,4 +1,6 @@
-﻿using EventFlowAPI.Logic.DTO.RequestDto;
+﻿using EventFlowAPI.DB.Entities;
+using EventFlowAPI.Logic.DTO.RequestDto;
+using EventFlowAPI.Logic.Helpers.Enums;
 using EventFlowAPI.Logic.Query;
 using EventFlowAPI.Logic.Services.CRUDServices.Interfaces;
 using EventFlowAPI.Logic.Services.CRUDServices.Services;
@@ -96,7 +98,7 @@ namespace EventFlowAPI.Controllers
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<IActionResult> GetTicketPdfByReservationId([FromRoute] int id)
         {
-            var result = await _fileService.GetTicketPDF(id);
+            var result = await _fileService.GetFile<Reservation>(id, FileType.PDF, BlobContainer.TicketsPDF);
             if (!result.IsSuccessful)
             {
                 return result.Error.Details!.Code switch

@@ -11,7 +11,12 @@ namespace EventFlowAPI.Logic.Repositories.Repositories
         public sealed override async Task<IEnumerable<Hall>> GetAllAsync(Func<IQueryable<Hall>, IQueryable<Hall>>? query = null)
         {
             var _table = _context.Hall
-                        .Include(h => h.Type);
+                        .Include(h => h.Type)
+                        .Include(h => h.HallDetails)
+                        .Include(h => h.Seats)
+                            .ThenInclude(s => s.SeatType)
+                        .Include(h => h.Seats)
+                            .ThenInclude(s => s.Reservations);
 
             return await (query != null ? query(_table).ToListAsync() : _table.ToListAsync());
         }
@@ -19,8 +24,8 @@ namespace EventFlowAPI.Logic.Repositories.Repositories
         public sealed override async Task<Hall?> GetOneAsync(int id)
         {
             return await _context.Hall
-                        .Include(h => h.HallDetails)
                         .Include(h => h.Type)
+                        .Include(h => h.HallDetails)
                         .Include(h => h.Seats)
                             .ThenInclude(s => s.SeatType)
                         .Include(h => h.Seats)

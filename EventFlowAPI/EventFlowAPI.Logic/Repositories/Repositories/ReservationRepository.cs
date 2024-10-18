@@ -22,6 +22,9 @@ namespace EventFlowAPI.Logic.Repositories.Repositories
                                 .Include(r => r.Ticket)
                                     .ThenInclude(t => t.Event)
                                         .ThenInclude(e => e.Hall)
+                                 .Include(r => r.Ticket)
+                                    .ThenInclude(t => t.Event)
+                                        .ThenInclude(e => e.Category)
                                 .Include(r => r.Ticket)
                                     .ThenInclude(t => t != null ? t.Festival : null)
                                 .AsSplitQuery();
@@ -42,6 +45,9 @@ namespace EventFlowAPI.Logic.Repositories.Repositories
                         .Include(r => r.Ticket)
                             .ThenInclude(t => t.Event)
                                 .ThenInclude(e => e.Hall)
+                        .Include(r => r.Ticket)
+                            .ThenInclude(t => t.Event)
+                                .ThenInclude(e => e.Category)
                         .Include(r => r.Ticket)
                             .ThenInclude(t => t != null ? t.Festival : null)
                         .FirstOrDefaultAsync(e => e.Id == id);

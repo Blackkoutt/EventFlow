@@ -4,7 +4,7 @@ using EventFlowAPI.Logic.DTO.Abstract;
 using EventFlowAPI.Logic.DTO.RequestDto;
 using EventFlowAPI.Logic.DTO.ResponseDto;
 using EventFlowAPI.Logic.Errors;
-using EventFlowAPI.Logic.Helpers;
+using EventFlowAPI.Logic.Extensions;
 using EventFlowAPI.Logic.Identity.Helpers;
 using EventFlowAPI.Logic.Mapper.Extensions;
 using EventFlowAPI.Logic.Query;
@@ -14,8 +14,6 @@ using EventFlowAPI.Logic.Services.CRUDServices.Interfaces;
 using EventFlowAPI.Logic.Services.CRUDServices.Services.BaseServices;
 using EventFlowAPI.Logic.Services.OtherServices.Interfaces;
 using EventFlowAPI.Logic.UnitOfWork;
-using Microsoft.EntityFrameworkCore.SqlServer.Query.Internal;
-using System;
 
 namespace EventFlowAPI.Logic.Services.CRUDServices.Services
 {
@@ -26,7 +24,9 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
         IReservationService reservationService,
         IEmailSenderService emailSender, 
         IFestivalService festivalService,
-        ITicketService ticketService) :
+        ITicketService ticketService,
+        IHallRentService hallRentService,
+        IFileService fileService) :
         GenericService<
             Hall,
             HallRequestDto,
@@ -40,6 +40,8 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
         private readonly IEmailSenderService _emailSender = emailSender;
         private readonly IFestivalService _festivalService = festivalService;
         private readonly ITicketService _ticketService = ticketService;
+        private readonly IHallRentService _hallRentService = hallRentService;
+        private readonly IFileService _fileService = fileService;
 
         public sealed override async Task<Result<IEnumerable<HallResponseDto>>> GetAllAsync(QueryObject query)
         {
@@ -68,6 +70,14 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             await _unitOfWork.SaveChangesAsync();
 
             hallEntity.DefaultId = hallEntity.Id;
+
+            // HallView PDF
+            var hallViewFileNameResult = await _fileService.CreateHallViewPDF(hallEntity, null, null, isUpdate: false);
+            if (!hallViewFileNameResult.IsSuccessful)
+                return Result<HallResponseDto>.Failure(hallViewFileNameResult.Error);
+            var hallViewPDFFileName = hallViewFileNameResult.Value;
+            hallEntity.HallViewFileName = hallViewPDFFileName;
+
             _repository.Update(hallEntity);
             await _unitOfWork.SaveChangesAsync();
 
@@ -90,75 +100,58 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             if (!hallEntity.IsVisible)
                 return Result<HallResponseDto>.Failure(Error.NotFound);
 
-            var allSameHalls = await _repository.GetAllAsync(q =>
-                                    q.Where(h => 
-                                    h.Id != hallEntity.Id &&
-                                    h.DefaultId == hallEntity.DefaultId));
-
-
             if (hallEntity.HallNr != requestDto!.HallNr ||
                 hallEntity.Floor != requestDto!.Floor ||
                 hallEntity.HallDetails!.TotalLength != requestDto!.HallDetails!.TotalLength ||
                 hallEntity.HallDetails!.TotalWidth != requestDto!.HallDetails!.TotalWidth)
             {
-                foreach (var hall in allSameHalls)
-                {
-                    hall.HallNr = requestDto!.HallNr;
-                    hall.Floor = requestDto!.Floor;
-                    hall.HallDetails!.TotalLength = requestDto!.HallDetails.TotalLength;
-                    hall.HallDetails!.TotalWidth = requestDto!.HallDetails.TotalWidth;
-                    decimal copyHallArea = requestDto!.HallDetails.TotalLength * requestDto!.HallDetails.TotalWidth;
-                    hall.HallDetails!.TotalArea = Math.Round(copyHallArea, 2);
-
-                    _repository.Update(hall);
-                }
+                await UpdateHallCopies(hallEntity, requestDto);
             }
-
             await _unitOfWork.SaveChangesAsync();
 
-            var allActiveReservations = await _unitOfWork.GetRepository<Reservation>().GetAllAsync(q =>
-                                            q.Where(r =>
-                                            !r.IsCanceled &&
-                                            r.EndOfReservationDate > DateTime.Now &&
-                                            r.Ticket.Event.Hall.DefaultId == hallEntity.DefaultId));
-
-            var allActiveHallRents = await _unitOfWork.GetRepository<HallRent>().GetAllAsync(q =>
-                                            q.Where(hr =>
-                                            hr.Hall.DefaultId == hallEntity.DefaultId &&
-                                            !hr.IsCanceled &&
-                                            hr.EndDate > DateTime.Now));
-            
-            // seats i hall type nie ma znaczenia bo update ogolny
-            if (allActiveReservations.Any() && hallEntity.HallNr != requestDto!.HallNr)
+            var oldHallEntity = new Hall
             {
-                OldEventInfo oldEventInfo = new();
-                oldEventInfo.HallNr = hallEntity.HallNr;
-                await _reservationService.SendMailsAboutUpdatedReservations(allActiveReservations, oldEventInfo);
-            }
-            
-            if (allActiveHallRents.Any() && 
-                (hallEntity.HallNr != requestDto!.HallNr ||
-                hallEntity.HallDetails!.TotalLength != requestDto!.HallDetails!.TotalLength ||
-                hallEntity.HallDetails!.TotalWidth != requestDto!.HallDetails!.TotalWidth))
-            {
-                // send mail to all active hall rents !!
-            }
+                HallNr = hallEntity.HallNr,
+                HallDetails = new HallDetails
+                {
+                    TotalLength = hallEntity.HallDetails!.TotalLength,
+                    TotalWidth = hallEntity.HallDetails!.TotalWidth,
+                }
+            };
 
-            // Other changes -> update only this hallEntity, only for new resrvations and hall rents
             var newHallEntity = (Hall)MapToEntity(requestDto, hallEntity);
             decimal area = requestDto!.HallDetails.TotalLength * requestDto!.HallDetails.TotalWidth;
             newHallEntity.HallDetails!.TotalArea = Math.Round(area, 2);
 
-            _repository.Update(newHallEntity);
+            // HallView Update
+            var hallViewFileNameResult = await _fileService.CreateHallViewPDF(newHallEntity, null, null, isUpdate: true);
+            if (!hallViewFileNameResult.IsSuccessful)
+                return Result<HallResponseDto>.Failure(hallViewFileNameResult.Error);
 
+            _repository.Update(newHallEntity);
             await _unitOfWork.SaveChangesAsync();
 
-            var newHallEntityDto = MapAsDto(newHallEntity);
+            // Update Reservations for events in hall
+            if (hallEntity.HallNr != requestDto!.HallNr)
+            {
+                var updateReservationError = await UpdateReservationsInCauseOfHallUpdate(hallEntity, oldHallEntity);
+                if (updateReservationError != Error.None)
+                    return Result<HallResponseDto>.Failure(updateReservationError);
+            }
 
+            // Update Hall Rents in hall
+            if (hallEntity.HallNr != requestDto!.HallNr ||
+                hallEntity.HallDetails!.TotalLength != requestDto!.HallDetails!.TotalLength ||
+                hallEntity.HallDetails!.TotalWidth != requestDto!.HallDetails!.TotalWidth)
+            {
+                var updateHallRentError = await UpdateHallRentsInCauseOfHallUpdate(hallEntity, oldHallEntity);
+                if (updateHallRentError != Error.None)
+                    return Result<HallResponseDto>.Failure(updateHallRentError);
+            }
+
+            var newHallEntityDto = MapAsDto(newHallEntity);
             return Result<HallResponseDto>.Success(newHallEntityDto);
         }
-
-        
 
         public async Task<Result<HallResponseDto>> UpdateHallForEvent(int eventId, EventHallRequestDto? requestDto)
         {
@@ -167,9 +160,14 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
                 return Result<HallResponseDto>.Failure(validationError);
 
             var eventEntity = await _unitOfWork.GetRepository<Event>().GetOneAsync(eventId);
-            var hallEntity = eventEntity!.Hall;                    
+            var hallEntity = await _unitOfWork.GetRepository<Hall>().GetOneAsync(eventEntity!.HallId);
 
-            hallEntity = (Hall)MapToEntity(requestDto!, hallEntity);
+            hallEntity = (Hall)MapToEntity(requestDto!, hallEntity!);
+
+            // HallView Update
+            var eventHallViewFileNameResult = await _fileService.CreateHallViewPDF(hallEntity, null, eventEntity, isUpdate: true);
+            if (!eventHallViewFileNameResult.IsSuccessful)
+                return Result<HallResponseDto>.Failure(eventHallViewFileNameResult.Error);
 
             _repository.Update(hallEntity);
             await _unitOfWork.SaveChangesAsync();
@@ -179,7 +177,6 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             return Result<HallResponseDto>.Success(hallEntityDto);
         }
 
-
         public async Task<Result<HallResponseDto>> UpdateHallForRent(int rentId, HallRent_HallRequestDto? requestDto)
         {
             var validationError = await ValidateBeforeUpdateHallForRent(requestDto, rentId);
@@ -187,9 +184,13 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
                 return Result<HallResponseDto>.Failure(validationError);
 
             var rentEntity = await _unitOfWork.GetRepository<HallRent>().GetOneAsync(rentId);
-            var hallEntity = rentEntity!.Hall;
+            var hallEntity = await _unitOfWork.GetRepository<Hall>().GetOneAsync(rentEntity!.HallId);
 
-            hallEntity = (Hall)MapToEntity(requestDto!, hallEntity);
+            hallEntity = (Hall)MapToEntity(requestDto!, hallEntity!);
+            // HallView Update
+            var eventHallViewFileNameResult = await _fileService.CreateHallViewPDF(hallEntity, rentEntity, null, isUpdate: true); ;
+            if (!eventHallViewFileNameResult.IsSuccessful)
+                return Result<HallResponseDto>.Failure(eventHallViewFileNameResult.Error);
 
             _repository.Update(hallEntity);
             await _unitOfWork.SaveChangesAsync();
@@ -222,7 +223,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
                                     .GetAllAsync(q =>
                                     q.Where(r =>
                                     !r.IsCanceled &&
-                                    r.EndOfReservationDate > DateTime.Now &&
+                                    r.EndDate > DateTime.Now &&
                                     allCopiesOfHallId.Contains(r.Ticket.Event.HallId)));
 
                 var eventsToDelete = await CancelEventsInHall(allCopiesOfHallId);
@@ -246,6 +247,69 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
         }
 
 
+        private async Task UpdateHallCopies(Hall hallEntity, HallRequestDto requestDto)
+        {
+            var hallCopies = await _repository.GetAllAsync(q =>
+                        q.Where(h =>
+                        h.Id != hallEntity.Id &&
+                        h.DefaultId == hallEntity.DefaultId));
+
+            foreach (var hall in hallCopies)
+            {
+                hall.HallNr = requestDto!.HallNr;
+                hall.Floor = requestDto!.Floor;
+                hall.HallDetails!.TotalLength = requestDto!.HallDetails.TotalLength;
+                hall.HallDetails!.TotalWidth = requestDto!.HallDetails.TotalWidth;
+                decimal copyHallArea = requestDto!.HallDetails.TotalLength * requestDto!.HallDetails.TotalWidth;
+                hall.HallDetails!.TotalArea = Math.Round(copyHallArea, 2);
+
+                _repository.Update(hall);
+            }
+        }
+
+        private async Task<Error> UpdateHallRentsInCauseOfHallUpdate(Hall hallEntity, Hall oldHallEntity)
+        {
+            var allActiveHallRents = await _unitOfWork.GetRepository<HallRent>().GetAllAsync(q =>
+                                q.Where(hr =>
+                                hr.Hall.DefaultId == hallEntity.DefaultId &&
+                                !hr.IsCanceled &&
+                                hr.EndDate > DateTime.Now));
+            if (allActiveHallRents.Any())
+            {
+                var sendMailError = await _hallRentService.SendMailsAboutUpdatedHallRents(allActiveHallRents, oldHallEntity);
+                if (sendMailError != Error.None)
+                    return sendMailError;
+            }
+            return Error.None;
+        }
+        private async Task<Error> UpdateReservationsInCauseOfHallUpdate(Hall hallEntity, Hall oldHallEntity)
+        {
+            var allActiveReservations = await _unitOfWork.GetRepository<Reservation>().GetAllAsync(q =>
+                                            q.Where(r =>
+                                            !r.IsCanceled &&
+                                            r.EndDate > DateTime.Now &&
+                                            r.Ticket.Event.Hall.DefaultId == hallEntity.DefaultId));
+            if (allActiveReservations.Any())
+            {
+                var eventsIds = allActiveReservations.Select(r => r.Ticket.EventId).Distinct();
+                var eventList = await _unitOfWork.GetRepository<Event>().GetAllAsync(q => q.Where(e => eventsIds.Contains(e.Id)));
+                foreach (var eventEntity in eventList)
+                {
+                    var hall = eventEntity.Hall;
+
+                    // HallView Update
+                    var eventHallViewFileNameResult = await _fileService.CreateHallViewPDF(hall, null, eventEntity, isUpdate: true);
+                    if (!eventHallViewFileNameResult.IsSuccessful)
+                        return eventHallViewFileNameResult.Error;
+                }
+
+                var sendMailError = await _reservationService.SendMailsAboutUpdatedReservations(allActiveReservations);
+                if (sendMailError != Error.None)
+                    return sendMailError;
+            }
+            return Error.None;
+        }
+
         private async Task<ICollection<Event>> CancelEventsInHall(IEnumerable<int> allCopiesOfHallId)
         {
             var eventsToDelete = await _unitOfWork.GetRepository<Event>()
@@ -267,61 +331,42 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
 
 
 
-        private async Task CancelHallRentsOnHall(List<int> allCopiesOfHallId)
+        private async Task<Error> CancelHallRentsOnHall(List<int> allCopiesOfHallId)
         {
             var hallRentRepo = _unitOfWork.GetRepository<HallRent>();
 
-            var hallRents = await hallRentRepo
+            var hallRentsToDelete = await hallRentRepo
                                     .GetAllAsync(q =>
                                     q.Where(hr =>
                                     !hr.IsCanceled &&
                                     hr.StartDate > DateTime.Now.AddHours(3) &&
                                     allCopiesOfHallId.Contains(hr.HallId)));
 
-            // cancel all hall rents 
-            foreach (var hallRent in hallRents)
+            // Cancel all Hall Rents 
+            foreach (var hallRent in hallRentsToDelete)
             {
-                // send mail about canceled hall rents !!!
-                hallRent.CancelDate = DateTime.Now;
-                hallRent.IsCanceled = true;
-                hallRentRepo.Update(hallRent);
+                var deleteError = await _hallRentService.SoftDeleteHallRent(hallRent);
+                if (deleteError != Error.None)
+                    return deleteError;
             }
-        }
-
-        
-
-        public async Task<Result<Hall>> MakeCopyOfHall(int hallId)
-        {
-            var hallEntity = await _repository.GetOneAsync(hallId);
-            if (hallEntity == null || !hallEntity.IsVisible)
-                return Result<Hall>.Failure(Error.NotFound);
-
-            hallEntity.DefaultId = hallEntity.Id;
-
-            // Copy Hall
-            _repository.Detach(hallEntity);
-            hallEntity.Id = 0;
-
-            // Copy Hall Details
-            _unitOfWork.GetRepository<HallDetails>().Detach(hallEntity.HallDetails!);
-            hallEntity.HallDetails!.Id = 0;
-
-            // Copy Seats
-            foreach(var seat in hallEntity.Seats)
-            {
-                _unitOfWork.GetRepository<Seat>().Detach(seat);
-                seat.Id = 0;
-            }
-            hallEntity.Events = [];
-            hallEntity.Rents = [];
-            hallEntity.IsCopy = true;
-            hallEntity.IsVisible = false;
-
-            await _repository.AddAsync(hallEntity);
             await _unitOfWork.SaveChangesAsync();
+            
+            // Send info about canceled Hall Rents
+            var hallRentsGroupByUser = hallRentsToDelete.GroupBy(r => r.UserId)
+                                            .Select(g => new
+                                            {
+                                                UserId = g.Key,
+                                                HallRents = g.ToList(),
+                                            });
 
-            return Result<Hall>.Success(hallEntity);
-        }      
+            foreach(var group in hallRentsGroupByUser)
+            {
+                var userHallRents = group.HallRents;
+                await _emailSender.SendInfoAboutCanceledHallRents(userHallRents);
+            }
+
+            return Error.None;
+        }
 
 
         private static List<Seat> GetListOfChangedSeats(ICollection<Seat> seatsFromEntity, ICollection<SeatRequestDto> seatsFromRequest)
@@ -389,7 +434,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
                 return userResult.Error;
 
             var user = userResult.Value;
-            if (!user.UserRoles.Contains(Roles.Admin))
+            if (!user.IsInRole(Roles.Admin))
                 return AuthError.UserDoesNotHaveSpecificRole;
 
             if (rentId < 0)
@@ -432,7 +477,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
                 return userResult.Error;
 
             var user = userResult.Value;
-            if (!user.UserRoles.Contains(Roles.Admin))
+            if (!user.IsInRole(Roles.Admin))
                 return AuthError.UserDoesNotHaveSpecificRole;
 
             if (eventId < 0)
@@ -465,7 +510,9 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             if (isValidSeatsRowAndColumnError != Error.None)
                 return isValidSeatsRowAndColumnError;
 
-            var changedSeats = GetListOfChangedSeats(eventEntity.Hall.Seats, hallRequestDto.Seats);
+            var hall = await _unitOfWork.GetRepository<Hall>().GetOneAsync(eventEntity.HallId);
+
+            var changedSeats = GetListOfChangedSeats(hall!.Seats, hallRequestDto.Seats);
 
             var haveNotAvailableSeatChanged = changedSeats.Any(seat =>
                 _seatService.IsSeatHaveActiveReservationForEvent(seat, eventEntity));
@@ -483,7 +530,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
                 return Result<Hall>.Failure(userResult.Error);
 
             var user = userResult.Value;
-            if (!user.UserRoles.Contains(Roles.Admin))
+            if (!user.IsInRole(Roles.Admin))
                 return Result<Hall>.Failure(AuthError.UserDoesNotHaveSpecificRole);
 
             if (id < 0)
@@ -537,12 +584,17 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
                 return userResult.Error;
 
             var user = userResult.Value;
-            if (!user.UserRoles.Contains(Roles.Admin))
+            if (!user.IsInRole(Roles.Admin))
                 return AuthError.UserDoesNotHaveSpecificRole;
 
-            var baseValidationError = await base.ValidateEntity(requestDto, id);
-            if (baseValidationError != Error.None)
-                return baseValidationError;
+            if (id != null && id < 0)
+                return Error.RouteParamOutOfRange;
+
+            if (requestDto == null)
+                return Error.NullParameter;
+
+            if (await IsSameEntityExistInDatabase(requestDto, id))
+                return HallError.HallAlreadyExists;
 
             if (!await IsEntityExistInDB<HallType>(requestDto!.HallTypeId))
                 return HallError.HallTypeNotFound;
@@ -568,7 +620,10 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             return records.Select(entity =>
             {
                 var responseDto = entity.AsDto<HallResponseDto>();
+                responseDto.HallDetails = null;
                 responseDto.Type = entity.Type.AsDto<HallTypeResponseDto>();
+                responseDto.Type.Equipments = [];
+                responseDto.Seats = [];
                 return responseDto;
             });
         }
@@ -613,8 +668,9 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
 
         private IEntity MapToEntity(HallRent_HallRequestDto requestDto, Hall oldEntity)
         {
+            var hallDetails = (HallDetails)requestDto.HallDetails.MapTo(oldEntity.HallDetails!);
             var hallEntity = (Hall)requestDto.MapTo(oldEntity);
-            hallEntity.HallDetails = (HallDetails)requestDto.HallDetails.MapTo(oldEntity.HallDetails!);
+            hallEntity.HallDetails = hallDetails;
 
             hallEntity.HallDetails!.NumberOfSeats = hallEntity.Seats.Count;
             hallEntity.HallDetails!.MaxNumberOfSeats = hallEntity.HallDetails!.MaxNumberOfSeatsRows * hallEntity.HallDetails!.MaxNumberOfSeatsColumns;
@@ -627,15 +683,24 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
 
         private IEntity MapToEntity(EventHallRequestDto requestDto, Hall oldEntity)
         {
-            var hallEntity = (Hall)requestDto.MapTo(oldEntity);
-            hallEntity.HallDetails = (HallDetails)requestDto.HallDetails.MapTo(oldEntity.HallDetails!);
+            var hallDetails = (HallDetails)requestDto.HallDetails.MapTo(oldEntity.HallDetails!);
+            //var hallEntity = (Hall)requestDto.MapTo(oldEntity);
+            oldEntity.HallDetails = hallDetails;
+            oldEntity.HallTypeId = requestDto.HallTypeId; 
+            
+            var seatsWithoutReservations = oldEntity.Seats.Where(s => !s.Reservations.Any());
+            var seatsWithoutReservationsNumbers = seatsWithoutReservations.Select(s => s.SeatNr);
+            var requestSeatsWithoutReservations = requestDto.Seats.Where(s => seatsWithoutReservationsNumbers.Contains(s.SeatNr));
 
-            hallEntity.HallDetails!.NumberOfSeats = hallEntity.Seats.Count;
-            hallEntity.HallDetails!.MaxNumberOfSeats = hallEntity.HallDetails!.MaxNumberOfSeatsRows * hallEntity.HallDetails!.MaxNumberOfSeatsColumns;
+            oldEntity.Seats.ToList().RemoveAll(s => seatsWithoutReservations.Contains(s));
+            var newHallSeatsWithoutReservations = MapSeats(oldEntity.Seats, requestSeatsWithoutReservations.ToList());
+            oldEntity.Seats.ToList().AddRange(newHallSeatsWithoutReservations);
 
-            hallEntity.Seats = MapSeats(oldEntity.Seats, requestDto.Seats);
+            oldEntity.HallDetails!.NumberOfSeats = oldEntity.Seats.Count;
+            oldEntity.HallDetails!.MaxNumberOfSeats = oldEntity.HallDetails!.MaxNumberOfSeatsRows * oldEntity.HallDetails!.MaxNumberOfSeatsColumns;
 
-            return hallEntity;
+
+            return oldEntity;
         }
 
 

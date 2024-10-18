@@ -110,7 +110,8 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services.Configuration.HallC
             startPointY = canvasBorderThickness + paddingFromCanvasBorder;
         }
 
-        public OutlineRectanglePrintingOptions CanvasBorderPrintingOptions => _canvasBorderConfiguration.CanvasBorderPrintingOptions;
+        public OutlineRectanglePrintingOptions CanvasBorderPrintingOptions => 
+            _canvasBorderConfiguration.GetCanvasBorderPrintingOptions(CanvasWidth, CanvasHeight);
 
 
 

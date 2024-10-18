@@ -1,13 +1,23 @@
-﻿<html>
+﻿@using EventFlowAPI.DB.Entities
+@using EventFlowAPI.Logic.Helpers
+<html>
 <body>
     <div style="margin-top:20px;">
         <img style="max-width:200px; min-width: 100px;" src="cid:@LogoContentId" alt="EventFlow Logo" />
-        <h1>Twój bilet EventFlow - rezerwacja nr @ReservationId</h1>
+        <h1>Twój bilet EventFlow - rezerwacja nr @Reservation.Id</h1>
         <p>Otrzymujesz ten e-mail w związku z rezerwacją dokonaną w serwisie EventFlow.</p>
         <p>
             <strong>
                 W załączniku znajduje plik PDF z potwierdzeniem zamówienia oraz biletem.
             </strong>
+        </p>
+        <p>
+            <strong>Podstawowe informacje o rezerwacji:</strong><br />
+            <strong>ID rezerwacji:</strong> @Reservation.Id<br />
+            <strong>Wydarzenie:</strong> @Reservation.Ticket.Event.Name<br />
+            <strong>Gdzie?:</strong> sala nr @Reservation.Ticket.Event.Hall.HallNr, piętro @Reservation.Ticket.Event.Hall.Floor<br />
+            <strong>Kiedy?:</strong> @Reservation.Ticket.Event.StartDate.ToString(DateFormat.DateTime)<br />
+            <strong>Numery miejsc:</strong> @string.Join(", ", Reservation.Seats.Select(s => s.SeatNr))<br />
         </p>
         <p>
             <strong>
@@ -49,6 +59,6 @@
 </html>
 
 @code {
-    [Parameter] public int ReservationId { get; set; }
+    [Parameter] public Reservation Reservation { get; set; } = default!;
     [Parameter] public string LogoContentId { get; set; } = string.Empty;
 }

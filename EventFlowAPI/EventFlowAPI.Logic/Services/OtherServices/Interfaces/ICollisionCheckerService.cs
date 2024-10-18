@@ -4,7 +4,7 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Interfaces
 {
     public interface ICollisionCheckerService
     {
-        Task<bool> CheckTimeCollisionsWithHallRents(ICollisionalRequestDto newEntityRequest);
-        Task<bool> CheckTimeCollisionsWithEvents(ICollisionalRequestDto newEntityRequest);
+        Task<bool> CheckTimeCollisionsWithHallRents(ICollisionalRequestDto newEntityRequest, int? hallRentId = null);
+        Task<bool> CheckTimeCollisionsWithEvents(ICollisionalRequestDto newEntityRequest, int? eventId = null);
     }
 }

@@ -15,6 +15,5 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Interfaces
     {
         Task<Result<HallResponseDto>> UpdateHallForEvent(int eventId, EventHallRequestDto? requestDto);
         Task<Result<HallResponseDto>> UpdateHallForRent(int rentId, HallRent_HallRequestDto? requestDto);
-        Task<Result<Hall>> MakeCopyOfHall(int hallId);
     }
 }

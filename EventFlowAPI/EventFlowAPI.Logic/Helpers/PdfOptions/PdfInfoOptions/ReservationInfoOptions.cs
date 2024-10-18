@@ -12,7 +12,7 @@ namespace EventFlowAPI.Logic.Helpers.PdfOptions.PdfInfoOptions
 
         protected override string OrderIdLabel => "Numer rezerwacji";
         protected sealed override string OrderId => $"{_reservation.Id}";
-        protected override string DateLabel => "Rezerwacja dokonana";
+        protected override string DateLabel => "Rezerwacja dokonana:";
         protected sealed override string DateOfOrder => $"{_reservation.ReservationDate.ToString(DateFormat.DateTimeFullMonth)}";
         protected sealed override string TypeOfPayment => $"{_reservation.PaymentType.Name}";
         protected sealed override string UserName => $"{_reservation.User.Name}";

@@ -16,17 +16,31 @@ namespace EventFlowAPI.Controllers
         IAuthService authService,
         IUserService userService,
         IGoogleAuthService googleAuthService,
-        IFacebookAuthService facebookAuthService,
-        IEmailSenderService emailSender) : ControllerBase
+        IFacebookAuthService facebookAuthService) : ControllerBase
     {
         private readonly IAuthService _authService = authService;
         private readonly IUserService _userService = userService;
         private readonly IGoogleAuthService _googleAuthService = googleAuthService;
         private readonly IFacebookAuthService _facebookAuthService = facebookAuthService;
-        private readonly IEmailSenderService _emailSender= emailSender;
 
-
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="userRegisterRequestDto"></param>
+        /// <returns></returns>
+        /// <remarks>
+        /// Sample request:
+        /// 
+        ///     {
+        ///         "name": "Jan",
+        ///         "surname": "Kowalski",
+        ///         "email": "eventflow.test@interia.pl",
+        ///         "dateOfBirth": "1985-04-25",
+        ///         "password": "789!@#qwe",
+        ///         "confirmPassword": "789!@#qwe"
+        ///     }
+        ///       
+        /// </remarks>
         [HttpPost("register")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -112,24 +126,6 @@ namespace EventFlowAPI.Controllers
             }
             return Ok(result.Value);
         }
-
-        [HttpPost("send-email")]
-        public async Task<IActionResult> SendEmail()
-        {
-            var to = "oliwiahryniewicka1@interia.pl";
-            var subject = "Powiadomienie - EventFlow";
-            var content = "Siema wariacie";
-            var emailDto = new EmailDto 
-            {
-                Email = to,
-                Subject = subject,
-                Body = content
-            };
-            await _emailSender.SendEmailAsync(emailDto);
-            return Ok();
-        }
-
-
 
         [HttpGet("info")]
         [Authorize]

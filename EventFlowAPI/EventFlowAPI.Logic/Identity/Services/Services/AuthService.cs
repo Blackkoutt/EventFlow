@@ -42,7 +42,7 @@ namespace EventFlowAPI.Logic.Identity.Services.Services
                 return Result<UserRegisterResponseDto>.Failure(new AuthError(errors).ErrorsWhileCreatingUser);
             }
 
-            await _userManager.AddToRoleAsync(user, Roles.User);
+            await _userManager.AddToRoleAsync(user, Roles.User.ToString());
 
             return Result<UserRegisterResponseDto>.Success();
         }

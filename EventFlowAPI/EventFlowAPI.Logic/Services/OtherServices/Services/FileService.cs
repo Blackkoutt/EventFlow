@@ -3,6 +3,7 @@ using EventFlowAPI.DB.Entities.Abstract;
 using EventFlowAPI.Logic.Errors;
 using EventFlowAPI.Logic.Extensions;
 using EventFlowAPI.Logic.Helpers;
+using EventFlowAPI.Logic.Helpers.Enums;
 using EventFlowAPI.Logic.Identity.Helpers;
 using EventFlowAPI.Logic.Repositories.Interfaces;
 using EventFlowAPI.Logic.ResultObject;
@@ -28,12 +29,143 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
         private readonly IJPGCreatorService _jpgCreator = jpgCreatorService;
 
         private string zipArchiveName = @$"twoje_bilety_rezerwacja_nr_{{0}}.zip";
+        private string hallRentPDFFileNameTemplate = @$"wynajem_sali_{{0}}.pdf";
+        
+        // To Do
+        private async Task<string?> GetPDFFileName<TEntity>(TEntity entity, FileType fileType)
+        {
+            return entity switch
+            {
+                HallRent hallRent => fileType switch 
+                {
+                    FileType.PDF => hallRent.HallRentPDFName,
+                    _ => throw new ArgumentOutOfRangeException(nameof(fileType), $"Unsupported file type: {fileType}")
+                },
+                Hall hall => fileType switch
+                {
+                    FileType.PDF => hall.HallViewFileName,
+                    _ => throw new ArgumentOutOfRangeException(nameof(fileType), $"Unsupported file type: {fileType}")
+                },
+                Reservation reservation => fileType switch
+                {
+                    FileType.PDF => (await _unitOfWork.GetRepository<TicketPDF>().GetAllAsync(q => q.Where(t =>
+                                     t.Reservations.Any(r => r.Id == reservation.Id)))).FirstOrDefault()?.FileName,
+                    _ => throw new ArgumentOutOfRangeException(nameof(fileType), $"Unsupported file type: {fileType}")
+                },
+                EventPass eventPass => fileType switch
+                {
+                    FileType.PDF => eventPass.EventPassPDFName,
+                    FileType.JPEG => eventPass.EventPassJPGName,
+                    _ => throw new ArgumentOutOfRangeException(nameof(fileType), $"Unsupported file type: {fileType}")
+                },
+                _ => throw new ArgumentOutOfRangeException(nameof(entity), $"Unsupported type of entity: {entity!.GetType().Name}")
+            };
+        }
+
+
+        public async Task<Result<BlobResponseDto>> GetFile<TEntity>(int id, FileType fileType, BlobContainer container) where TEntity : class
+        {
+            var validationResult = await ValidateBeforeDownload<TEntity>(id);
+            if (!validationResult.IsSuccessful)
+                return Result<BlobResponseDto>.Failure(validationResult.Error);
+
+            var entity = validationResult.Value;
+
+            string? fileName = string.Empty;
+            if(container == BlobContainer.HallViewsPDF && entity is HallRent hallRent) 
+                fileName = await GetPDFFileName(hallRent.Hall, fileType);
+            else if(container == BlobContainer.HallViewsPDF && entity is Event eventEntity)
+                fileName = await GetPDFFileName(eventEntity.Hall, fileType);
+            else 
+                fileName = await GetPDFFileName(entity, fileType);
+                
+            if (string.IsNullOrEmpty(fileName))
+                return Result<BlobResponseDto>.Failure(BlobError.FileNameIsEmpty);
+
+            var blobRequest = new BlobRequestDto
+            {
+                Container = container,
+                FileName = fileName
+            };
+            var ticketPDFResult = await _blobService.DownloadAsync(blobRequest);
+            if (!ticketPDFResult.IsSuccessful)
+                return Result<BlobResponseDto>.Failure(ticketPDFResult.Error);
+
+            return Result<BlobResponseDto>.Success(ticketPDFResult.Value);
+        }
+
+
+        public async Task<Error> DeleteFile<TEntity>(TEntity entity, FileType fileType, BlobContainer container)
+        {
+            var fileName = await GetPDFFileName(entity, fileType);
+
+            if (string.IsNullOrEmpty(fileName))
+                return BlobError.FileNameIsEmpty;
+
+            var blob = new BlobRequestDto
+            {
+                Container = container,
+                FileName = fileName,
+            };
+            await _blobService.DeleteAsync(blob);
+
+            return Error.None;
+        }
+
+
+        public async Task<Result<(byte[] PDFFile, string FileName)>> CreateHallRentPDF(HallRent hallRent, bool isUpdate = false)
+        {
+            var hallRentPDFBitmap = await _pdfBuilder.CreateHallRentPdf(hallRent);
+
+            string fileName = string.Format(hallRentPDFFileNameTemplate, hallRent.HallRentGuid);
+
+            var pdfBlobResult = await _blobService.CreateBlob(
+                                       fileName: fileName,
+                                       blobContainer: BlobContainer.HallRentsPDF,
+                                       contentType: ContentType.PDF,
+                                       data: hallRentPDFBitmap,
+                                       isUpdate: isUpdate);
+
+            if (!pdfBlobResult.IsSuccessful)
+                return Result<(byte[], string)>.Failure(pdfBlobResult.Error);
+
+            return Result<(byte[], string)>.Success((hallRentPDFBitmap, fileName));
+        }
+
+        public async Task<Result<string>> CreateHallViewPDF(Hall hall, HallRent? hallRent = null, Event? eventEntity = null, bool isUpdate = false)
+        {
+            var hallViewJPGBitmap = await _jpgCreator.CreateHallJPG(hall);
+
+            var hallViewPDFBitmap = await _pdfBuilder.CreateHallViewPdf(hallViewJPGBitmap, hall, hallRent, eventEntity);
+
+            string fileName = string.Empty;
+            string fileNameTemplate = @$"sala_{{0}}.pdf";
+
+            if (hallRent != null)
+                fileName = string.Format(fileNameTemplate, $"{hallRent.Id}_{hall.Id}");
+            else if (eventEntity != null)
+                fileName = string.Format(fileNameTemplate, $"{eventEntity.Id}_{hall.Id}");
+            else
+                fileName = string.Format(fileNameTemplate, hall.Id);
+
+            var pdfBlobResult = await _blobService.CreateBlob(
+                                       fileName: fileName,
+                                       blobContainer: BlobContainer.HallViewsPDF,
+                                       contentType: ContentType.PDF,
+                                       data: hallViewPDFBitmap,
+                                       isUpdate: isUpdate);
+            if (!pdfBlobResult.IsSuccessful)
+                return Result<string>.Failure(pdfBlobResult.Error);
+
+            return Result<string>.Success(fileName);
+        }
+
 
         public async Task<Result<BlobResponseDto>> GetTicketsJPGsInZIPArchive(int reservationId)
         {
-            var validationError = await ValidateTicketFileDownload(reservationId);
-            if (validationError!=Error.None)
-                return Result<BlobResponseDto>.Failure(validationError);
+            var validationResult = await ValidateBeforeDownload<Reservation>(reservationId);
+            if (!validationResult.IsSuccessful)
+                return Result<BlobResponseDto>.Failure(validationResult.Error);
 
             var ticketJPGs = await _unitOfWork.GetRepository<TicketJPG>()
                                  .GetAllAsync(q => q.Where(t => t.Reservations.Any(r => r.Id == reservationId)));
@@ -50,7 +182,7 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
                 {
                     var blobRequest = new BlobRequestDto
                     {
-                        ContainerName = BlobContainer.TicketsJPG,
+                        Container = BlobContainer.TicketsJPG,
                         FileName = ticketJPG.FileName
                     };
 
@@ -81,110 +213,9 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
         }
 
 
-        public async Task<Result<BlobResponseDto>> GetTicketPDF(int reservationId)
-        {
-            var validationError = await ValidateTicketFileDownload(reservationId);
-            if (validationError != Error.None)
-                return Result<BlobResponseDto>.Failure(validationError);
-
-            var ticketPDFs = await _unitOfWork.GetRepository<TicketPDF>()
-                                .GetAllAsync(q => q.Where(t =>
-                                t.Reservations.Any(r => r.Id == reservationId)));
-            if (ticketPDFs == null || ticketPDFs.Count() == 0)
-            {
-                return Result<BlobResponseDto>.Failure(TicketPDFError.TicketPDFNotFound);
-            }
-            if (ticketPDFs.Count() > 1)
-            {
-                return Result<BlobResponseDto>.Failure(TicketPDFError.MoreThanOnePDFFound);
-            }
-
-            var blobRequest = new BlobRequestDto
-            {
-                ContainerName = BlobContainer.TicketsPDF,
-                FileName = ticketPDFs.First().FileName
-            };
-            var ticketPDFResult = await _blobService.DownloadAsync(blobRequest);
-            if (!ticketPDFResult.IsSuccessful)
-            {
-                return Result<BlobResponseDto>.Failure(ticketPDFResult.Error);
-            }
-            return Result<BlobResponseDto>.Success(ticketPDFResult.Value);
-        }
-
-
-        public async Task<Result<BlobResponseDto>> GetEventPassFile(int eventPassId, string contentType)
-        {
-            var eventPassResult = await ValidateEventPassFileDownload(eventPassId);
-            if (!eventPassResult.IsSuccessful)
-            {
-                return Result<BlobResponseDto>.Failure(eventPassResult.Error);
-            }
-
-            var eventPass = eventPassResult.Value;
-            string fileName = string.Empty;
-            string containerName = string.Empty;
-
-            switch (contentType)
-            {
-                case ContentType.PDF:
-                    fileName = eventPass.EventPassPDFName!;
-                    containerName = BlobContainer.EventPassesPDF;
-                    break;
-                case ContentType.JPEG:
-                    fileName = eventPass.EventPassJPGName!;
-                    containerName = BlobContainer.EventPassesJPG;
-                    break;
-                default:
-                    return Result<BlobResponseDto>.Failure(BlobError.UnsupportedContentType);
-            }
-
-            var blobRequest = new BlobRequestDto
-            {
-                ContainerName = containerName,
-                FileName = fileName
-            };
-
-            var eventPassPDFResult = await _blobService.DownloadAsync(blobRequest);
-            if (!eventPassPDFResult.IsSuccessful)
-            {
-                return Result<BlobResponseDto>.Failure(eventPassPDFResult.Error);
-            }
-            return Result<BlobResponseDto>.Success(eventPassPDFResult.Value);
-        }
-
-
-        public async Task<Error> DeleteEventPass(string? fileName, string contentType)
-        {
-            if (string.IsNullOrEmpty(fileName))
-                return BlobError.FileNameIsEmpty;
-
-            string containerName = string.Empty;
-            switch (contentType)
-            {
-                case ContentType.JPEG:
-                    containerName = BlobContainer.EventPassesJPG;
-                    break;
-                case ContentType.PDF:
-                    containerName = BlobContainer.EventPassesPDF;
-                    break;
-                default:
-                    return BlobError.UnsupportedContainerName;
-            }
-
-            var blob = new BlobRequestDto
-            {
-                ContainerName = containerName,
-                FileName = fileName,
-            };
-            await _blobService.DeleteAsync(blob);
-
-            return Error.None;
-        }
-
         public async Task<Error> DeleteFileEntities(IEnumerable<IFileEntity> fileEntities)
         {
-            string containerName = string.Empty;
+            BlobContainer containerName;
             ITicketJPGRepository? _ticketJPGRepository = null;
             ITicketPDFRepository? _ticketPDFRepository = null;
 
@@ -207,7 +238,7 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
             {
                 var blob = new BlobRequestDto
                 {
-                    ContainerName = containerName,
+                    Container = containerName,
                     FileName = ticket.FileName,
                 };
                 await _blobService.DeleteAsync(blob);
@@ -275,6 +306,7 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
             return Result<(byte[] Bitmap, IFileEntity FileEntity)>.Success((ticketPDFBitmap, fileEntity));
         }
 
+
         public async Task<Result<(List<byte[]> Bitmaps, List<IFileEntity> FileEntities)>> CreateTicketJPGBitmapsAndEntities(Festival? festival, List<Reservation> reservationsList, bool isUpdate = false)
         {
             List<byte[]> ticketBitmaps = [];
@@ -307,47 +339,36 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
         }
 
 
-        private async Task<Error> ValidateTicketFileDownload(int reservationId)
+        private async Task<Result<TEntity>> ValidateBeforeDownload<TEntity>(int id) where TEntity : class
         {
-            if (reservationId < 0)
-                return Error.RouteParamOutOfRange;
+            if (id < 0)
+                return Result<TEntity>.Failure(Error.RouteParamOutOfRange);
 
-            var reservation = await _unitOfWork.GetRepository<Reservation>().GetOneAsync(reservationId);
-            if (reservation == null)
-                return Error.NotFound;
+            var entity = await _unitOfWork.GetRepository<TEntity>().GetOneAsync(id);
+            if (entity == null)
+                return Result<TEntity>.Failure(Error.NotFound);
 
-            var premissionError = await ValidateUserPremissionToResource(reservation.User.Id);
+            if (entity is IExpireable expireableEntity && expireableEntity.IsExpired)
+                return Result<TEntity>.Failure(Error.EntityIsExpired);
+
+            if (entity is ISoftDeleteable deleteableEntity && deleteableEntity.IsCanceled)
+                return Result<TEntity>.Failure(Error.EntityIsCanceled);
+
+            string? userId = null;
+            bool userAllowed = false;
+            if (entity is Hall) userAllowed = true;
+            if (entity is IAuthEntity authEntity)
+                userId = authEntity.UserId;
+
+            var premissionError = await ValidateUserPremissionToResource(userId, userAllowed);
             if (premissionError != Error.None)
-                return premissionError;
+                return Result<TEntity>.Failure(premissionError);
 
-            return Error.None;
+            return Result<TEntity>.Success(entity);
         }
 
 
-        private async Task<Result<EventPass>> ValidateEventPassFileDownload(int eventPassId)
-        {
-            if (eventPassId < 0)
-                return Result<EventPass>.Failure(Error.RouteParamOutOfRange);
-
-            var eventPass = await _unitOfWork.GetRepository<EventPass>().GetOneAsync(eventPassId);
-            if (eventPass == null)
-                return Result<EventPass>.Failure(Error.NotFound);
-
-            if (eventPass.IsExpired)
-                return Result<EventPass>.Failure(EventPassError.EventPassIsExpired);
-
-            if (eventPass.IsCanceled)
-                return Result<EventPass>.Failure(EventPassError.EventPassIsCanceled);
-
-            var premissionError = await ValidateUserPremissionToResource(eventPass.User.Id);
-            if (premissionError != Error.None)
-                return Result<EventPass>.Failure(premissionError);
-
-            return Result<EventPass>.Success(eventPass);
-        }
-
-
-        private async Task<Error> ValidateUserPremissionToResource(string userId)
+        private async Task<Error> ValidateUserPremissionToResource(string? userId, bool userAllowed = false)
         {   
             var userResult = await _userService.GetCurrentUser();
             if (!userResult.IsSuccessful)
@@ -356,7 +377,9 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
             var user = userResult.Value;
             if (user.IsInRole(Roles.User))
             {
-                if (userId != user.Id)
+                if (userAllowed) return Error.None;
+
+                if (string.IsNullOrEmpty(userId) || userId != user.Id)
                     return AuthError.UserDoesNotHavePremissionToResource;
             }
             return Error.None;

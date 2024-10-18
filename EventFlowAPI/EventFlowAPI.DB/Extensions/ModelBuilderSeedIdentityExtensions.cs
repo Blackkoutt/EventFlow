@@ -54,12 +54,12 @@ namespace EventFlowAPI.DB.Extensions
             var user4 = new User
             {
                 Id = "4",
-                Name = "Mateusz3",
-                Surname = "Strapczuk3",
-                Email = "mateusz.strapczuk3@gmail.com",
-                UserName = "mateusz.strapczuk3@gmail.com",
-                NormalizedEmail = "mateusz.strapczuk3@gmail.com".ToUpper(),
-                NormalizedUserName = "mateusz.strapczuk3@gmail.com".ToUpper(),
+                Name = "Mateusz4",
+                Surname = "Strapczuk4",
+                Email = "mateusz.strapczuk4@gmail.com",
+                UserName = "mateusz.strapczuk4@gmail.com",
+                NormalizedEmail = "mateusz.strapczuk4@gmail.com".ToUpper(),
+                NormalizedUserName = "mateusz.strapczuk4@gmail.com".ToUpper(),
                 EmailConfirmed = true,
                 DateOfBirth = new DateTime(1979, 12, 11)
             };

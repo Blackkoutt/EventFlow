@@ -6,11 +6,11 @@ using EventFlowAPI.Logic.Helpers.PdfOptions.PdfCommonOptions;
 using EventFlowAPI.Logic.Helpers.PdfOptions.PdfContentOptions;
 using EventFlowAPI.Logic.Helpers.PdfOptions.PdfInfoAndStatuteOptions;
 using EventFlowAPI.Logic.Helpers.PdfOptions.PdfInfoOptions;
+using EventFlowAPI.Logic.Helpers.PdfOptions.PdfPictureOptions;
 using EventFlowAPI.Logic.Helpers.PdfOptions.PdfSummaryOptions;
 using EventFlowAPI.Logic.Services.OtherServices.Interfaces;
 using EventFlowAPI.Logic.UnitOfWork;
 using QuestPDF.Fluent;
-using QuestPDF.Previewer;
 
 namespace EventFlowAPI.Logic.Services.OtherServices.Services
 {
@@ -19,7 +19,7 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
         private readonly IAssetService _assetService = assetService;
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
 
-        public async Task<int> CreateHallRentPdf(HallRent hallRent)
+        public async Task<byte[]> CreateHallRentPdf(HallRent hallRent)
         {
             var logoSmall = await _assetService.GetPictureAsBitmap(Helpers.Enums.Picture.EventFlowLogo_Small, ImageFormat.PNG);
             var additionalServices = (await _unitOfWork.GetRepository<AdditionalServices>().GetAllAsync()).ToList();
@@ -27,55 +27,101 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
             PageOptions pageOptions = new();
             CommonOptions commonOptions = new();
             HeaderOptions headerOptions = new();
-            ContentHallRentOptions festivalEventContentOptions = new(hallRent);
+            ContentHallRentOptions hallRentContentOptions = new(hallRent);
             HallRentInfoOptions hallRentInfoOptions = new(hallRent);
             HallRentSummaryOptions summaryOptions = new(hallRent, additionalServices);
             InfoAndStatuteHallRentOptions infoAndStatuteOptions = new();
-
             FooterOptions footerOptions = new();
 
-            Document.Create(container =>
+            using (var memoryStream = new MemoryStream())
             {
-                container.Page(page =>
+                Document.Create(container =>
                 {
-                    page.ConfigurePage(pageOptions);
-
-                    page.Header()
-                    .AddBottomLine(commonOptions)
-                    .AddHeaderLogo(logoSmall, headerOptions);
-
-                    page.Content()
-                    .Column(column =>
+                    container.Page(page =>
                     {
-                        column.Item()
-                        .AddBottomLine(commonOptions)
-                        .AddOrderInfo(hallRentInfoOptions);
+                        page.ConfigurePage(pageOptions);
 
-                        column.Item()
+                        page.Header()
                         .AddBottomLine(commonOptions)
-                        .AddHallRentContent(festivalEventContentOptions);
+                        .AddHeaderLogo(logoSmall, headerOptions);
 
-                        column.Item()
-                        .AddBottomLine(commonOptions)
-                        .AddSummaryContainer(summaryOptions);
+                        page.Content()
+                        .Column(column =>
+                        {
+                            column.Item()
+                            .AddBottomLine(commonOptions)
+                            .AddOrderInfo(hallRentInfoOptions);
 
-                        column.Item()
-                        .AddInfoAndStatute(infoAndStatuteOptions);
+                            column.Item()
+                            .AddBottomLine(commonOptions)
+                            .AddHallRentContent(hallRentContentOptions);
+
+                            column.Item()
+                            .AddBottomLine(commonOptions)
+                            .AddSummaryContainer(summaryOptions);
+
+                            column.Item()
+                            .AddInfoAndStatute(infoAndStatuteOptions);
+                        });
+
+                        page.Footer()
+                        .AddTopLine(commonOptions)
+                        .AddFooterLogoAndPageNumber(logoSmall, footerOptions);
                     });
-
-                    page.Footer()
-                    .AddTopLine(commonOptions)
-                    .AddFooterLogoAndPageNumber(logoSmall, footerOptions);
-                });
-            }).ShowInPreviewer(); //.GeneratePdf(memoryStream);
-            /* using (var memoryStream = new MemoryStream())
-             {
-
-
-                 return memoryStream.ToArray();
-             }*/
-            return 1;
+                }).GeneratePdf(memoryStream);
+                return memoryStream.ToArray();
+            }
         }
+
+        public async Task<byte[]> CreateHallViewPdf(byte[] hallBitmap, Hall hall, HallRent? hallRent = null, Event? eventEntity = null)
+        {
+            var logoSmall = await _assetService.GetPictureAsBitmap(Helpers.Enums.Picture.EventFlowLogo_Small, ImageFormat.PNG);
+            var testJPG = await _assetService.GetOutputBitmap(TestsOutput.HallRent, ImageFormat.JPEG);
+
+            PageOptions pageOptions = new();
+            CommonOptions commonOptions = new();
+            HeaderOptions headerOptions = new();
+            HallViewInfoOptions hallViewInfoOptions = new(hall, hallRent, eventEntity);
+            HallViewPictureOptions hallViewPictureOptions = new();
+            FooterOptions footerOptions = new();
+
+            using (var memoryStream = new MemoryStream())
+            {
+                Document.Create(container =>
+                {
+                    container.Page(page =>
+                    {
+                        page.ConfigurePage(pageOptions);
+
+                        page.Header()
+                        .AddHeaderLogo(logoSmall, headerOptions);
+
+                        page.Content()
+                        .Column(column =>
+                        {
+                            column.Item()
+                                .AddPicture(testJPG, hallViewPictureOptions);
+
+                            column.Item()
+                            .AlignCenter()
+                            .PaddingTop(10)
+                            .EnsureSpace(100)
+                            .AddFrame(commonOptions)
+                            .AddHallViewInfo(hallViewInfoOptions);
+
+
+
+                        });
+
+                        page.Footer()
+                         .AddPageNumber();
+                    });
+                }).GeneratePdf(memoryStream);
+                return memoryStream.ToArray();
+            }
+        }
+
+
         public async Task<byte[]> CreateEventPassPdf(EventPass eventPass, byte[] eventPassJPGBitmap, EventPassType? oldEventPassType)
         {
             var logoSmall = await _assetService.GetPictureAsBitmap(Helpers.Enums.Picture.EventFlowLogo_Small, ImageFormat.PNG);

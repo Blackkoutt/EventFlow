@@ -89,7 +89,7 @@ namespace EventFlowAPI.Logic.Identity.Services.Services.BaseServices
                 Provider = GetProviderName()
             };
             await _userManager.CreateAsync(newUser);
-            await _userManager.AddToRoleAsync(newUser, Roles.User);
+            await _userManager.AddToRoleAsync(newUser, Roles.User.ToString());
             return newUser;
         }
 

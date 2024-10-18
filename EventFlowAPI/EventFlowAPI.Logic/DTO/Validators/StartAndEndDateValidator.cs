@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace EventFlowAPI.Logic.DTO.Validators
 {
-    public class StartAndEndDateValidator : ValidationAttribute
+    public sealed class StartAndEndDateValidator : ValidationAttribute
     {
         protected sealed override ValidationResult? IsValid(object? value, ValidationContext validationContext)
         {

@@ -27,7 +27,7 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
         private readonly IQRCodeGeneratorService _qrCoder = qrCoder;
         private readonly IAssetService _assetService = assetService;
 
-        public async Task<int> CreateHallJPG(Hall hall)
+        public async Task<byte[]> CreateHallJPG(Hall hall)
         {
             var logo = await _assetService.GetPicture(Picture.EventFlowLogo_Big);
             _hallSeatsConfig.SetCanvasDimensions(hall, logo, isDefault: false);
@@ -55,9 +55,11 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
 
                 var outputPath = _assetService.GetOutputTestPath(TestsOutput.HallRent);
                 await canvas.SaveAsJpegAsync(outputPath);
+
+                return await canvas.AsBitmap(ImageFormat.JPEG);
             }
-            return 1;
         }
+
 
         public async Task<byte[]> CreateEventPass(EventPass eventPass)
         {

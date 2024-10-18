@@ -29,6 +29,7 @@ namespace EventFlowAPI.Logic.UnitOfWork
             _halls = new HallRepository(_context);
             _hallTypes = new HallTypeRepository(_context);
             _mediaPatrons = new MediaPatronRepository(_context);
+            _hallDetails = new HallDetailsRepository(_context);
             _organizers = new OrganizerRespository(_context);
             _paymentTypes = new PaymentTypeRepository(_context);
             _reservations = new ReservationRepository(_context);
@@ -82,6 +83,7 @@ namespace EventFlowAPI.Logic.UnitOfWork
                 { typeof(HallRent), _hallRents },
                 { typeof(Hall), _halls },
                 { typeof(HallType),  _hallTypes },
+                { typeof(HallDetails),  _hallDetails },
                 { typeof(MediaPatron), _mediaPatrons },
                 { typeof(Organizer), _organizers },
                 { typeof(PaymentType), _paymentTypes },
@@ -110,6 +112,7 @@ namespace EventFlowAPI.Logic.UnitOfWork
         private readonly IFestivalRepository _festivals;
         private readonly IHallRentRepository _hallRents;
         private readonly IHallRepository _halls;
+        private readonly IHallDetailsRepository _hallDetails;
         private readonly IHallTypeRepository _hallTypes;
         private readonly IMediaPatronRepository _mediaPatrons;
         private readonly IOrganizerRepository _organizers;

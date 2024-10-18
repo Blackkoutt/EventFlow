@@ -1,5 +1,5 @@
-﻿using EventFlowAPI.Logic.Helpers.PdfOptions;
-using EventFlowAPI.Logic.Helpers.PdfOptions.PdfCommonOptions;
+﻿using EventFlowAPI.Logic.Helpers.PdfOptions.PdfCommonOptions;
+using EventFlowAPI.Logic.Helpers.PdfOptions.PdfPictureOptions;
 using QuestPDF.Fluent;
 using QuestPDF.Infrastructure;
 
@@ -43,7 +43,8 @@ namespace EventFlowAPI.Logic.Extensions.PdfBuilderExtensions
             column
             .PaddingTop(options.PadTop)
             .PaddingBottom(options.PadBottom)
-            .Image(bitmap);
+            .Image(bitmap)
+            .WithCompressionQuality(ImageCompressionQuality.VeryHigh);
         }
     }
 }

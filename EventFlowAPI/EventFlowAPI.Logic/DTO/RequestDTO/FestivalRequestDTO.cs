@@ -1,6 +1,7 @@
 ﻿using EventFlowAPI.Logic.DTO.Abstract;
 using EventFlowAPI.Logic.DTO.Interfaces;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace EventFlowAPI.Logic.DTO.RequestDto
 {
@@ -25,5 +26,13 @@ namespace EventFlowAPI.Logic.DTO.RequestDto
 
         [Required(ErrorMessage = "Wybierz co najmniej jednego sponsora.")]
         public List<int> SponsorIds { get; set; } = [];
+        public FestivalRequestDto? Details { get; set; } = default!;
+
+        [JsonIgnore]
+        public sealed override TimeSpan MaxDuration => TimeSpan.FromDays(14);
+
+        [JsonIgnore]
+        public override string MaxDurationErrorMessage => $"Czas trwania festiwalu nie może przekraczać {MaxDuration.TotalDays} dni.";
+
     }
 }

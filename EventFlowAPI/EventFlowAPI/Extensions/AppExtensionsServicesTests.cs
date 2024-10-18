@@ -12,8 +12,24 @@ namespace EventFlowAPI.Extensions
     {
         public async static void AddServicesTests(this WebApplication app)
         {
-            //await AddHallRentPDFPreviewer(app);
-            await CreateHallRentSeatsJPGTest(app);
+           // await app.AddHallRentPDFPreviewer();
+            await app.CreateHallRentSeatsJPGTest();
+            await app.CreateHallViewPDFTest();
+        }
+
+
+        public async static Task CreateHallViewPDFTest(this WebApplication app)
+        {
+            using (var scope = app.Services.CreateScope())
+            {
+                var assetService = scope.ServiceProvider.GetRequiredService<IAssetService>();
+                var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
+
+                var pdfbuilder = new PdfBuilderService(assetService, unitOfWork);
+                var hall = GetHall();
+                var hallRent = GetHallRent();
+                await pdfbuilder.CreateHallViewPdf([],hall, hallRent, null);
+            }
         }
 
         public async static Task CreateHallRentSeatsJPGTest(this WebApplication app)
@@ -81,9 +97,9 @@ namespace EventFlowAPI.Extensions
                     StageLength = 4,
                     StageWidth = 20,
                     NumberOfSeatsRows = 10,
-                    MaxNumberOfSeatsRows = 15,
+                    MaxNumberOfSeatsRows = 18,
                     NumberOfSeatsColumns = 10,
-                    MaxNumberOfSeatsColumns = 15,
+                    MaxNumberOfSeatsColumns = 18,
                     NumberOfSeats = 100,
                     MaxNumberOfSeats = 225,
                 },
@@ -237,6 +253,20 @@ namespace EventFlowAPI.Extensions
                         AddtionalPaymentPercentage = 0.00m
                     }
                 },
+                                    new Seat
+                {
+                    SeatNr = 12,
+                    GridRow = 7,
+                    GridColumn = 7,
+                    SeatType = new SeatType
+                    {
+                        Name = "Zwykłe",
+                        SeatColor = "#039aff",
+                        Description = "Opis miejsca zwykłego",
+                        AddtionalPaymentPercentage = 0.00m
+                    }
+                },
+
 
             };
         }

@@ -13,15 +13,13 @@ namespace EventFlowAPI.Logic.Repositories.Repositories
             var _table = _context.Event
                         .Include(e => e.Hall)
                         .Include(e => e.Category)
-                        .Include(e => e.Details)
-                        .AsSplitQuery();
+                        .Include(e => e.Details);
 
             return await (query != null ? query(_table).ToListAsync() : _table.ToListAsync());
         }
         public sealed override async Task<Event?> GetOneAsync(int id)
         {
             return await _context.Event
-                        .AsSplitQuery()
                         .Include(e => e.Hall)
                         .Include(e => e.Category)
                         .Include(e => e.Details)

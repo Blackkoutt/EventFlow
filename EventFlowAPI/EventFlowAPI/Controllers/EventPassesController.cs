@@ -1,5 +1,7 @@
-﻿using EventFlowAPI.Logic.DTO.RequestDto;
+﻿using EventFlowAPI.DB.Entities;
+using EventFlowAPI.Logic.DTO.RequestDto;
 using EventFlowAPI.Logic.Helpers;
+using EventFlowAPI.Logic.Helpers.Enums;
 using EventFlowAPI.Logic.Identity.Helpers;
 using EventFlowAPI.Logic.Query;
 using EventFlowAPI.Logic.Services.CRUDServices.Interfaces;
@@ -64,19 +66,7 @@ namespace EventFlowAPI.Controllers
             return Ok(result.Value);
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="eventPassReqestDto"></param>
-        /// <returns></returns>
-        /// <remarks>
-        /// Sample request:
-        /// 
-        ///     {
-        ///         "passTypeId": 1,
-        ///         "paymentTypeId": 1
-        ///     }
-        /// </remarks>
+       
         [Authorize]
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
@@ -97,7 +87,7 @@ namespace EventFlowAPI.Controllers
             return CreatedAtAction(nameof(GetEventPassById), new { id = result.Value.Id }, result.Value);
         }
 
-        [Authorize(Roles = Roles.Admin)]
+        [Authorize(Roles = nameof(Roles.Admin))]
         [HttpDelete("{id:int}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -120,20 +110,6 @@ namespace EventFlowAPI.Controllers
         }
 
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="id"></param>
-        /// <param name="eventPassReqestDto"></param>
-        /// <returns></returns>
-        /// <remarks>
-        /// Sample request:
-        /// 
-        ///     {
-        ///         "passTypeId": 3,
-        ///         "paymentTypeId": 1
-        ///     }
-        /// </remarks>
         [Authorize]
         [HttpPut("{id:int}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
@@ -164,7 +140,7 @@ namespace EventFlowAPI.Controllers
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<IActionResult> GetEventPassPdfById([FromRoute] int id)
         {
-            var result = await _fileService.GetEventPassFile(id, ContentType.PDF);
+            var result = await _fileService.GetFile<EventPass>(id, FileType.PDF, BlobContainer.EventPassesPDF);
             if (!result.IsSuccessful)
             {
                 return result.Error.Details!.Code switch
@@ -187,7 +163,7 @@ namespace EventFlowAPI.Controllers
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<IActionResult> GetEventPassJpgById([FromRoute] int id)
         {
-            var result = await _fileService.GetEventPassFile(id, ContentType.JPEG);
+            var result = await _fileService.GetFile<EventPass>(id, FileType.JPEG, BlobContainer.EventPassesJPG);
             if (!result.IsSuccessful)
             {
                 return result.Error.Details!.Code switch

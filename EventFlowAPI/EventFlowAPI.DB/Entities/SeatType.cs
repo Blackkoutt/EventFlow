@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace EventFlowAPI.DB.Entities
 {
-    public class SeatType : BaseEntity, INameableEntity
+    public class SeatType : BaseEntity
     {
 
         [MaxLength(30)]

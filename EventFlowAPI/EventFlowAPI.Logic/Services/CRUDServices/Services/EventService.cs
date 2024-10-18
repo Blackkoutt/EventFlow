@@ -19,13 +19,14 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
 {
     public sealed class EventService(
         IUnitOfWork unitOfWork,
-        IHallService hallService,
         IReservationService reservationService,
         IUserService userService,
         IEmailSenderService emailSender,
         ICollisionCheckerService collisionChecker,
-        IFestivalService festivalService, 
-        ITicketService ticketService
+        IFestivalService festivalService,
+        ITicketService ticketService,
+        IFileService fileService,
+        ICopyMakerService copyMaker
         ) :
         GenericService<
             Event,
@@ -34,14 +35,14 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             >(unitOfWork),
         IEventService
     {
-
-        private readonly IHallService _hallService = hallService;
         private readonly IUserService _userService = userService;
         private readonly IEmailSenderService _emailSender = emailSender;
         private readonly IReservationService _reservationService = reservationService;
         private readonly ICollisionCheckerService _collisionChecker = collisionChecker;
         private readonly IFestivalService _festivalService = festivalService;
         private readonly ITicketService _ticketService = ticketService;
+        private readonly IFileService _fileService = fileService;
+        private readonly ICopyMakerService _copyMaker = copyMaker;
 
         public sealed override async Task<Result<IEnumerable<EventResponseDto>>> GetAllAsync(QueryObject query)
         {
@@ -49,8 +50,8 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             if (eventQuery == null)
                 return Result<IEnumerable<EventResponseDto>>.Failure(QueryError.BadQueryObject);
 
-            var records = await _repository.GetAllAsync(q => 
-                                                q.EventByStatus(eventQuery.Status)
+            var records = await _repository.GetAllAsync(q =>
+                                                q.ByStatus(eventQuery.Status)
                                                 .SortBy(eventQuery.SortBy, eventQuery.SortDirection));
 
             var response = MapAsDto(records);
@@ -70,11 +71,19 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             eventEntity.AddDate = DateTime.Now;
 
             // Make copy of hall
-            var hallCopyResult = await _hallService.MakeCopyOfHall(requestDto!.HallId);
+            var hallCopyResult = await _copyMaker.MakeCopyOfHall(requestDto!.HallId);
             if (!hallCopyResult.IsSuccessful)
                 return Result<EventResponseDto>.Failure(hallCopyResult.Error);
 
             eventEntity.HallId = hallCopyResult.Value.Id;
+
+            // HallView PDF
+            var hallViewFileNameResult = await _fileService.CreateHallViewPDF(eventEntity.Hall, null, eventEntity);
+            if (!hallViewFileNameResult.IsSuccessful)
+                return Result<EventResponseDto>.Failure(hallViewFileNameResult.Error);
+            var hallViewPDFFileName = hallViewFileNameResult.Value;
+            eventEntity.Hall.HallViewFileName = hallViewPDFFileName;
+
             AddTicketsForEvent(requestDto.EventTickets, eventEntity);
 
             await _repository.AddAsync(eventEntity);
@@ -104,11 +113,13 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
                 StartDate = eventEntity.StartDate,
                 EndDate = eventEntity.EndDate,
                 Hall = eventEntity.Hall,
+                Category = eventEntity.Category,
                 Tickets = eventEntity.Tickets
             };
+            var oldHall = await _unitOfWork.GetRepository<Hall>().GetOneAsync(eventEntity.Hall.Id);
+            oldEventEntity.Hall.HallDetails = oldHall!.HallDetails;
 
             var newEventEntity = (Event)MapToEntity(requestDto!, eventEntity);
-
             bool isAnyDateInEventChanged = newEventEntity!.StartDate != oldEventEntity.StartDate ||
                                            newEventEntity!.EndDate != oldEventEntity.EndDate;
 
@@ -126,13 +137,14 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
                     startDate: newEventEntity.StartDate,
                     endDate: newEventEntity.EndDate);
             }
-            
+
             if (newEventEntity.HallId != oldEventEntity.HallId)
             {
                 var newHallResult = await GetNewEventHallAndUpdateReservationSeats(
                                         newHallId: requestDto!.HallId,
+                                        oldHall: oldEventEntity.Hall,
                                         reservationsForEvent: reservationsForEvent);
-                if(!newHallResult.IsSuccessful)
+                if (!newHallResult.IsSuccessful)
                     return Result<EventResponseDto>.Failure(newHallResult.Error);
 
                 newEventEntity.HallId = newHallResult.Value.Id;
@@ -148,14 +160,19 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
                 var updatedProperties = await GetInfoAboutUpdatedEventProperties(oldEventEntity, newEventEntity);
                 // info about changed seats
                 if (updatedProperties.SendMailAboutUpdatedEvent)
-                    await _reservationService.SendMailsAboutUpdatedReservations(reservationsForEvent, updatedProperties);
+                {
+                    var resUpdateError = await _reservationService.SendMailsAboutUpdatedReservations(reservationsForEvent, updatedProperties);
+                    if (resUpdateError != Error.None)
+                        return Result<EventResponseDto>.Failure(resUpdateError);
+                }
+                   
             }
             var newEventEntityDto = MapAsDto(newEventEntity);
 
             return Result<EventResponseDto>.Success(newEventEntityDto);
         }
 
-        
+
         public sealed override async Task<Result<object>> DeleteAsync(int id)
         {
             var validationResult = await ValidateBeforeDelete(id);
@@ -172,7 +189,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
                 await _unitOfWork.SaveChangesAsync();
 
                 var cancelReservationError = await _reservationService.CancelReservationsInCauseOfDeleteEventOrHall(reservationsForEvent, eventEntity);
-                if(cancelReservationError != Error.None)
+                if (cancelReservationError != Error.None)
                     return Result<object>.Failure(cancelReservationError);
 
             }
@@ -193,7 +210,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             return Result<object>.Success();
         }
 
-        
+
 
         private void UpdateStartAndEndDateOfReservations(IEnumerable<Reservation> reservationsForEvent, DateTime startDate, DateTime endDate)
         {
@@ -201,8 +218,8 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             {
                 foreach (var reservation in reservationsForEvent)
                 {
-                    reservation.StartOfReservationDate = startDate;
-                    reservation.EndOfReservationDate = endDate;
+                    reservation.StartDate = startDate;
+                    reservation.EndDate = endDate;
                     _unitOfWork.GetRepository<Reservation>().Update(reservation);
                 }
             }
@@ -241,9 +258,9 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             }
         }
 
-        private async Task<Result<Hall>> GetNewEventHallAndUpdateReservationSeats(int newHallId, IEnumerable<Reservation> reservationsForEvent)
+        private async Task<Result<Hall>> GetNewEventHallAndUpdateReservationSeats(int newHallId, Hall oldHall, IEnumerable<Reservation> reservationsForEvent)
         {
-            var hallCopyResult = await _hallService.MakeCopyOfHall(newHallId);
+            var hallCopyResult = await _copyMaker.MakeCopyOfHall(newHallId);
             if (!hallCopyResult.IsSuccessful)
                 return Result<Hall>.Failure(hallCopyResult.Error);
 
@@ -254,49 +271,56 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
 
             if (reservationsForEvent.Any())
             {
-                var newHallSeatsRows = newHall.HallDetails!.NumberOfSeatsRows;
-                var oldHall = reservationsForEvent.First().Ticket.Event.Hall;
-                var oldHallSeatsRows = oldHall.HallDetails!.NumberOfSeatsRows;
-                var rowRatio = (double)newHallSeatsRows / oldHallSeatsRows;
+                var newHallSeatsGridRows = newHall.HallDetails!.MaxNumberOfSeatsRows;
+                var oldHallSeatsGridRows = oldHall.HallDetails!.MaxNumberOfSeatsRows;
+                var rowGridRatio = (double)newHallSeatsGridRows / oldHallSeatsGridRows;
 
                 var groupedReservations = reservationsForEvent.GroupBy(r => r.UserId);
                 var availableSeats = newHall.Seats
-                                        .OrderBy(s => s.Row)
-                                        .ThenBy(s => s.Column)
-                                        .ToDictionary(s => (s.Row, s.Column), s => s);
+                                        .OrderBy(s => s.GridRow)
+                                        .ThenBy(s => s.GridColumn)
+                                        .ToDictionary(s => (s.GridRow, s.GridColumn), s => s);
 
 
                 Dictionary<Reservation, List<Seat>> reservationsSeatsDict = [];
                 foreach (var group in groupedReservations)
                 {
                     var firstSeat = group.First().Seats.First();
-                    int targetRow = (int)Math.Round(firstSeat.Row * rowRatio, 0, MidpointRounding.AwayFromZero);
-                    var defaultTargetRow = targetRow;
+                    int targetGridRow = (int)Math.Round(firstSeat.GridRow * rowGridRatio, 0, MidpointRounding.AwayFromZero);
+                    var defaultTargetGridRow = targetGridRow;
 
                     foreach (var reservation in group)
                     {
                         List<Seat> seatsForReservation = [];
                         for (var i = 0; i < reservation.Seats.Count; i++)
                         {
-                            if (availableSeats.Select(s => s.Key.Row == targetRow).Count() == 1 && reservation.Seats.Count != 1)
+                            Seat? newReservationSeat = null;
+                            int jump = 0;
+                            bool ommitFirstTargetRow = false;
+                            if (availableSeats.Select(s => s.Key.GridRow == targetGridRow).Count() == 1 && i < reservation.Seats.Count - 1)
                             {
-                                if (targetRow >= defaultTargetRow) targetRow += 1;
-                                else targetRow -= 1;
+                                ommitFirstTargetRow = true;
                             }
 
-                            Seat? newReservationSeat = null;
-                            while (newReservationSeat == null)
-                            {
-                                newReservationSeat = availableSeats.FirstOrDefault(s => s.Key.Row == targetRow).Value;
-                                
-                                if (targetRow >= defaultTargetRow) targetRow += 1;
-                                else targetRow -= 1;
+                            for (var j=0; newReservationSeat == null; j++)
+                            {                  
+                                if(!ommitFirstTargetRow)
+                                    newReservationSeat = availableSeats.FirstOrDefault(s => s.Key.GridRow == targetGridRow).Value;
 
-                                if (targetRow > newHall.HallDetails.NumberOfSeatsRows)
-                                    targetRow = defaultTargetRow - 1;
-                                else if (targetRow < newHall.HallDetails.NumberOfSeatsRows)
+                                ommitFirstTargetRow = false;
+
+                                var up = defaultTargetGridRow + jump + 1;
+                                var down = defaultTargetGridRow - jump - 1;
+                                if (up > newHallSeatsGridRows && down < 0)
                                     return Result<Hall>.Failure(HallError.HallIsTooSmall);
-                            }                              
+
+                                if (j % 2 == 0) targetGridRow = defaultTargetGridRow - jump - 1;
+                                else
+                                {
+                                    targetGridRow = defaultTargetGridRow + jump + 1;
+                                    jump++;
+                                }
+                            }
 
                             newReservationSeat.SeatType = reservation.Seats.ElementAt(i).SeatType;
                             seatsForReservation.Add(newReservationSeat);
@@ -416,7 +440,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
                     else
                     {
                         _unitOfWork.GetRepository<Ticket>().Delete(ticket);
-                    }         
+                    }
                 }
             }
         }
@@ -462,10 +486,9 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             if (baseValidationError != Error.None)
                 return baseValidationError;
 
-            if(id != null)
+            if (id != null)
             {
-                var eventToUpdateId = id ?? -1;
-                var eventEntity = await _repository.GetOneAsync(eventToUpdateId);
+                var eventEntity = await _repository.GetOneAsync((int)id);
                 if (eventEntity == null)
                     return Error.NotFound;
 
@@ -473,7 +496,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
                     return EventError.EventIsExpired;
 
                 if (eventEntity.IsCanceled)
-                    return EventError.EventIsCanceled;                
+                    return EventError.EventIsCanceled;
             }
 
             if (!await IsEntityExistInDB<EventCategory>(requestDto!.CategoryId))
@@ -481,7 +504,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
 
             if (requestDto.EventTickets.Count() != 0)
             {
-                foreach(var eventTicket in requestDto.EventTickets)
+                foreach (var eventTicket in requestDto.EventTickets)
                 {
                     if (!await IsEntityExistInDB<TicketType>(eventTicket.TicketTypeId))
                         return TicketTypeError.NotFound;
@@ -490,15 +513,15 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
                     return EventError.EventCanNotHaveManySameTicketTypes;
             }
 
-            var hallEntity = _unitOfWork.GetRepository<Hall>()
-                                .GetAllAsync(q => q.Where(h =>
-                                h.Id == requestDto.HallId &&
-                                h.IsVisible));
+            var hallEntity = await _unitOfWork.GetRepository<Hall>()
+                                    .GetAllAsync(q => q.Where(h =>
+                                    h.Id == requestDto.HallId &&
+                                    h.IsVisible));
 
             if (hallEntity == null)
                 return EventError.HallNotFound;
 
-            if (await _collisionChecker.CheckTimeCollisionsWithEvents(requestDto))
+            if (await _collisionChecker.CheckTimeCollisionsWithEvents(requestDto, id))
                 return EventError.CollisionWithExistingEvent;
 
             if (await _collisionChecker.CheckTimeCollisionsWithHallRents(requestDto))
@@ -511,24 +534,33 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
         {
             var eventEntity = base.MapAsEntity(requestDto);
             eventEntity.Duration = eventEntity.EndDate - eventEntity.StartDate;
-
-            AddEventDetails(eventEntity, requestDto.LongDescription);
+            AddOrUpdateEventDetails(eventEntity, requestDto.LongDescription);
             return eventEntity;
         }
 
         protected sealed override IEntity MapToEntity(EventRequestDto requestDto, Event oldEntity)
         {
+
             var eventEntity = (Event)base.MapToEntity(requestDto, oldEntity);
             eventEntity.Duration = eventEntity.EndDate - eventEntity.StartDate;
-            AddEventDetails(eventEntity, requestDto.LongDescription);
+            AddOrUpdateEventDetails(eventEntity, requestDto.LongDescription);
             return eventEntity;
         }
-
-        private static void AddEventDetails(Event eventEntity, string? details)
+        private void AddOrUpdateEventDetails(Event eventEntity, string? longDescription)
         {
-            if (details != null && details?.Trim() != string.Empty)
+            if (!string.IsNullOrEmpty(longDescription))
             {
-                eventEntity.Details = new EventDetails { LongDescription = details };
+                if (eventEntity.Details == null)
+                {
+                    eventEntity.Details = new EventDetails
+                    {
+                        LongDescription = longDescription
+                    };
+                }
+                else
+                {
+                    eventEntity.Details!.LongDescription = longDescription;
+                }
             }
         }
 
@@ -539,6 +571,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
                 var responseDto = entity.AsDto<EventResponseDto>();
                 responseDto.Category = entity.Category?.AsDto<EventCategoryResponseDto>();
                 responseDto.Details = entity.Details?.AsDto<EventDetailsResponseDto>();
+                responseDto.Tickets = [];
                 responseDto.Hall = entity.Hall?.AsDto<HallResponseDto>();
                 responseDto.Hall!.Seats = [];
                 responseDto.Hall!.Type = null;
@@ -554,6 +587,13 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             responseDto.Category = entity.Category?.AsDto<EventCategoryResponseDto>();
             responseDto.Details = entity.Details?.AsDto<EventDetailsResponseDto>();
             responseDto.Hall = entity.Hall?.AsDto<HallResponseDto>();
+            responseDto.Tickets = entity.Tickets.Select(t =>
+            {
+                var ticket = t.AsDto<TicketResponseDto>();
+                ticket.Event = null;
+                ticket.Festival = null;
+                return ticket;
+            }).ToList();
             responseDto.Hall!.Seats = [];
             responseDto.Hall!.Type = null;
             responseDto.Hall!.HallDetails = null;

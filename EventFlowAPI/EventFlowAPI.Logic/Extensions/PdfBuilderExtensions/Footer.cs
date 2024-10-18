@@ -6,17 +6,17 @@ namespace EventFlowAPI.Logic.Extensions.PdfBuilderExtensions
 {
     public static class Footer
     {
-        public static void AddFooterLogoItem(this ColumnDescriptor column, byte[] logo, FooterOptions options)
+        public static void AddFooterLogoItem(this IContainer container, byte[] logo, FooterOptions options)
         {
-            column.Item()
+            container
             .Height(options.Height)
             .Image(logo)
             .FitHeight();
         }
 
-        public static void AddPageNumberItem(this ColumnDescriptor column)
+        public static void AddPageNumber(this IContainer container)
         {
-            column.Item()
+            container
             .AlignCenter()
             .Text(x =>
             {
@@ -28,8 +28,8 @@ namespace EventFlowAPI.Logic.Extensions.PdfBuilderExtensions
             container
             .Column(column =>
             {
-                column.AddFooterLogoItem(logo, options);
-                column.AddPageNumberItem();            
+                column.Item().AddFooterLogoItem(logo, options);
+                column.Item().AddPageNumber();            
             });
         }
     }

@@ -29,7 +29,6 @@ namespace EventFlowAPI.Logic.Extensions.PdfBuilderExtensions
                 }
             });
         }
-
         public static void AddHallRentContent(this IContainer column, ContentHallRentOptions options)
         {
             column

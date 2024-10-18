@@ -67,6 +67,7 @@ namespace EventFlowAPI.Extensions
             services.AddScoped<IEventPassConfiguration, EventPassConfiguration>();
             services.AddScoped<ICollisionCheckerService, CollisionCheckerService>();
             services.AddScoped<IHallSeatsConfiguration, HallSeatsConfiguration>();
+            services.AddScoped<ICopyMakerService, CopyMakerService>();
         }
     }
 }

@@ -19,7 +19,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
         {
             foreach(var r in seatEntity.Reservations)
             {
-                if (r.IsReservationActive && !r.IsCanceled && r.Ticket?.Event.Id == eventEntity.Id)
+                if (!r.IsExpired && !r.IsCanceled && r.Ticket?.Event.Id == eventEntity.Id)
                     return true;
             }
             return false;

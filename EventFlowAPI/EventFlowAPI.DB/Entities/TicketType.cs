@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace EventFlowAPI.DB.Entities
 {
-    public class TicketType : BaseEntity, INameableEntity
+    public class TicketType : BaseEntity
     {
 
         [MaxLength(40)]

@@ -5,6 +5,6 @@ namespace EventFlowAPI.Logic.Query
 {
     public class EventPassQuery : QueryObject
     {
-        public EventPassStatus? Status { get; set; }
+        public Status? Status { get; set; }
     }
 }

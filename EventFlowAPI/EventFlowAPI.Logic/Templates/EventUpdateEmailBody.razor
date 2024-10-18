@@ -4,87 +4,130 @@
 <body>
     <div style="margin-top:20px;">
         <img style="max-width:200px; min-width: 100px;" src="cid:@LogoContentId" alt="EventFlow Logo" />
-        <h1>
-            <span>Zmiana organizacji wydarzenia</span>
-            @if (OldEventInfo.Name == null)
+        @{
+            var reservationListByEvent = OldEventInfo.ReservationList
+            .GroupBy(r => r.Ticket.Event)
+            .Select(group => new
             {
-                <span> @NewEventInfo.Name</span>
-            }              
-            else
+                Event = group.Key,
+                Reservations = group.ToList(),
+            });
+
+            if (reservationListByEvent.Count() == 1)
             {
-                <span> @OldEventInfo.Name</span>   
-            }            
-            @if (ReservationIds.Count() > 1)
-            {
-                <span> - rezerwacje nr: @ReservationIds</span>
+                // all properties can change
+                <h1>
+                    <span>Zmiana organizacji wydarzenia </span>
+                    @if (OldEventInfo.Name == null)
+                    {
+                        <span> @NewEventInfo.Name</span>
+                    }
+                    else
+                    {
+                        <span> @OldEventInfo.Name</span>
+                    }
+                    @if (ReservationIds.Count() > 1)
+                    {
+                        <span> - rezerwacje nr: @ReservationIds</span>
+                    }
+                    else
+                    {
+                        <span> - rezerwacja nr @ReservationIds</span>
+                    }
+                </h1>
+                <p>
+                    <span>Otrzymujesz ten e-mail w związku z zmianą organizacji wydarzenia</span>
+                    @if (OldEventInfo.Name == null)
+                    {
+                        <span> @NewEventInfo.Name</span>
+                    }
+                    else
+                    {
+                        <span> @OldEventInfo.Name</span>
+                    }
+                    <span>
+                        na które w ostatnim czasie dokonano rezerwacji.
+                        W związku z zaistniałymi zmianami w załącznikach przesyłamy
+                        zaktualizowaną wersję biletów dotyczących poszczególnych rezerwacji.
+                    </span>
+
+                </p>
+                <p>
+                    <strong>
+                        Poniżej znajdują się szczegółowe informacje dotyczące zmian:
+                    </strong>
+                </p>
+
+                @if (OldEventInfo.Name != null)
+                {
+                    <p>
+                        <strong>Nowa nazwa wydarzenia: </strong>@NewEventInfo.Name
+                        <span style="font-style: italic;"> (Poprzednia nazwa: @OldEventInfo.Name)</span>
+                    </p>
+                }
+                @if (OldEventInfo.CategoryName != null)
+                {
+                    <p>
+                        <strong>Nowa kategoria wydarzenia: </strong>@NewEventInfo.Category.Name
+                        <span style="font-style: italic;"> (Poprzednia kategoria: @OldEventInfo.CategoryName)</span>
+                    </p>
+                }
+                @if (OldEventInfo.StartDate != null)
+                {
+                    <p>
+                        <strong>Nowa data rozpoczęcia wydarzenia: </strong>@NewEventInfo.StartDate
+                        <span style="font-style: italic;"> (Poprzednia data rozpoczęcia: @OldEventInfo.StartDate)</span>
+                    </p>
+                }
+                @if (OldEventInfo.EndDate != null)
+                {
+                    <p>
+                        <strong>Nowa data zakończenia wydarzenia: </strong>@NewEventInfo.EndDate
+                        <span style="font-style: italic;"> (Poprzednia data zakończenia: @OldEventInfo.EndDate)</span>
+                    </p>
+                }
+                @if (OldEventInfo.HallNr != null)
+                {
+                    <p>
+                        <strong>Nowe miejsce wydarzenia: </strong> Sala nr @NewEventInfo.Hall.HallNr
+                        <span style="font-style: italic;"> (Poprzednie miejsce: sala nr @OldEventInfo.HallNr)</span>
+                    </p>
+                    <p>
+                        <strong>[UWAGA]</strong> W związku z zmianą sali w której odbywa się wydarzenie zmianie
+                        mogły ulec także numery zarezerwowanych miejsc i ich położenie przy czym typ miejsca pozostał bez zmian.
+                        Staraliśmy się jak najbardziej dopasować poprzednie usadowienie do obecnych warunków, możliwe są jednak pewne odchylenia.
+                    </p>
+                }
             }
-            else
+            else if (reservationListByEvent.Count() > 1)
             {
-                <span> - rezerwacja nr @ReservationIds</span>
-            }   
-        </h1>
-        <p>
-            <span>Otrzymujesz ten e-mail w związku z zmianą organizacji wydarzenia</span>
-            @if (OldEventInfo.Name == null)
-            {
-                <span> @NewEventInfo.Name</span>
+                // only hall number changed
+                <h1>
+                    Zmiana organizacji wydarzeń
+                </h1>
+                <p>
+                    Otrzymujesz ten e-mail w związku z zmianą organizacji kilku wydarzeń na które w ostatnim czasie dokonano rezerwacji.
+                    W związku z zaistniałymi zmianami w załącznikach przesyłamy zaktualizowaną wersję biletów dotyczących poszczególnych rezerwacji.
+                </p>
+                <p>
+                    <strong>
+                        Poniżej znajdują się szczegółowe informacje dotyczące zmian:
+                    </strong>
+                </p>
+                @foreach (var group in reservationListByEvent)
+                {
+                    var eventEntity = group.Event;
+                    var reservations = group.Reservations;
+                    <p>
+                        <strong>Wydarzenie @eventEntity.Name: </strong> <br />
+                        <div>
+                            <strong>Rezerwacje dotyczące wydarzenia: </strong> @string.Join(", ", reservations.Select(r => r.Id)) <br />
+                            <strong>Data rozpoczęcia wydarzenia: </strong> @eventEntity.StartDate.ToString(DateFormat.DateTime) <br />
+                            <strong>Nowe miejsce wydarzenia: </strong> Sala nr @eventEntity.Hall.HallNr, piętro <br />
+                        </div>
+                    </p>
+                }
             }
-            else
-            {
-                <span> @OldEventInfo.Name</span>
-            }
-            <span> 
-                na które w ostatnim czasie dokonano rezerwacji. 
-                W związku z zaistniałymi zmianami w załącznikach przesyłamy
-                zaktualizowaną wersję biletów dotyczących poszczególnych rezerwacji.
-            </span>
-           
-        </p>
-        <p>
-            <strong>
-                Poniżej znajdują się szczegółowe informacje dotyczące zmian:
-            </strong>
-        </p>
-            
-        @if(OldEventInfo.Name != null)
-        {
-            <p>
-                <strong>Nowa nazwa wydarzenia: </strong>@NewEventInfo.Name
-                <span style="font-style: italic;"> (Poprzednia nazwa: @OldEventInfo.Name)</span>
-            </p>      
-        }
-        @if (OldEventInfo.CategoryName != null)
-        {
-            <p>
-                <strong>Nowa kategoria wydarzenia: </strong>@NewEventInfo.Category.Name
-                <span style="font-style: italic;"> (Poprzednia kategoria: @OldEventInfo.CategoryName)</span>
-            </p>
-        }
-        @if (OldEventInfo.StartDate != null)
-        {
-            <p>
-                <strong>Nowa data rozpoczęcia wydarzenia: </strong>@NewEventInfo.StartDate
-                <span style="font-style: italic;"> (Poprzednia data rozpoczęcia: @OldEventInfo.StartDate)</span>
-            </p>
-        }
-        @if (OldEventInfo.EndDate != null)
-        {
-            <p>
-                <strong>Nowa data zakończenia wydarzenia: </strong>@NewEventInfo.EndDate
-                <span style="font-style: italic;"> (Poprzednia data zakończenia: @OldEventInfo.EndDate)</span>
-            </p>
-        }
-        @if (OldEventInfo.HallNr != null)
-        {
-            <p>
-                <strong>Nowe miejsce wydarzenia: </strong> Sala nr @NewEventInfo.Hall.HallNr
-                <span style="font-style: italic;"> (Poprzednie miejsce: sala nr@OldEventInfo.HallNr)</span>
-            </p>
-            <p>
-                <strong>[UWAGA]</strong> W związku z zmianą sali w której odbywa się wydarzenie zmianie
-                mogły ulec także numery zarezerwowanych miejsc i ich położenie przy czym typ miejsca pozostał bez zmian.
-                Staraliśmy się jak najbardziej dopasować poprzednie usadowienie do obecnych warunków, możliwe są jednak pewne odchylenia.
-            </p>
         }
         <p>
             Przepraszamy jeśli wprowadzone przez nas zmiany sprawiły utrudnienia. W przypadku chęci

@@ -5,6 +5,6 @@ namespace EventFlowAPI.Logic.Query
 {
     public class HallRentQuery : QueryObject
     {
-        public HallRentStatus? Status { get; set; }
+        public Status? Status { get; set; }
     }
 }

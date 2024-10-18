@@ -17,7 +17,6 @@ namespace EventFlowAPI.Logic.Helpers.PdfOptions.PdfInfoOptions
             Style = TextStyle.Default.FontFamily(defaultFontType).FontSize(12f).SemiBold()
         };
 
-
         public TextOptions OrderDate => new TextOptions
         {
             Text = $"{DateLabel} {DateOfOrder}",

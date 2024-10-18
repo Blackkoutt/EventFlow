@@ -11,6 +11,6 @@ namespace EventFlowAPI.Logic.Errors
         public static readonly Error EventIsOutOfDate = new(new BadRequestResponse("Can not make reservation for out of date event."));
         public static readonly Error CannotMakeReservationForFestivalOnEventTicket = new(new BadRequestResponse("Can not make reservation for festival because ticket for event was chosen."));
         public static readonly Error CannotMakeReservationForSameEventByEventPass = new(new BadRequestResponse("Can not make reservation because only one reservation per event made by event pass is allowed."));
-        
+        public static readonly Error ReservationIsCanceled = new(new BadRequestResponse("Reservation is canceled."));
     }
 }

@@ -14,6 +14,7 @@ using EventFlowAPI.Logic.Services.CRUDServices.Services.BaseServices;
 using EventFlowAPI.Logic.Services.OtherServices.Interfaces;
 using EventFlowAPI.Logic.UnitOfWork;
 using EventFlowAPI.Logic.Helpers;
+using EventFlowAPI.Logic.Helpers.Enums;
 
 namespace EventFlowAPI.Logic.Services.CRUDServices.Services
 {
@@ -48,7 +49,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             if (user.IsInRole(Roles.Admin))
             {
                 var allEventPasses = await _repository.GetAllAsync(q =>
-                                                q.EventPassByStatus(eventPassQuery.Status)
+                                                q.ByStatus(eventPassQuery.Status)
                                                 .SortBy(eventPassQuery.SortBy, eventPassQuery.SortDirection));
 
                 var allEventPassesDto = MapAsDto(allEventPasses);
@@ -57,7 +58,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             else if (user.IsInRole(Roles.User))
             {
                 var userEventPasses = await _repository.GetAllAsync(q =>
-                                            q.EventPassByStatus(eventPassQuery.Status)
+                                            q.ByStatus(eventPassQuery.Status)
                                             .Where(r => r.User.Id == user.Id)
                                             .SortBy(eventPassQuery.SortBy, eventPassQuery.SortDirection));
 
@@ -105,7 +106,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             var eventPassType = await _unitOfWork.GetRepository<EventPassType>()
                                         .GetOneAsync(requestDto!.PassTypeId);
 
-            var eventPassEntity = new EventPass
+            var eventPass = new EventPass
             {
                 EventPassGuid = Guid.NewGuid(),
                 StartDate = DateTime.Now,
@@ -121,17 +122,21 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             };
 
             // Add EventPass to db
-            await AddAsync(eventPassEntity);
+            await AddAsync(eventPass);
             await _unitOfWork.SaveChangesAsync();
 
-            var pdfResult = await CreateJPGAndPDFFileAndUpdateEventPassInDB(eventPassEntity, isUpdate: false);
+            var pdfResult = await CreateJPGAndPDFFileAndUpdateEventPassInDB(eventPass, isUpdate: false);
             if (!pdfResult.IsSuccessful)
                 return Result<EventPassResponseDto>.Failure(pdfResult.Error);
 
             var pdfBitmap = pdfResult.Value;
-            await _emailSender.SendEventPassPDFAsync(eventPassEntity, pdfBitmap);
 
-            var eventPassDto = MapAsDto(eventPassEntity);
+            var sendError = await _emailSender.SendInfo(eventPass, EmailType.Create, user.Email, attachmentData: pdfBitmap);
+            if (sendError != Error.None)
+                return Result<EventPassResponseDto>.Failure(sendError);
+            //await _emailSender.SendEventPassPDFAsync(eventPassEntity, pdfBitmap);
+
+            var eventPassDto = MapAsDto(eventPass);
 
             return Result<EventPassResponseDto>.Success(eventPassDto);
         }
@@ -180,7 +185,10 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             if (!pdfResult.IsSuccessful)
                 return Result<EventPassResponseDto>.Failure(pdfResult.Error);
 
-            await _emailSender.SendEventPassRenewPDFAsync(eventPass, pdfResult.Value);
+            var sendError = await _emailSender.SendInfo(eventPass, EmailType.Update, user.Email, attachmentData: pdfResult.Value);
+            if (sendError != Error.None)
+                return Result<EventPassResponseDto>.Failure(sendError);
+            //await _emailSender.SendEventPassRenewPDFAsync(eventPass, pdfResult.Value);
 
             var newEventPassDto = MapAsDto(eventPass);
             return Result<EventPassResponseDto>.Success(newEventPassDto);
@@ -192,6 +200,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             var totalDiscount = (newPassType!.Price * (eventPass.PassType.RenewalDiscountPercentage / 100));
             var paymentAmount = Math.Round(newPassType!.Price - (newPassType.Price * (eventPass.PassType.RenewalDiscountPercentage / 100)), 2);
 
+            eventPass.PreviousEndDate = eventPass.EndDate;
             eventPass.EndDate = eventPass.EndDate.AddMonths(newPassType!.ValidityPeriodInMonths);
             eventPass.RenewalDate = DateTime.Now;
             eventPass.PaymentDate = DateTime.Now;
@@ -211,7 +220,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
                 return Result<object>.Failure(userResult.Error);
 
             var user = userResult.Value;
-            if (!user.UserRoles.Contains(Roles.Admin))
+            if (!user.IsInRole(Roles.Admin))
                 return Result<object>.Failure(AuthError.UserDoesNotHaveSpecificRole);
 
             if (id < 0)
@@ -228,11 +237,11 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
                 return Result<object>.Failure(EventPassError.EventPassIsExpired);
 
             // Remove from PDF AND JPG blob storage
-            var jpgDeleteError = await _fileService.DeleteEventPass(eventPass.EventPassJPGName, ContentType.JPEG);
+            var jpgDeleteError = await _fileService.DeleteFile(eventPass, FileType.JPEG, BlobContainer.EventPassesJPG);
             if(jpgDeleteError != Error.None)
                 return Result<object>.Failure(jpgDeleteError);
 
-            var pdfDeleteError = await _fileService.DeleteEventPass(eventPass.EventPassPDFName, ContentType.JPEG);
+            var pdfDeleteError = await _fileService.DeleteFile(eventPass, FileType.PDF, BlobContainer.EventPassesPDF);
             if (pdfDeleteError != Error.None)
                 return Result<object>.Failure(pdfDeleteError);
 
@@ -250,7 +259,11 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
 
             await _unitOfWork.SaveChangesAsync();
 
-            await _emailSender.SendInfoAboutCanceledEventPass(eventPass);
+            var sendError = await _emailSender.SendInfo(eventPass, EmailType.Cancel, user.Email);
+            if (sendError != Error.None)
+                return Result<object>.Failure(sendError);
+
+            //await _emailSender.SendInfoAboutCanceledEventPass(eventPass);
 
             return Result<object>.Success();
         }
@@ -262,7 +275,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
                                                 .GetAllAsync(q => q.Where(r =>
                                                 r.EventPassId == eventPassId &&
                                                 !r.IsCanceled &&
-                                                r.EndOfReservationDate > DateTime.Now));
+                                                r.EndDate > DateTime.Now));
 
             if (allActiveReservations.Any())
             {

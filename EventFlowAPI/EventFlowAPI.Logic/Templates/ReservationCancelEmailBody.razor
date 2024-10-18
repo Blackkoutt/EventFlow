@@ -1,14 +1,24 @@
-﻿<html>
+﻿@using EventFlowAPI.DB.Entities
+@using EventFlowAPI.Logic.Helpers
+<html>
 <body>
     <div style="margin-top:20px;">
         <img style="max-width:200px; min-width: 100px;" src="cid:@LogoContentId" alt="EventFlow Logo" />
-        <h1>Anulowanie rezerwacji nr @ReservationId</h1>
+        <h1>Anulowanie rezerwacji nr @Reservation.Id</h1>
         <p>Otrzymujesz ten e-mail w związku z anulowaniem swojej rezerwacji serwisie EventFlow.</p>
         <p>
             <strong>
-                [UWAGA] Anulowanie rezerwacji oznacza, że posiadane przez ciebie bilety dotyczące rezerwacji nr @ReservationId 
+                [UWAGA] Anulowanie rezerwacji oznacza, że posiadane przez ciebie bilety dotyczące rezerwacji nr @Reservation.Id 
                 tracą swoją ważność natychmiast po otrzymaniu tego maila. 
             </strong>
+        </p>
+        <p>
+            <strong>Poniżej znajdują się podstawowe informacje dotyczące anulowanej rezerwacji:</strong><br />
+            <strong>ID rezerwacji:</strong> @Reservation.Id<br />
+            <strong>Wydarzenie:</strong> @Reservation.Ticket.Event.Name<br />
+            <strong>Gdzie?:</strong> sala nr @Reservation.Ticket.Event.Hall.HallNr, piętro @Reservation.Ticket.Event.Hall.Floor<br />
+            <strong>Kiedy?:</strong> @Reservation.Ticket.Event.StartDate.ToString(DateFormat.DateTime)<br />
+            <strong>Numery miejsc:</strong> @string.Join(", ", Reservation.Seats.Select(s => s.SeatNr))<br />
         </p>
         <p>
             W przypadku dokonania płatności, środki zostaną zwrócone na konto, z którego została
@@ -31,6 +41,6 @@
 </html>
 
 @code {
-    [Parameter] public int ReservationId { get; set; }
+    [Parameter] public Reservation Reservation { get; set; } = default!;
     [Parameter] public string LogoContentId { get; set; } = string.Empty;
 }

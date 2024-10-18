@@ -22,6 +22,11 @@ namespace EventFlowAPI.Logic.Extensions.PdfBuilderExtensions
             .BorderTop(options.TopLine.Width, options.TopLine.Unit)
             .PaddingTop(options.TopLine.PadBottom);
         }
+        public static IContainer AddFrame(this IContainer container, CommonOptions options)
+        {
+            return container
+                .Border(options.BottomLine.Width, options.BottomLine.Unit);
+        }
         public static void AddTextItem(this ColumnDescriptor column, TextOptions options) 
         {
             column.Item()

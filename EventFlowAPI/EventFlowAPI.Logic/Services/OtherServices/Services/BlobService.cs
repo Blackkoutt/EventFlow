@@ -8,6 +8,7 @@ using EventFlowAPI.Logic.Helpers;
 using EventFlowAPI.Logic.Response;
 using EventFlowAPI.Logic.ResultObject;
 using EventFlowAPI.Logic.Services.OtherServices.Interfaces;
+using EventFlowAPI.Logic.Helpers.Enums;
 
 namespace EventFlowAPI.Logic.Services.OtherServices.Services
 {
@@ -20,9 +21,25 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
         private string eventPassJPGFileNameTemplate = @$"eventflow_karnet_{{0}}.jpg";
         private string eventPassPDFFileNameTemplate = @$"eventflow_karnet_{{0}}.pdf";
 
+        public async Task<Result<object>> CreateBlob(string fileName, BlobContainer blobContainer, string contentType, byte[] data, bool isUpdate = false)
+        {
+            var newBlob = new BlobRequestDto
+            {
+                Container = blobContainer,
+                FileName = fileName,
+                ContentType = contentType,
+                Data = data
+            };
+            var uploadResult = await UploadAsync(newBlob, isUpdate: isUpdate);
+            if (!uploadResult.IsSuccessful)
+                return Result<object>.Failure(uploadResult.Error);
+
+            return Result<object>.Success(fileName);
+        }
+
         public async Task<Result<string>> CreateEventPassBlob(Guid eventPassGuid, byte[] data, string contentType, bool isUpdate=false)
         {
-            string container = string.Empty;
+            BlobContainer container;
             string fileName = string.Empty; 
             switch (contentType)
             {
@@ -39,7 +56,7 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
             }
             var newBlob = new BlobRequestDto
             {
-                ContainerName = container,
+                Container = container,
                 FileName = fileName,
                 ContentType = contentType,
                 Data = data
@@ -55,7 +72,7 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
 
 
         public async Task<Result<List<IFileEntity>>> CreateTicketBlobs(Guid reservationGuid,
-            List<byte[]> dataList, string container, string contentType, bool isUpdate = false)
+            List<byte[]> dataList, BlobContainer container, string contentType, bool isUpdate = false)
         {
             List<IFileEntity> files = [];
             List<BlobRequestDto> addedBlobs = [];
@@ -93,7 +110,7 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
 
                 var newBlob = new BlobRequestDto
                 {
-                    ContainerName = container,
+                    Container = container,
                     FileName = file.FileName,
                     ContentType = contentType,
                     Data = dataList[i]
@@ -110,15 +127,15 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
             return Result<List<IFileEntity>>.Success(files);
         }
 
+
+
         public async Task<Result<object>> UploadAsync(BlobRequestDto blob, bool isUpdate = false)
         {
             var blobError = ValidateBlobRequest(blob: blob, isUpload: true);
             if(blobError != Error.None)
-            {
                 return Result<object>.Failure(blobError);
-            }
 
-            BlobClient blobClient = GetBlobClient(blob.ContainerName, blob.FileName);
+            BlobClient blobClient = GetBlobClient(blob.Container, blob.FileName);
 
             using (Stream stream = new MemoryStream(blob.Data))
             {
@@ -147,11 +164,9 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
         {
             var blobError = ValidateBlobRequest(blob: blob, isUpload: false);
             if (blobError != Error.None)
-            {
-                return Result<BlobResponseDto>.Failure(blobError);
-            }
+             return Result<BlobResponseDto>.Failure(blobError);
 
-            BlobClient blobClient = GetBlobClient(blob.ContainerName, blob.FileName);
+            BlobClient blobClient = GetBlobClient(blob.Container, blob.FileName);
 
             Response<BlobDownloadResult> response;
             try
@@ -178,7 +193,7 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
 
         public async Task DeleteAsync(BlobRequestDto blob)
         {
-            BlobClient blobClient = GetBlobClient(blob.ContainerName, blob.FileName);
+            BlobClient blobClient = GetBlobClient(blob.Container, blob.FileName);
             await blobClient.DeleteIfExistsAsync(cancellationToken: blob.CancellationToken);
         }
 
@@ -192,8 +207,12 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
 
         private Error ValidateBlobRequest(BlobRequestDto blob, bool isUpload)
         {
-            if (string.IsNullOrEmpty(blob.ContainerName))
+            if (string.IsNullOrEmpty(blob.Container.ToString()))
                 return BlobError.ContainerIsNullOrEmpty;
+
+            var blobContainers = _blobServiceClient.GetBlobContainers().Select(x => x.Name);
+            if (!blobContainers.Contains(blob.Container.ToString()))
+                return BlobError.ContainerDoesNotExist;
 
             if (string.IsNullOrEmpty(blob.FileName))
                 return BlobError.BlobNameIsNullOrEmpty;
@@ -210,9 +229,9 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
         }
 
 
-        private BlobClient GetBlobClient(string container, string blobName)
+        private BlobClient GetBlobClient(BlobContainer container, string blobName)
         {
-            BlobContainerClient containerClient = _blobServiceClient.GetBlobContainerClient(container);
+            BlobContainerClient containerClient = _blobServiceClient.GetBlobContainerClient(container.ToString());
             return containerClient.GetBlobClient(blobName);
         }
     }

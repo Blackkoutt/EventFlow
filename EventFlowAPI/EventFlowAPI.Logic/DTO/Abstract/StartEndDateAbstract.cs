@@ -1,6 +1,7 @@
 ﻿using EventFlowAPI.Logic.DTO.Interfaces;
 using EventFlowAPI.Logic.DTO.Validators;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace EventFlowAPI.Logic.DTO.Abstract
 {
@@ -9,10 +10,19 @@ namespace EventFlowAPI.Logic.DTO.Abstract
         [Required(ErrorMessage = "Data początkowa jest wymagana.")]
         [DataType(DataType.Date)]
         [StartAndEndDateValidator]
+        [MaxDurationValidator]
         public DateTime StartDate { get; set; }
 
         [Required(ErrorMessage = "Data końcowa jest wymagana.")]
         [DataType(DataType.Date)]
         public DateTime EndDate { get; set; }
+
+
+
+        [JsonIgnore]
+        public abstract TimeSpan MaxDuration { get; }
+
+        [JsonIgnore]
+        public abstract string MaxDurationErrorMessage { get; }
     }
 }

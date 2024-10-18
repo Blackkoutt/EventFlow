@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace EventFlowAPI.DB.Entities
 {
-    public class Event : BaseEntity, INameableEntity, IDateableEntity
+    public class Event : BaseEntity, ISoftDeleteable, IExpireable, IDateableEntity
     {
 
         [MaxLength(60)]

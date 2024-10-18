@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace EventFlowAPI.DB.Entities
 {
-    public class HallRent : BaseEntity, IDateableEntity
+    public class HallRent : BaseEntity, ISoftDeleteable, IExpireable, IAuthEntity, IDateableEntity
     {
         public Guid HallRentGuid { get; set; }
         public DateTime StartDate { get; set; }
@@ -22,7 +22,7 @@ namespace EventFlowAPI.DB.Entities
          Column(TypeName = "NUMERIC(7,2)")]
         public decimal PaymentAmount { get; set; }
 
-        public string? HallRentPDFName { get; set; } = string.Empty;
+        public string? HallRentPDFName { get; set; }
         public int PaymentTypeId { get; set; }   
         public int HallId { get; set; }
         public string UserId { get; set; } = string.Empty;

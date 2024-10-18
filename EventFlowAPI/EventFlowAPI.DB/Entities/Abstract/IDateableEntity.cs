@@ -2,7 +2,7 @@
 {
     public interface IDateableEntity
     {
-        public DateTime StartDate { get; set; }
-        public DateTime EndDate { get; set; }
+        DateTime StartDate { get; set; }
+        DateTime EndDate { get; set; }
     }
 }

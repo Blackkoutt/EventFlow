@@ -1,13 +1,22 @@
-﻿<html>
+﻿@using EventFlowAPI.DB.Entities
+@using EventFlowAPI.Logic.Helpers
+<html>
 <body>
     <div style="margin-top:20px;">
         <img style="max-width:200px; min-width: 100px;" src="cid:@LogoContentId" alt="EventFlow Logo" />
-        <h1>Twój karnet EventFlow - karnet nr @EventPassId</h1>
+        <h1>Twój karnet EventFlow - karnet nr @EventPass.Id</h1>
         <p>Otrzymujesz ten e-mail w związku z zakupem karnetu w serwisie EventFlow.</p>
         <p>
             <strong>
                 W załączniku znajduje plik PDF z zamówionym przez ciebie karnetem.
             </strong>
+        </p>
+        <p>
+            <strong>Podstawowe informacje o karnecie:</strong><br />
+            <strong>ID karnetu:</strong> @EventPass.Id<br />
+            <strong>Typ karnetu:</strong> @EventPass.PassType.Name<br />
+            <strong>Data zakupu:</strong> @EventPass.StartDate.ToString(DateFormat.DateTime)<br />
+            <strong>Data wygaśnięcia:</strong> @EventPass.EndDate.ToString(DateFormat.DateTime)<br />
         </p>
         <p>
             Karnet uprawnia do udziału we wszystkich wydarzeniach organizowanych przez EventFlow
@@ -46,6 +55,6 @@
 </html>
 
 @code {
-    [Parameter] public int EventPassId { get; set; }
+    [Parameter] public EventPass EventPass { get; set; } = default!;
     [Parameter] public string LogoContentId { get; set; } = string.Empty;
 }

@@ -1,12 +1,21 @@
-﻿<html>
+﻿@using EventFlowAPI.DB.Entities
+@using EventFlowAPI.Logic.Helpers
+<html>
 <body>
     <div style="margin-top:20px;">
         <img style="max-width:200px; min-width: 100px;" src="cid:@LogoContentId" alt="EventFlow Logo" />
-        <h1>Anulowanie karnetu nr @EventPassId</h1>
+        <h1>Anulowanie karnetu nr @EventPass.Id</h1>
         <p>Zakupiony przez ciebie karnet został anulowany przez administratora EventFlow.</p>
         <p>
+            <strong>Poniżej znajdują się podstawowe informacje dotyczące anulowanego karnetu:</strong><br />
+            <strong>ID karnetu:</strong> @EventPass.Id<br />
+            <strong>Typ karnetu:</strong> @EventPass.PassType.Name<br />
+            <strong>Data zakupu:</strong> @EventPass.StartDate.ToString(DateFormat.DateTime)<br />
+            <strong>Data wygaśnięcia:</strong> @EventPass.EndDate.ToString(DateFormat.DateTime)<br />
+        </p>
+        <p>
             <strong>
-                [UWAGA] Anulowanie karnetu oznacza, że posiadany przez ciebie karnet nr @EventPassId
+                [UWAGA] Anulowanie karnetu oznacza, że posiadany przez ciebie karnet nr @EventPass.Id
                 staje się nieaktywny natychmiast po otrzymaniu tego maila. Wszytskie aktywne rezerwacje
                 przypisane do karnetu zostają anulowane wraz z otrzymaniem tej wiadomości.
             </strong>
@@ -37,6 +46,6 @@
 </html>
 
 @code {
-    [Parameter] public int EventPassId { get; set; }
+    [Parameter] public EventPass EventPass { get; set; } = default!;
     [Parameter] public string LogoContentId { get; set; } = string.Empty;
 }

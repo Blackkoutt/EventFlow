@@ -29,5 +29,12 @@ namespace EventFlowAPI.Logic.DTO.RequestDto
         public int HallId { get; set; }
 
         public ICollection<Event_FestivalTicketRequestDto> EventTickets { get; set; } = [];
+
+
+        [JsonIgnore]
+        public sealed override TimeSpan MaxDuration => TimeSpan.FromHours(24);
+
+        [JsonIgnore]
+        public override string MaxDurationErrorMessage => $"Czas trwania wydarzenia nie może przekraczać {MaxDuration.TotalHours} godzin.";
     }
 }

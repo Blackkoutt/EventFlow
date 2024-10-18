@@ -11,5 +11,8 @@ namespace EventFlowAPI.Logic.Errors
         public static readonly Error CollisionWithExistingEvent = new(new BadRequestResponse("Hall rent has collistion with other existing event. Change hall or start/end date of the rent."));
         public static readonly Error CollisionWithExistingHallRent = new(new BadRequestResponse("Hall rent has collistion with existing hall rent. Change hall or start/end date of the rent."));
         public static readonly Error HallNotFound = new(new BadRequestResponse("Hall with given Id does not exist in database."));
+        public static readonly Error HallRentDoesNotExist = new(new BadRequestResponse("Such hall rent does not exist or was canceled some time before."));
+        public static readonly Error TooMuchActiveHallRentsInMonth = new(new BadRequestResponse("User have too much active hall rents in this month."));
+        public static readonly Error HallRentListIsEmpty = new(new BadRequestResponse("Can not found hall rents to update."));
     }
 }

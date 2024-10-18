@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace EventFlowAPI.DB.Entities
 {
-    public class Festival : BaseEntity, INameableEntity, IDateableEntity
+    public class Festival : BaseEntity, ISoftDeleteable, IExpireable, IDateableEntity
     {
 
         [MaxLength(60)]
@@ -12,6 +12,7 @@ namespace EventFlowAPI.DB.Entities
 
         [MaxLength(300)]
         public string ShortDescription { get; set; } = string.Empty;
+        public DateTime AddDate { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
         public TimeSpan Duration { get; set; }
