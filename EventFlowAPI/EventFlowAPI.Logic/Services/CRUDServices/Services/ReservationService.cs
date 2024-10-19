@@ -195,7 +195,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
         }
 
 
-        public async Task<Error> UpdateTicketAndSendByMailAsync(List<Reservation> userReservations, OldEventInfo? oldEventInfo = null)
+        private async Task<Error> UpdateTicketAndSendByMailAsync<TEntity>(List<Reservation> userReservations, TEntity? oldEntity = null, TEntity? newEntity = null) where TEntity : class
         {
             if (userReservations.Count == 0)
                 return ReservationError.ReservationListIsEmpty;
@@ -203,10 +203,6 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             List<(Reservation, byte[])> userUpdatedTicketsPDFs = [];
 
             var reservationList = userReservations.DistinctBy(r => r.ReservationGuid);
-
-            if (oldEventInfo == null) oldEventInfo = new OldEventInfo();
-
-            oldEventInfo.ReservationList = reservationList; 
 
             foreach (var userReservation in reservationList)
             {
@@ -237,25 +233,20 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
                 userUpdatedTicketsPDFs.Add((userReservation, ticketPDFFileResult.Value.Bitmap));
             }
             // Send e-mail with updated tickets
-            await _emailSender.SendUpdatedTicketsAsync(userUpdatedTicketsPDFs, oldEventInfo);
+            await _emailSender.SendUpdatedTicketsAsync(userUpdatedTicketsPDFs, oldEntity, newEntity);
 
             return Error.None;
         }
 
-        public async Task<Error> SendMailsAboutUpdatedReservations(IEnumerable<Reservation> reservationsForEvent, OldEventInfo? oldEventInfo = null)
+        public async Task<Error> SendMailsAboutUpdatedReservations<TEntity>(IEnumerable<Reservation> reservationsForEvent, TEntity? oldEntity = null, TEntity? newEntity = null) where TEntity : class
         {
-            var reservationsGroupByUser = reservationsForEvent.GroupBy(r => r.UserId)
-                                            .Select(g => new
-                                            {
-                                                UserId = g.Key,
-                                                ReservationList = g.ToList(),
-                                            });
+            var reservationsGroupByUser = reservationsForEvent.GroupBy(r => r.UserId);
 
             // send mail about updated event 
             foreach (var group in reservationsGroupByUser)
             {
-                var userReservations = group.ReservationList;
-                var updateAndSendError = await UpdateTicketAndSendByMailAsync(userReservations, oldEventInfo);
+                var userReservations = group.ToList();
+                var updateAndSendError = await UpdateTicketAndSendByMailAsync(userReservations, oldEntity, newEntity);
                 if(updateAndSendError != Error.None)
                     return updateAndSendError;
             }
@@ -263,7 +254,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
         }
 
 
-        public async Task<Error> CancelReservationsInCauseOfDeleteEventOrHall(IEnumerable<Reservation> reservations, Event? eventEntity = null)
+        public async Task<Error> CancelReservationsInCauseOfDeleteEventOrHallOrFestival(IEnumerable<Reservation> reservations, Event? eventEntity = null, Festival? festival = null)
         {
             var reservationsGroupByUser = reservations.GroupBy(r => r.UserId)
                                             .Select(g => new
@@ -279,22 +270,25 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
                 foreach (var reservation in group.ReservationList)
                 {
                     bool deleteFestival = false;
-                    var eventsInFestival = await _unitOfWork.GetRepository<Reservation>()
+                    var eventsInFestival = await _repository
                                                     .GetAllAsync(q => q.Where(r =>
                                                     r.IsFestivalReservation &&
                                                     r.ReservationGuid == reservation.ReservationGuid &&
-                                                    !r.Ticket.IsDeleted));
+                                                    !r.IsCanceled));
 
                     if (reservation.IsFestivalReservation && eventsInFestival.Count() <= 2)
                         deleteFestival = true;
 
-                    var deleteEventReservationsError = await SoftDeleteReservationAndFileTickets(reservation, deleteForFestival: deleteFestival);
-                    if (deleteEventReservationsError != Error.None)
-                        return deleteEventReservationsError;
+                    if(!deleteReservationsInfo.Select(r => r.Item1.ReservationGuid).Contains(reservation.ReservationGuid))
+                    {
+                        var deleteEventReservationsError = await SoftDeleteReservationAndFileTickets(reservation, deleteForFestival: deleteFestival);
+                        if (deleteEventReservationsError != Error.None)
+                            return deleteEventReservationsError;
+                    }
 
                     deleteReservationsInfo.Add((reservation, deleteFestival));
                 }
-                await _emailSender.SendInfoAboutCanceledEvents(deleteReservationsInfo, eventEntity);
+                await _emailSender.SendInfoAboutCanceledEvents(deleteReservationsInfo, eventEntity, festival);
             }
             return Error.None;
         }
@@ -575,6 +569,15 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
                         !r.IsCanceled &&
                         r.EndDate > DateTime.Now &&
                         r.Ticket.EventId == eventId));
+        }
+        public async Task<IEnumerable<Reservation>> GetActiveReservationsForFestival(int festivalId)
+        {
+            return await _repository
+                        .GetAllAsync(q => q.Where(r =>
+                        !r.IsCanceled &&
+                        r.EndDate > DateTime.Now &&
+                        r.IsFestivalReservation && 
+                        r.Ticket.FestivalId == festivalId));
         }
 
 

@@ -5,7 +5,7 @@ using System.Text.Json.Serialization;
 
 namespace EventFlowAPI.Logic.DTO.RequestDto
 {
-    public class FestivalRequestDto : StartEndDateAbstract, IRequestDto, INameableRequestDto
+    public class FestivalRequestDto : IRequestDto, INameableRequestDto
     {
         [Required(ErrorMessage = "Nazwa festiwalu jest wymagana.")]
         [Length(2, 60, ErrorMessage = "Nazwa powinna zawierać od 2 do 60 znaków.")]
@@ -16,7 +16,7 @@ namespace EventFlowAPI.Logic.DTO.RequestDto
         public string ShortDescription { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "Wybierz co najmniej jedno wydarzenie.")]
-        public List<int> EventIds { get; set; } = [];
+        public Dictionary<int, FestivalUpdate_EventRequestDto?> Events { get; set; } = [];
 
         [Required(ErrorMessage = "Wybierz co najmniej jednego patrona medialnego.")]
         public List<int> MediaPatronIds { get; set; } = [];
@@ -26,13 +26,8 @@ namespace EventFlowAPI.Logic.DTO.RequestDto
 
         [Required(ErrorMessage = "Wybierz co najmniej jednego sponsora.")]
         public List<int> SponsorIds { get; set; } = [];
-        public FestivalRequestDto? Details { get; set; } = default!;
+        public FestivalDetailsRequestDto? Details { get; set; } = default!;
 
-        [JsonIgnore]
-        public sealed override TimeSpan MaxDuration => TimeSpan.FromDays(14);
-
-        [JsonIgnore]
-        public override string MaxDurationErrorMessage => $"Czas trwania festiwalu nie może przekraczać {MaxDuration.TotalDays} dni.";
-
+        public ICollection<Event_FestivalTicketRequestDto> FestivalTickets { get; set; } = [];
     }
 }

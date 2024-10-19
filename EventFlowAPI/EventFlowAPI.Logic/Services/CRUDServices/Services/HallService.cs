@@ -231,7 +231,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
                 await _ticketService.DeleteTickets(eventsToDelete, festivalsToDelete);
                 await _unitOfWork.SaveChangesAsync();
 
-                var cancelReservationError = await _reservationService.CancelReservationsInCauseOfDeleteEventOrHall(reservations);
+                var cancelReservationError = await _reservationService.CancelReservationsInCauseOfDeleteEventOrHallOrFestival(reservations);
                 if (cancelReservationError != Error.None)
                     return Result<object>.Failure(cancelReservationError);     
             }
@@ -303,7 +303,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
                         return eventHallViewFileNameResult.Error;
                 }
 
-                var sendMailError = await _reservationService.SendMailsAboutUpdatedReservations(allActiveReservations);
+                var sendMailError = await _reservationService.SendMailsAboutUpdatedReservations(allActiveReservations, oldHallEntity, hallEntity);
                 if (sendMailError != Error.None)
                     return sendMailError;
             }

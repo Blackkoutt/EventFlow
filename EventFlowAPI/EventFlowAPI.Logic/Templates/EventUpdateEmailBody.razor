@@ -5,46 +5,24 @@
     <div style="margin-top:20px;">
         <img style="max-width:200px; min-width: 100px;" src="cid:@LogoContentId" alt="EventFlow Logo" />
         @{
-            var reservationListByEvent = OldEventInfo.ReservationList
-            .GroupBy(r => r.Ticket.Event)
-            .Select(group => new
+            var reservationListByEvent = Reservations.GroupBy(r => r.Ticket.Event).Select(group => new
             {
                 Event = group.Key,
-                Reservations = group.ToList(),
+                Reservations = group.ToList()
             });
 
-            if (reservationListByEvent.Count() == 1)
+            // Event Update
+            if (reservationListByEvent.Count() == 1 && OldEvent != null && NewEvent != null)
             {
-                // all properties can change
+                var group = reservationListByEvent.First();
+                var reservationIds = Reservations.Select(r => r.Id);
+                var eventName = (OldEvent.Name != NewEvent.Name) ? NewEvent.Name : OldEvent.Name;
+                var reservationString = reservationIds.Count() > 1 ? "rezerwacje" : "rezerwacja";
                 <h1>
-                    <span>Zmiana organizacji wydarzenia </span>
-                    @if (OldEventInfo.Name == null)
-                    {
-                        <span> @NewEventInfo.Name</span>
-                    }
-                    else
-                    {
-                        <span> @OldEventInfo.Name</span>
-                    }
-                    @if (ReservationIds.Count() > 1)
-                    {
-                        <span> - rezerwacje nr: @ReservationIds</span>
-                    }
-                    else
-                    {
-                        <span> - rezerwacja nr @ReservationIds</span>
-                    }
+                    Zmiana organizacji wydarzenia @eventName - @reservationString nr: @string.Join(", ", reservationIds)
                 </h1>
                 <p>
-                    <span>Otrzymujesz ten e-mail w związku z zmianą organizacji wydarzenia</span>
-                    @if (OldEventInfo.Name == null)
-                    {
-                        <span> @NewEventInfo.Name</span>
-                    }
-                    else
-                    {
-                        <span> @OldEventInfo.Name</span>
-                    }
+                    <span>Otrzymujesz ten e-mail w związku z zmianą organizacji wydarzenia @eventName</span>
                     <span>
                         na które w ostatnim czasie dokonano rezerwacji.
                         W związku z zaistniałymi zmianami w załącznikach przesyłamy
@@ -58,39 +36,39 @@
                     </strong>
                 </p>
 
-                @if (OldEventInfo.Name != null)
+                @if (OldEvent.Name != NewEvent.Name)
                 {
                     <p>
-                        <strong>Nowa nazwa wydarzenia: </strong>@NewEventInfo.Name
-                        <span style="font-style: italic;"> (Poprzednia nazwa: @OldEventInfo.Name)</span>
+                        <strong>Nowa nazwa wydarzenia: </strong>@NewEvent.Name
+                        <span style="font-style: italic;"> (Poprzednia nazwa: @OldEvent.Name)</span>
                     </p>
                 }
-                @if (OldEventInfo.CategoryName != null)
+                @if (OldEvent.Category.Name != NewEvent.Category.Name)
                 {
                     <p>
-                        <strong>Nowa kategoria wydarzenia: </strong>@NewEventInfo.Category.Name
-                        <span style="font-style: italic;"> (Poprzednia kategoria: @OldEventInfo.CategoryName)</span>
+                        <strong>Nowa kategoria wydarzenia: </strong>@NewEvent.Category.Name
+                        <span style="font-style: italic;"> (Poprzednia kategoria: @OldEvent.Category.Name)</span>
                     </p>
                 }
-                @if (OldEventInfo.StartDate != null)
+                @if (OldEvent.StartDate != NewEvent.StartDate)
                 {
                     <p>
-                        <strong>Nowa data rozpoczęcia wydarzenia: </strong>@NewEventInfo.StartDate
-                        <span style="font-style: italic;"> (Poprzednia data rozpoczęcia: @OldEventInfo.StartDate)</span>
+                        <strong>Nowa data rozpoczęcia wydarzenia: </strong>@NewEvent.StartDate
+                        <span style="font-style: italic;"> (Poprzednia data rozpoczęcia: @OldEvent.StartDate)</span>
                     </p>
                 }
-                @if (OldEventInfo.EndDate != null)
+                @if (OldEvent.EndDate != NewEvent.EndDate)
                 {
                     <p>
-                        <strong>Nowa data zakończenia wydarzenia: </strong>@NewEventInfo.EndDate
-                        <span style="font-style: italic;"> (Poprzednia data zakończenia: @OldEventInfo.EndDate)</span>
+                        <strong>Nowa data zakończenia wydarzenia: </strong>@NewEvent.EndDate
+                        <span style="font-style: italic;"> (Poprzednia data zakończenia: @OldEvent.EndDate)</span>
                     </p>
                 }
-                @if (OldEventInfo.HallNr != null)
+                @if (OldEvent.Hall.HallNr != NewEvent.Hall.HallNr)
                 {
                     <p>
-                        <strong>Nowe miejsce wydarzenia: </strong> Sala nr @NewEventInfo.Hall.HallNr
-                        <span style="font-style: italic;"> (Poprzednie miejsce: sala nr @OldEventInfo.HallNr)</span>
+                        <strong>Nowe miejsce wydarzenia: </strong> Sala nr @NewEvent.Hall.HallNr
+                        <span style="font-style: italic;"> (Poprzednie miejsce: sala nr @OldEvent.Hall.HallNr)</span>
                     </p>
                     <p>
                         <strong>[UWAGA]</strong> W związku z zmianą sali w której odbywa się wydarzenie zmianie
@@ -98,7 +76,16 @@
                         Staraliśmy się jak najbardziej dopasować poprzednie usadowienie do obecnych warunków, możliwe są jednak pewne odchylenia.
                     </p>
                 }
+                @if (group.Reservations.Any(r => r.IsFestivalReservation && r.Ticket.Festival != null))
+                {
+                    var eventFestival = group.Event;
+                    <p>
+                        <strong>Wydarzenie wchodzi wchodzi w skład festiwalu @eventFestival.Name odbywającego się w dniach @eventFestival.StartDate.ToString(DateFormat.Date) - @eventFestival.EndDate.ToString(DateFormat.Date) na który zakupiono bilet.</strong>
+                    </p>
+                }
             }
+
+            // Hall Update
             else if (reservationListByEvent.Count() > 1)
             {
                 // only hall number changed
@@ -114,19 +101,110 @@
                         Poniżej znajdują się szczegółowe informacje dotyczące zmian:
                     </strong>
                 </p>
-                @foreach (var group in reservationListByEvent)
+                if (OldFestival != null && NewFestival != null)
                 {
-                    var eventEntity = group.Event;
-                    var reservations = group.Reservations;
-                    <p>
-                        <strong>Wydarzenie @eventEntity.Name: </strong> <br />
-                        <div>
-                            <strong>Rezerwacje dotyczące wydarzenia: </strong> @string.Join(", ", reservations.Select(r => r.Id)) <br />
-                            <strong>Data rozpoczęcia wydarzenia: </strong> @eventEntity.StartDate.ToString(DateFormat.DateTime) <br />
-                            <strong>Nowe miejsce wydarzenia: </strong> Sala nr @eventEntity.Hall.HallNr, piętro <br />
-                        </div>
-                    </p>
+                    var festivalReservations = reservationListByEvent.Where(r => r.Reservations.Any(r => r.IsFestivalReservation && r.Ticket.Festival != null)).Select(r => r.Reservations);
+                    var eventReservations = reservationListByEvent.Select(r => r.Reservations).Except(festivalReservations);
+                    
+                    if (festivalReservations.Any())
+                    {
+                        if (OldFestival.Name != NewFestival.Name)
+                        {
+                            <p>
+                                <strong>Nowa nazwa festiwalu: </strong>@NewFestival.Name
+                                <span style="font-style: italic;"> (Poprzednia nazwa: @OldFestival.Name)</span>
+                            </p>
+                        }
+                        @if (OldFestival.StartDate != NewFestival.StartDate)
+                        {
+                            <p>
+                                <strong>Nowa data rozpoczęcia festiwalu: </strong>@NewFestival.StartDate
+                                <span style="font-style: italic;"> (Poprzednia data rozpoczęcia: @OldFestival.StartDate.ToString(DateFormat.Date))</span>
+                            </p>
+                        }
+                        @if (OldFestival.EndDate != NewFestival.EndDate)
+                        {
+                            <p>
+                                <strong>Nowa data zakończenia festiwalu: </strong>@NewFestival.EndDate
+                                <span style="font-style: italic;"> (Poprzednia data zakończenia: @OldFestival.EndDate.ToString(DateFormat.Date))</span>
+                            </p>
+                        }
+                        <p>
+                            <strong>Wydarzenia wchodzące w skład festiwalu: </strong><br />
+                            @{
+                                var festivalEvents = NewFestival.Events.OrderBy(f => f.StartDate);
+                                var festivalEventsCount = festivalEvents.Count();
+                                for (var i = 0; i < festivalEventsCount; i++)
+                                {
+                                    var eventEntity = festivalEvents.ElementAt(i);
+                                    var oldEventEntity = OldFestival.Events.FirstOrDefault(e => e.Id == eventEntity.Id);
+                                    if (oldEventEntity != null)
+                                    {
+                                        List<string> changedProperties = [];
+                                        if (oldEventEntity.Category.Name != eventEntity.Category.Name) changedProperties.Add($"Poprzednia kategoria: {oldEventEntity.Category.Name}");
+                                        if (oldEventEntity.Name != eventEntity.Name) changedProperties.Add($"Poprzednia nazwa: {oldEventEntity.Name}");
+                                        if (oldEventEntity.StartDate != eventEntity.StartDate) changedProperties.Add($"Poprzednia data rozpoczęcia: {oldEventEntity.StartDate}");
+                                        if (oldEventEntity.Hall.HallNr != eventEntity.Hall.HallNr) changedProperties.Add($"Poprzednia sala: {oldEventEntity.Name}");
+
+                                        <span>@(i + 1). @eventEntity.Category.Name: @eventEntity.Name, @eventEntity.StartDate.ToString(DateFormat.DateTime), sala nr @eventEntity.Hall.HallNr</span>
+                                        <br />
+                                        <span>(@string.Join(", ", changedProperties))</span>
+                                        <br />
+                                    }
+                                    else
+                                    {
+                                        <span>(NOWE!) @(i + 1). @eventEntity.Category.Name: @eventEntity.Name, @eventEntity.StartDate.ToString(DateFormat.DateTime), sala nr @eventEntity.Hall.HallNr</span>
+                                        <br />
+                                    }
+                                }
+                                var deletedEventsIds = OldFestival.Events.Select(e => e.Id).Except(festivalEvents.Select(e => e.Id));
+                                if (deletedEventsIds.Any())
+                                {
+                                    <br />
+                                    <span>Usunięte wydarzenia wchodzące wcześniej w skład festiwalu: </span>
+                                    var deletedEvents = OldFestival.Events.Where(e => deletedEventsIds.Contains(e.Id));
+                                    var deletedEventsCount = deletedEvents.Count();
+                                    for (var i = 0; i < deletedEvents.Count(); i++)
+                                    {
+                                        var deletedEvent = deletedEvents.ElementAt(i);
+                                        <span>@(i + 1). @deletedEvent.Category.Name: @deletedEvent.Name, @deletedEvent.StartDate.ToString(DateFormat.DateTime), sala nr @deletedEvent.Hall.HallNr</span>
+                                    }
+                                }
+                            }
+                        </p>
+                        <p>
+                            <strong>[UWAGA!] </strong><span> 
+                            W związku z zmianami w organizacji festiwalu mogły wystąpić także zmiany w organizacji
+                            wydarzeń wchodzących w skład festiwalu na które zakupiono odzielne bilety.
+                            </span>
+                        </p>
+                    }          
                 }
+                else if (OldHall != null && NewHall != null)
+                {
+                    @foreach (var group in reservationListByEvent)
+                    {
+                        var eventEntity = group.Event;
+                        var reservations = group.Reservations;
+                        var festivalReservations = reservations.Where(r => r.IsFestivalReservation && r.Ticket.Festival != null);
+                        <p>
+                            <strong>Wydarzenie @eventEntity.Name: </strong> <br />
+                            <div>
+                                <strong>Rezerwacje dotyczące wydarzenia: </strong> @string.Join(", ", reservations.Select(r => r.Id)) <br />
+                                <strong>Data rozpoczęcia wydarzenia: </strong> @eventEntity.StartDate.ToString(DateFormat.DateTime) <br />
+                                <strong>Nowe miejsce wydarzenia: </strong> Sala nr @eventEntity.Hall.HallNr, piętro <br />
+                                @{
+                                    var festivalReservation = reservations.FirstOrDefault(r => r.IsFestivalReservation && r.Ticket.Festival != null);
+                                    if (festivalReservation != null)
+                                    {
+                                        var festival = festivalReservation.Ticket.Festival;
+                                        <strong>Wchodzi w skład festiwalu: </strong> <span>@festival!.Name, @festival.StartDate.ToString(DateFormat.Date) - @festival.EndDate.ToString(DateFormat.Date)</span> <br />
+                                    }
+                                }
+                            </div>
+                        </p>
+                    }
+                }  
             }
         }
         <p>
@@ -151,8 +229,12 @@
 </html>
 
 @code {
-    [Parameter] public string ReservationIds { get; set; } = string.Empty;
+    [Parameter] public List<Reservation> Reservations { get; set; } = [];
     [Parameter] public string LogoContentId { get; set; } = string.Empty;
-    [Parameter] public OldEventInfo OldEventInfo { get; set; } = default!;
-    [Parameter] public Event NewEventInfo { get; set; } = default!;
+    [Parameter] public Event? OldEvent { get; set; } = default!;
+    [Parameter] public Event? NewEvent { get; set; } = default!;
+    [Parameter] public Hall? OldHall { get; set; } = default!;
+    [Parameter] public Hall? NewHall { get; set; } = default!;
+    [Parameter] public Festival? OldFestival { get; set; } = default!;
+    [Parameter] public Festival? NewFestival { get; set; } = default!;
 }

@@ -97,7 +97,13 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
 
         public async Task<Error> DeleteFile<TEntity>(TEntity entity, FileType fileType, BlobContainer container)
         {
-            var fileName = await GetPDFFileName(entity, fileType);
+            string? fileName = string.Empty;
+            if (container == BlobContainer.HallViewsPDF && entity is HallRent hallRent)
+                fileName = await GetPDFFileName(hallRent.Hall, fileType);
+            else if (container == BlobContainer.HallViewsPDF && entity is Event eventEntity)
+                fileName = await GetPDFFileName(eventEntity.Hall, fileType);
+            else
+                fileName = await GetPDFFileName(entity, fileType);
 
             if (string.IsNullOrEmpty(fileName))
                 return BlobError.FileNameIsEmpty;

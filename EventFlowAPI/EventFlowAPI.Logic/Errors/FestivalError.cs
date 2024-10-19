@@ -13,10 +13,12 @@ namespace EventFlowAPI.Logic.Errors
         public static readonly Error TooMuchOrganizersInFestival = new(new BadRequestResponse("Festival can contains up to 10 organizers."));
         public static readonly Error TooMuchSponsorsInFestival = new(new BadRequestResponse("Festival can contains up to 10 sponsors."));
         public static readonly Error TooMuchEventsInFestival = new(new BadRequestResponse("Festival can contains up to 12 events."));
+        public static readonly Error FestivalIsTooLong = new(new BadRequestResponse("Festival can last up to 14 days."));
 
         public static readonly Error MediaPatronDuplicates = new(new BadRequestResponse("Media patron IDs list contains duplicated elements."));
         public static readonly Error EventDuplicates = new(new BadRequestResponse("Event IDs list contains duplicated elements."));
         public static readonly Error SponsorDuplicates = new(new BadRequestResponse("Sponsor IDs list contains duplicated elements."));
         public static readonly Error OrganizerDuplicates = new(new BadRequestResponse("Organizer IDs list contains duplicated elements."));
+        public static readonly Error TooMuchTimeBetweenEvents = new(new BadRequestResponse("Maximum free time between events included in festival is 48 hours."));
     }
 }

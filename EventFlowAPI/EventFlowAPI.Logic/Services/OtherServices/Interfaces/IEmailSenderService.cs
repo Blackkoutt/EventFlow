@@ -18,9 +18,9 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Interfaces
         Task SendHallRentPDFAsync(HallRent hallRent, byte[] hallRentPDF, string fileName);*/
 
         Task SendEmailAsync(EmailDto emailDto);
-        Task SendUpdatedTicketsAsync(List<(Reservation, byte[])> tupleList, OldEventInfo oldEventInfo);
+        Task SendUpdatedTicketsAsync<TEntity>(List<(Reservation, byte[])> tupleList, TEntity? oldEntity, TEntity? newEntity) where TEntity : class;
         Task SendUpdatedHallRentsAsync(List<(HallRent, byte[])> tupleList, Hall oldHall);
         Task SendInfoAboutCanceledHallRents(List<HallRent> hallRentsToDelete);
-        Task SendInfoAboutCanceledEvents(List<(Reservation, bool)> deleteReservationsInfo, Event? eventEntity = null);
+        Task SendInfoAboutCanceledEvents(List<(Reservation, bool)> deleteReservationsInfo, Event? eventEntity = null, Festival? festival = null);
     }
 }

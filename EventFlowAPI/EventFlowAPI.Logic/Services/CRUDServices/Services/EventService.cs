@@ -11,9 +11,9 @@ using EventFlowAPI.Logic.Services.CRUDServices.Interfaces;
 using EventFlowAPI.Logic.Services.CRUDServices.Services.BaseServices;
 using EventFlowAPI.Logic.UnitOfWork;
 using EventFlowAPI.Logic.Extensions;
-using EventFlowAPI.Logic.Helpers;
 using EventFlowAPI.Logic.Identity.Helpers;
 using EventFlowAPI.Logic.Services.OtherServices.Interfaces;
+using EventFlowAPI.Logic.Helpers.Enums;
 
 namespace EventFlowAPI.Logic.Services.CRUDServices.Services
 {
@@ -23,7 +23,6 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
         IUserService userService,
         IEmailSenderService emailSender,
         ICollisionCheckerService collisionChecker,
-        IFestivalService festivalService,
         ITicketService ticketService,
         IFileService fileService,
         ICopyMakerService copyMaker
@@ -39,10 +38,35 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
         private readonly IEmailSenderService _emailSender = emailSender;
         private readonly IReservationService _reservationService = reservationService;
         private readonly ICollisionCheckerService _collisionChecker = collisionChecker;
-        private readonly IFestivalService _festivalService = festivalService;
         private readonly ITicketService _ticketService = ticketService;
         private readonly IFileService _fileService = fileService;
         private readonly ICopyMakerService _copyMaker = copyMaker;
+
+
+        // do someghing 
+        private async Task<ICollection<Festival>> CancelFestivalIfEssential(IEnumerable<Event> eventsToDelete)
+        {
+            var _festivalRepository = _unitOfWork.GetRepository<Festival>();
+            var festivalsToDelete = await _festivalRepository.GetAllAsync(q =>
+                                        q.Where(f =>
+                                        !f.IsCanceled &&
+                                        f.EndDate > DateTime.Now &&
+                                        f.Events.Any(e => eventsToDelete.Contains(e)) &&
+                                        f.Events.Count(e => !eventsToDelete.Contains(e)) <= 2));
+
+            ICollection<Festival> deletedFestivals = [];
+
+            foreach (var festival in festivalsToDelete)
+            {
+                deletedFestivals.Add(festival);
+                festival.CancelDate = DateTime.Now;
+                festival.IsCanceled = true;
+                _festivalRepository.Update(festival);
+            }
+
+            return deletedFestivals;
+        }
+
 
         public sealed override async Task<Result<IEnumerable<EventResponseDto>>> GetAllAsync(QueryObject query)
         {
@@ -84,7 +108,8 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             var hallViewPDFFileName = hallViewFileNameResult.Value;
             eventEntity.Hall.HallViewFileName = hallViewPDFFileName;
 
-            AddTicketsForEvent(requestDto.EventTickets, eventEntity);
+            var tickets = _ticketService.GetEventTickets(requestDto.EventTickets);
+            eventEntity.Tickets = tickets;
 
             await _repository.AddAsync(eventEntity);
             await _unitOfWork.SaveChangesAsync();
@@ -94,16 +119,15 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             return Result<EventResponseDto>.Success(response);
         }
 
-
-        public sealed override async Task<Result<EventResponseDto>> UpdateAsync(int id, EventRequestDto? requestDto)
+        public async Task<Result<(IEnumerable<Reservation> ReservationsForEvent, Event NewEvent, Event OldEvent)>> UpdateEvent(int id, EventRequestDto? requestDto)
         {
             var validationError = await ValidateEntity(requestDto, id);
             if (validationError != Error.None)
-                return Result<EventResponseDto>.Failure(validationError);
+                return Result<(IEnumerable<Reservation>, Event, Event)>.Failure(validationError);
 
             var eventEntity = await _repository.GetOneAsync(id);
             if (eventEntity == null)
-                return Result<EventResponseDto>.Failure(Error.NotFound);
+                return Result<(IEnumerable<Reservation>, Event, Event)>.Failure(Error.NotFound);
 
             var reservationsForEvent = await _reservationService.GetActiveReservationsForEvent(eventEntity.Id);
 
@@ -132,10 +156,13 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
                     startDate: newEventEntity.StartDate,
                     endDate: newEventEntity.EndDate);
 
-                await UpdateStartAndEndDateOfFestival(
-                    eventId: eventEntity.Id,
-                    startDate: newEventEntity.StartDate,
-                    endDate: newEventEntity.EndDate);
+                // validate festival length
+                var updateFestivalError  = await UpdateStartAndEndDateOfFestival(
+                                    eventId: eventEntity.Id,
+                                    startDate: newEventEntity.StartDate,
+                                    endDate: newEventEntity.EndDate);
+                if (updateFestivalError != Error.None)
+                    return Result<(IEnumerable<Reservation>, Event, Event)>.Failure(updateFestivalError);
             }
 
             if (newEventEntity.HallId != oldEventEntity.HallId)
@@ -145,27 +172,46 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
                                         oldHall: oldEventEntity.Hall,
                                         reservationsForEvent: reservationsForEvent);
                 if (!newHallResult.IsSuccessful)
-                    return Result<EventResponseDto>.Failure(newHallResult.Error);
+                    return Result<(IEnumerable<Reservation>, Event, Event)>.Failure(newHallResult.Error);
 
                 newEventEntity.HallId = newHallResult.Value.Id;
             }
 
-            await UpdateTicketsForEvent(requestDto!.EventTickets, oldEventEntity);
+            await _ticketService.UpdateTicketsForEvent(requestDto!.EventTickets, oldEventEntity);
 
             _repository.Update(newEventEntity);
+            return Result<(IEnumerable<Reservation>, Event, Event)>.Success((reservationsForEvent, newEventEntity, oldEventEntity));
+        }
+
+        public sealed override async Task<Result<EventResponseDto>> UpdateAsync(int id, EventRequestDto? requestDto)
+        {
+            var updateEventResult = await UpdateEvent(id, requestDto);
+            if (!updateEventResult.IsSuccessful)
+                return Result<EventResponseDto>.Failure(updateEventResult.Error);
+
+            var reservationsForEvent = updateEventResult.Value.ReservationsForEvent;
+            var newEventEntity = updateEventResult.Value.NewEvent;
+            var oldEventEntity = updateEventResult.Value.OldEvent;
+
             await _unitOfWork.SaveChangesAsync();
 
             if (reservationsForEvent.Any())
-            {
-                var updatedProperties = await GetInfoAboutUpdatedEventProperties(oldEventEntity, newEventEntity);
-                // info about changed seats
-                if (updatedProperties.SendMailAboutUpdatedEvent)
+            {             
+                if(newEventEntity.HallId != oldEventEntity.HallId)
                 {
-                    var resUpdateError = await _reservationService.SendMailsAboutUpdatedReservations(reservationsForEvent, updatedProperties);
+                    _unitOfWork.GetRepository<Hall>().Delete(oldEventEntity.Hall);
+                    await _unitOfWork.SaveChangesAsync();
+                }
+
+                if (newEventEntity!.Name != oldEventEntity.Name ||
+                    newEventEntity.HallId != oldEventEntity.HallId ||
+                    newEventEntity!.StartDate != oldEventEntity.StartDate ||
+                    newEventEntity!.EndDate != oldEventEntity.EndDate)
+                {
+                    var resUpdateError = await _reservationService.SendMailsAboutUpdatedReservations(reservationsForEvent, oldEventEntity, newEventEntity);
                     if (resUpdateError != Error.None)
                         return Result<EventResponseDto>.Failure(resUpdateError);
-                }
-                   
+                }             
             }
             var newEventEntityDto = MapAsDto(newEventEntity);
 
@@ -182,16 +228,16 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             var eventEntity = validationResult.Value;
 
             var reservationsForEvent = await _reservationService.GetActiveReservationsForEvent(eventEntity.Id);
+
+            var festivalsToDelete = await CancelFestivalIfEssential(new List<Event> { eventEntity });
+            await _ticketService.DeleteTickets(new List<Event> { eventEntity }, festivalsToDelete);
+            await _unitOfWork.SaveChangesAsync();
+            
             if (reservationsForEvent.Any())
             {
-                var festivalsToDelete = await _festivalService.CancelFestivalIfEssential(new List<Event> { eventEntity });
-                await _ticketService.DeleteTickets(new List<Event> { eventEntity }, festivalsToDelete);
-                await _unitOfWork.SaveChangesAsync();
-
-                var cancelReservationError = await _reservationService.CancelReservationsInCauseOfDeleteEventOrHall(reservationsForEvent, eventEntity);
+                var cancelReservationError = await _reservationService.CancelReservationsInCauseOfDeleteEventOrHallOrFestival(reservationsForEvent, eventEntity);
                 if (cancelReservationError != Error.None)
                     return Result<object>.Failure(cancelReservationError);
-
             }
             else
             {
@@ -201,6 +247,8 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
                 }
             }
 
+            await _fileService.DeleteFile(eventEntity, FileType.PDF, BlobContainer.HallViewsPDF);
+            eventEntity.Hall.HallViewFileName = null;
             eventEntity.CancelDate = DateTime.Now;
             eventEntity.IsCanceled = true;
             _repository.Update(eventEntity);
@@ -225,13 +273,13 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             }
         }
 
-        private async Task UpdateStartAndEndDateOfFestival(int eventId, DateTime startDate, DateTime endDate)
+        private async Task<Error> UpdateStartAndEndDateOfFestival(int eventId, DateTime startDate, DateTime endDate)
         {
             var eventFestivals = await _unitOfWork.GetRepository<Festival>()
                                         .GetAllAsync(q =>
                                         q.Where(f =>
                                         f.Events.Any(e =>
-                                        e.Id == eventId)));
+                                        e.Id == eventId)).OrderBy(f => f.StartDate));
 
             if (eventFestivals.Any())
             {
@@ -252,10 +300,13 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
                     if (isFestivalDateChanged)
                     {
                         festival.Duration = festival.EndDate - festival.StartDate;
+                        if (festival.Duration > TimeSpan.FromDays(14))
+                            return FestivalError.FestivalIsTooLong;
                         _unitOfWork.GetRepository<Festival>().Update(festival);
                     }
                 }
             }
+            return Error.None;
         }
 
         private async Task<Result<Hall>> GetNewEventHallAndUpdateReservationSeats(int newHallId, Hall oldHall, IEnumerable<Reservation> reservationsForEvent)
@@ -302,9 +353,9 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
                                 ommitFirstTargetRow = true;
                             }
 
-                            for (var j=0; newReservationSeat == null; j++)
-                            {                  
-                                if(!ommitFirstTargetRow)
+                            for (var j = 0; newReservationSeat == null; j++)
+                            {
+                                if (!ommitFirstTargetRow)
                                     newReservationSeat = availableSeats.FirstOrDefault(s => s.Key.GridRow == targetGridRow).Value;
 
                                 ommitFirstTargetRow = false;
@@ -341,109 +392,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
                 }
             }
             return Result<Hall>.Success(newHall);
-        }
-
-        private async Task<OldEventInfo> GetInfoAboutUpdatedEventProperties(Event oldEventEntity, Event newEventEntity)
-        {
-            OldEventInfo oldEventInfo = new();
-
-            if (newEventEntity!.Name != oldEventEntity.Name)
-            {
-                oldEventInfo.Name = oldEventEntity.Name;
-                oldEventInfo.SendMailAboutUpdatedEvent = true;
-            }
-
-            if (newEventEntity!.Category.Name != oldEventEntity.Category.Name)
-            {
-                oldEventInfo.CategoryName = oldEventEntity.Category.Name;
-            }
-
-            if (newEventEntity.HallId != oldEventEntity.HallId)
-            {
-                oldEventInfo.HallNr = oldEventEntity.Hall.HallNr;
-                _unitOfWork.GetRepository<Hall>().Delete(oldEventEntity.Hall);
-                await _unitOfWork.SaveChangesAsync();
-                oldEventInfo.SendMailAboutUpdatedEvent = true;
-            }
-
-            if (newEventEntity!.StartDate != oldEventEntity.StartDate)
-            {
-                oldEventInfo.StartDate = oldEventEntity.StartDate;
-                oldEventInfo.SendMailAboutUpdatedEvent = true;
-            }
-
-            if (newEventEntity!.EndDate != oldEventEntity.EndDate)
-            {
-                oldEventInfo.EndDate = oldEventEntity.EndDate;
-                oldEventInfo.SendMailAboutUpdatedEvent = true;
-            }
-
-            return oldEventInfo;
-        }
-
-        private void AddTicketsForEvent(ICollection<Event_FestivalTicketRequestDto> eventTickets, Event eventEntity)
-        {
-            ICollection<Ticket> tickets = [];
-            foreach (var ticket in eventTickets)
-            {
-                var eventTicket = new Ticket
-                {
-                    Price = ticket.Price,
-                    TicketTypeId = ticket.TicketTypeId,
-                };
-                tickets.Add(eventTicket);
-            }
-            eventEntity.Tickets = tickets;
-        }
-
-        private async Task UpdateTicketsForEvent(ICollection<Event_FestivalTicketRequestDto> newEventTickets, Event oldEvent)
-        {
-            ICollection<Ticket> updatedTickets = [];
-
-            var oldTicketTypesIds = oldEvent.Tickets.Where(t => t.Festival == null).Select(t => t.TicketTypeId).ToList();
-            foreach (var newTicket in newEventTickets)
-            {
-                if (oldTicketTypesIds.Contains(newTicket.TicketTypeId))
-                {
-                    var oldTicket = oldEvent.Tickets.Where(t =>
-                                        t.Festival == null &&
-                                        t.TicketTypeId == newTicket.TicketTypeId).First();
-
-                    updatedTickets.Add(oldTicket);
-                    if (oldTicket.Price != newTicket.Price)
-                    {
-                        oldTicket.Price = newTicket.Price;
-                        _unitOfWork.GetRepository<Ticket>().Update(oldTicket);
-                    }
-                }
-                else
-                {
-                    var eventTicket = new Ticket
-                    {
-                        Price = newTicket.Price,
-                        TicketTypeId = newTicket.TicketTypeId,
-                        EventId = oldEvent.Id,
-                    };
-                    await _unitOfWork.GetRepository<Ticket>().AddAsync(eventTicket);
-                }
-            }
-            if (updatedTickets.Count() != oldEvent.Tickets.Count())
-            {
-                var ticketsToDelete = oldEvent.Tickets.Except(updatedTickets);
-                foreach (var ticket in ticketsToDelete)
-                {
-                    if (ticket.Reservations.Any())
-                    {
-                        ticket.IsDeleted = true;
-                        _unitOfWork.GetRepository<Ticket>().Update(ticket);
-                    }
-                    else
-                    {
-                        _unitOfWork.GetRepository<Ticket>().Delete(ticket);
-                    }
-                }
-            }
-        }
+        }     
 
         private async Task<Result<Event>> ValidateBeforeDelete(int id)
         {
@@ -502,16 +451,19 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             if (!await IsEntityExistInDB<EventCategory>(requestDto!.CategoryId))
                 return EventError.CategoryNotFound;
 
-            if (requestDto.EventTickets.Count() != 0)
-            {
-                foreach (var eventTicket in requestDto.EventTickets)
-                {
-                    if (!await IsEntityExistInDB<TicketType>(eventTicket.TicketTypeId))
-                        return TicketTypeError.NotFound;
-                }
-                if (requestDto.EventTickets.DistinctBy(et => et.TicketTypeId).Count() != requestDto.EventTickets.Count())
-                    return EventError.EventCanNotHaveManySameTicketTypes;
-            }
+            var ticketTypeIds = requestDto!.EventTickets.Select(et => et.TicketTypeId);
+            if (ticketTypeIds.Count() != ticketTypeIds.Distinct().Count())
+                return TicketTypeError.TicketDuplicates;
+            var allTicketTypes = await _unitOfWork.GetRepository<TicketType>().GetAllAsync();
+            var allTicketTypeIds = allTicketTypes.Select(tt => tt.Id);
+            if (!ticketTypeIds.All(id => allTicketTypeIds.Contains(id)))
+                return TicketTypeError.NotFound;
+            var normalTicketTypeExist = ticketTypeIds.Any(typeId =>
+                                    allTicketTypes.Any(tt =>
+                                    tt.Name.Equals("Bilet normalny", StringComparison.OrdinalIgnoreCase) &&
+                                    tt.Id == typeId));
+            if (!normalTicketTypeExist)
+                return TicketTypeError.NormalTicketTypeNotFound;
 
             var hallEntity = await _unitOfWork.GetRepository<Hall>()
                                     .GetAllAsync(q => q.Where(h =>
@@ -546,6 +498,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             AddOrUpdateEventDetails(eventEntity, requestDto.LongDescription);
             return eventEntity;
         }
+
         private void AddOrUpdateEventDetails(Event eventEntity, string? longDescription)
         {
             if (!string.IsNullOrEmpty(longDescription))

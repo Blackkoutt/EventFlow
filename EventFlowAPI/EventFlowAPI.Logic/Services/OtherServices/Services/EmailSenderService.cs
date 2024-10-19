@@ -37,7 +37,8 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
         private string ReservationCancelMailSubject => $"Anulowanie rezerwacji EventFlow - rezerwacja nr {{0}}";     
         private string CancelEventMailSubject => $"Odwołanie wydarzenia - EventFlow";
         private string CancelEventsMailSubject => $"Odwołanie wydarzeń - EventFlow";
-        private string UpdateTicketMailSubject => $"Zmiana organizacji wydarzenia {{0}}";
+        private string CancelFestivalMailSubject => $"Odwołanie festiwalu - EventFlow";
+        private string UpdateTicketMailSubject => $"Zmiana organizacji wydarzeń";
        
 
 
@@ -353,9 +354,18 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
             };
             await SendEmailAsync(emailDto);
         }
+        private Dictionary<string, object?> GetCancelEventHTMLParams(List<(Reservation, bool)> deleteReservationsInfo, Event? eventEntity = null, Festival? festival = null)
+        {
+            return new Dictionary<string, object?>()
+            {
+                { "DeleteReservationsInfo", deleteReservationsInfo },
+                { "LogoContentId", LogoContentId },
+                { "EventEntity", eventEntity },
+                { "Festival", festival }
+            };
+        }
 
-
-        public async Task SendInfoAboutCanceledEvents(List<(Reservation, bool)> deleteReservationsInfo, Event? eventEntity = null)
+        public async Task SendInfoAboutCanceledEvents(List<(Reservation, bool)> deleteReservationsInfo, Event? eventEntity = null, Festival? festival = null)
         {
             var reservationList = deleteReservationsInfo.Select(x => x.Item1);
             var reservation = reservationList.First();
@@ -365,7 +375,7 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
             var emailDto = new EmailDto
             {
                 Email = reservation.User.Email!,
-                Subject = eventEntity == null ? CancelEventsMailSubject : CancelEventMailSubject,
+                Subject = (eventEntity == null) ? ((festival == null) ? CancelEventsMailSubject : CancelFestivalMailSubject) : CancelEventMailSubject,
                 Body = htmlStringEmailBody,
                 IsBodyHTML = true,
                 LinkedResources = { logoResource },
@@ -396,22 +406,40 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
             await SendEmailAsync(emailDto);
         }
 
-        public async Task SendUpdatedTicketsAsync(List<(Reservation, byte[])> tupleList, OldEventInfo oldEventInfo)
-        {
-            var reservationList = tupleList.Select(t => t.Item1);
-            var reservation = reservationList.First();
-            var newEventInfo = reservation.Ticket.Event;
-            var reservationIds = string.Join(", ", reservationList.Select(r => r.Id));
 
-            var paramDictionary = GetUpdatedTicketHTMLParams(reservationIds, oldEventInfo, newEventInfo);
+        private Dictionary<string, object?> GetUpdatedTicketHTMLParams<TEntity>(List<Reservation> reservations, TEntity? oldEntity, TEntity? newEntity) where TEntity : class
+        {
+
+            if (oldEntity != null && newEntity != null)
+            {
+                return new Dictionary<string, object?>()
+                      {
+                          { "Reservations", reservations },
+                          { "LogoContentId", LogoContentId },
+                          { $"Old{oldEntity.GetType().Name}", oldEntity },
+                          { $"New{oldEntity.GetType().Name}", newEntity }
+                      };
+            }
+            return new Dictionary<string, object?>()
+                      {
+                          { "Reservations", reservations },
+                          { "LogoContentId", LogoContentId },
+                      };
+        }
+
+        public async Task SendUpdatedTicketsAsync<TEntity>(List<(Reservation, byte[])> tupleList, TEntity? oldEntity, TEntity? newEntity) where TEntity : class
+        {
+            var reservationList = tupleList.Select(t => t.Item1).ToList();
+            var reservation = reservationList.First();
+
+            var paramDictionary = GetUpdatedTicketHTMLParams(reservationList, oldEntity, newEntity);
 
             string htmlStringEmailBody = await _htmlRenderer.RenderHtmlToStringAsync<EventUpdateEmailBody>(paramDictionary);
 
-            var eventName = oldEventInfo.Name == null ? newEventInfo.Name : oldEventInfo.Name;
             var emailDto = new EmailDto
             {
                 Email = reservation.User.Email!,
-                Subject = string.Format(UpdateTicketMailSubject, eventName),
+                Subject = UpdateTicketMailSubject,
                 Body = htmlStringEmailBody,
                 IsBodyHTML = true,
                 LinkedResources = { logoResource },
@@ -419,7 +447,6 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
             };
             await SendEmailAsync(emailDto);
         }
-
 
 
         private List<AttachmentDto> GetListOfUpdatedTicketsAttachments<TEntity>(List<(TEntity, byte[])> tupleList)
@@ -501,26 +528,6 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
             mailMessage.AlternateViews.Add(alternateView);
         }
 
-        private Dictionary<string, object?> GetUpdatedTicketHTMLParams(string reservationIds, OldEventInfo oldEventInfo, Event newEventInfo)
-        {
-            return new Dictionary<string, object?>()
-            {
-                { "ReservationIds", reservationIds },
-                { "LogoContentId", LogoContentId },
-                { "OldEventInfo", oldEventInfo },
-                { "NewEventInfo", newEventInfo }
-            };
-        }
-
-        private Dictionary<string, object?> GetCancelEventHTMLParams(List<(Reservation, bool)> deleteReservationsInfo, Event? eventEntity = null)
-        {
-            return new Dictionary<string, object?>()
-            {
-                { "DeleteReservationsInfo", deleteReservationsInfo },
-                { "LogoContentId", LogoContentId },
-                { "EventEntity", eventEntity }
-            };
-        }
 
         private Dictionary<string, object?> GetUpdatedHallRentHTMLParams(List<HallRent> hallRents, Hall oldHall)
         {

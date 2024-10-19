@@ -5,7 +5,7 @@
     <div style="margin-top:20px;">
         <img style="max-width:200px; min-width: 100px;" src="cid:@LogoContentId" alt="EventFlow Logo" />
         
-        @if (EventEntity == null)
+        @if (EventEntity == null && Festival == null)
         {
             // cancel hall
             <h1>Odwołanie wydarzeń - EventFlow</h1>
@@ -23,8 +23,6 @@
                     var isFestivalDeleted = DeleteReservationsInfo.ElementAt(i).Item2;
                     var eventEnity = reservation.Ticket.Event;
                     var festivalEntity = reservation.Ticket.Festival;
-
-                    if (!reservations.Contains(reservation)) continue;
 
                     if (reservation.IsFestivalReservation && isFestivalDeleted)
                     {
@@ -65,6 +63,39 @@
                         }     
                     }
                 }
+            }
+        }
+        else if (Festival != null)
+        {
+            // cancel festival
+            <h1>Odwołanie festiwalu - EventFlow</h1>
+            <p>
+                Z przykrością informujemy, że festiwal na który zakupiłeś bilet zostały odwołany.
+            </p>
+            <strong>Poniżej przedstawione zostały szczegóły dotyczące odwołanego festiwalu.</strong>
+
+            {
+                <p>
+                    <strong>Nr rezerwacji: </strong> @DeleteReservationsInfo.First().res.Id
+                </p>
+                <p>
+                    <strong>Nazwa festiwalu: </strong> @Festival.Name
+                </p>
+                <p>
+                    <strong>Data rozpoczęcia festiwalu: </strong> @Festival.StartDate.ToString(DateFormat.Date)
+                </p>
+                <p>
+                    <strong>Data zakończenia festiwalu: </strong> @Festival.EndDate.ToString(DateFormat.Date)
+                </p>
+                <p>
+                    <strong>Wydarzenia: </strong><br/>
+                    @for(var i = 0; i < Festival.Events.Count; i++)
+                    {
+                        var eventEntity = Festival.Events.ElementAt(i);
+
+                        <span>@(i+1). @eventEntity.Name, @eventEntity.StartDate.ToString(DateFormat.DateTime), @eventEntity.Hall.HallNr</span> <br/>
+                    }
+                </p>
             }
         }
         else
@@ -135,4 +166,5 @@
     [Parameter] public List<(Reservation res, bool isFestivalDeleted)> DeleteReservationsInfo { get; set; } = [];
     [Parameter] public string LogoContentId { get; set; } = string.Empty;
     [Parameter] public Event? EventEntity { get; set; } = default!;
+    [Parameter] public Festival? Festival { get; set; } = default!;
 }

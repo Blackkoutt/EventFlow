@@ -13,7 +13,8 @@ namespace EventFlowAPI.Logic.Repositories.Repositories
             var _table = _context.Event
                         .Include(e => e.Hall)
                         .Include(e => e.Category)
-                        .Include(e => e.Details);
+                        .Include(e => e.Details)
+                        .Include(e => e.Festivals);
 
             return await (query != null ? query(_table).ToListAsync() : _table.ToListAsync());
         }
@@ -23,6 +24,7 @@ namespace EventFlowAPI.Logic.Repositories.Repositories
                         .Include(e => e.Hall)
                         .Include(e => e.Category)
                         .Include(e => e.Details)
+                        .Include(e => e.Festivals)
                         .Include(e => e.Tickets)
                         .ThenInclude(t => t.TicketType)
                         .FirstOrDefaultAsync(e=> e.Id == id);

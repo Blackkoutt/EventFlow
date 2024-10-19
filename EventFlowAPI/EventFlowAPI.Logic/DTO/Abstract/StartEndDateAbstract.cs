@@ -17,8 +17,6 @@ namespace EventFlowAPI.Logic.DTO.Abstract
         [DataType(DataType.Date)]
         public DateTime EndDate { get; set; }
 
-
-
         [JsonIgnore]
         public abstract TimeSpan MaxDuration { get; }
 

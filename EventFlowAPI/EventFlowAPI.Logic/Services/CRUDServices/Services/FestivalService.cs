@@ -11,12 +11,16 @@ using EventFlowAPI.Logic.ResultObject;
 using EventFlowAPI.Logic.Services.CRUDServices.Interfaces;
 using EventFlowAPI.Logic.Services.CRUDServices.Services.BaseServices;
 using EventFlowAPI.Logic.UnitOfWork;
+using System.Collections.Immutable;
 
 namespace EventFlowAPI.Logic.Services.CRUDServices.Services
 {
     public sealed class FestivalService(
         IUnitOfWork unitOfWork,
-        IUserService userService) :
+        ITicketService ticketService,
+        IUserService userService,
+        IEventService eventService,
+        IReservationService reservationService) :
         GenericService<
             Festival,
             FestivalRequestDto,
@@ -25,6 +29,9 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
         IFestivalService
     {
         private readonly IUserService _userService = userService;
+        private readonly ITicketService _ticketService = ticketService;
+        private readonly IEventService _eventService = eventService;
+        private readonly IReservationService _reservationService = reservationService;
         public sealed override async Task<Result<IEnumerable<FestivalResponseDto>>> GetAllAsync(QueryObject query)
         {
             var festivalQuery = query as FestivalQuery;
@@ -46,14 +53,10 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             if (validationError != Error.None)
                 return Result<FestivalResponseDto>.Failure(validationError);
 
-            var festivalEntity = MapAsEntity(requestDto!);
+            var festivalEntity = await CreateFestivalEntity(requestDto!);
 
-            // data rozpoczenia i zakonczenia festiwalu to data rozpoczecia najblizszego i koncowego zakonczenia
-            //eventEntity.Duration = eventEntity.EndDate - eventEntity.StartDate;
-            festivalEntity.AddDate = DateTime.Now;
-
-            // przy dodawaniu festiwalu add ticketów festiwalowych
-            //AddTicketsForEvent(requestDto.EventTickets, eventEntity);
+            var tickets = _ticketService.GetFestivalTickets(requestDto!.FestivalTickets, festivalEntity.Events);
+            festivalEntity.Tickets = tickets;
 
             await _repository.AddAsync(festivalEntity);
             await _unitOfWork.SaveChangesAsync();
@@ -61,6 +64,250 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             var response = MapAsDto(festivalEntity);
 
             return Result<FestivalResponseDto>.Success(response);
+        }
+
+        public sealed override async Task<Result<FestivalResponseDto>> UpdateAsync(int id, FestivalRequestDto? requestDto)
+        {
+            var validationError = await ValidateEntity(requestDto, id);
+            if (validationError != Error.None)
+                return Result<FestivalResponseDto>.Failure(validationError);
+
+            var festival = await _repository.GetOneAsync(id);
+            if (festival == null)
+                return Result<FestivalResponseDto>.Failure(Error.NotFound);
+
+            bool needToSendMail = false;
+
+            var oldFestival = new Festival
+            {
+                Name = festival.Name,
+                StartDate = festival.StartDate,
+                EndDate = festival.EndDate,
+                Events = festival.Events.ToList(),
+            };
+
+            if(festival.Name != requestDto!.Name)
+            {
+                festival.Name = requestDto!.Name;
+                needToSendMail = true;  
+            }
+
+            if(festival.ShortDescription != requestDto!.ShortDescription)
+                festival.ShortDescription = requestDto!.ShortDescription; 
+            
+            if(festival.Details != null && festival.Details.LongDescription != requestDto?.Details?.LongDescription)
+                festival.Details.LongDescription = requestDto?.Details?.LongDescription;
+
+            // Events
+            // jesli zmieni sie nazwa festiwalu lub dodane zostanie wydarzenie lub usuniete z festiwalu to poinformuj uzytkownika
+            // w event service - jesli zmieni sie data wydarzenia i wchodzi ono w sklad jakiekolwiek festiwalu to zmien daty rozpoczenia festiali  
+            List<Event> newFestivalEventList = [];
+            List<Reservation> reservationsForEvents = [];
+            foreach(var (eventId, updateEventRequestData) in requestDto!.Events)
+            {
+                var eventEntity = await _unitOfWork.GetRepository<Event>().GetOneAsync(eventId);  
+                if(updateEventRequestData != null)
+                {
+                    var updateRequest = new EventRequestDto();
+                    if (updateEventRequestData.Name != null && eventEntity!.Name != updateEventRequestData.Name)
+                    {
+                        updateRequest.Name = updateEventRequestData.Name;
+                        needToSendMail = true;
+                    }
+                    else updateRequest.Name = eventEntity!.Name;
+
+                    if(updateEventRequestData.StartDate != null && eventEntity!.StartDate != updateEventRequestData.StartDate)
+                    {
+                        updateRequest.StartDate = (DateTime)updateEventRequestData.StartDate;
+                        needToSendMail = true;
+                    }
+                    else updateRequest.StartDate = eventEntity!.StartDate;
+
+                    if (updateEventRequestData.EndDate != null && eventEntity!.EndDate != updateEventRequestData.EndDate)
+                    {
+                        updateRequest.EndDate = (DateTime)updateEventRequestData.EndDate;
+                        needToSendMail = true;
+                    }
+                    else updateRequest.EndDate = eventEntity!.EndDate;
+
+                    if (updateEventRequestData.ShortDescription != null && eventEntity!.ShortDescription != updateEventRequestData.ShortDescription)
+                        updateRequest.ShortDescription = updateEventRequestData.ShortDescription;
+                    else updateRequest.ShortDescription = eventEntity!.ShortDescription;
+
+                    if (updateEventRequestData.LongDescription != null && eventEntity!.Details?.LongDescription != updateEventRequestData.LongDescription)
+                        updateRequest.LongDescription = updateEventRequestData.LongDescription;
+                    else updateRequest.LongDescription = eventEntity!.Details?.LongDescription;
+
+                    if (updateEventRequestData.CategoryId != null && eventEntity!.CategoryId != updateEventRequestData.CategoryId)
+                        updateRequest.CategoryId = (int)updateEventRequestData.CategoryId;
+                    else updateRequest.CategoryId = eventEntity!.CategoryId;
+
+                    if (updateEventRequestData.HallId != null && eventEntity!.HallId != updateEventRequestData.HallId)
+                    {
+                        updateRequest.HallId = (int)updateEventRequestData.HallId;
+                        needToSendMail = true;
+                    }
+                    else updateRequest.HallId = eventEntity!.HallId;
+
+                    List<Event_FestivalTicketRequestDto> ticketsDto = [];
+                    foreach(var ticket in eventEntity!.Tickets)
+                    {
+                        ticketsDto.Add(new Event_FestivalTicketRequestDto
+                        {
+                            Price = ticket.Price,
+                            TicketTypeId = ticket.TicketTypeId
+                        });
+                    }
+                    updateRequest.EventTickets = ticketsDto;
+
+                    var updateEventResult = await _eventService.UpdateEvent(eventId, updateRequest);
+                    if (!updateEventResult.IsSuccessful)
+                        return Result<FestivalResponseDto>.Failure(updateEventResult.Error);
+
+                    eventEntity = updateEventResult.Value.NewEvent;
+                    var reservationsForEvent = updateEventResult.Value.ReservationsForEvent;
+                    var oldEvent = updateEventResult.Value.OldEvent;
+
+                    reservationsForEvents.AddRange(reservationsForEvent);
+                }
+                newFestivalEventList.Add(eventEntity!);
+            }
+            festival.Events = newFestivalEventList;
+
+            // Media Patrons
+            var newFestivalMediaPatrons = (await _unitOfWork.GetRepository<MediaPatron>().GetAllAsync(q =>
+                                                q.Where(mp => requestDto.MediaPatronIds.Contains(mp.Id)))).ToList();
+            festival.MediaPatrons = newFestivalMediaPatrons;
+
+            // Organizers
+            var newFestivalOrganizers = (await _unitOfWork.GetRepository<Organizer>().GetAllAsync(q =>
+                                                q.Where(o => requestDto.OrganizerIds.Contains(o.Id)))).ToList();
+            festival.Organizers = newFestivalOrganizers;
+
+            // Sponsors
+            var newFestivalSponsors = (await _unitOfWork.GetRepository<Sponsor>().GetAllAsync(q =>
+                                                q.Where(s => requestDto.SponsorIds.Contains(s.Id)))).ToList();
+            festival.Sponsors = newFestivalSponsors;
+
+            // Tickets
+            await _ticketService.UpdateTicketsForFestival(requestDto!.FestivalTickets, festival);
+            _repository.Update(festival);
+            await _unitOfWork.SaveChangesAsync();
+
+            if (needToSendMail)
+            {
+                var sendError = await _reservationService.SendMailsAboutUpdatedReservations(reservationsForEvents, oldFestival, festival);
+                if (sendError != Error.None)
+                    return Result<FestivalResponseDto>.Failure(sendError);
+            }
+
+            var newFestivalEntityDto = MapAsDto(festival);
+
+            return Result<FestivalResponseDto>.Success(newFestivalEntityDto);
+        }
+
+
+        public sealed override async Task<Result<object>> DeleteAsync(int id)
+        {
+            var validationResult = await ValidateBeforeDelete(id);
+            if (!validationResult.IsSuccessful)
+                return Result<object>.Failure(validationResult.Error);
+
+            var festival = validationResult.Value;
+            var reservationsForFestival = await _reservationService.GetActiveReservationsForFestival(festival.Id);
+
+            await _ticketService.DeleteTickets([], new List<Festival> { festival });
+            await _unitOfWork.SaveChangesAsync();
+
+            festival.CancelDate = DateTime.Now;
+            festival.IsCanceled = true;
+            _repository.Update(festival);
+
+            if (reservationsForFestival.Any())
+            {
+                var cancelReservationError = await _reservationService.CancelReservationsInCauseOfDeleteEventOrHallOrFestival(reservationsForFestival, null, festival);
+                if (cancelReservationError != Error.None)
+                    return Result<object>.Failure(cancelReservationError);
+            }
+
+            await _unitOfWork.SaveChangesAsync();
+
+            return Result<object>.Success();
+        }
+
+
+        // idk czy dodac cos pozatym to powtarza sie i dobrze by bylo moze dac to do klasy bazowej czy cos
+        private async Task<Result<Festival>> ValidateBeforeDelete(int id)
+        {
+            if (id < 0)
+                return Result<Festival>.Failure(Error.RouteParamOutOfRange);
+
+            var festival = await _repository.GetOneAsync(id);
+            if (festival == null)
+                return Result<Festival>.Failure(Error.NotFound);
+
+            if (festival.IsCanceled)
+                return Result<Festival>.Failure(FestivalError.FestivalIsCanceled);
+
+            if (festival.IsExpired)
+                return Result<Festival>.Failure(FestivalError.FestivalIsExpired);
+
+            var userResult = await _userService.GetCurrentUser();
+            if (!userResult.IsSuccessful)
+                return Result<Festival>.Failure(userResult.Error);
+
+            var user = userResult.Value;
+            if (!user.IsInRole(Roles.Admin))
+                return Result<Festival>.Failure(AuthError.UserDoesNotHavePremissionToResource);
+
+            return Result<Festival>.Success(festival);
+        }
+
+
+
+        private async Task<Festival> CreateFestivalEntity(FestivalRequestDto requestDto)
+        {
+            var festivalEvents = (await _unitOfWork.GetRepository<Event>().GetAllAsync(q =>
+                                        q.Where(f => requestDto!.Events.ContainsKey(f.Id)).OrderBy(f => f.StartDate))).ToList();
+
+            var festivalMediaPatrons = (await _unitOfWork.GetRepository<MediaPatron>().GetAllAsync(q =>
+                                                q.Where(mp => requestDto.MediaPatronIds.Contains(mp.Id)))).ToList();
+
+            var allOrganizers = await _unitOfWork.GetRepository<Organizer>().GetAllAsync();
+            var festivalOrganizers = allOrganizers.Where(o => requestDto.OrganizerIds.Contains(o.Id)).ToList();
+            if (!festivalOrganizers.Any(o => o.Name.Equals("EventFlow", StringComparison.OrdinalIgnoreCase)))
+            {
+                var eventFlowOrganizer = allOrganizers.FirstOrDefault(o => o.Name.Equals("EventFlow", StringComparison.OrdinalIgnoreCase));
+                if (eventFlowOrganizer == null)
+                {
+                    eventFlowOrganizer = new Organizer { Name = "EventFlow" };
+                }
+                festivalOrganizers.Add(eventFlowOrganizer);
+            }
+
+            var festivalSponsors = (await _unitOfWork.GetRepository<Sponsor>().GetAllAsync(q =>
+                                    q.Where(s => requestDto.SponsorIds.Contains(s.Id)))).ToList();
+
+            var festivalStartDate = festivalEvents.First().StartDate;
+            var festivalEndDate = festivalEvents.Last().EndDate;
+            var festivalDetails = string.IsNullOrEmpty(requestDto.Details?.LongDescription) ? null : new FestivalDetails { LongDescription = requestDto.Details?.LongDescription };
+
+            return new Festival
+            {
+                Name = requestDto.Name,
+                ShortDescription = requestDto.ShortDescription,
+                AddDate = DateTime.Now,
+                StartDate = festivalStartDate,
+                EndDate = festivalEndDate,
+                Duration = festivalEndDate - festivalStartDate,
+                CancelDate = null,
+                IsCanceled = false,
+                Details = festivalDetails,
+                Events = festivalEvents,
+                MediaPatrons = festivalMediaPatrons,
+                Organizers = festivalOrganizers,
+                Sponsors = festivalSponsors,
+            };
         }
 
         protected sealed override async Task<Error> ValidateEntity(FestivalRequestDto? requestDto, int? id = null)
@@ -91,33 +338,56 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
                     return FestivalError.FestivalIsCanceled;
             }
 
-
-
             // Events
-            if (requestDto!.EventIds.Count != requestDto!.EventIds.Distinct().Count())
+            if (requestDto!.Events.Count != requestDto!.Events.Distinct().Count())
                 return FestivalError.EventDuplicates;
-            if (requestDto!.EventIds.Count() < 2)
+            if (requestDto!.Events.Count() < 2)
                 return FestivalError.TooFewEventsInFestival;
-            if (requestDto!.EventIds.Count > 12)
+            if (requestDto!.Events.Count > 12)
                 return FestivalError.TooMuchEventsInFestival;
             var allEventsIdsInDB = (await _unitOfWork.GetRepository<Event>().GetAllAsync()).Select(f => f.Id);
-            if (!requestDto!.EventIds.All(id => allEventsIdsInDB.Contains(id)))
+            if (!requestDto!.Events.Keys.All(id => allEventsIdsInDB.Contains(id)))
                 return EventError.EventNotFound;
 
-            var festivalEvents = await _unitOfWork.GetRepository<Event>().GetAllAsync(q =>
-                                        q.Where(f => requestDto!.EventIds.Contains(f.Id)));
+            var festivalEvents = (await _unitOfWork.GetRepository<Event>().GetAllAsync(q =>
+                                        q.Where(f => requestDto!.Events.ContainsKey(f.Id)).OrderBy(f => f.StartDate)));
 
-            foreach(var eventEntity in festivalEvents)
+            if(festivalEvents.Last().EndDate - festivalEvents.First().StartDate > TimeSpan.FromDays(14))
+                return FestivalError.FestivalIsTooLong;
+
+            var festivalEventsCount = festivalEvents.Count();
+            for (var i = 0; i < festivalEventsCount; i++)
             {
+                var eventEntity = festivalEvents.ElementAt(i);
                 if(eventEntity.IsCanceled)
                     return EventError.EventIsCanceled;
                 if (eventEntity.IsExpired)
                     return EventError.EventIsExpired;
-                // sprawdz czy wydarzenia nie sa od siebie zbyt odlegle
 
+                if(i + 1 < festivalEventsCount)
+                {
+                    var nextEventEntity = festivalEvents.ElementAt(i + 1);
+                    if(nextEventEntity.StartDate - eventEntity.StartDate > TimeSpan.FromHours(48))
+                        return FestivalError.TooMuchTimeBetweenEvents;
+                }
+                if(eventEntity.Festivals.Count() >= 3)
+                    return EventError.EventIsPartOfTooMuchFestivals;
             }
-            // max festival duration
-            // sprawdz czy event nie wchodzi w sklad innego festiwlu ?? ewentualnie jesli wchodzi to max ilosc festiwali w sklad ktrocyh moze wchodzic event
+
+            // Tickets
+            var ticketTypeIds = requestDto!.FestivalTickets.Select(ft => ft.TicketTypeId);
+            if (ticketTypeIds.Count() != ticketTypeIds.Distinct().Count())
+                return TicketTypeError.TicketDuplicates;
+            var allTicketTypes = await _unitOfWork.GetRepository<TicketType>().GetAllAsync();
+            var allTicketTypeIds = allTicketTypes.Select(tt => tt.Id);
+            if (!ticketTypeIds.All(id => allTicketTypeIds.Contains(id)))
+                return TicketTypeError.NotFound;
+            var normalTicketTypeExist = ticketTypeIds.Any(typeId =>
+                                    allTicketTypes.Any(tt =>
+                                    tt.Name.Equals("Bilet normalny", StringComparison.OrdinalIgnoreCase) &&
+                                    tt.Id == typeId));
+            if (!normalTicketTypeExist)
+                return TicketTypeError.NormalTicketTypeNotFound;
 
             // Media Patrons 
             if (requestDto!.MediaPatronIds.Count != requestDto!.MediaPatronIds.Distinct().Count())
@@ -224,13 +494,13 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
 
         protected async sealed override Task<bool> IsSameEntityExistInDatabase(FestivalRequestDto entityDto, int? id = null)
         {
-            var entities = await _repository.GetAllAsync(q =>
+            return (await _repository.GetAllAsync(q =>
                       q.Where(entity =>
+                        entity.Id != id &&
                         entity.Name == entityDto.Name &&
-                        entity.EndDate >= DateTime.Now
-                       ));
-
-            return IsEntityWithOtherIdExistInList(entities, id);
+                        entity.EndDate >= DateTime.Now &&
+                        !entity.IsCanceled
+                      ))).Any();
         }
     }
 }
