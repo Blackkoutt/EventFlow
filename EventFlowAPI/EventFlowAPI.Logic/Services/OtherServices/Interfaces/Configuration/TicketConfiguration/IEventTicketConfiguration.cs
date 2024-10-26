@@ -6,6 +6,7 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Interfaces.Configuration.Tic
 {
     public interface IEventTicketConfiguration : ITicketConfiguration<Event>
     {
+        void SetDefaultPrintingParams();
         PricePrintingOptions GetPricePrintingOptions(Reservation reservation);
         PrintingOptions GetHallPrintingOptions();
         PrintingOptions GetDurationPrintingOpitons(Event eventEntity);

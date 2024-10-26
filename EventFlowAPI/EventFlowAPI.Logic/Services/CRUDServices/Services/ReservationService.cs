@@ -113,7 +113,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             var userActiveEventPass = (await _unitOfWork.GetRepository<EventPass>().GetAllAsync(q =>
                                             q.Where(ep =>
                                             ep.UserId == user.Id &&
-                                            !ep.IsCanceled &&
+                                            !ep.IsDeleted &&
                                             ep.EndDate > DateTime.Now))).FirstOrDefault();
 
             var seatsList = (await _seatService.GetSeatsByListOfIds(requestDto!.SeatsIds)).ToList();
@@ -274,7 +274,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
                                                     .GetAllAsync(q => q.Where(r =>
                                                     r.IsFestivalReservation &&
                                                     r.ReservationGuid == reservation.ReservationGuid &&
-                                                    !r.IsCanceled));
+                                                    !r.IsDeleted));
 
                     if (reservation.IsFestivalReservation && eventsInFestival.Count() <= 2)
                         deleteFestival = true;
@@ -326,8 +326,8 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
         }
         private void SoftDeleteReservation(Reservation reservation)
         {
-            reservation.IsCanceled = true;
-            reservation.CancelDate = DateTime.Now;
+            reservation.IsDeleted = true;
+            reservation.DeleteDate = DateTime.Now;
             _repository.Update(reservation);
         }
 
@@ -566,7 +566,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
         {
             return await _repository
                         .GetAllAsync(q => q.Where(r =>
-                        !r.IsCanceled &&
+                        !r.IsDeleted &&
                         r.EndDate > DateTime.Now &&
                         r.Ticket.EventId == eventId));
         }
@@ -574,7 +574,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
         {
             return await _repository
                         .GetAllAsync(q => q.Where(r =>
-                        !r.IsCanceled &&
+                        !r.IsDeleted &&
                         r.EndDate > DateTime.Now &&
                         r.IsFestivalReservation && 
                         r.Ticket.FestivalId == festivalId));
@@ -618,7 +618,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             var userActiveEventPass = (await _unitOfWork.GetRepository<EventPass>().GetAllAsync(q =>
                                            q.Where(ep =>
                                            ep.UserId == user.Id &&
-                                           !ep.IsCanceled &&
+                                           !ep.IsDeleted &&
                                            ep.EndDate > DateTime.Now))).FirstOrDefault();
 
             if (paymentType!.Name.ToLower() == "karnet")
@@ -634,7 +634,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
                 var activeReservationsForEventPass = await _repository.GetAllAsync(q =>
                                                     q.Where(r =>
                                                     r.EventPassId == userActiveEventPass.Id &&
-                                                    !r.IsCanceled &&
+                                                    !r.IsDeleted &&
                                                     r.EndDate > DateTime.Now));
 
                 var isAnyActiveReservationForEvent = activeReservationsForEventPass.Any(r => r.Ticket.EventId == ticket.EventId);
@@ -663,8 +663,8 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             if (reservation == null)
                 return Result<(Reservation, UserResponseDto)>.Failure(ReservationError.ReservationDoesNotExist);
 
-            if (reservation.IsCanceled)
-                return Result<(Reservation, UserResponseDto)>.Failure(ReservationError.ReservationIsCanceled);
+            if (reservation.IsDeleted)
+                return Result<(Reservation, UserResponseDto)>.Failure(ReservationError.ReservationIsDeleted);
 
             if (reservation.IsExpired)
                 return Result<(Reservation, UserResponseDto)>.Failure(ReservationError.ReservationIsExpired);

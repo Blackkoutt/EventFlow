@@ -5,12 +5,12 @@ using EventFlowAPI.Logic.Services.CRUDServices.Interfaces.BaseInterfaces;
 
 namespace EventFlowAPI.Logic.Services.CRUDServices.Interfaces
 {
-    public interface ISeatService :
+    public interface ISeatService /*:
         IGenericService<
             Seat,
             SeatRequestDto,
             SeatResponseDto
-        >
+        >*/
     {
         bool IsSeatHaveActiveReservationForEvent(Seat seatEntity, Event eventEntity);
         Task<IEnumerable<Seat>> GetSeatsByListOfIds(List<int> seatsIds);

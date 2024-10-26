@@ -9,14 +9,22 @@ namespace EventFlowAPI.DB.Entities
         public Guid HallRentGuid { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
-        public TimeSpan Duration { get; set; }
+        public long Duration { get; set; }
         public DateTime RentDate { get; set; }
         public DateTime PaymentDate { get; set; }
-        public DateTime? CancelDate { get; set; }
+        public DateTime? DeleteDate { get; set; }
 
         [NotMapped]
         public bool IsExpired => EndDate < DateTime.Now;
-        public bool IsCanceled { get; set; } = false;
+
+
+        [NotMapped]
+        public TimeSpan DurationTimeSpan
+        {
+            get => TimeSpan.FromSeconds(Duration);
+            set => Duration = (long)value.TotalSeconds;
+        }
+        public bool IsDeleted { get; set; } = false;
 
         [Range(0.00, 99999.99),
          Column(TypeName = "NUMERIC(7,2)")]

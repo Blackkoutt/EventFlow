@@ -6,7 +6,7 @@ namespace EventFlowAPI.Logic.Errors
     public sealed record FestivalError(HttpResponse? Details = null)
     {
         public static readonly Error NotFound = new(new BadRequestResponse("Event with given Id does not exist in database."));
-        public static readonly Error FestivalIsCanceled = new(new BadRequestResponse("Can not perform action because festival was canceled."));
+        public static readonly Error FestivalIsDeleted = new(new BadRequestResponse("Can not perform action because festival was canceled."));
         public static readonly Error FestivalIsExpired = new(new BadRequestResponse("Can not perform action because festival was expired."));
         public static readonly Error TooFewEventsInFestival = new(new BadRequestResponse("Festival must contains 2 or more events."));
         public static readonly Error TooMuchMediaPatronsInFestival = new(new BadRequestResponse("Festival can contains up to 10 media patrons."));

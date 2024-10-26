@@ -1,4 +1,5 @@
-﻿using EventFlowAPI.DB.Entities.Abstract;
+﻿using EventFlowAPI.DB.Entities;
+using EventFlowAPI.DB.Entities.Abstract;
 using EventFlowAPI.Logic.DTO.Interfaces;
 using EventFlowAPI.Logic.DTO.ResponseDto;
 using EventFlowAPI.Logic.Errors;
@@ -8,32 +9,31 @@ using EventFlowAPI.Logic.Mapper.Extensions;
 using EventFlowAPI.Logic.Query.Abstract;
 using EventFlowAPI.Logic.Repositories.Interfaces.BaseInterfaces;
 using EventFlowAPI.Logic.ResultObject;
+using EventFlowAPI.Logic.Services.CRUDServices.Interfaces;
 using EventFlowAPI.Logic.Services.CRUDServices.Interfaces.BaseInterfaces;
 using EventFlowAPI.Logic.UnitOfWork;
 
 namespace EventFlowAPI.Logic.Services.CRUDServices.Services.BaseServices
 {
-    public abstract class GenericService<TEntity, TRequestDto, TResponseDto> :
-        IGenericService<
-            TEntity,
-            TRequestDto,
-            TResponseDto
-        >
-        where TEntity : class
-        where TRequestDto : class
-        where TResponseDto : class
+    public abstract class GenericService<
+        TEntity,
+        TRequestDto,
+        TUpdateRequestDto,
+        TResponseDto>
+        (IUnitOfWork unitOfWork, IUserService userService) : IGenericService<
+        TEntity,
+        TRequestDto,
+        TUpdateRequestDto,
+        TResponseDto>
+        where TEntity : class, IEntity
+        where TRequestDto : class, IRequestDto
+        where TUpdateRequestDto : class, IRequestDto
+        where TResponseDto : class, IResponseDto
     {
         //AutoMapperMappingException , RepositoryNotExist
-        protected readonly IUnitOfWork _unitOfWork;
-        protected readonly IGenericRepository<TEntity> _repository;
-        protected GenericService(IUnitOfWork unitOfWork)
-        {
-            _unitOfWork = unitOfWork;
-            _repository = _unitOfWork.GetRepository<TEntity>();
-        }
-
-        protected virtual async Task DefaultSaveChangesAsync() => await _unitOfWork.SaveChangesAsync();
-
+        protected readonly IUnitOfWork _unitOfWork = unitOfWork;
+        protected readonly IUserService _userService = userService;
+        protected readonly IGenericRepository<TEntity> _repository = unitOfWork.GetRepository<TEntity>();
 
         public virtual async Task<Result<IEnumerable<TResponseDto>>> GetAllAsync(QueryObject query)
         {
@@ -68,20 +68,16 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services.BaseServices
 
             var entity = MapAsEntity(requestDto!);
 
-            var preparedEntity = PrepareEntityForAddOrUpdate(entity, requestDto!);
+            await _repository.AddAsync(entity);
+            await _unitOfWork.SaveChangesAsync();
 
-            await _repository.AddAsync(preparedEntity);
-            await DefaultSaveChangesAsync();
-
-            var preparedEntityAfterAddition = PrepareEnityAfterAddition(preparedEntity);
-
-            var response = MapAsDto(preparedEntityAfterAddition);
+            var response = MapAsDto(entity);
 
             return Result<TResponseDto>.Success(response);
         }
 
 
-        public virtual async Task<Result<TResponseDto>> UpdateAsync(int id, TRequestDto? requestDto)
+        public virtual async Task<Result<TResponseDto>> UpdateAsync(int id, TUpdateRequestDto? requestDto)
         {
             var error = await ValidateEntity(requestDto, id);
             if (error != Error.None)
@@ -93,98 +89,88 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services.BaseServices
 
             var newEntity = MapToEntity(requestDto!, oldEntity);
 
-            var preparedEntity = PrepareEntityForAddOrUpdate((TEntity)newEntity, requestDto!, oldEntity);
+            _repository.Update((TEntity)newEntity);
 
-            _repository.Update(preparedEntity);
-
-            await DefaultSaveChangesAsync();
+            await _unitOfWork.SaveChangesAsync();
 
             return Result<TResponseDto>.Success();
         }
 
         public virtual async Task<Result<object>> DeleteAsync(int id)
         {
-            if (id < 0)
-                return Result<object>.Failure(Error.RouteParamOutOfRange);
+            var validationResult = await ValidateBeforeDelete(id);
+            if (!validationResult.IsSuccessful)
+                return Result<object>.Failure(validationResult.Error);
 
-            var entity = await _repository.GetOneAsync(id);
-
-            if (entity == null)
-                return Result<object>.Failure(Error.NotFound);
+            var entity = validationResult.Value.Entity;
 
             _repository.Delete(entity);
-            await DefaultSaveChangesAsync();
+            await _unitOfWork.SaveChangesAsync();
 
             return Result<object>.Success();
         }
 
-
-        protected Error CheckUserPremission(UserResponseDto user, string userId)
+        protected virtual async Task<Result<(TEntity Entity, UserResponseDto User)>> ValidateBeforeDelete(int id)
         {
-            if (user.IsInRole(Roles.User))
+            if (id < 0)
+                return Result<(TEntity Entity, UserResponseDto User)>.Failure(Error.RouteParamOutOfRange);
+
+            var entity = await _repository.GetOneAsync(id);
+
+            if (entity == null)
+                return Result<(TEntity Entity, UserResponseDto User)>.Failure(Error.NotFound);
+
+            var userResult = await _userService.GetCurrentUser();
+            if (!userResult.IsSuccessful)
+                return Result<(TEntity Entity, UserResponseDto User)>.Failure(userResult.Error);
+
+            if (entity is ISoftDeleteable && ((ISoftDeleteable)entity).IsDeleted)
+                return Result<(TEntity Entity, UserResponseDto User)>.Failure(Error.NotFound);
+
+            if (entity is IExpireable && ((IExpireable)entity).IsExpired)
+                return Result<(TEntity Entity, UserResponseDto User)>.Failure(Error.EntityIsExpired);
+
+            if(entity is IVisibleEntity && !((IVisibleEntity)entity).IsVisible)
+                return Result<(TEntity Entity, UserResponseDto User)>.Failure(Error.NotFound);
+
+            var user = userResult.Value;
+            string? userId = null;
+            if(entity is IAuthEntity authEntity)
+                userId = authEntity.UserId;
+
+            var premissionError = CheckUserPremission(user, userId);
+            if(premissionError != Error.None)
+                return Result<(TEntity Entity, UserResponseDto User)>.Failure(premissionError);
+
+            return Result<(TEntity Entity, UserResponseDto User)>.Success((entity, user));
+        }
+
+
+        protected Error CheckUserPremission(UserResponseDto user, string? userId = null)
+        {
+            if (user.IsInRole(Roles.Admin)) 
+                return Error.None;
+            else if (user.IsInRole(Roles.User))
             {
                 if (userId == user.Id)
                     return Error.None;
                 else
                     return AuthError.UserDoesNotHavePremissionToResource;
-            }
-            else if (user.IsInRole(Roles.Admin))
-            {
-                return Error.None;
-            }
+            }                
             else
-            {
                 return AuthError.UserDoesNotHaveSpecificRole;
-            }
         }
 
 
-        protected abstract Task<bool> IsSameEntityExistInDatabase(TRequestDto entityDto, int? id = null);
-
-
-        protected virtual IEnumerable<TResponseDto> MapAsDto(IEnumerable<TEntity> records) =>
-            records.Select(entity => ((IEntity)entity).AsDto<TResponseDto>());
-
-        protected virtual TResponseDto MapAsDto(TEntity entity) =>
-                                        ((IEntity)entity).AsDto<TResponseDto>();
-        protected virtual TEntity MapAsEntity(TRequestDto requestDto) =>
-                                        ((IRequestDto)requestDto).AsEntity<TEntity>();
-        protected virtual IEntity MapToEntity(TRequestDto requestDto, TEntity oldEntity) =>
-                                        ((IRequestDto)requestDto).MapTo((IEntity)oldEntity);
-
+        protected virtual IEnumerable<TResponseDto> MapAsDto(IEnumerable<TEntity> records) => records.Select(entity => entity.AsDto<TResponseDto>());
+        protected virtual TResponseDto MapAsDto(TEntity entity) => entity.AsDto<TResponseDto>();
+        protected virtual TEntity MapAsEntity(TRequestDto requestDto) => requestDto.AsEntity<TEntity>();
+        protected virtual IEntity MapToEntity(TUpdateRequestDto requestDto, TEntity oldEntity) => requestDto.MapTo(oldEntity);
         protected async Task<bool> IsEntityExistInDB<TSomeEntity>(int id)
                     where TSomeEntity : class =>
                     await _unitOfWork.GetRepository<TSomeEntity>().GetOneAsync(id) != null;
 
-        protected virtual TEntity PrepareEntityForAddOrUpdate(TEntity newEntity, TRequestDto requestDto, TEntity? oldEntity = null) => newEntity;
-
-        protected virtual TEntity PrepareEnityAfterAddition(TEntity entity) => entity;
-
-        protected bool IsEntityWithOtherIdExistInList(IEnumerable<BaseEntity> entities, int? id)
-        {
-            if (id != null)
-            {
-                return entities.Any(e => e.Id != id);
-            }
-            else
-            {
-                return entities.Any();
-            }
-        }
-
-
-        protected virtual async Task<Error> ValidateEntity(TRequestDto? requestDto, int? id = null)
-        {
-            if (id != null && id < 0) 
-                return Error.RouteParamOutOfRange;
-
-            if (requestDto == null) 
-                return Error.NullParameter;
-
-            if (await IsSameEntityExistInDatabase(requestDto, id))  
-                return Error.SuchEntityExistInDb;
-
-            return Error.None;
-        }
+        protected abstract Task<Result<bool>> IsSameEntityExistInDatabase(IRequestDto requestDto, int? id = null);
+        protected abstract Task<Error> ValidateEntity(IRequestDto? requestDto, int? id = null);
     }
 }

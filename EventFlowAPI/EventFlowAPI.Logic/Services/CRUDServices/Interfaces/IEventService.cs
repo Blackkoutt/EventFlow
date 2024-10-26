@@ -1,6 +1,7 @@
 ﻿using EventFlowAPI.DB.Entities;
 using EventFlowAPI.Logic.DTO.RequestDto;
 using EventFlowAPI.Logic.DTO.ResponseDto;
+using EventFlowAPI.Logic.DTO.UpdateRequestDto;
 using EventFlowAPI.Logic.ResultObject;
 using EventFlowAPI.Logic.Services.CRUDServices.Interfaces.BaseInterfaces;
 
@@ -10,9 +11,10 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Interfaces
         IGenericService<
             Event,
             EventRequestDto,
+            UpdateEventRequestDto,
             EventResponseDto
         >
     {
-        Task<Result<(IEnumerable<Reservation> ReservationsForEvent, Event NewEvent, Event OldEvent)>> UpdateEvent(int id, EventRequestDto? requestDto); 
+        Task<Result<(IEnumerable<Reservation> ReservationsForEvent, Event NewEvent, Event OldEvent)>> UpdateEvent(int id, UpdateEventRequestDto? requestDto); 
     }
 }

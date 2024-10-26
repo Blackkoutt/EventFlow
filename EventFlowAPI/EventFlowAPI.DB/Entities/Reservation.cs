@@ -10,11 +10,11 @@ namespace EventFlowAPI.DB.Entities
         public DateTime ReservationDate { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
-        public DateTime? CancelDate { get; set; }
+        public DateTime? DeleteDate { get; set; }
 
         [NotMapped]
         public bool IsExpired => EndDate < DateTime.Now;
-        public bool IsCanceled { get; set; } = false;
+        public bool IsDeleted { get; set; } = false;
         public bool IsFestivalReservation { get; set; }
         public DateTime PaymentDate { get; set; }
 

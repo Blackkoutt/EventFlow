@@ -5,12 +5,12 @@ using EventFlowAPI.Logic.Services.CRUDServices.Interfaces.BaseInterfaces;
 
 namespace EventFlowAPI.Logic.Services.CRUDServices.Interfaces
 {
-    public interface ITicketService :
+    public interface ITicketService /*:
         IGenericService<
             Ticket,
             TicketRequestDto,
             TicketResponseDto
-        >
+        >*/
     {
         Task UpdateTicketsForFestival(ICollection<Event_FestivalTicketRequestDto> newFestivalTickets, Festival festival);
         Task UpdateTicketsForEvent(ICollection<Event_FestivalTicketRequestDto> newEventTickets, Event oldEvent);

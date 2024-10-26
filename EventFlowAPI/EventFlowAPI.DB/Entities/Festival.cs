@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace EventFlowAPI.DB.Entities
 {
-    public class Festival : BaseEntity, ISoftDeleteable, IExpireable, IDateableEntity
+    public class Festival : BaseEntity, ISoftDeleteable, IExpireable, IDateableEntity, INameableEntity
     {
 
         [MaxLength(60)]
@@ -15,12 +15,20 @@ namespace EventFlowAPI.DB.Entities
         public DateTime AddDate { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
-        public TimeSpan Duration { get; set; }
-        public DateTime? CancelDate { get; set; }
+        public long Duration { get; set; }
+        public DateTime? DeleteDate { get; set; }
 
         [NotMapped]
         public bool IsExpired => EndDate < DateTime.Now;
-        public bool IsCanceled { get; set; } = false;
+
+        [NotMapped]
+        public TimeSpan DurationTimeSpan
+        {
+            get => TimeSpan.FromSeconds(Duration);
+            set => Duration = (long)value.TotalSeconds;
+        }
+
+        public bool IsDeleted { get; set; } = false;
 
         public FestivalDetails? Details { get; set; }
         public ICollection<Event> Events { get; set; } = [];

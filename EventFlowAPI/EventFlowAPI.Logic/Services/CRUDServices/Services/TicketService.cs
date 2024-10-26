@@ -2,6 +2,7 @@
 using EventFlowAPI.Logic.DTO.RequestDto;
 using EventFlowAPI.Logic.DTO.ResponseDto;
 using EventFlowAPI.Logic.Mapper.Extensions;
+using EventFlowAPI.Logic.Repositories.Interfaces;
 using EventFlowAPI.Logic.Repositories.Interfaces.BaseInterfaces;
 using EventFlowAPI.Logic.Services.CRUDServices.Interfaces;
 using EventFlowAPI.Logic.Services.CRUDServices.Services.BaseServices;
@@ -10,13 +11,14 @@ using EventFlowAPI.Logic.UnitOfWork;
 namespace EventFlowAPI.Logic.Services.CRUDServices.Services
 {
     public sealed class TicketService(IUnitOfWork unitOfWork) :
-        GenericService<
+        /*GenericService<
             Ticket,
             TicketRequestDto,
             TicketResponseDto
-        >(unitOfWork),
+        >(unitOfWork),*/
         ITicketService
     {
+        private readonly IGenericRepository<Ticket> _repository = unitOfWork.GetRepository<Ticket>();
         public async Task UpdateTicketsForFestival(ICollection<Event_FestivalTicketRequestDto> newFestivalTickets, Festival festival)
         {
             ICollection<Ticket> updatedTickets = [];
@@ -102,9 +104,9 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
                     await _repository.AddAsync(eventTicket);
                 }
             }
-            if (updatedTickets.Count() != oldEvent.Tickets.Count())
+            if (updatedTickets.Count() != oldEvent.Tickets.Where(t => t.Festival == null).Count())
             {
-                var ticketsToDelete = oldEvent.Tickets.Except(updatedTickets);
+                var ticketsToDelete = oldEvent.Tickets.Where(t => t.Festival == null).Except(updatedTickets);
                 foreach (var ticket in ticketsToDelete)
                 {
                     if (ticket.Reservations.Any())
@@ -180,7 +182,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
         }
 
 
-        protected sealed override IEnumerable<TicketResponseDto> MapAsDto(IEnumerable<Ticket> records)
+        /*protected sealed override IEnumerable<TicketResponseDto> MapAsDto(IEnumerable<Ticket> records)
         {
             return records.Select(entity =>
             {
@@ -191,7 +193,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
                 //responseDto.Festival = entity.Festival?.AsDto<FestivalResponseDto>();
                 return responseDto;
             });
-        }
+        }*/
     
 
         /*protected sealed override TicketResponseDto MapAsDto(Ticket entity)
@@ -200,7 +202,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
         }*/
                                        
 
-        protected async sealed override Task<bool> IsSameEntityExistInDatabase(TicketRequestDto entityDto, int? id = null)
+       /* protected async sealed override Task<bool> IsSameEntityExistInDatabase(TicketRequestDto entityDto, int? id = null)
         {
             var entities = await _repository.GetAllAsync(q =>
                       q.Where(entity =>
@@ -210,6 +212,6 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
                   );
 
             return IsEntityWithOtherIdExistInList(entities, id);
-        }
+        }*/
     }
 }

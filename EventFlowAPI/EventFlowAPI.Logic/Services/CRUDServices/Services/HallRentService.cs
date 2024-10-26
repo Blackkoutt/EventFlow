@@ -13,6 +13,8 @@ using EventFlowAPI.Logic.UnitOfWork;
 using EventFlowAPI.Logic.Extensions;
 using EventFlowAPI.Logic.Services.OtherServices.Interfaces;
 using EventFlowAPI.Logic.Helpers.Enums;
+using EventFlowAPI.Logic.DTO.UpdateRequestDto;
+using EventFlowAPI.Logic.DTO.Interfaces;
 
 namespace EventFlowAPI.Logic.Services.CRUDServices.Services
 {
@@ -26,11 +28,11 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
         GenericService<
             HallRent,
             HallRentRequestDto,
+            UpdateHallRentRequestDto,
             HallRentResponseDto
-        >(unitOfWork),
+        >(unitOfWork, userService),
         IHallRentService
     {
-        private readonly IUserService _userService = userService;
         private readonly ICopyMakerService _copyMaker = copyMaker;
         private readonly ICollisionCheckerService _collisionChecker = collisionChecker;
         private readonly IFileService _fileService = fileService;
@@ -49,9 +51,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             var user = userResult.Value;
             if (user.IsInRole(Roles.Admin))
             {
-                var allHallRents = await _repository.GetAllAsync(q =>
-                                                q.ByStatus(hallRentQuery.Status)
-                                                .SortBy(hallRentQuery.SortBy, hallRentQuery.SortDirection));
+                var allHallRents = await _repository.GetAllAsync(q => q.ByQuery(hallRentQuery));
 
                 var allHallRentsDto = MapAsDto(allHallRents);
                 return Result<IEnumerable<HallRentResponseDto>>.Success(allHallRentsDto);
@@ -110,6 +110,8 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             if(!hallRentCreateResult.IsSuccessful)
                 return Result<HallRentResponseDto>.Failure(hallRentCreateResult.Error);
             var hallRent = hallRentCreateResult.Value;
+            await _repository.AddAsync(hallRent);
+            await _unitOfWork.SaveChangesAsync();
 
             // HallView PDF
             var hallViewFileNameResult = await _fileService.CreateHallViewPDF(hallRent.Hall, hallRent, null, isUpdate: false);
@@ -126,8 +128,9 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             var hallRentPDFFile = hallRentFileNameResult.Value.PDFFile;
             hallRent.HallRentPDFName = hallRentPDFFileName;
 
-            await _repository.AddAsync(hallRent);
+            _repository.Update(hallRent);
             await _unitOfWork.SaveChangesAsync();
+
             var response = MapAsDto(hallRent);
 
             // Hall Rent Email
@@ -146,8 +149,8 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             if (!validationResult.IsSuccessful)
                 return Result<object>.Failure(validationResult.Error);
 
-            var hallRent = validationResult.Value.HallRent;
-            var user = validationResult.Value.User; 
+            var hallRent = validationResult.Value.Entity;
+            var user = validationResult.Value.User;
 
             var deleteError = await SoftDeleteHallRent(hallRent);
             if (deleteError != Error.None)
@@ -213,8 +216,8 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
         public async Task<Error> SoftDeleteHallRent(HallRent hallRent)
         {
             // Soft Delete HallRent
-            hallRent.CancelDate = DateTime.Now;
-            hallRent.IsCanceled = true;
+            hallRent.DeleteDate = DateTime.Now;
+            hallRent.IsDeleted = true;
 
             // Delete Hall Rent PDF in Blob Storage
             var hallRentPDFDeleteError = await _fileService.DeleteFile(hallRent, FileType.PDF, BlobContainer.HallRentsPDF);
@@ -239,35 +242,6 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             return Error.None;
         }
 
-        
-        private async Task<Result<(HallRent HallRent, UserResponseDto User)>> ValidateBeforeDelete(int id)
-        {
-            if (id < 0)
-                return Result<(HallRent, UserResponseDto)>.Failure(Error.RouteParamOutOfRange);
-
-            var hallRent = await _repository.GetOneAsync(id);
-            if (hallRent == null)
-                return Result<(HallRent, UserResponseDto)>.Failure(HallRentError.HallRentDoesNotExist);
-
-            if (hallRent.IsCanceled)
-                return Result<(HallRent, UserResponseDto)>.Failure(ReservationError.ReservationDoesNotExist);
-
-            if (hallRent.IsExpired)
-                return Result<(HallRent, UserResponseDto)>.Failure(HallRentError.HallRentIsExpired);
-
-            var userResult = await _userService.GetCurrentUser();
-            if (!userResult.IsSuccessful)
-                return Result<(HallRent, UserResponseDto)>.Failure(userResult.Error);
-
-            var user = userResult.Value;
-
-            var premissionError = CheckUserPremission(user, hallRent.User.Id);
-            if (premissionError != Error.None)
-                return Result<(HallRent, UserResponseDto)>.Failure(premissionError);
-
-            return Result<(HallRent, UserResponseDto)>.Success((hallRent, user));
-        }
-
 
         private async Task<Result<HallRent>> CreateHallRentEntity(HallRentRequestDto requestDto, string userId)
         {
@@ -285,7 +259,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
                 HallRentGuid = Guid.NewGuid(),
                 StartDate = requestDto.StartDate,
                 EndDate = requestDto.EndDate,
-                Duration = requestDto.EndDate - requestDto.StartDate,
+                DurationTimeSpan = requestDto.EndDate - requestDto.StartDate,
                 RentDate = DateTime.Now,
                 PaymentDate = DateTime.Now,
                 PaymentAmount = CalculatePaymentAmount(requestDto, hall, additionalServices),
@@ -346,13 +320,43 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             return responseDto;
         }
 
-        protected sealed override async Task<Error> ValidateEntity(HallRentRequestDto? requestDto, int? id = null)
+        protected sealed override async Task<Error> ValidateEntity(IRequestDto? requestDto, int? id = null)
         {
             if (id != null && id < 0)
                 return Error.RouteParamOutOfRange;
 
             if (requestDto == null)
                 return Error.NullParameter;
+
+            /*var isSameEntityExistsResult = await IsSameEntityExistInDatabase(requestDto, id);
+            if (!isSameEntityExistsResult.IsSuccessful) return isSameEntityExistsResult.Error;
+
+            var isSameEntityExistInDb = isSameEntityExistsResult.Value;
+            if (isSameEntityExistInDb)
+                return Error.SuchEntityExistInDb;*/
+
+            int paymentTypeId;
+            int hallId;
+            List<int> additionalServicesIds = [];
+            DateTime startDate = DateTime.Now;
+            DateTime endDate = DateTime.Now;
+            switch (requestDto)
+            {
+                case HallRentRequestDto hallRentRequestDto:
+                    paymentTypeId = hallRentRequestDto.PaymentTypeId;
+                    hallId = hallRentRequestDto.HallId;
+                    additionalServicesIds = hallRentRequestDto.AdditionalServicesIds;
+                    startDate = hallRentRequestDto.StartDate;
+                    break;
+                case UpdateHallRentRequestDto updateHallRentRequestDto:
+                    paymentTypeId = updateHallRentRequestDto.PaymentTypeId;
+                    hallId = updateHallRentRequestDto.HallId;
+                    additionalServicesIds = updateHallRentRequestDto.AdditionalServicesIds;
+                    endDate = updateHallRentRequestDto.EndDate;
+                    break;
+                default:
+                    return Error.BadRequestType;
+            }
 
             // nie mozna robić update hall rentu
             if (id != null)
@@ -365,28 +369,28 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
                 if (hallRent.IsExpired)
                     return HallRentError.HallRentIsExpired;
 
-                if (hallRent.IsCanceled)
-                    return HallRentError.HallRentIsCanceled;
+                if (hallRent.IsDeleted)
+                    return HallRentError.HallRentIsDeleted;
             }
 
-            if (!await IsEntityExistInDB<PaymentType>(requestDto!.PaymentTypeId))
+            if (!await IsEntityExistInDB<PaymentType>(paymentTypeId))
                 return PaymentTypeError.PaymentTypeNotFound;
 
 
-            var hallEntity = _unitOfWork.GetRepository<Hall>()
+            var hallEntity = await _unitOfWork.GetRepository<Hall>()
                                .GetAllAsync(q => q.Where(h =>
-                               h.Id == requestDto.HallId &&
+                               h.Id == hallId &&
                                h.IsVisible));
             if (hallEntity == null)
                 return HallRentError.HallNotFound;
 
-            if (requestDto.AdditionalServicesIds.Distinct().Count() != requestDto.AdditionalServicesIds.Count())
+            if (additionalServicesIds.Distinct().Count() != additionalServicesIds.Count())
                 return AdditionalServicesError.ServiceDuplicate;
 
             var additionalServices = await _unitOfWork.GetRepository<AdditionalServices>()
-                                        .GetAllAsync(q => q.Where(s => requestDto.AdditionalServicesIds.Contains(s.Id)));
+                                        .GetAllAsync(q => q.Where(s => additionalServicesIds.Contains(s.Id)));
 
-            if (additionalServices.Count() < requestDto.AdditionalServicesIds.Count)
+            if (additionalServices.Count() < additionalServicesIds.Count)
                 return AdditionalServicesError.ServiceNotFound;
 
             var userResult = await _userService.GetCurrentUser();
@@ -399,7 +403,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
                 var userActiveHallRentsInMonthCount = (await _repository.GetAllAsync(q =>
                                                             q.Where(hr =>
                                                                 hr.User.Id == user.Id &&    
-                                                                !hr.IsCanceled &&
+                                                                !hr.IsDeleted &&
                                                                 hr.EndDate > DateTime.Now &&
                                                                 hr.StartDate.Month == DateTime.Now.Month)))
                                                                 .Count();
@@ -408,19 +412,18 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
                     return HallRentError.TooMuchActiveHallRentsInMonth;
             }
 
-            if (await _collisionChecker.CheckTimeCollisionsWithEvents(requestDto))
+            if (await _collisionChecker.CheckTimeCollisionsWithEvents(hallId, startDate, endDate))
                 return HallRentError.CollisionWithExistingEvent;
 
-            if (await _collisionChecker.CheckTimeCollisionsWithHallRents(requestDto, id))
+            if (await _collisionChecker.CheckTimeCollisionsWithHallRents(hallId, startDate, endDate, id))
                 return HallRentError.CollisionWithExistingHallRent;
 
             return Error.None;
         }
 
 
-        // ???
-
-        protected sealed override Task<bool> IsSameEntityExistInDatabase(HallRentRequestDto entityDto, int? id = null)
+        // Not used
+        protected sealed override Task<Result<bool>> IsSameEntityExistInDatabase(IRequestDto requestDto, int? id = null)
         {
             throw new NotImplementedException();
         }

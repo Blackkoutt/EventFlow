@@ -16,7 +16,7 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services.Configuration.Ticke
     {
 
         private int detailsPrintX = 0;
-        private readonly int detailsPrintY = 546;
+        private int detailsPrintY = 546;
 
         // Ticket Tittle Settings 
         protected sealed override short TitleFirstLineY => 230;
@@ -72,6 +72,13 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services.Configuration.Ticke
         private Font SeatsFont => _assetService.GetFont(32, FontStyle.Bold, FontType.Inter);
         private PointF SeatsLocation => new(x: 865, y: 85);
 
+        public void SetDefaultPrintingParams()
+        {
+                detailsPrintX = 0;
+                detailsPrintY = 546;
+        }
+
+
         protected override string GetTitle(Event entity) => $"{entity.Category.Name}: {entity.Name}";
 
         public PricePrintingOptions GetPricePrintingOptions(Reservation reservation)
@@ -103,7 +110,7 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services.Configuration.Ticke
         public PrintingOptions GetDurationPrintingOpitons(Event eventEntity)
         {
             int spaceForDuration = durationRightMax - durationLeftMax;
-            int durationStringLength = eventEntity.Duration.TotalMinutes.ToString().Length + 4;
+            int durationStringLength = eventEntity.DurationTimeSpan.TotalMinutes.ToString().Length + 4;
             detailsPrintX = durationLeftMax + (spaceForDuration - durationStringLength * durationEstimatedCharWidth) / 2;
 
             return new PrintingOptions

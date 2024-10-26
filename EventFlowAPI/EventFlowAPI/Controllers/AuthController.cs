@@ -1,12 +1,9 @@
-﻿using EventFlowAPI.Logic.Helpers;
-using EventFlowAPI.Logic.Identity.DTO.RequestDto;
+﻿using EventFlowAPI.Logic.Identity.DTO.RequestDto;
 using EventFlowAPI.Logic.Identity.Services.Interfaces;
 using EventFlowAPI.Logic.Services.CRUDServices.Interfaces;
-using EventFlowAPI.Logic.Services.OtherServices.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
-using System.Xml.Serialization;
 
 namespace EventFlowAPI.Controllers
 {

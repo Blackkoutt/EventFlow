@@ -11,11 +11,11 @@ namespace EventFlowAPI.DB.Entities
         public DateTime? RenewalDate { get; set; }
         public DateTime EndDate { get; set; }
         public DateTime? PreviousEndDate { get; set; } = null;
-        public DateTime? CancelDate { get; set; }
+        public DateTime? DeleteDate { get; set; }
 
         [NotMapped]
         public bool IsExpired => EndDate < DateTime.Now;
-        public bool IsCanceled { get; set; } = false;
+        public bool IsDeleted { get; set; } = false;
         public DateTime PaymentDate { get; set; }
 
         [Range(0.00, 9999.99),

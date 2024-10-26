@@ -13,7 +13,7 @@ namespace EventFlowAPI.Logic.DTO.RequestDto
         [MaxLength(600, ErrorMessage = "Opis powinien  zawierać mniej niż 600 znaków.")]
         public string? Description { get; set; }
 
-        public List<int>? EquipmentIds { get; set; } = [];
+        public List<int> EquipmentIds { get; set; } = [];
 
     }
 }

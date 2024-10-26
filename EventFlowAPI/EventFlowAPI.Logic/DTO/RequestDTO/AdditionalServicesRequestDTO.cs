@@ -14,5 +14,8 @@ namespace EventFlowAPI.Logic.DTO.RequestDto
         [DataType(DataType.Currency)]
         [Range(0, 9999.99, ErrorMessage ="Cena nie może być mniejsza niż 0 lub większa niż 9999.99.")] 
         public decimal Price {  get; set; }
+
+        [MaxLength(200, ErrorMessage = "Opis powinnien zawierać mniej niż 200 znaków.")]
+        public string? Description { get; set; }
     }
 }

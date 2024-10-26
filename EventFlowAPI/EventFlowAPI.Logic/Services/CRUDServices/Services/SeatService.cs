@@ -8,33 +8,32 @@ using EventFlowAPI.Logic.UnitOfWork;
 namespace EventFlowAPI.Logic.Services.CRUDServices.Services
 {
     public sealed class SeatService(IUnitOfWork unitOfWork) :
-        GenericService<
-            Seat,
-            SeatRequestDto,
-            SeatResponseDto
-        >(unitOfWork),
+        /* GenericService<
+             Seat,
+             SeatRequestDto,
+             SeatResponseDto
+         >(unitOfWork),*/
         ISeatService
     {
+        private readonly IUnitOfWork _unitOfWork = unitOfWork;
         public bool IsSeatHaveActiveReservationForEvent(Seat seatEntity, Event eventEntity)
         {
             foreach(var r in seatEntity.Reservations)
             {
-                if (!r.IsExpired && !r.IsCanceled && r.Ticket?.Event.Id == eventEntity.Id)
+                if (!r.IsExpired && !r.IsDeleted && r.Ticket?.Event.Id == eventEntity.Id)
                     return true;
             }
             return false;
-        }
-            
-
-            
+        }         
 
         public async Task<IEnumerable<Seat>> GetSeatsByListOfIds(List<int> seatsIds)
         {
-           return await _repository.GetAllAsync(q => q.Where(s => seatsIds.Contains(s.Id)));
+           return await _unitOfWork.GetRepository<Seat>().GetAllAsync(q => q.Where(s => seatsIds.Contains(s.Id)));
         }
-        protected sealed override Task<bool> IsSameEntityExistInDatabase(SeatRequestDto entityDto, int? id = null)
+
+        /*protected sealed override Task<bool> IsSameEntityExistInDatabase(SeatRequestDto entityDto, int? id = null)
         {
             throw new NotImplementedException();
-        }
+        }*/
     }
 }

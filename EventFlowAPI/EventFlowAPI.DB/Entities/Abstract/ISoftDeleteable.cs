@@ -2,7 +2,7 @@
 {
     public interface ISoftDeleteable
     {
-        bool IsCanceled { get; set; }
-        DateTime? CancelDate { get; set; }
+        bool IsDeleted { get; set; }
+        DateTime? DeleteDate { get; set; }
     }
 }

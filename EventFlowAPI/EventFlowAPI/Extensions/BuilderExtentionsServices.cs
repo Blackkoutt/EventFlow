@@ -29,7 +29,6 @@ namespace EventFlowAPI.Extensions
             services.AddScoped<IEventPassTypeService, EventPassTypeService>();
             services.AddScoped<IEventService, EventService>();
             services.AddScoped<ITicketService, TicketService>();
-            services.AddScoped<IFestivalDetailsService, FestivalDetailsService>();
             services.AddScoped<IFestivalService, FestivalService>();
             services.AddScoped<IHallRentService, HallRentService>();
             services.AddScoped<IHallService, HallService>();

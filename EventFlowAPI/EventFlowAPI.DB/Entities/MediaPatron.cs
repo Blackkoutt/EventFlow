@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace EventFlowAPI.DB.Entities
 {
-    public class MediaPatron : BaseEntity
+    public class MediaPatron : BaseEntity, INameableEntity
     {
 
         [MaxLength(50)]

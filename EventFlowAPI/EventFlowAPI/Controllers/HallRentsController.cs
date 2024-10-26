@@ -78,6 +78,8 @@ namespace EventFlowAPI.Controllers
         /// Sample request:
         /// 
         ///     {
+        ///         "startDate": "2024-10-31T12:00:00Z",
+        ///         "endDate": "2024-10-31T14:00:00Z",
         ///         "paymentTypeId": 2,
         ///         "hallId": 1,
         ///         "additionalServicesIds": [
@@ -118,22 +120,23 @@ namespace EventFlowAPI.Controllers
         /// Sample request:
         /// 
         ///     {
-        ///         "hallDetails": {
-        ///           "stageLength": 6, 
-        ///           "stageWidth": 6,
-        ///           "numberOfSeatsRows": 15,
-        ///           "maxNumberOfSeatsRows": 15,
-        ///           "numberOfSeatsColumns": 10,
-        ///           "maxNumberOfSeatsColumns": 10
+        ///         "hallDetails": 
+        ///         {
+        ///             "stageLength": 4,
+        ///             "stageWidth": 20,
+        ///             "numberOfSeatsRows": 10,
+        ///             "maxNumberOfSeatsRows": 15,
+        ///             "numberOfSeatsColumns": 10,
+        ///             "maxNumberOfSeatsColumns": 15,
         ///         },
         ///         "hallTypeId": 1,
         ///         "seats": [
         ///           {
         ///             "seatNr": 1,
-        ///             "row": 1,
-        ///             "gridRow": 1,
-        ///             "column": 1,
-        ///             "gridColumn": 1,
+        ///             "row": 3,
+        ///             "gridRow": 3,
+        ///             "column": 3,
+        ///             "gridColumn": 3,
         ///             "seatTypeId": 1
         ///           },
         ///           {
@@ -142,7 +145,15 @@ namespace EventFlowAPI.Controllers
         ///             "gridRow": 1,
         ///             "column": 2,
         ///             "gridColumn": 2,
-        ///             "seatTypeId": 1
+        ///             "seatTypeId": 2
+        ///           },
+        ///           {
+        ///             "seatNr": 3,
+        ///             "row": 5,
+        ///             "gridRow": 5,
+        ///             "column": 5,
+        ///             "gridColumn": 5,
+        ///             "seatTypeId": 3
         ///           }
         ///         ]
         ///     }    
@@ -168,6 +179,7 @@ namespace EventFlowAPI.Controllers
             }
             return NoContent();
         }
+
 
         [Authorize]
         [HttpGet("{id:int}/pdf-hallview")]

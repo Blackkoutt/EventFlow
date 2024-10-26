@@ -15,10 +15,11 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services.Configuration.Ticke
         IFestivalTicketConfiguration
     {
         // Reverse Ticket Constant Settings
-        private const short tabsCount = 6;
         private const short firstColumnX_DefaultValue = 82;
-        private const short secondColumnX_DefaultValue = 1017;
         private const short y_DefaultValue = 137;
+       
+        private const short tabsCount = 6;
+        private const short secondColumnX_DefaultValue = 1017;
         private const short nextTabY = 180;
         private const short numberWidthAndMarginRight = 92;
         private const short yFromNumberToEventInfo = -7;
@@ -73,6 +74,14 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services.Configuration.Ticke
         private int printY;
 
         public FestivalTicketConfiguration(IAssetService assetService) : base(assetService)
+        {
+            tabStartX = firstColumnX_DefaultValue;
+            tabStartY = y_DefaultValue;
+            printX = tabStartX;
+            printY = tabStartY;
+        }
+
+        public void SetDefaultPrintingParams()
         {
             tabStartX = firstColumnX_DefaultValue;
             tabStartY = y_DefaultValue;

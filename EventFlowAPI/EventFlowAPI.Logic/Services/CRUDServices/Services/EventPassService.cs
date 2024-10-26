@@ -13,8 +13,10 @@ using EventFlowAPI.Logic.Services.CRUDServices.Interfaces;
 using EventFlowAPI.Logic.Services.CRUDServices.Services.BaseServices;
 using EventFlowAPI.Logic.Services.OtherServices.Interfaces;
 using EventFlowAPI.Logic.UnitOfWork;
-using EventFlowAPI.Logic.Helpers;
 using EventFlowAPI.Logic.Helpers.Enums;
+using EventFlowAPI.Logic.DTO.UpdateRequestDto;
+using EventFlowAPI.Logic.DTO.Interfaces;
+using System.ComponentModel.DataAnnotations;
 
 namespace EventFlowAPI.Logic.Services.CRUDServices.Services
 {
@@ -27,11 +29,11 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
         GenericService<
             EventPass,
             EventPassRequestDto,
+            UpdateEventPassRequestDto,
             EventPassResponseDto
-        >(unitOfWork),
+        >(unitOfWork, userService),
         IEventPassService
     {
-        private readonly IUserService _userService = userService;
         private readonly IFileService _fileService = fileService;
         private readonly IEmailSenderService _emailSender = emailSender;
 
@@ -48,9 +50,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             var user = userResult.Value;
             if (user.IsInRole(Roles.Admin))
             {
-                var allEventPasses = await _repository.GetAllAsync(q =>
-                                                q.ByStatus(eventPassQuery.Status)
-                                                .SortBy(eventPassQuery.SortBy, eventPassQuery.SortDirection));
+                var allEventPasses = await _repository.GetAllAsync(q => q.ByQuery(eventPassQuery));
 
                 var allEventPassesDto = MapAsDto(allEventPasses);
                 return Result<IEnumerable<EventPassResponseDto>>.Success(allEventPassesDto);
@@ -58,9 +58,8 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             else if (user.IsInRole(Roles.User))
             {
                 var userEventPasses = await _repository.GetAllAsync(q =>
-                                            q.ByStatus(eventPassQuery.Status)
-                                            .Where(r => r.User.Id == user.Id)
-                                            .SortBy(eventPassQuery.SortBy, eventPassQuery.SortDirection));
+                                            q.ByQuery(eventPassQuery)
+                                            .Where(r => r.User.Id == user.Id));
 
                 var userEventPassesResponse = MapAsDto(userEventPasses);
                 return Result<IEnumerable<EventPassResponseDto>>.Success(userEventPassesResponse);
@@ -143,7 +142,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
 
 
         // Renew Event Pass
-        public sealed override async Task<Result<EventPassResponseDto>> UpdateAsync(int id, EventPassRequestDto? requestDto)
+        public sealed override async Task<Result<EventPassResponseDto>> UpdateAsync(int id, UpdateEventPassRequestDto? requestDto)
         {
             var validationError = await ValidateEntity(requestDto, id);
             if (validationError != Error.None)
@@ -156,8 +155,8 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             if(eventPass.IsExpired)
                 return Result<EventPassResponseDto>.Failure(EventPassError.EventPassIsExpired);
 
-            if (eventPass.IsCanceled)
-                return Result<EventPassResponseDto>.Failure(EventPassError.EventPassIsCanceled);
+            if (eventPass.IsDeleted)
+                return Result<EventPassResponseDto>.Failure(EventPassError.EventPassIsDeleted);
 
             var userResult = await _userService.GetCurrentUser();
             if (!userResult.IsSuccessful)
@@ -212,29 +211,15 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
         }
 
 
-        // Admin cancel event pass for user, event pass still will be in db but it will be have a isCanceled flag
+        // Admin cancel event pass for user, event pass still will be in db but it will be have a IsDeleted flag
         public sealed override async Task<Result<object>> DeleteAsync(int id)
         {
-            var userResult = await _userService.GetCurrentUser();
-            if (!userResult.IsSuccessful)
-                return Result<object>.Failure(userResult.Error);
+            var validationResult = await ValidateBeforeDelete(id);
+            if (!validationResult.IsSuccessful)
+                return Result<object>.Failure(validationResult.Error);
 
-            var user = userResult.Value;
-            if (!user.IsInRole(Roles.Admin))
-                return Result<object>.Failure(AuthError.UserDoesNotHaveSpecificRole);
-
-            if (id < 0)
-                return Result<object>.Failure(Error.RouteParamOutOfRange);
-
-            var eventPass = await _repository.GetOneAsync(id);
-            if (eventPass == null)
-                return Result<object>.Failure(Error.NotFound);
-
-            if (eventPass.IsCanceled)
-                return Result<object>.Failure(EventPassError.EventPassIsCanceled);
-
-            if (eventPass.IsExpired)
-                return Result<object>.Failure(EventPassError.EventPassIsExpired);
+            var eventPass = validationResult.Value.Entity;
+            var user = validationResult.Value.User;
 
             // Remove from PDF AND JPG blob storage
             var jpgDeleteError = await _fileService.DeleteFile(eventPass, FileType.JPEG, BlobContainer.EventPassesJPG);
@@ -248,8 +233,8 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             // Update event pass
             eventPass.EventPassJPGName = string.Empty;
             eventPass.EventPassPDFName = string.Empty;
-            eventPass.IsCanceled = true;
-            eventPass.CancelDate = DateTime.Now;
+            eventPass.IsDeleted = true;
+            eventPass.DeleteDate = DateTime.Now;
             _repository.Update(eventPass);
 
             // Cancel all active reservations on event pass
@@ -274,7 +259,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             var allActiveReservations = await reservationRepo
                                                 .GetAllAsync(q => q.Where(r =>
                                                 r.EventPassId == eventPassId &&
-                                                !r.IsCanceled &&
+                                                !r.IsDeleted &&
                                                 r.EndDate > DateTime.Now));
 
             if (allActiveReservations.Any())
@@ -283,7 +268,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
 
                 foreach (var reservation in allActiveReservations)
                 {
-                    reservation.IsCanceled = true;
+                    reservation.IsDeleted = true;
                     reservationRepo.Update(reservation);
                 }
 
@@ -355,7 +340,23 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             return responseDto;
         }
 
-        protected sealed override async Task<Error> ValidateEntity(EventPassRequestDto? requestDto, int? id = null)
+        protected sealed override async Task<Result<bool>> IsSameEntityExistInDatabase(IRequestDto requestDto, int? id = null)
+        {
+            var userResult = await _userService.GetCurrentUser();
+            if (!userResult.IsSuccessful)
+                return Result<bool>.Failure(userResult.Error);
+
+            var user = userResult.Value;
+            var isUserHaveAnyEventPass = (await _repository.GetAllAsync(q =>
+                                            q.Where(ep =>
+                                            ep.EndDate > DateTime.Now &&
+                                            !ep.IsDeleted &&
+                                            ep.UserId == user.Id))).Any();
+
+            return Result<bool>.Success(isUserHaveAnyEventPass);
+        }
+
+        protected sealed override async Task<Error> ValidateEntity(IRequestDto? requestDto, int? id = null)
         {
             if (id != null && id < 0)
                 return Error.RouteParamOutOfRange;
@@ -363,33 +364,36 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             if (requestDto == null)
                 return Error.NullParameter;
 
-            var userResult = await _userService.GetCurrentUser();
-            if (!userResult.IsSuccessful)
-                return userResult.Error;
+            int paymentTypeId;
+            int passTypeId;
+            switch (requestDto)
+            {
+                case EventPassRequestDto eventPassRequestDto:
+                    paymentTypeId = eventPassRequestDto.PaymentTypeId;
+                    passTypeId  = eventPassRequestDto.PassTypeId;
+                    break;
+                case UpdateEventPassRequestDto updateEventPassRequestDto:
+                    paymentTypeId = updateEventPassRequestDto.PaymentTypeId;
+                    passTypeId = updateEventPassRequestDto.PassTypeId;
+                    break;
+                default:
+                    return Error.BadRequestType;
+            }
 
-            var user = userResult.Value;
+            var activeEventPassResult = await IsSameEntityExistInDatabase(requestDto);
+            if (!activeEventPassResult.IsSuccessful) return activeEventPassResult.Error;
+            var isUserAlreadyHabeActiveEventPass = activeEventPassResult.Value;
 
-            // if event pass is not active
-            var isUserHaveAnyEventPass = (await _repository.GetAllAsync(q =>
-                                            q.Where(ep => 
-                                            ep.EndDate > DateTime.Now &&
-                                            !ep.IsCanceled &&
-                                            ep.UserId == user.Id))).Any();
-            if (id == null && isUserHaveAnyEventPass)
+            if (id == null && isUserAlreadyHabeActiveEventPass)
                 return EventPassError.UserAlreadyHaveActiveEventPass;
 
-            if (!await IsEntityExistInDB<PaymentType>(requestDto!.PaymentTypeId))
+            if (!await IsEntityExistInDB<PaymentType>(paymentTypeId))
                 return PaymentTypeError.PaymentTypeNotFound;
 
-            if (!await IsEntityExistInDB<EventPassType>(requestDto!.PassTypeId))
+            if (!await IsEntityExistInDB<EventPassType>(passTypeId))
                 return EventPassTypeError.EventPassTypeNotFound;
 
             return Error.None;
-        }
-
-        protected sealed override Task<bool> IsSameEntityExistInDatabase(EventPassRequestDto entityDto, int? id = null)
-        {
-            throw new NotImplementedException();
         }
     }
 }

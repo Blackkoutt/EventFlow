@@ -12,7 +12,8 @@ namespace EventFlowAPI.Logic.Errors
         public static readonly Error NotFound = new(new BadRequestResponse("Entity with given Id does not exist in database."));
         public static readonly Error SuchEntityExistInDb = new(new BadRequestResponse("Entity with given name already exist in database."));
         public static readonly Error EntityIsExpired = new(new BadRequestResponse("Can not perform action beacuse entity is expired."));
-        public static readonly Error EntityIsCanceled = new(new BadRequestResponse("Can not perform action beacuse entity was canceled some time before."));
+        public static readonly Error EntityIsDeleted = new(new BadRequestResponse("Can not perform action beacuse entity was canceled some time before."));
+        public static readonly Error BadRequestType = new(new BadRequestResponse("Bad request type."));
        
     }    
 }

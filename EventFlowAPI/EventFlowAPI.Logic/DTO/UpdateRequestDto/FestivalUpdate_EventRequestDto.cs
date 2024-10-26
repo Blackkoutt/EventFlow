@@ -11,7 +11,7 @@ namespace EventFlowAPI.Logic.DTO.RequestDto
         public string? Name { get; set; }
 
         [Length(2, 300, ErrorMessage = "Krótki opis powinien zawierać od 2 do 300 znaków.")]
-        public string? ShortDescription { get; set; } = string.Empty;
+        public string? ShortDescription { get; set; }
 
         [DataType(DataType.Date)]
         [StartAndEndDateValidator]
@@ -29,8 +29,6 @@ namespace EventFlowAPI.Logic.DTO.RequestDto
 
         [Range(0, int.MaxValue, ErrorMessage = "Id hali musi być większe lub równe 0.")]
         public int? HallId { get; set; }
-
-
 
         [JsonIgnore]
         public TimeSpan MaxDuration => TimeSpan.FromHours(24);

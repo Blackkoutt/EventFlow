@@ -281,7 +281,7 @@ namespace EventFlowAPI.Extensions
                 HallRentGuid = Guid.NewGuid(),
                 StartDate = dateNow,
                 EndDate = dateNow.AddHours(2),
-                Duration = dateNow.AddHours(2) - dateNow,
+                DurationTimeSpan = dateNow.AddHours(2) - dateNow,
                 RentDate = dateNow,
                 PaymentDate = dateNow,
                 PaymentAmount = 1200m,

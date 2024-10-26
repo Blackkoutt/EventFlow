@@ -11,5 +11,6 @@ namespace EventFlowAPI.Logic.Errors
         public static readonly Error NotFound = new(new BadRequestResponse("Hall with given Id does not exist in database."));
         public static readonly Error HallAlreadyExists = new(new BadRequestResponse("Hall with given number already exists in database."));
         public static readonly Error HallIsTooSmall = new(new BadRequestResponse("Hall not have enough seats for all event reservations."));
+        public static readonly Error MappingSeatsError = new(new BadRequestResponse("Error while mapping seats."));
     }
 }

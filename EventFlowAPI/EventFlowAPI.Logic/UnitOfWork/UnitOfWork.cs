@@ -11,6 +11,7 @@ namespace EventFlowAPI.Logic.UnitOfWork
     {
         private readonly APIContext _context;
         private readonly Dictionary<Type, IRepository> _repositories;
+        public APIContext Context { get { return _context; } }
         public UnitOfWork(APIContext context) 
         {
             _context = context;
@@ -42,6 +43,7 @@ namespace EventFlowAPI.Logic.UnitOfWork
             _ticketJPGs = new TicketJPGRepository(_context);
             _ticketPDFs = new TicketPDFRepository(_context);
             _reservation_Seats = new Reservation_SeatRepository(_context);
+            _festival_Events = new Festival_EventRepository(_context);
 
             _repositories = InitRepositoriesDictionary();
         }
@@ -97,6 +99,7 @@ namespace EventFlowAPI.Logic.UnitOfWork
                 { typeof(TicketJPG), _ticketJPGs},
                 { typeof(TicketPDF), _ticketPDFs},
                 { typeof(Reservation_Seat), _reservation_Seats},
+                { typeof(Festival_Event), _festival_Events},
             };
         }
 
@@ -127,5 +130,6 @@ namespace EventFlowAPI.Logic.UnitOfWork
         private readonly ITicketJPGRepository _ticketJPGs;
         private readonly ITicketPDFRepository _ticketPDFs;
         private readonly IReservation_SeatRepository _reservation_Seats;
+        private readonly IFestival_EventRepository _festival_Events;
     }
 }

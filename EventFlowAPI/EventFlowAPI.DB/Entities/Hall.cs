@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace EventFlowAPI.DB.Entities
 {
-    public class Hall : BaseEntity
+    public class Hall : BaseEntity, IVisibleEntity, ICopyableEntity
     {
         public int? DefaultId { get; set; }
         public int HallNr { get; set; }

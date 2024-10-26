@@ -6,6 +6,7 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Interfaces.Configuration.Tic
 {
     public interface IFestivalTicketConfiguration : ITicketConfiguration<Festival>
     {
+        void SetDefaultPrintingParams();
         int GetReverseTicketCount(int reservationsCount);
         string GetEventInfo(Event eventEntity);
         string GetSeatsString(Reservation reservation);

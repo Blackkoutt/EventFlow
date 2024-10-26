@@ -7,7 +7,7 @@ namespace EventFlowAPI.Logic.DTO.ResponseDto
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
         public DateTime PaymentDate { get; set; }
-        public DateTime? CancelDate { get; set; }
+        public DateTime? DeleteDate { get; set; }
         public decimal PaymentAmount { get; set; }     
         public PaymentTypeResponseDto? PaymentType { get; set; }
         public HallResponseDto? Hall { get; set; }  

@@ -9,6 +9,7 @@ using EventFlowAPI.Logic.Response;
 using EventFlowAPI.Logic.ResultObject;
 using EventFlowAPI.Logic.Services.OtherServices.Interfaces;
 using EventFlowAPI.Logic.Helpers.Enums;
+using EventFlowAPI.Logic.Extensions;
 
 namespace EventFlowAPI.Logic.Services.OtherServices.Services
 {
@@ -207,11 +208,11 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
 
         private Error ValidateBlobRequest(BlobRequestDto blob, bool isUpload)
         {
-            if (string.IsNullOrEmpty(blob.Container.ToString()))
+            if (string.IsNullOrEmpty(blob.Container.ToLowerString()))
                 return BlobError.ContainerIsNullOrEmpty;
 
             var blobContainers = _blobServiceClient.GetBlobContainers().Select(x => x.Name);
-            if (!blobContainers.Contains(blob.Container.ToString()))
+            if (!blobContainers.Contains(blob.Container.ToLowerString()))
                 return BlobError.ContainerDoesNotExist;
 
             if (string.IsNullOrEmpty(blob.FileName))
@@ -231,7 +232,8 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
 
         private BlobClient GetBlobClient(BlobContainer container, string blobName)
         {
-            BlobContainerClient containerClient = _blobServiceClient.GetBlobContainerClient(container.ToString());
+            var containerName = container.ToLowerString();
+            BlobContainerClient containerClient = _blobServiceClient.GetBlobContainerClient(containerName);
             return containerClient.GetBlobClient(blobName);
         }
     }

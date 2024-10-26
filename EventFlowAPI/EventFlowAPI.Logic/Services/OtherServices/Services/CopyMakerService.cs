@@ -13,10 +13,11 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
         {
             var _hallRepository = _unitOfWork.GetRepository<Hall>();
             var hallEntity = await _hallRepository.GetOneAsync(hallId);
-            if (hallEntity == null || !hallEntity.IsVisible)
-                return Result<Hall>.Failure(Error.NotFound);
 
-            hallEntity.DefaultId = hallEntity.Id;
+            if (hallEntity == null || !hallEntity.IsVisible)
+                return Result<Hall>.Failure(HallError.NotFound);
+
+            hallEntity.DefaultId = hallEntity.DefaultId;
 
             // Copy Hall
             _hallRepository.Detach(hallEntity);
@@ -48,6 +49,30 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
             hallEntity.IsVisible = false;
 
             await _hallRepository.AddAsync(hallEntity);
+
+            /*if (isCurrentHallCopy)
+            {
+                var hallToDelete = await _hallRepository.GetOneAsync(hallId);
+                if(hallToDelete != null)
+                {
+                    var hallSeatIds = hallToDelete.Seats.Select(s => s.Id);
+                    var _reservationSeatRepo = _unitOfWork.GetRepository<Reservation_Seat>();
+                    var reservationSeatsToDelete = await _reservationSeatRepo.GetAllAsync(q =>
+                                                    q.Where(rs => hallSeatIds.Contains(rs.SeatId)));
+
+                    foreach(var reservationSeat in reservationSeatsToDelete)
+                    {
+                        _reservationSeatRepo.Delete(reservationSeat);
+                    }
+                    _hallRepository.Delete(hallToDelete);
+               }
+            }*/
+           /* if (isCurrentHallCopy)
+            {
+                var hallToDelete = await _hallRepository.GetOneAsync(hallId);
+                _hallRepository.Delete(hallToDelete!);
+            }*/
+
             await _unitOfWork.SaveChangesAsync();
 
             return Result<Hall>.Success(hallEntity);

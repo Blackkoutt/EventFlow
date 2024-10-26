@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace EventFlowAPI.DB.Entities
 {
-    public class HallType : BaseEntity
+    public class HallType : BaseEntity, INameableEntity, ISoftDeleteable
     {
 
         [MaxLength(30)]
@@ -11,6 +11,8 @@ namespace EventFlowAPI.DB.Entities
 
         [MaxLength(600)]
         public string? Description { get; set; }
+        public bool IsDeleted { get; set; } = false;
+        public DateTime? DeleteDate { get; set; }
 
         public ICollection<Hall> Halls { get; set; } = [];
         public ICollection<Equipment> Equipments { get; set; } = [];

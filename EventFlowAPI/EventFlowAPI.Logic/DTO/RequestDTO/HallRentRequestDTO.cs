@@ -7,7 +7,6 @@ namespace EventFlowAPI.Logic.DTO.RequestDto
 {
     public class HallRentRequestDto : StartEndDateAbstract, IRequestDto, ICollisionalRequestDto
     {
-
         [Required(ErrorMessage = "Należy wybrać typ płatności.")]
         public int PaymentTypeId { get; set; }
 

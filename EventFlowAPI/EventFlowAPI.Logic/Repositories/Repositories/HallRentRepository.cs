@@ -14,6 +14,8 @@ namespace EventFlowAPI.Logic.Repositories.Repositories
                         .Include(hr => hr.User)
                         .Include(hr => hr.PaymentType)
                         .Include(hr => hr.Hall)
+                            .ThenInclude(h => h.Type)
+                                 .ThenInclude(t => t.Equipments)
                         .Include(hr => hr.AdditionalServices)
                         .AsSplitQuery();
 
@@ -27,6 +29,8 @@ namespace EventFlowAPI.Logic.Repositories.Repositories
                         .Include(hr => hr.User)
                         .Include(hr => hr.PaymentType)
                         .Include(hr => hr.Hall)
+                            .ThenInclude(h => h.Type)
+                                .ThenInclude(t => t.Equipments)
                         .Include(hr => hr.AdditionalServices)
                         .FirstOrDefaultAsync(e => e.Id == id);
         }

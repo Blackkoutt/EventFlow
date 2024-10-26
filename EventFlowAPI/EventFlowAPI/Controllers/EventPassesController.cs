@@ -1,5 +1,6 @@
 ﻿using EventFlowAPI.DB.Entities;
 using EventFlowAPI.Logic.DTO.RequestDto;
+using EventFlowAPI.Logic.DTO.UpdateRequestDto;
 using EventFlowAPI.Logic.Helpers;
 using EventFlowAPI.Logic.Helpers.Enums;
 using EventFlowAPI.Logic.Identity.Helpers;
@@ -116,7 +117,7 @@ namespace EventFlowAPI.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        public async Task<IActionResult> RenewEventPass([FromRoute] int id, [FromBody] EventPassRequestDto eventPassReqestDto)
+        public async Task<IActionResult> RenewEventPass([FromRoute] int id, [FromBody] UpdateEventPassRequestDto eventPassReqestDto)
         {
             var result = await _eventPassService.UpdateAsync(id, eventPassReqestDto);
             if (!result.IsSuccessful)

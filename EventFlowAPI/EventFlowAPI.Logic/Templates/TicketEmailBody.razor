@@ -11,14 +11,28 @@
             W załączniku znajduje plik PDF z potwierdzeniem zamówienia oraz biletem.
         </strong>   
       </p>
-        <p>
-            <strong>Podstawowe informacje o rezerwacji:</strong><br />
-            <strong>ID rezerwacji:</strong> @Reservation.Id<br />
-            <strong>Wydarzenie:</strong> @Reservation.Ticket.Event.Name<br />
-            <strong>Gdzie?:</strong> sala nr @Reservation.Ticket.Event.Hall.HallNr, piętro @Reservation.Ticket.Event.Hall.Floor<br />
-            <strong>Kiedy?:</strong> @Reservation.Ticket.Event.StartDate.ToString(DateFormat.DateTime)<br />
-            <strong>Numery miejsc:</strong> @string.Join(", ", Reservation.Seats.Select(s => s.SeatNr))<br />
-        </p>
+        @if (Reservation.IsFestivalReservation && Reservation.Ticket.Festival != null)
+        {
+            <p>
+                <strong>Podstawowe informacje o rezerwacji:</strong><br />
+                <strong>ID rezerwacji:</strong> @Reservation.Id<br />
+                <strong>Festiwal:</strong> @Reservation.Ticket.Festival.Name<br />
+                <strong>Od:</strong> @Reservation.Ticket.Festival.StartDate.ToString(DateFormat.Date)<br />
+                <strong>Do:</strong> @Reservation.Ticket.Festival.EndDate.ToString(DateFormat.Date)<br />
+            </p>
+        }
+        else
+        {
+            <p>
+                <strong>Podstawowe informacje o rezerwacji:</strong><br />
+                <strong>ID rezerwacji:</strong> @Reservation.Id<br />
+                <strong>Wydarzenie:</strong> @Reservation.Ticket.Event.Name<br />
+                <strong>Od:</strong> @Reservation.Ticket.Event.StartDate.ToString(DateFormat.DateTime)<br />
+                <strong>Do:</strong> @Reservation.Ticket.Event.EndDate.ToString(DateFormat.DateTime)<br />
+                <strong>Miejsce:</strong> sala nr @Reservation.Ticket.Event.Hall.HallNr, piętro @Reservation.Ticket.Event.Hall.Floor<br />
+                <strong>Numery miejsc:</strong> @string.Join(", ", Reservation.Seats.Select(s => s.SeatNr))<br />
+            </p>
+        }       
       <p>
         Bilety należy okazać w punkcie kontroli przy wejściu na miejsce wydarzenia. Bilet
         może być okazany na urządzeniu mobilnym lub wydrukowany na kartce papieru.

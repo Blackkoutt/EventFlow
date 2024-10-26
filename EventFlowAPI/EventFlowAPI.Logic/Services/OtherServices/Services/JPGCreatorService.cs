@@ -94,6 +94,8 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
             var image = await _assetService.GetTemplate(Template.EventTicket);
             var eventEntity = reservation.Ticket.Event;
 
+            _eventTicketConfig.SetDefaultPrintingParams();
+
             var titleOptions = _eventTicketConfig.GetTitlePrintingOptions(eventEntity);     
             image.DrawText(eventEntity.Name, titleOptions);
 
@@ -107,7 +109,7 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
             image.DrawText(eventEntity.Hall.HallNr.ToString(), hallOptions);
 
             var durationOptions = _eventTicketConfig.GetDurationPrintingOpitons(eventEntity);
-            image.DrawText($"{eventEntity.Duration.TotalMinutes} min", durationOptions);
+            image.DrawText($"{eventEntity.DurationTimeSpan.TotalMinutes} min", durationOptions);
  
             var seatsOptions = _eventTicketConfig.GetSeatsPrintingOptions();
             image.DrawText(string.Join(", ", reservation.Seats.Select(s => s.SeatNr)), seatsOptions);
@@ -128,6 +130,8 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
 
             // TEST
             var outputPath = _assetService.GetOutputTestPath(TestsOutput.FestivalPathFront);
+
+            reservations = reservations.OrderBy(r => r.Ticket.Event.StartDate).ToList();
 
             var frontTemplate = await _assetService.GetTemplate(Template.FestivalTicketFront);
             var frontTicket = CreateFestivalFrontOfTicket(frontTemplate, festival, reservations.First());
@@ -179,6 +183,8 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
         {
             List<Image> reverseOfTickets = [];
             var defaultTemplate = template;
+
+            _festivalTicketConfig.SetDefaultPrintingParams();
 
             int howManyReverseOfTicket = _festivalTicketConfig.GetReverseTicketCount(reservations.Count);
             int tabsCount = _festivalTicketConfig.TabsCount;

@@ -33,7 +33,43 @@ namespace EventFlowAPI.Controllers
             return result.IsSuccessful ? Ok(result.Value) : BadRequest(result.Error.Details);
         }
 
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="festivalReqestDto"></param>
+        /// <returns></returns>
+        /// <remarks>
+        /// Sample request:
+        /// 
+        ///     {
+        ///         "name": "Festiwal nowy",
+        ///         "shortDescription": "string",
+        ///         "events": 
+        ///           {
+        ///             "1": null,
+        ///             "2": null
+        ///           },
+        ///         "mediaPatronIds": [
+        ///             1, 2
+        ///         ],
+        ///         "organizerIds": [
+        ///             1, 2
+        ///         ],
+        ///         "sponsorIds": [
+        ///             1, 2
+        ///         ],
+        ///         "details": 
+        ///           {
+        ///             "longDescription": "string"
+        ///           },
+        ///         "festivalTickets": [
+        ///             {
+        ///               "price": 99.99,
+        ///               "ticketTypeId": 1
+        ///             }
+        ///         ]
+        ///     }
+        /// </remarks>
         [Authorize(Roles = nameof(Roles.Admin))]
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
@@ -56,7 +92,48 @@ namespace EventFlowAPI.Controllers
             return CreatedAtAction(nameof(GetFestivalById), new { id = result.Value.Id }, result.Value);
         }
 
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="festivalReqestDto"></param>
+        /// <returns></returns>
+        /// <remarks>
+        /// Sample request:
+        /// 
+        ///     {
+        ///         "name": "Festiwal nowszy",
+        ///         "shortDescription": "string",
+        ///         "events": 
+        ///           {
+        ///             "1": 
+        ///             {
+        ///               "startDate": "2024-11-30T12:00:00Z",
+        ///               "endDate": "2024-11-30T14:00:00Z"
+        ///             },
+        ///             "2": null
+        ///           },
+        ///         "mediaPatronIds": [
+        ///             1, 2
+        ///         ],
+        ///         "organizerIds": [
+        ///             1, 2
+        ///         ],
+        ///         "sponsorIds": [
+        ///             1, 2
+        ///         ],
+        ///         "details": 
+        ///           {
+        ///             "longDescription": "string"
+        ///           },
+        ///         "festivalTickets": [
+        ///             {
+        ///               "price": 99.99,
+        ///               "ticketTypeId": 1
+        ///             }
+        ///         ]
+        ///     }
+        /// </remarks>
         [Authorize(Roles = nameof(Roles.Admin))]
         [HttpPut("{id:int}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]

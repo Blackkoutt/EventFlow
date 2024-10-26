@@ -1,8 +1,10 @@
 ﻿using EventFlowAPI.DB.Entities;
 using EventFlowAPI.DB.Entities.Abstract;
 using EventFlowAPI.Logic.DTO.Abstract;
+using EventFlowAPI.Logic.DTO.Interfaces;
 using EventFlowAPI.Logic.DTO.RequestDto;
 using EventFlowAPI.Logic.DTO.ResponseDto;
+using EventFlowAPI.Logic.DTO.UpdateRequestDto;
 using EventFlowAPI.Logic.Errors;
 using EventFlowAPI.Logic.Extensions;
 using EventFlowAPI.Logic.Identity.Helpers;
@@ -30,11 +32,11 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
         GenericService<
             Hall,
             HallRequestDto,
+            UpdateHallRequestDto,
             HallResponseDto
-        >(unitOfWork),
+        >(unitOfWork, userService),
     IHallService
     {
-        private readonly IUserService _userService = userService;
         private readonly ISeatService _seatService = seatService;
         private readonly IReservationService _reservationService = reservationService;
         private readonly IEmailSenderService _emailSender = emailSender;
@@ -49,7 +51,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             if (hallQuery == null)
                 return Result<IEnumerable<HallResponseDto>>.Failure(QueryError.BadQueryObject);
 
-            var records = await _repository.GetAllAsync(q => q.Where(entity => entity.IsVisible));
+            var records = await _repository.GetAllAsync(q => q.Where(entity => entity.IsVisible).ByQuery(hallQuery));
             var response = MapAsDto(records);
 
             return Result<IEnumerable<HallResponseDto>>.Success(response);
@@ -86,8 +88,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             return Result<HallResponseDto>.Success(hallEntityDto);
         }
 
-
-        public sealed override async Task<Result<HallResponseDto>> UpdateAsync(int id, HallRequestDto? requestDto)
+        public sealed override async Task<Result<HallResponseDto>> UpdateAsync(int id, UpdateHallRequestDto? requestDto)
         {
             var error = await ValidateEntity(requestDto, id);
             if (error != Error.None)
@@ -187,6 +188,13 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             var hallEntity = await _unitOfWork.GetRepository<Hall>().GetOneAsync(rentEntity!.HallId);
 
             hallEntity = (Hall)MapToEntity(requestDto!, hallEntity!);
+
+            foreach(var seat in hallEntity.Seats)
+            {
+                var seatType = await _unitOfWork.GetRepository<SeatType>().GetOneAsync(seat.SeatTypeId);
+                if (seatType != null)
+                    seat.SeatType = seatType;
+            }
             // HallView Update
             var eventHallViewFileNameResult = await _fileService.CreateHallViewPDF(hallEntity, rentEntity, null, isUpdate: true); ;
             if (!eventHallViewFileNameResult.IsSuccessful)
@@ -207,7 +215,8 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             if (!validationResult.IsSuccessful)
                 return Result<object>.Failure(validationResult.Error);
 
-            var hall = validationResult.Value;
+            var hall = validationResult.Value.Entity;
+            var user = validationResult.Value.User;
 
             var allCopiesOfHall = await _repository.GetAllAsync(q => q.Where(h =>
                                                                     h.Id != hall.Id &&
@@ -222,7 +231,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
                 var reservations = await _unitOfWork.GetRepository<Reservation>()
                                     .GetAllAsync(q =>
                                     q.Where(r =>
-                                    !r.IsCanceled &&
+                                    !r.IsDeleted &&
                                     r.EndDate > DateTime.Now &&
                                     allCopiesOfHallId.Contains(r.Ticket.Event.HallId)));
 
@@ -247,7 +256,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
         }
 
 
-        private async Task UpdateHallCopies(Hall hallEntity, HallRequestDto requestDto)
+        private async Task UpdateHallCopies(Hall hallEntity, UpdateHallRequestDto requestDto)
         {
             var hallCopies = await _repository.GetAllAsync(q =>
                         q.Where(h =>
@@ -272,7 +281,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             var allActiveHallRents = await _unitOfWork.GetRepository<HallRent>().GetAllAsync(q =>
                                 q.Where(hr =>
                                 hr.Hall.DefaultId == hallEntity.DefaultId &&
-                                !hr.IsCanceled &&
+                                !hr.IsDeleted &&
                                 hr.EndDate > DateTime.Now));
             if (allActiveHallRents.Any())
             {
@@ -286,7 +295,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
         {
             var allActiveReservations = await _unitOfWork.GetRepository<Reservation>().GetAllAsync(q =>
                                             q.Where(r =>
-                                            !r.IsCanceled &&
+                                            !r.IsDeleted &&
                                             r.EndDate > DateTime.Now &&
                                             r.Ticket.Event.Hall.DefaultId == hallEntity.DefaultId));
             if (allActiveReservations.Any())
@@ -315,14 +324,14 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             var eventsToDelete = await _unitOfWork.GetRepository<Event>()
                                 .GetAllAsync(q =>
                                 q.Where(e =>
-                                !e.IsCanceled &&
+                                !e.IsDeleted &&
                                 e.EndDate > DateTime.Now &&
                                 allCopiesOfHallId.Contains(e.HallId)));
 
             foreach (var eventEntity in eventsToDelete)
             {
-                eventEntity.CancelDate = DateTime.Now;
-                eventEntity.IsCanceled = true;
+                eventEntity.DeleteDate = DateTime.Now;
+                eventEntity.IsDeleted = true;
                 _unitOfWork.GetRepository<Event>().Update(eventEntity);
             }
 
@@ -338,7 +347,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             var hallRentsToDelete = await hallRentRepo
                                     .GetAllAsync(q =>
                                     q.Where(hr =>
-                                    !hr.IsCanceled &&
+                                    !hr.IsDeleted &&
                                     hr.StartDate > DateTime.Now.AddHours(3) &&
                                     allCopiesOfHallId.Contains(hr.HallId)));
 
@@ -429,14 +438,6 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
 
         private async Task<Error> ValidateBeforeUpdateHallForRent(HallRent_HallRequestDto? hallRequestDto, int rentId)
         {
-            var userResult = await _userService.GetCurrentUser();
-            if (!userResult.IsSuccessful)
-                return userResult.Error;
-
-            var user = userResult.Value;
-            if (!user.IsInRole(Roles.Admin))
-                return AuthError.UserDoesNotHaveSpecificRole;
-
             if (rentId < 0)
                 return Error.QueryParamOutOfRange;
 
@@ -447,8 +448,20 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             if (rentEntity == null)
                 return HallRentError.NotFound;
 
-            if (rentEntity.IsCanceled)
-                return HallRentError.HallRentIsCanceled;
+            var userResult = await _userService.GetCurrentUser();
+            if (!userResult.IsSuccessful)
+                return userResult.Error;
+
+            var user = userResult.Value;
+            if (!user.IsInRole(Roles.Admin))
+            {
+                if(rentEntity.UserId != user.Id)
+                    return AuthError.UserDoesNotHaveSpecificRole;
+            }
+                
+
+            if (rentEntity.IsDeleted)
+                return HallRentError.HallRentIsDeleted;
 
             if (rentEntity.IsExpired)
                 return HallRentError.HallRentIsExpired;
@@ -490,8 +503,8 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             if (eventEntity == null)
                 return EventError.NotFound;
 
-            if (eventEntity.IsCanceled)
-                return EventError.EventIsCanceled;
+            if (eventEntity.IsDeleted)
+                return EventError.EventIsDeleted;
 
             if (eventEntity.IsExpired)
                 return EventError.EventIsExpired;
@@ -521,26 +534,6 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
                 return SeatError.NotAvailableSeatChanged;
 
             return Error.None;
-        }
-
-        private async Task<Result<Hall>> ValidateBeforeDelete(int id)
-        {
-            var userResult = await _userService.GetCurrentUser();
-            if (!userResult.IsSuccessful)
-                return Result<Hall>.Failure(userResult.Error);
-
-            var user = userResult.Value;
-            if (!user.IsInRole(Roles.Admin))
-                return Result<Hall>.Failure(AuthError.UserDoesNotHaveSpecificRole);
-
-            if (id < 0)
-                return Result<Hall>.Failure(Error.RouteParamOutOfRange);
-
-            var hall = await _repository.GetOneAsync(id);
-            if (hall == null || !hall.IsVisible)
-                return Result<Hall>.Failure(Error.NotFound);
-
-            return Result<Hall>.Success(hall);
         }
 
         private static Error IsValidSeatsRowAndColumn(ICollection<SeatRequestDto> seatsFromRequest, IHallDetailsRequestDto hallDetails)
@@ -577,7 +570,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             return Error.None;
         }
 
-        protected sealed override async Task<Error> ValidateEntity(HallRequestDto? requestDto, int? id = null)
+        protected sealed override async Task<Error> ValidateEntity(IRequestDto? requestDto, int? id = null)
         {
             var userResult = await _userService.GetCurrentUser();
             if (!userResult.IsSuccessful)
@@ -593,25 +586,72 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             if (requestDto == null)
                 return Error.NullParameter;
 
-            if (await IsSameEntityExistInDatabase(requestDto, id))
-                return HallError.HallAlreadyExists;
+            var isSameEntityExistsResult = await IsSameEntityExistInDatabase(requestDto, id);
+            if (!isSameEntityExistsResult.IsSuccessful) return isSameEntityExistsResult.Error;
 
-            if (!await IsEntityExistInDB<HallType>(requestDto!.HallTypeId))
+            var isSameEntityExistInDb = isSameEntityExistsResult.Value;
+            if (isSameEntityExistInDb)
+                return Error.SuchEntityExistInDb;
+
+            int hallTypeId;
+            ICollection<SeatRequestDto> seats = [];
+            HallDetailsRequestDto details;
+            switch (requestDto)
+            {
+                case HallRequestDto hallRequestDto:
+                    hallTypeId = hallRequestDto.HallTypeId;
+                    seats = hallRequestDto.Seats;
+                    details = hallRequestDto.HallDetails;
+                    break;
+                case UpdateHallRequestDto updateHallRequestDto:
+                    hallTypeId = updateHallRequestDto.HallTypeId;
+                    seats = updateHallRequestDto.Seats;
+                    details = updateHallRequestDto.HallDetails;
+                    break;
+                default:
+                    return Error.BadRequestType;
+            }
+
+            if (!await IsEntityExistInDB<HallType>(hallTypeId))
                 return HallError.HallTypeNotFound;
 
-            if (!IsSeatNumbersInHallAreUnique(requestDto!.Seats))
+            if (!IsSeatNumbersInHallAreUnique(seats))
                 return HallError.SeatNumbersInHallAreNotUniqe;
 
-            if (!await IsAllSeatTypesExistInDB(requestDto!.Seats))
+            if (!await IsAllSeatTypesExistInDB(seats))
                 return SeatTypeError.SeatTypeNotFound;
 
             // Maybe hall details validation
 
-            var isValidSeatsRowAndColumnError = IsValidSeatsRowAndColumn(requestDto.Seats, requestDto.HallDetails);
+            var isValidSeatsRowAndColumnError = IsValidSeatsRowAndColumn(seats, details);
             if (isValidSeatsRowAndColumnError != Error.None)
                 return isValidSeatsRowAndColumnError;
 
             return Error.None;
+        }
+
+        protected sealed override async Task<Result<bool>> IsSameEntityExistInDatabase(IRequestDto requestDto, int? id = null)
+        {
+            int hallNr;
+            switch (requestDto)
+            {
+                case HallRequestDto hallRequestDto:
+                    hallNr = hallRequestDto.HallNr;
+                    break;
+                case UpdateHallRequestDto updateHallRequestDto:
+                    hallNr = updateHallRequestDto.HallNr;
+                    break;
+                default:
+                    return Result<bool>.Failure(Error.BadRequestType);
+            }
+
+            var result = (await _repository.GetAllAsync(q =>
+                                q.Where(entity =>
+                                entity.Id != id &&
+                                entity.IsVisible &&
+                                entity.HallNr == hallNr))).Any();
+
+            return Result<bool>.Success(result);
         }
 
 
@@ -704,7 +744,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
         }
 
 
-        protected sealed override IEntity MapToEntity(HallRequestDto requestDto, Hall oldEntity)
+        protected sealed override IEntity MapToEntity(UpdateHallRequestDto requestDto, Hall oldEntity)
         {
             var hallEntity = (Hall)requestDto.MapTo(oldEntity);
             hallEntity.HallDetails = (HallDetails)requestDto.HallDetails.MapTo(oldEntity.HallDetails!);
@@ -717,15 +757,6 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             hallEntity.Seats = MapSeats(oldEntity.Seats, requestDto.Seats);
 
             return hallEntity;
-        }
-
-        protected sealed override async Task<bool> IsSameEntityExistInDatabase(HallRequestDto entityDto, int? id = null)
-        {
-            return (await _repository.GetAllAsync(q =>
-                                q.Where(entity =>
-                                entity.Id != id &&
-                                entity.IsVisible &&
-                                entity.HallNr == entityDto.HallNr))).Any();
         }
     }
 }

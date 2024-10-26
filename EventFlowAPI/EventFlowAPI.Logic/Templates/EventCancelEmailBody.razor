@@ -12,10 +12,13 @@
             <p>
                 Z przykrością informujemy, że pewne wydarzenia na które zakupiłeś bilety zostały odwołane.
             </p>
-            <strong>Poniżej przedstawione zostały szczegóły dotyczące odwołanych wydarzeń i numerów rezerwacji związnaych z nimi.</strong>
+            <p>
+                <strong>Poniżej przedstawione zostały szczegóły dotyczące odwołanych wydarzeń i numerów rezerwacji związnaych z nimi.</strong>
+            </p>
 
             {
                 var reservations = DeleteReservationsInfo.Select(x => x.Item1).ToList();
+                List<Festival> festivals = [];
                 for (var i = 0; i<DeleteReservationsInfo.Count; i++)
                 {
 
@@ -24,19 +27,18 @@
                     var eventEnity = reservation.Ticket.Event;
                     var festivalEntity = reservation.Ticket.Festival;
 
-                    if (reservation.IsFestivalReservation && isFestivalDeleted)
+                    if (reservation.IsFestivalReservation && isFestivalDeleted && festivalEntity != null && !festivals.Contains(festivalEntity))
                     {
                         var festivalReservations = reservations.Where(r => r.IsFestivalReservation && r.Ticket.FestivalId == festivalEntity?.Id);
-
-                        <p style="margin:0;">
-                            <strong>@(i + 1).</strong>
-                            Festiwal: @festivalEntity!.Name,
-                            @festivalEntity!.StartDate.ToString(DateFormat.DateTime) - @festivalEntity!.EndDate.ToString(DateFormat.DateTime)
-                        </p>
+                        festivals.Add(festivalEntity!);
                         <p>
-                            Rezerwacje nr: @string.Join(", ", reservations.Select(r => r.Id))
+                            <strong>@(i + 1).
+                                Festiwal:
+                            </strong> @festivalEntity!.Name,
+                            @festivalEntity!.StartDate.ToString(DateFormat.DateTime) - @festivalEntity!.EndDate.ToString(DateFormat.DateTime)
+                            <br/>
+                            <strong>Rezerwacje nr:</strong> @string.Join(", ", reservations.Select(r => r.Id))
                         </p>
-
                         reservations.RemoveAll(r => festivalReservations.Contains(r));
                     }
                     else
