@@ -3,7 +3,6 @@ using EventFlowAPI.Logic.DTO.RequestDto;
 using EventFlowAPI.Logic.DTO.ResponseDto;
 using EventFlowAPI.Logic.Errors;
 using EventFlowAPI.Logic.Extensions;
-using EventFlowAPI.Logic.Query.Abstract;
 using EventFlowAPI.Logic.Query;
 using EventFlowAPI.Logic.ResultObject;
 using EventFlowAPI.Logic.Services.CRUDServices.Interfaces;
@@ -22,18 +21,15 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             Equipment,
             EquipmentRequestDto,
             UpdateEquipmentRequestDto,
-            EquipmentResponseDto
+            EquipmentResponseDto,
+            EquipmentQuery
         >(unitOfWork, userService),
         IEquipmentService
     {
-        public sealed override async Task<Result<IEnumerable<EquipmentResponseDto>>> GetAllAsync(QueryObject query)
+        public sealed override async Task<Result<IEnumerable<EquipmentResponseDto>>> GetAllAsync(EquipmentQuery query)
         {
-            var equipmentQuery = query as EquipmentQuery;
-            if (equipmentQuery == null)
-                return Result<IEnumerable<EquipmentResponseDto>>.Failure(QueryError.BadQueryObject);
-
-            var records = await _repository.GetAllAsync(q => q.ByName(equipmentQuery)
-                                                              .SortBy(equipmentQuery.SortBy, equipmentQuery.SortDirection));
+            var records = await _repository.GetAllAsync(q => q.ByName(query)
+                                                              .SortBy(query.SortBy, query.SortDirection));
             var response = MapAsDto(records);
             return Result<IEnumerable<EquipmentResponseDto>>.Success(response);
         }

@@ -30,19 +30,16 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             EventPass,
             EventPassRequestDto,
             UpdateEventPassRequestDto,
-            EventPassResponseDto
+            EventPassResponseDto,
+            EventPassQuery
         >(unitOfWork, userService),
         IEventPassService
     {
         private readonly IFileService _fileService = fileService;
         private readonly IEmailSenderService _emailSender = emailSender;
 
-        public sealed override async Task<Result<IEnumerable<EventPassResponseDto>>> GetAllAsync(QueryObject query)
+        public sealed override async Task<Result<IEnumerable<EventPassResponseDto>>> GetAllAsync(EventPassQuery query)
         {
-            var eventPassQuery = query as EventPassQuery;
-            if (eventPassQuery == null)
-                return Result<IEnumerable<EventPassResponseDto>>.Failure(QueryError.BadQueryObject);
-
             var userResult = await _userService.GetCurrentUser();
             if (!userResult.IsSuccessful)
                 return Result<IEnumerable<EventPassResponseDto>>.Failure(userResult.Error);
@@ -50,7 +47,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             var user = userResult.Value;
             if (user.IsInRole(Roles.Admin))
             {
-                var allEventPasses = await _repository.GetAllAsync(q => q.ByQuery(eventPassQuery));
+                var allEventPasses = await _repository.GetAllAsync(q => q.ByQuery(query));
 
                 var allEventPassesDto = MapAsDto(allEventPasses);
                 return Result<IEnumerable<EventPassResponseDto>>.Success(allEventPassesDto);
@@ -58,7 +55,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             else if (user.IsInRole(Roles.User))
             {
                 var userEventPasses = await _repository.GetAllAsync(q =>
-                                            q.ByQuery(eventPassQuery)
+                                            q.ByQuery(query)
                                             .Where(r => r.User.Id == user.Id));
 
                 var userEventPassesResponse = MapAsDto(userEventPasses);

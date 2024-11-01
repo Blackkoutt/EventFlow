@@ -1,5 +1,4 @@
-﻿using EventFlowAPI.DB.Entities;
-using EventFlowAPI.DB.Entities.Abstract;
+﻿using EventFlowAPI.DB.Entities.Abstract;
 using EventFlowAPI.Logic.DTO.Interfaces;
 using EventFlowAPI.Logic.DTO.ResponseDto;
 using EventFlowAPI.Logic.Errors;
@@ -19,30 +18,27 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services.BaseServices
         TEntity,
         TRequestDto,
         TUpdateRequestDto,
-        TResponseDto>
+        TResponseDto,
+        TQuery>
         (IUnitOfWork unitOfWork, IUserService userService) : IGenericService<
         TEntity,
         TRequestDto,
         TUpdateRequestDto,
-        TResponseDto>
+        TResponseDto,
+        TQuery>
         where TEntity : class, IEntity
         where TRequestDto : class, IRequestDto
         where TUpdateRequestDto : class, IRequestDto
         where TResponseDto : class, IResponseDto
+        where TQuery : QueryObject
     {
         //AutoMapperMappingException , RepositoryNotExist
         protected readonly IUnitOfWork _unitOfWork = unitOfWork;
         protected readonly IUserService _userService = userService;
         protected readonly IGenericRepository<TEntity> _repository = unitOfWork.GetRepository<TEntity>();
 
-        public virtual async Task<Result<IEnumerable<TResponseDto>>> GetAllAsync(QueryObject query)
-        {
-            var records = await _repository.GetAllAsync(q => q.SortBy(query.SortBy, query.SortDirection));
-            var response = MapAsDto(records);
 
-            return Result<IEnumerable<TResponseDto>>.Success(response);
-        }
-
+        public abstract Task<Result<IEnumerable<TResponseDto>>> GetAllAsync(TQuery query);
 
         public virtual async Task<Result<TResponseDto>> GetOneAsync(int id)
         {
@@ -50,7 +46,6 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services.BaseServices
                 return Result<TResponseDto>.Failure(Error.RouteParamOutOfRange);
 
             var record = await _repository.GetOneAsync(id);
-
             if (record == null)
                 return Result<TResponseDto>.Failure(Error.NotFound);
 
@@ -87,13 +82,27 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services.BaseServices
             if (oldEntity == null)
                 return Result<TResponseDto>.Failure(Error.NotFound);
 
-            var newEntity = MapToEntity(requestDto!, oldEntity);
-
-            _repository.Update((TEntity)newEntity);
-
-            await _unitOfWork.SaveChangesAsync();
+            await UpdateEntity(oldEntity, requestDto!, isSoftUpdate: false);
 
             return Result<TResponseDto>.Success();
+        }
+
+        protected async Task UpdateEntity(TEntity oldEntity, TUpdateRequestDto requestDto, bool isSoftUpdate)
+        {
+            var newEntity = oldEntity;
+            if (oldEntity is ISoftUpdateable updateableEntity && isSoftUpdate)
+            {
+                var entity = MapAsEntity(requestDto!);
+                await _repository.AddAsync(entity);
+                updateableEntity.IsSoftUpdated = true;
+            }
+            else
+            {
+                newEntity = (TEntity)MapToEntity(requestDto!, oldEntity);
+            }
+            _repository.Update(newEntity);
+
+            await _unitOfWork.SaveChangesAsync();
         }
 
         public virtual async Task<Result<object>> DeleteAsync(int id)
@@ -103,11 +112,27 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services.BaseServices
                 return Result<object>.Failure(validationResult.Error);
 
             var entity = validationResult.Value.Entity;
+            var user = validationResult.Value.User;
 
-            _repository.Delete(entity);
-            await _unitOfWork.SaveChangesAsync();
+            await DeleteEntity(entity, isSoftDelete: false);
 
             return Result<object>.Success();
+        }
+
+        protected async Task DeleteEntity(TEntity entity, bool isSoftDelete)
+        {
+            if (entity is ISoftDeleteable softDeleteableEntity && isSoftDelete)
+            {
+                softDeleteableEntity.IsDeleted = true;
+                softDeleteableEntity.DeleteDate = DateTime.Now;
+                _repository.Update(entity);
+            }
+            else
+            {
+                _repository.Delete(entity);
+            }
+
+            await _unitOfWork.SaveChangesAsync();
         }
 
         protected virtual async Task<Result<(TEntity Entity, UserResponseDto User)>> ValidateBeforeDelete(int id)
@@ -164,7 +189,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services.BaseServices
 
         protected virtual IEnumerable<TResponseDto> MapAsDto(IEnumerable<TEntity> records) => records.Select(entity => entity.AsDto<TResponseDto>());
         protected virtual TResponseDto MapAsDto(TEntity entity) => entity.AsDto<TResponseDto>();
-        protected virtual TEntity MapAsEntity(TRequestDto requestDto) => requestDto.AsEntity<TEntity>();
+        protected virtual TEntity MapAsEntity(IRequestDto requestDto) => requestDto.AsEntity<TEntity>();
         protected virtual IEntity MapToEntity(TUpdateRequestDto requestDto, TEntity oldEntity) => requestDto.MapTo(oldEntity);
         protected async Task<bool> IsEntityExistInDB<TSomeEntity>(int id)
                     where TSomeEntity : class =>

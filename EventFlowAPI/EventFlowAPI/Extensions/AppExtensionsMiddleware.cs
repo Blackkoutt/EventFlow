@@ -8,6 +8,7 @@ namespace EventFlowAPI.Extensions
         {
             app.UseMiddleware<UnauthorizedResponseMiddleware>();
             app.UseMiddleware<ForbiddenResponseMiddleware>();
+            app.UseMiddleware<MethodNotAllowedResponseMiddleware>();
         }
     }
 }

@@ -3,42 +3,157 @@ using EventFlowAPI.Logic.DTO.RequestDto;
 using EventFlowAPI.Logic.DTO.ResponseDto;
 using EventFlowAPI.Logic.Errors;
 using EventFlowAPI.Logic.Extensions;
-using EventFlowAPI.Logic.Query.Abstract;
 using EventFlowAPI.Logic.Query;
 using EventFlowAPI.Logic.ResultObject;
 using EventFlowAPI.Logic.Services.CRUDServices.Interfaces;
 using EventFlowAPI.Logic.Services.CRUDServices.Services.BaseServices;
 using EventFlowAPI.Logic.UnitOfWork;
+using EventFlowAPI.Logic.DTO.UpdateRequestDto;
+using EventFlowAPI.Logic.DTO.Interfaces;
+using EventFlowAPI.Logic.Identity.Helpers;
+using EventFlowAPI.DB.Entities.Abstract;
 
 namespace EventFlowAPI.Logic.Services.CRUDServices.Services
 {
-    public sealed class SeatTypeService(IUnitOfWork unitOfWork) :
+    public sealed class SeatTypeService(IUnitOfWork unitOfWork, IUserService userService) :
         GenericService<
             SeatType,
             SeatTypeRequestDto,
-            SeatTypeResponseDto
-        >(unitOfWork),
+            UpdateSeatTypeRequestDto,
+            SeatTypeResponseDto,
+            SeatTypeQuery
+        >(unitOfWork, userService),
         ISeatTypeService
     {
-        public sealed override async Task<Result<IEnumerable<SeatTypeResponseDto>>> GetAllAsync(QueryObject query)
+        public sealed override async Task<Result<IEnumerable<SeatTypeResponseDto>>> GetAllAsync(SeatTypeQuery query)
         {
-            var seatTypeQuery = query as SeatTypeQuery;
-            if (seatTypeQuery == null)
-                return Result<IEnumerable<SeatTypeResponseDto>>.Failure(QueryError.BadQueryObject);
-
-            var records = await _repository.GetAllAsync(q => q.ByName(seatTypeQuery)
-                                                              .SortBy(seatTypeQuery.SortBy, seatTypeQuery.SortDirection));
+            var records = await _repository.GetAllAsync(q => q.Where(st => !st.IsDeleted && !st.IsSoftUpdated)
+                                                              .ByName(query)
+                                                              .SortBy(query.SortBy, query.SortDirection));
             var response = MapAsDto(records);
             return Result<IEnumerable<SeatTypeResponseDto>>.Success(response);
         }
 
-        protected async sealed override Task<bool> IsSameEntityExistInDatabase(SeatTypeRequestDto entityDto, int? id = null)
+        public sealed override async Task<Result<SeatTypeResponseDto>> UpdateAsync(int id, UpdateSeatTypeRequestDto? requestDto)
         {
-            var entities = await _repository.GetAllAsync(q =>
-                      q.Where(entity => entity.Name == entityDto.Name)
-                  );
+            var error = await ValidateEntity(requestDto, id);
+            if (error != Error.None)
+                return Result<SeatTypeResponseDto>.Failure(error);
 
-            return IsEntityWithOtherIdExistInList(entities, id);
+            var oldEntity = await _repository.GetOneAsync(id);
+            if (oldEntity == null)
+                return Result<SeatTypeResponseDto>.Failure(Error.NotFound);
+
+            var newEntity = oldEntity;
+
+            if (oldEntity is ISoftUpdateable softUpdateable && oldEntity.Seats.Any(s => s.Reservations.Any()))
+            {
+                var entity = MapAsEntity(requestDto!);
+                var seatsWithoutReservations = oldEntity.Seats.Where(s => !s.Reservations.Any());
+                entity.Seats = seatsWithoutReservations.ToList();
+                await _repository.AddAsync(entity);
+                ((ISoftUpdateable)newEntity).IsSoftUpdated = true;
+                newEntity.Seats = oldEntity.Seats.Where(s => s.Reservations.Any()).ToList();
+            }
+            else
+            {
+                newEntity = (SeatType)MapToEntity(requestDto!, newEntity);
+            }     
+            _repository.Update(newEntity);
+
+            await _unitOfWork.SaveChangesAsync();
+
+            var response = MapAsDto(newEntity);
+
+            return Result<SeatTypeResponseDto>.Success();
+        }
+
+        public sealed override async Task<Result<object>> DeleteAsync(int id)
+        {
+            var validationResult = await ValidateBeforeDelete(id);
+            if (!validationResult.IsSuccessful)
+                return Result<object>.Failure(validationResult.Error);
+
+            var entity = validationResult.Value.Entity;
+            var user = validationResult.Value.User;
+
+            if(entity.Name == "Miejsce zwykłe")
+                return Result<object>.Failure(SeatTypeError.CannotDeleteDefaultSeat);
+
+            var defaultSeatType = (await _repository.GetAllAsync(q => q.Where(s => s.Name == "Miejsce zwykłe"))).FirstOrDefault();
+            if (defaultSeatType == null) return Result<object>.Failure(SeatTypeError.CannotFoundDefaultSeat);
+            var seatsWithoutReservations = entity.Seats.Where(s => !s.Reservations.Any());
+            foreach (var seat in seatsWithoutReservations)
+            {
+                seat.SeatType = defaultSeatType;
+                _unitOfWork.GetRepository<Seat>().Update(seat);
+            }
+
+            if (entity is ISoftDeleteable softDeleteableEntity && entity.Seats.Any(s => s.Reservations.Any()))
+            {
+                softDeleteableEntity.IsDeleted = true;
+                softDeleteableEntity.DeleteDate = DateTime.Now;
+                entity.Seats = entity.Seats.Where(s => s.Reservations.Any()).ToList();
+                _repository.Update(entity);
+            }
+            else
+            {
+                _repository.Delete(entity);
+            }          
+
+            await _unitOfWork.SaveChangesAsync();
+
+            return Result<object>.Success();
+        }
+
+        protected sealed override async Task<Error> ValidateEntity(IRequestDto? requestDto, int? id = null)
+        {
+            if (id != null && id < 0)
+                return Error.RouteParamOutOfRange;
+
+            if (requestDto == null)
+                return Error.NullParameter;
+
+            var isSameEntityExistsResult = await IsSameEntityExistInDatabase(requestDto, id);
+            if (!isSameEntityExistsResult.IsSuccessful) return isSameEntityExistsResult.Error;
+
+            var isSameEntityExistInDb = isSameEntityExistsResult.Value;
+            if (isSameEntityExistInDb)
+                return Error.SuchEntityExistInDb;
+
+            var userResult = await _userService.GetCurrentUser();
+            if (!userResult.IsSuccessful)
+                return userResult.Error;
+
+            var user = userResult.Value;
+            if (!user.IsInRole(Roles.Admin))
+                return AuthError.UserDoesNotHavePremissionToResource;
+
+            if (id != null)
+            {
+                var entity = await _repository.GetOneAsync((int)id);
+                if (entity == null || entity.IsDeleted)
+                    return Error.NotFound;
+
+                if (entity.Name == "Miejsce zwykłe")
+                    return SeatTypeError.CannotDeleteDefaultSeat;
+            }
+
+            return Error.None;
+        }
+
+        protected sealed override async Task<Result<bool>> IsSameEntityExistInDatabase(IRequestDto requestDto, int? id = null)
+        {
+            var result = (await _repository.GetAllAsync(q =>
+                      q.Where(entity =>
+                        entity.Id != id &&
+                        (entity.Name.ToLower() == ((INameableRequestDto)requestDto).Name.ToLower() ||
+                         entity.SeatColor == ((IColorableRequestDto)requestDto).SeatColor) &&
+                        !entity.IsDeleted &&
+                        !entity.IsSoftUpdated
+                      ))).Any();
+
+            return Result<bool>.Success(result);
         }
     }
 }

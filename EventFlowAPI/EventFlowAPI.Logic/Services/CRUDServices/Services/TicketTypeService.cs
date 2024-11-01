@@ -3,42 +3,124 @@ using EventFlowAPI.Logic.DTO.RequestDto;
 using EventFlowAPI.Logic.DTO.ResponseDto;
 using EventFlowAPI.Logic.Errors;
 using EventFlowAPI.Logic.Extensions;
-using EventFlowAPI.Logic.Query.Abstract;
 using EventFlowAPI.Logic.Query;
 using EventFlowAPI.Logic.ResultObject;
 using EventFlowAPI.Logic.Services.CRUDServices.Interfaces;
-using EventFlowAPI.Logic.Services.CRUDServices.Services.BaseServices;
 using EventFlowAPI.Logic.UnitOfWork;
+using EventFlowAPI.Logic.DTO.UpdateRequestDto;
+using EventFlowAPI.Logic.Services.CRUDServices.Services.BaseServices;
+using EventFlowAPI.Logic.DTO.Interfaces;
+using EventFlowAPI.Logic.Identity.Helpers;
+using EventFlowAPI.DB.Entities.Abstract;
 
 namespace EventFlowAPI.Logic.Services.CRUDServices.Services
 {
-    public sealed class TicketTypeService(IUnitOfWork unitOfWork) :
+    public sealed class TicketTypeService(IUnitOfWork unitOfWork, IUserService userService) :
         GenericService<
             TicketType,
             TicketTypeRequestDto,
-            TicketTypeResponseDto
-        >(unitOfWork),
+            UpdateTicketTypeRequestDto,
+            TicketTypeResponseDto,
+            TicketTypeQuery
+        >(unitOfWork, userService),
         ITicketTypeService
     {
-        public sealed override async Task<Result<IEnumerable<TicketTypeResponseDto>>> GetAllAsync(QueryObject query)
+        public sealed override async Task<Result<IEnumerable<TicketTypeResponseDto>>> GetAllAsync(TicketTypeQuery query)
         {
-            var ticketTypeQuery = query as TicketTypeQuery;
-            if (ticketTypeQuery == null)
-                return Result<IEnumerable<TicketTypeResponseDto>>.Failure(QueryError.BadQueryObject);
-
-            var records = await _repository.GetAllAsync(q => q.ByName(ticketTypeQuery)
-                                                              .SortBy(ticketTypeQuery.SortBy, ticketTypeQuery.SortDirection));
+            var records = await _repository.GetAllAsync(q => q.Where(s => !s.IsDeleted && !s.IsSoftUpdated)
+                                                              .ByName(query)
+                                                              .SortBy(query.SortBy, query.SortDirection));
             var response = MapAsDto(records);
             return Result<IEnumerable<TicketTypeResponseDto>>.Success(response);
         }
 
-        protected async sealed override Task<bool> IsSameEntityExistInDatabase(TicketTypeRequestDto entityDto, int? id = null)
+        public sealed override async Task<Result<TicketTypeResponseDto>> UpdateAsync(int id, UpdateTicketTypeRequestDto? requestDto)
         {
-            var entities = await _repository.GetAllAsync(q =>
-                      q.Where(entity => entity.Name == entityDto.Name)
-                  );
+            var error = await ValidateEntity(requestDto, id);
+            if (error != Error.None)
+                return Result<TicketTypeResponseDto>.Failure(error);
 
-            return IsEntityWithOtherIdExistInList(entities, id);
+            var oldEntity = await _repository.GetOneAsync(id);
+            if (oldEntity == null)
+                return Result<TicketTypeResponseDto>.Failure(Error.NotFound);
+
+            var newEntity = oldEntity;
+            if (oldEntity is ISoftUpdateable softUpdateable && oldEntity.Tickets.Any(t => t.Reservations.Any()))
+            {
+                var entity = MapAsEntity(requestDto!);
+                var ticketsWithoutReservations = oldEntity.Tickets.Where(t => !t.Reservations.Any());
+                entity.Tickets = ticketsWithoutReservations.ToList();
+                await _repository.AddAsync(entity);
+                ((ISoftUpdateable)newEntity).IsSoftUpdated = true;
+            }
+            newEntity = (TicketType)MapToEntity(requestDto!, oldEntity);
+            var ticketsWithReservations = oldEntity.Tickets.Where(t => t.Reservations.Any()).ToList();
+            newEntity.Tickets = ticketsWithReservations;
+            _repository.Update(newEntity);
+
+            await _unitOfWork.SaveChangesAsync();
+            
+            return Result<TicketTypeResponseDto>.Success();
+        }
+
+        public sealed override async Task<Result<object>> DeleteAsync(int id)
+        {
+            var validationResult = await ValidateBeforeDelete(id);
+            if (!validationResult.IsSuccessful)
+                return Result<object>.Failure(validationResult.Error);
+
+            var entity = validationResult.Value.Entity;
+            var user = validationResult.Value.User;
+
+            await DeleteEntity(entity, isSoftDelete: entity.Tickets.Any(t => t.Reservations.Any()));
+
+            return Result<object>.Success();
+        }
+
+        protected sealed override async Task<Error> ValidateEntity(IRequestDto? requestDto, int? id = null)
+        {
+            if (id != null && id < 0)
+                return Error.RouteParamOutOfRange;
+
+            if (requestDto == null)
+                return Error.NullParameter;
+
+            var isSameEntityExistsResult = await IsSameEntityExistInDatabase(requestDto, id);
+            if (!isSameEntityExistsResult.IsSuccessful) return isSameEntityExistsResult.Error;
+
+            var isSameEntityExistInDb = isSameEntityExistsResult.Value;
+            if (isSameEntityExistInDb)
+                return Error.SuchEntityExistInDb;
+
+            var userResult = await _userService.GetCurrentUser();
+            if (!userResult.IsSuccessful)
+                return userResult.Error;
+
+            var user = userResult.Value;
+            if (!user.IsInRole(Roles.Admin))
+                return AuthError.UserDoesNotHavePremissionToResource;
+
+            if (id != null)
+            {
+                var entity = await _repository.GetOneAsync((int)id);
+                if (entity == null || entity.IsDeleted || entity.IsSoftUpdated)
+                    return Error.NotFound;
+            }
+
+            return Error.None;
+        }
+
+        protected sealed override async Task<Result<bool>> IsSameEntityExistInDatabase(IRequestDto requestDto, int? id = null)
+        {
+            var result = (await _repository.GetAllAsync(q =>
+                      q.Where(entity =>
+                        entity.Id != id &&
+                        entity.Name.ToLower() == ((INameableRequestDto)requestDto).Name.ToLower() &&
+                        !entity.IsDeleted &&
+                        !entity.IsSoftUpdated
+                      ))).Any();
+
+            return Result<bool>.Success(result);
         }
     }
 }

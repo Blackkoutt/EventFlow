@@ -10,7 +10,6 @@ using EventFlowAPI.Logic.Extensions;
 using EventFlowAPI.Logic.Identity.Helpers;
 using EventFlowAPI.Logic.Mapper.Extensions;
 using EventFlowAPI.Logic.Query;
-using EventFlowAPI.Logic.Query.Abstract;
 using EventFlowAPI.Logic.ResultObject;
 using EventFlowAPI.Logic.Services.CRUDServices.Interfaces;
 using EventFlowAPI.Logic.Services.CRUDServices.Services.BaseServices;
@@ -33,7 +32,8 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             Hall,
             HallRequestDto,
             UpdateHallRequestDto,
-            HallResponseDto
+            HallResponseDto,
+            HallQuery
         >(unitOfWork, userService),
     IHallService
     {
@@ -45,13 +45,9 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
         private readonly IHallRentService _hallRentService = hallRentService;
         private readonly IFileService _fileService = fileService;
 
-        public sealed override async Task<Result<IEnumerable<HallResponseDto>>> GetAllAsync(QueryObject query)
+        public sealed override async Task<Result<IEnumerable<HallResponseDto>>> GetAllAsync(HallQuery query)
         {
-            var hallQuery = query as HallQuery;
-            if (hallQuery == null)
-                return Result<IEnumerable<HallResponseDto>>.Failure(QueryError.BadQueryObject);
-
-            var records = await _repository.GetAllAsync(q => q.Where(entity => entity.IsVisible).ByQuery(hallQuery));
+            var records = await _repository.GetAllAsync(q => q.Where(entity => entity.IsVisible).ByQuery(query));
             var response = MapAsDto(records);
 
             return Result<IEnumerable<HallResponseDto>>.Success(response);
@@ -688,17 +684,32 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             return responseDto;
         }
 
-        protected sealed override Hall MapAsEntity(HallRequestDto requestDto)
+        protected sealed override Hall MapAsEntity(IRequestDto requestDto)
         {
+            HallDetailsRequestDto? hallDetails = default!;
+            List<SeatRequestDto> seats = [];
+            switch (requestDto)
+            {
+                case HallRequestDto hallRequestDto:
+                    hallDetails = hallRequestDto.HallDetails;
+                    seats = hallRequestDto.Seats.ToList();
+                    break;
+                case UpdateHallRequestDto updateHallRequestDto:
+                    hallDetails = updateHallRequestDto.HallDetails;
+                    seats = updateHallRequestDto.Seats.ToList();
+                    break;
+            }
             var hallEntity = base.MapAsEntity(requestDto);
-            hallEntity.HallDetails = requestDto.HallDetails.AsEntity<HallDetails>();
+            if(hallDetails != null)
+            {
+                hallEntity.HallDetails = hallDetails.AsEntity<HallDetails>();
+                hallEntity.HallDetails!.NumberOfSeats = hallEntity.Seats.Count;
+                hallEntity.HallDetails!.MaxNumberOfSeats = hallEntity.HallDetails!.MaxNumberOfSeatsRows * hallEntity.HallDetails!.MaxNumberOfSeatsColumns;
+                var area = hallDetails.TotalLength * hallDetails.TotalWidth;
+                hallEntity.HallDetails!.TotalArea = Math.Round(area, 2);
+            }
 
-            hallEntity.HallDetails!.NumberOfSeats = hallEntity.Seats.Count;
-            hallEntity.HallDetails!.MaxNumberOfSeats = hallEntity.HallDetails!.MaxNumberOfSeatsRows * hallEntity.HallDetails!.MaxNumberOfSeatsColumns;
-            var area = requestDto!.HallDetails.TotalLength * requestDto!.HallDetails.TotalWidth;
-            hallEntity.HallDetails!.TotalArea = Math.Round(area, 2);
-
-            hallEntity.Seats = requestDto.Seats.Select(seat =>
+            hallEntity.Seats = seats.Select(seat =>
             {
                 var seatEntity = seat.AsEntity<Seat>();
                 return seatEntity;

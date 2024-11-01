@@ -1,4 +1,6 @@
 ﻿using EventFlowAPI.Logic.DTO.Interfaces;
+using EventFlowAPI.Logic.DTO.Validators;
+using Microsoft.AspNetCore.Http;
 using System.ComponentModel.DataAnnotations;
 
 namespace EventFlowAPI.Logic.DTO.UpdateRequestDto
@@ -14,6 +16,9 @@ namespace EventFlowAPI.Logic.DTO.UpdateRequestDto
         public string? Description { get; set; }
 
         public List<int> EquipmentIds { get; set; } = [];
+
+        [MaxFileSizeValidator(10)]
+        public IFormFile? HallTypePhoto { get; set; }
 
     }
 }

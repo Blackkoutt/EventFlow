@@ -11,17 +11,20 @@ namespace EventFlowAPI.DB.Extensions.SeedingExtensions
                new MediaPatron
                {
                    Id = 1,
-                   Name = "Gazeta Nowoczesna"
+                   Name = "Gazeta Nowoczesna", 
+                   MediaPatronGuid = Guid.NewGuid(),
                },
                new MediaPatron
                {
                    Id = 2,
-                   Name = "Nowy świat TV"
+                   Name = "Nowy świat TV",
+                   MediaPatronGuid = Guid.NewGuid(),
                },
                new MediaPatron
                {
                    Id = 3,
-                   Name = "Tygodnik Nowiny"
+                   Name = "Tygodnik Nowiny",
+                   MediaPatronGuid = Guid.NewGuid(),
                }
             );
         }

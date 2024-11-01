@@ -1,5 +1,6 @@
 ﻿using EventFlowAPI.DB.Entities;
 using EventFlowAPI.Logic.DTO.RequestDto;
+using EventFlowAPI.Logic.DTO.UpdateRequestDto;
 using EventFlowAPI.Logic.Helpers.Enums;
 using EventFlowAPI.Logic.Identity.Helpers;
 using EventFlowAPI.Logic.Query;
@@ -72,7 +73,8 @@ namespace EventFlowAPI.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        public async Task<IActionResult> CreateEvent([FromBody] EventRequestDto eventReqestDto)
+        [Consumes("multipart/form-data")]
+        public async Task<IActionResult> CreateEvent([FromForm] EventRequestDto eventReqestDto)
         {
             var result = await _eventService.AddAsync(eventReqestDto);
             if (!result.IsSuccessful)
@@ -142,7 +144,7 @@ namespace EventFlowAPI.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        public async Task<IActionResult> UpdateEvent([FromRoute] int id, [FromBody] EventRequestDto eventReqestDto)
+        public async Task<IActionResult> UpdateEvent([FromRoute] int id, [FromBody] UpdateEventRequestDto eventReqestDto)
         {
             var result = await _eventService.UpdateAsync(id, eventReqestDto);
             if (!result.IsSuccessful)
@@ -218,6 +220,23 @@ namespace EventFlowAPI.Controllers
                 };
             }
             return NoContent();
+        }
+
+        [HttpGet("{id:int}/image")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> GetEventImage([FromRoute] int id)
+        {
+            var result = await _fileService.GetEntityPhoto<Event>(id);
+            if (!result.IsSuccessful)
+            {
+                return result.Error.Details!.Code switch
+                {
+                    HttpStatusCode.BadRequest => BadRequest(result.Error.Details),
+                    _ => StatusCode((int)HttpStatusCode.InternalServerError, result.Error.Details)
+                };
+            }
+            return File(result.Value.Data, result.Value.ContentType, result.Value.FileName);
         }
 
         [Authorize(Roles = nameof(Roles.Admin))]

@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace EventFlowAPI.DB.Entities
 {
-    public class HallRent : BaseEntity, ISoftDeleteable, IExpireable, IAuthEntity, IDateableEntity
+    public class HallRent : BaseEntity, ISoftDeleteable, IExpireable, IAuthEntity, IDateableEntity, IUpdateableEntity
     {
         public Guid HallRentGuid { get; set; }
         public DateTime StartDate { get; set; }
@@ -12,7 +12,10 @@ namespace EventFlowAPI.DB.Entities
         public long Duration { get; set; }
         public DateTime RentDate { get; set; }
         public DateTime PaymentDate { get; set; }
+        public bool IsDeleted { get; set; } = false;
         public DateTime? DeleteDate { get; set; }
+        public bool IsUpdated { get; set; } = false;
+        public DateTime? UpdateDate { get; set; }
 
         [NotMapped]
         public bool IsExpired => EndDate < DateTime.Now;
@@ -24,7 +27,6 @@ namespace EventFlowAPI.DB.Entities
             get => TimeSpan.FromSeconds(Duration);
             set => Duration = (long)value.TotalSeconds;
         }
-        public bool IsDeleted { get; set; } = false;
 
         [Range(0.00, 99999.99),
          Column(TypeName = "NUMERIC(7,2)")]

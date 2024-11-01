@@ -33,6 +33,12 @@ namespace EventFlowAPI.DB.Extensions.SeedingExtensions
                     Id = 4,
                     Name = "Sala wystawowa",
                     Description = "Opis sali wystawowa",
+                },
+                new HallType
+                {
+                    Id = 5,
+                    Name = "Sala ogólna",
+                    Description = "Sala ogólna",
                 }
             );
         }

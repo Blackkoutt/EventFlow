@@ -7,7 +7,6 @@ using EventFlowAPI.Logic.Errors;
 using EventFlowAPI.Logic.Extensions;
 using EventFlowAPI.Logic.Identity.Helpers;
 using EventFlowAPI.Logic.Query;
-using EventFlowAPI.Logic.Query.Abstract;
 using EventFlowAPI.Logic.ResultObject;
 using EventFlowAPI.Logic.Services.CRUDServices.Interfaces;
 using EventFlowAPI.Logic.Services.CRUDServices.Services.BaseServices;
@@ -20,23 +19,36 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             AdditionalServices,
             AdditionalServicesRequestDto,
             UpdateAdditionalServicesRequestDto,
-            AdditionalServicesResponseDto
+            AdditionalServicesResponseDto,
+            AdditionalServicesQuery
         >(unitOfWork, userService),
         IAdditionalServicesService
     {
-        public sealed override async Task<Result<IEnumerable<AdditionalServicesResponseDto>>> GetAllAsync(QueryObject query)
+        public sealed override async Task<Result<IEnumerable<AdditionalServicesResponseDto>>> GetAllAsync(AdditionalServicesQuery query)
         {
-            var additionalServicesQuery = query as AdditionalServicesQuery;
-            if (additionalServicesQuery == null)
-                return Result<IEnumerable<AdditionalServicesResponseDto>>.Failure(QueryError.BadQueryObject);
-
-            var records = await _repository.GetAllAsync(q => q.Where(s => !s.IsDeleted)
-                                                              .ByName(additionalServicesQuery)
-                                                              .ByPrice(additionalServicesQuery)
-                                                              .SortBy(additionalServicesQuery.SortBy, additionalServicesQuery.SortDirection));
+            var records = await _repository.GetAllAsync(q => q.Where(s => !s.IsDeleted && !s.IsSoftUpdated)
+                                                              .ByName(query)
+                                                              .ByPrice(query)
+                                                              .SortBy(query.SortBy, query.SortDirection));
             var response = MapAsDto(records);
             return Result<IEnumerable<AdditionalServicesResponseDto>>.Success(response);
         }
+
+        public sealed override async Task<Result<AdditionalServicesResponseDto>> UpdateAsync(int id, UpdateAdditionalServicesRequestDto? requestDto)
+        {
+            var error = await ValidateEntity(requestDto, id);
+            if (error != Error.None)
+                return Result<AdditionalServicesResponseDto>.Failure(error);
+
+            var oldEntity = await _repository.GetOneAsync(id);
+            if (oldEntity == null)
+                return Result<AdditionalServicesResponseDto>.Failure(Error.NotFound);
+
+            await UpdateEntity(oldEntity, requestDto!, isSoftUpdate: oldEntity.Rents.Any());
+
+            return Result<AdditionalServicesResponseDto>.Success();
+        }
+
 
         public sealed override async Task<Result<object>> DeleteAsync(int id)
         {
@@ -47,19 +59,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             var entity = validationResult.Value.Entity;
             var user = validationResult.Value.User;
 
-            // Meybe only active 
-            if (entity.Rents.Any())
-            {
-                entity.IsDeleted = true;
-                entity.DeleteDate = DateTime.Now;
-                _repository.Update(entity);
-            }
-            else
-            {
-                _repository.Delete(entity);
-            }
-
-            await _unitOfWork.SaveChangesAsync();
+            await DeleteEntity(entity, isSoftDelete: entity.Rents.Any());
 
             return Result<object>.Success();
         }
@@ -94,7 +94,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             if (id != null)
             {
                 var entity = await _repository.GetOneAsync((int)id);
-                if (entity == null || entity.IsDeleted)
+                if (entity == null || entity.IsDeleted || entity.IsSoftUpdated)
                     return Error.NotFound;
             }
 
@@ -110,7 +110,8 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
                       q.Where(entity =>
                         entity.Id != id &&
                         entity.Name.ToLower() == ((INameableRequestDto)requestDto).Name.ToLower() &&
-                        !entity.IsDeleted
+                        !entity.IsDeleted &&
+                        !entity.IsSoftUpdated
                       ))).Any();
 
             return Result<bool>.Success(result);

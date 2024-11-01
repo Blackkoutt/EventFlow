@@ -11,17 +11,20 @@ namespace EventFlowAPI.DB.Extensions.SeedingExtensions
                 new Sponsor
                 {
                     Id = 1,
-                    Name = "Basel"
+                    Name = "Basel",
+                    SponsorGuid = Guid.NewGuid(),         
                 },
                 new Sponsor
                 {
                     Id = 2,
-                    Name = "Vision"
+                    Name = "Vision",
+                    SponsorGuid = Guid.NewGuid(),
                 },
                 new Sponsor
                 {
                     Id = 3,
-                    Name = "Waveless"
+                    Name = "Waveless",
+                    SponsorGuid = Guid.NewGuid(),
                 }
             );
         }

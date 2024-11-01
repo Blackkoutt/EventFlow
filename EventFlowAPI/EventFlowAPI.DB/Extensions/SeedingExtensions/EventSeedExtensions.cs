@@ -18,6 +18,7 @@ namespace EventFlowAPI.DB.Extensions.SeedingExtensions
                     DurationTimeSpan = today.AddMonths(1).AddDays(1) - today.AddMonths(1).AddDays(1).AddHours(1),
                     CategoryId = 1,
                     HallId = 6,
+                    EventGuid = Guid.NewGuid(),
                 },
                 new Event
                 {
@@ -29,6 +30,7 @@ namespace EventFlowAPI.DB.Extensions.SeedingExtensions
                     DurationTimeSpan = today.AddMonths(1).AddDays(2) - today.AddMonths(1).AddDays(2).AddHours(3),
                     CategoryId = 3,
                     HallId = 7,
+                    EventGuid = Guid.NewGuid(),
                 },
                 new Event
                 {
@@ -40,6 +42,7 @@ namespace EventFlowAPI.DB.Extensions.SeedingExtensions
                     DurationTimeSpan = today.AddMonths(1).AddDays(3) - today.AddMonths(1).AddDays(3).AddHours(2),
                     CategoryId = 2,
                     HallId = 5,
+                    EventGuid = Guid.NewGuid(),
                 },
                 new Event
                 {
@@ -51,6 +54,7 @@ namespace EventFlowAPI.DB.Extensions.SeedingExtensions
                     DurationTimeSpan = today.AddMonths(1).AddDays(4) - today.AddMonths(1).AddDays(4).AddHours(3),
                     CategoryId = 4,
                     HallId = 8,
+                    EventGuid = Guid.NewGuid(),
                 },
                 new Event
                 {
@@ -62,6 +66,7 @@ namespace EventFlowAPI.DB.Extensions.SeedingExtensions
                     DurationTimeSpan = today.AddMonths(2).AddDays(1) - today.AddMonths(2).AddDays(1).AddHours(1),
                     CategoryId = 1,
                     HallId = 10,
+                    EventGuid = Guid.NewGuid(),
                 },
                 new Event
                 {
@@ -73,6 +78,7 @@ namespace EventFlowAPI.DB.Extensions.SeedingExtensions
                     DurationTimeSpan = today.AddMonths(2).AddDays(3) - today.AddMonths(2).AddDays(3).AddHours(2),
                     CategoryId = 2,
                     HallId = 9,
+                    EventGuid = Guid.NewGuid(),
                 },
                 new Event
                 {
@@ -84,6 +90,7 @@ namespace EventFlowAPI.DB.Extensions.SeedingExtensions
                     DurationTimeSpan = today.AddMonths(2).AddDays(4) - today.AddMonths(2).AddDays(4).AddHours(3),
                     CategoryId = 4,
                     HallId = 11,
+                    EventGuid = Guid.NewGuid(),
                 }
             );
         }

@@ -1,5 +1,8 @@
 ﻿using EventFlowAPI.Logic.DTO.Interfaces;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json;
 
 namespace EventFlowAPI.Logic.DTO.RequestDto
 {

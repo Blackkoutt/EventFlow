@@ -10,6 +10,7 @@ using EventFlowAPI.Logic.ResultObject;
 using EventFlowAPI.Logic.Services.CRUDServices.Interfaces;
 using EventFlowAPI.Logic.Services.OtherServices.Interfaces;
 using EventFlowAPI.Logic.UnitOfWork;
+using Microsoft.AspNetCore.Http;
 using System.IO.Compression;
 
 namespace EventFlowAPI.Logic.Services.OtherServices.Services
@@ -30,6 +31,7 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
 
         private string zipArchiveName = @$"twoje_bilety_rezerwacja_nr_{{0}}.zip";
         private string hallRentPDFFileNameTemplate = @$"wynajem_sali_{{0}}.pdf";
+        private readonly string defaultPhoto = @"default.jpg";
         
         // To Do
         private async Task<string?> GetPDFFileName<TEntity>(TEntity entity, FileType fileType)
@@ -116,6 +118,127 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
             await _blobService.DeleteAsync(blob);
 
             return Error.None;
+        }
+
+        private Result<BlobContainer> GetPhotoBlobContainer<TEntity>(TEntity entity) where TEntity : class
+        {
+            return entity switch
+            {
+                Event => Result<BlobContainer>.Success(BlobContainer.EventPhotos),
+                Festival => Result<BlobContainer>.Success(BlobContainer.FestivalPhotos),
+                HallType => Result<BlobContainer>.Success(BlobContainer.HallTypePhotos),
+                MediaPatron => Result<BlobContainer>.Success(BlobContainer.MediaPatronPhotos),
+                Organizer => Result<BlobContainer>.Success(BlobContainer.OrganizerPhotos),
+                PaymentType => Result<BlobContainer>.Success(BlobContainer.PaymentTypePhotos),
+                Sponsor => Result<BlobContainer>.Success(BlobContainer.SponsorPhotos),
+                _ => Result<BlobContainer>.Failure(BlobError.NoPhotoContainerForGivenEntityType)
+            };
+        }
+
+        public async Task<Error> PostPhoto<TEntity>(TEntity entity, IFormFile? file, string fileName, bool isUpdate = false) where TEntity : class
+        {
+            List<string> availableContentTypes = new List<string>
+            {
+                ContentType.JPEG,
+                ContentType.PNG
+            };
+            if (file != null && !availableContentTypes.Contains(file.ContentType))
+                return Error.BadPhotoFileExtension;
+
+            if (entity is IPhotoEntity photoEntity)
+            {
+                if (file == null)
+                {
+                    if(!isUpdate) photoEntity.PhotoName = defaultPhoto;
+                    return Error.None;
+                }
+                if(!fileName.Contains(".jpg") || !fileName.Contains(".png") || !fileName.Contains(".jpeg"))
+                {
+                    if (file.ContentType.Split('/').Last() == "jpeg") fileName = $"{fileName}.jpg";
+                    else fileName = $"{fileName}.{file.ContentType.Split('/').Last()}";
+                }
+
+                var blobContainerResult = GetPhotoBlobContainer(entity);
+                if (!blobContainerResult.IsSuccessful)
+                    return blobContainerResult.Error;
+
+                var blobContainer = blobContainerResult.Value;
+
+                using (var memoryStream = new MemoryStream())
+                {
+                    await file.CopyToAsync(memoryStream);
+                    var photoBitmap = memoryStream.ToArray();
+
+                    var createBlobResult  = await _blobService.CreateBlob(fileName, blobContainer, file.ContentType, photoBitmap, isUpdate: isUpdate);
+                    if(!createBlobResult.IsSuccessful)
+                        return createBlobResult.Error;
+                }
+
+                photoEntity.PhotoName = fileName;
+            }
+            return Error.None;
+        }
+
+        public async Task<Error> DeletePhoto<TEntity>(TEntity entity) where TEntity : class
+        {
+            if (entity is not IPhotoEntity photoEntity || photoEntity.PhotoName == defaultPhoto) 
+                return Error.None;
+
+            var blobContainerResult = GetPhotoBlobContainer(entity);
+            if (!blobContainerResult.IsSuccessful)
+                return blobContainerResult.Error;
+
+            var container = blobContainerResult.Value;
+
+            var blob = new BlobRequestDto
+            {
+                Container = container,
+                FileName = ((IPhotoEntity)entity).PhotoName,
+            };
+            await _blobService.DeleteAsync(blob);
+
+            ((IPhotoEntity)entity).PhotoName = defaultPhoto;
+
+            return Error.None;
+        }
+
+        public async Task<Result<BlobResponseDto>> GetEntityPhoto<TEntity>(int id) where TEntity : class
+        {
+            var validationResult = await ValidateBeforeDownload<TEntity>(id, userAllowed: true, authorize: false);
+            if (!validationResult.IsSuccessful)
+                return Result<BlobResponseDto>.Failure(validationResult.Error);
+
+            var entity = validationResult.Value;
+
+            var blobContainerResult = GetPhotoBlobContainer(entity);
+            if (!blobContainerResult.IsSuccessful)
+                return Result<BlobResponseDto>.Failure(blobContainerResult.Error);
+
+            var blobContainer = blobContainerResult.Value;
+
+            string fileName = string.Empty;
+            if(entity is IPhotoEntity photoEntity)
+            {
+                fileName = photoEntity.PhotoName;   
+            }
+            if (string.IsNullOrEmpty(fileName))
+            {
+                fileName = defaultPhoto;
+            }
+
+            if (string.IsNullOrEmpty(fileName))
+                return Result<BlobResponseDto>.Failure(BlobError.FileNameIsEmpty);
+
+            var blobRequest = new BlobRequestDto
+            {
+                Container = blobContainer,
+                FileName = fileName
+            };
+            var ticketPDFResult = await _blobService.DownloadAsync(blobRequest);
+            if (!ticketPDFResult.IsSuccessful)
+                return Result<BlobResponseDto>.Failure(ticketPDFResult.Error);
+
+            return Result<BlobResponseDto>.Success(ticketPDFResult.Value);
         }
 
 
@@ -345,7 +468,7 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
         }
 
 
-        private async Task<Result<TEntity>> ValidateBeforeDownload<TEntity>(int id) where TEntity : class
+        private async Task<Result<TEntity>> ValidateBeforeDownload<TEntity>(int id, bool userAllowed = false, bool authorize = true) where TEntity : class
         {
             if (id < 0)
                 return Result<TEntity>.Failure(Error.RouteParamOutOfRange);
@@ -361,12 +484,11 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
                 return Result<TEntity>.Failure(Error.EntityIsDeleted);
 
             string? userId = null;
-            bool userAllowed = false;
             if (entity is Hall) userAllowed = true;
             if (entity is IAuthEntity authEntity)
                 userId = authEntity.UserId;
 
-            var premissionError = await ValidateUserPremissionToResource(userId, userAllowed);
+            var premissionError = await ValidateUserPremissionToResource(userId, userAllowed, authorize);
             if (premissionError != Error.None)
                 return Result<TEntity>.Failure(premissionError);
 
@@ -374,8 +496,9 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
         }
 
 
-        private async Task<Error> ValidateUserPremissionToResource(string? userId, bool userAllowed = false)
-        {   
+        private async Task<Error> ValidateUserPremissionToResource(string? userId, bool userAllowed = false, bool authorize = true)
+        {
+            if (!authorize) return Error.None;
             var userResult = await _userService.GetCurrentUser();
             if (!userResult.IsSuccessful)
                 return userResult.Error;

@@ -4,7 +4,6 @@ using EventFlowAPI.Logic.DTO.RequestDto;
 using EventFlowAPI.Logic.DTO.ResponseDto;
 using EventFlowAPI.Logic.Errors;
 using EventFlowAPI.Logic.Mapper.Extensions;
-using EventFlowAPI.Logic.Query.Abstract;
 using EventFlowAPI.Logic.Query;
 using EventFlowAPI.Logic.ResultObject;
 using EventFlowAPI.Logic.Services.CRUDServices.Interfaces;
@@ -17,6 +16,7 @@ using EventFlowAPI.Logic.Helpers.Enums;
 using Microsoft.EntityFrameworkCore;
 using EventFlowAPI.Logic.DTO.UpdateRequestDto;
 using EventFlowAPI.Logic.DTO.Interfaces;
+using Microsoft.AspNetCore.Http;
 
 namespace EventFlowAPI.Logic.Services.CRUDServices.Services
 {
@@ -34,7 +34,8 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             Event,
             EventRequestDto,
             UpdateEventRequestDto,
-            EventResponseDto
+            EventResponseDto,
+            EventQuery
             >(unitOfWork, userService),
         IEventService
     {
@@ -70,16 +71,10 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             return deletedFestivals;
         }
 
-        public sealed override async Task<Result<IEnumerable<EventResponseDto>>> GetAllAsync(QueryObject query)
+        public sealed override async Task<Result<IEnumerable<EventResponseDto>>> GetAllAsync(EventQuery query)
         {
-            var eventQuery = query as EventQuery;
-            if (eventQuery == null)
-                return Result<IEnumerable<EventResponseDto>>.Failure(QueryError.BadQueryObject);
-
-            var records = await _repository.GetAllAsync(q => q.ByQuery(eventQuery));
-
+            var records = await _repository.GetAllAsync(q => q.ByQuery(query));
             var response = MapAsDto(records);
-
             return Result<IEnumerable<EventResponseDto>>.Success(response);
         }
 
@@ -99,10 +94,10 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             if (!hallCopyResult.IsSuccessful)
                 return Result<EventResponseDto>.Failure(hallCopyResult.Error);
 
-            eventEntity.HallId = hallCopyResult.Value.Id;
+            eventEntity.Hall = hallCopyResult.Value;
 
             // HallView PDF
-            var hallViewFileNameResult = await _fileService.CreateHallViewPDF(eventEntity.Hall, null, eventEntity);
+            var hallViewFileNameResult = await _fileService.CreateHallViewPDF(hallCopyResult.Value, null, eventEntity);
             if (!hallViewFileNameResult.IsSuccessful)
                 return Result<EventResponseDto>.Failure(hallViewFileNameResult.Error);
             var hallViewPDFFileName = hallViewFileNameResult.Value;
@@ -110,6 +105,11 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
 
             var tickets = _ticketService.GetEventTickets(requestDto.EventTickets);
             eventEntity.Tickets = tickets;
+
+            eventEntity.EventGuid = Guid.NewGuid();
+            var photoPostError = await _fileService.PostPhoto(eventEntity, requestDto.EventPhoto, $"{eventEntity.Name}_{eventEntity.EventGuid}", isUpdate: false);
+            if (photoPostError != Error.None)
+                return Result<EventResponseDto>.Failure(photoPostError);
 
             await _repository.AddAsync(eventEntity);
             await _unitOfWork.SaveChangesAsync();
@@ -170,6 +170,10 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
 
                 _unitOfWork.GetRepository<Hall>().Delete(oldEventEntity.Hall);
             }
+
+            var photoPostError = await _fileService.PostPhoto(eventEntity, requestDto!.EventPhoto, $"{eventEntity.Name}_{eventEntity.EventGuid}", isUpdate: true);
+            if (photoPostError != Error.None)
+                return Result<(IEnumerable<Reservation>, Event, Event)>.Failure(photoPostError);
 
             _repository.Update(eventEntity);
             await _ticketService.UpdateTicketsForEvent(requestDto!.EventTickets, oldEventEntity);
@@ -245,6 +249,8 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             eventEntity.Hall.HallViewFileName = null;
             eventEntity.DeleteDate = DateTime.Now;
             eventEntity.IsDeleted = true;
+
+            await _fileService.DeletePhoto(eventEntity);
             _repository.Update(eventEntity);
 
             await _unitOfWork.SaveChangesAsync();
@@ -272,6 +278,8 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             var eventFestivals = await _unitOfWork.GetRepository<Festival>()
                                         .GetAllAsync(q =>
                                         q.Where(f =>
+                                        !f.IsDeleted &&
+                                        f.EndDate > DateTime.Now &&
                                         f.Events.Any(e =>
                                         e.Id == eventId)));
 
@@ -457,7 +465,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             var ticketTypeIds = eventTickets.Select(et => et.TicketTypeId);
             if (ticketTypeIds.Count() != ticketTypeIds.Distinct().Count())
                 return TicketTypeError.TicketDuplicates;
-            var allTicketTypes = await _unitOfWork.GetRepository<TicketType>().GetAllAsync();
+            var allTicketTypes = await _unitOfWork.GetRepository<TicketType>().GetAllAsync(q => q.Where(tt => !tt.IsDeleted && !tt.IsSoftUpdated));
             var allTicketTypeIds = allTicketTypes.Select(tt => tt.Id);
             if (!ticketTypeIds.All(id => allTicketTypeIds.Contains(id)))
                 return TicketTypeError.NotFound;
@@ -499,11 +507,22 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
         }
 
 
-        protected sealed override Event MapAsEntity(EventRequestDto requestDto)
+        protected sealed override Event MapAsEntity(IRequestDto requestDto)
         {
+            string? longDescription = string.Empty;
+            switch (requestDto)
+            {
+                case EventRequestDto eventRequestDto: 
+                    longDescription = eventRequestDto.LongDescription;
+                    break;
+                case UpdateEventRequestDto updateEventRequestDto:
+                    longDescription = updateEventRequestDto.LongDescription;
+                    break;
+            }
+
             var eventEntity = base.MapAsEntity(requestDto);
             eventEntity.DurationTimeSpan = eventEntity.EndDate - eventEntity.StartDate;
-            AddOrUpdateEventDetails(eventEntity, requestDto.LongDescription);
+            AddOrUpdateEventDetails(eventEntity, longDescription);
             return eventEntity;
         }
 
@@ -567,6 +586,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             responseDto.Hall!.Seats = [];
             responseDto.Hall!.Type = null;
             responseDto.Hall!.HallDetails = null;
+            responseDto.PhotoEndpoint = $"/api/Events/{responseDto.Id}/image";
             return responseDto;
         }
     }

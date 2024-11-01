@@ -4,17 +4,19 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace EventFlowAPI.DB.Entities
 {
-    public class Reservation : BaseEntity, ISoftDeleteable, IExpireable, IAuthEntity, IDateableEntity
+    public class Reservation : BaseEntity, ISoftDeleteable, IExpireable, IAuthEntity, IDateableEntity, IUpdateableEntity
     {
         public Guid ReservationGuid { get; set; }
         public DateTime ReservationDate { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
+        public bool IsDeleted { get; set; } = false;
         public DateTime? DeleteDate { get; set; }
+        public bool IsUpdated { get; set; } = false;
+        public DateTime? UpdateDate { get; set; }
 
         [NotMapped]
         public bool IsExpired => EndDate < DateTime.Now;
-        public bool IsDeleted { get; set; } = false;
         public bool IsFestivalReservation { get; set; }
         public DateTime PaymentDate { get; set; }
 

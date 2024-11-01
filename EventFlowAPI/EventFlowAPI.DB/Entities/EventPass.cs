@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace EventFlowAPI.DB.Entities
 {
-    public class EventPass : BaseEntity, ISoftDeleteable, IExpireable, IAuthEntity, IDateableEntity
+    public class EventPass : BaseEntity, ISoftDeleteable, IExpireable, IAuthEntity, IDateableEntity, IUpdateableEntity
     {
         public Guid EventPassGuid { get; set; } 
         public DateTime StartDate { get; set; }
@@ -12,6 +12,8 @@ namespace EventFlowAPI.DB.Entities
         public DateTime EndDate { get; set; }
         public DateTime? PreviousEndDate { get; set; } = null;
         public DateTime? DeleteDate { get; set; }
+        public bool IsUpdated { get; set; } = false;
+        public DateTime? UpdateDate { get; set; }
 
         [NotMapped]
         public bool IsExpired => EndDate < DateTime.Now;

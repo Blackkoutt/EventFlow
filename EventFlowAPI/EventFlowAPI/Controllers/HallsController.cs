@@ -1,5 +1,6 @@
 ﻿using EventFlowAPI.DB.Entities;
 using EventFlowAPI.Logic.DTO.RequestDto;
+using EventFlowAPI.Logic.DTO.UpdateRequestDto;
 using EventFlowAPI.Logic.Helpers.Enums;
 using EventFlowAPI.Logic.Identity.Helpers;
 using EventFlowAPI.Logic.Query;
@@ -110,6 +111,7 @@ namespace EventFlowAPI.Controllers
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<IActionResult> CreateHall([FromBody] HallRequestDto hallReqestDto)
         {
             var result = await _hallService.AddAsync(hallReqestDto);
@@ -119,6 +121,7 @@ namespace EventFlowAPI.Controllers
                 {
                     HttpStatusCode.BadRequest => BadRequest(result.Error.Details),
                     HttpStatusCode.Unauthorized => Unauthorized(result.Error.Details),
+                    HttpStatusCode.Forbidden => StatusCode((int)HttpStatusCode.Forbidden, result.Error.Details),
                     _ => StatusCode((int)HttpStatusCode.InternalServerError, result.Error.Details)
                 };
             }
@@ -166,7 +169,8 @@ namespace EventFlowAPI.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<IActionResult> UpdateHall([FromRoute] int id, [FromBody] HallRequestDto hallReqestDto)
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        public async Task<IActionResult> UpdateHall([FromRoute] int id, [FromBody] UpdateHallRequestDto hallReqestDto)
         {
             var result = await _hallService.UpdateAsync(id, hallReqestDto);
             if (!result.IsSuccessful)
@@ -175,6 +179,7 @@ namespace EventFlowAPI.Controllers
                 {
                     HttpStatusCode.BadRequest => BadRequest(result.Error.Details),
                     HttpStatusCode.Unauthorized => Unauthorized(result.Error.Details),
+                    HttpStatusCode.Forbidden => StatusCode((int)HttpStatusCode.Forbidden, result.Error.Details),
                     _ => StatusCode((int)HttpStatusCode.InternalServerError, result.Error.Details)
                 };
             }
@@ -187,6 +192,7 @@ namespace EventFlowAPI.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<IActionResult> DeleteHall([FromRoute] int id)
         {
             var result = await _hallService.DeleteAsync(id);
@@ -196,10 +202,11 @@ namespace EventFlowAPI.Controllers
                 {
                     HttpStatusCode.BadRequest => BadRequest(result.Error.Details),
                     HttpStatusCode.Unauthorized => Unauthorized(result.Error.Details),
+                    HttpStatusCode.Forbidden => StatusCode((int)HttpStatusCode.Forbidden, result.Error.Details),
                     _ => StatusCode((int)HttpStatusCode.InternalServerError, result.Error.Details)
                 };
             }
-            return Ok(result.Value);
+            return NoContent();
         }
     }
 }

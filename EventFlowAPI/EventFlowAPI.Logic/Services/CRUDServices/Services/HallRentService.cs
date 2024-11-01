@@ -4,7 +4,6 @@ using EventFlowAPI.Logic.DTO.ResponseDto;
 using EventFlowAPI.Logic.Errors;
 using EventFlowAPI.Logic.Identity.Helpers;
 using EventFlowAPI.Logic.Mapper.Extensions;
-using EventFlowAPI.Logic.Query.Abstract;
 using EventFlowAPI.Logic.Query;
 using EventFlowAPI.Logic.ResultObject;
 using EventFlowAPI.Logic.Services.CRUDServices.Interfaces;
@@ -29,7 +28,8 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             HallRent,
             HallRentRequestDto,
             UpdateHallRentRequestDto,
-            HallRentResponseDto
+            HallRentResponseDto,
+            HallRentQuery
         >(unitOfWork, userService),
         IHallRentService
     {
@@ -38,12 +38,8 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
         private readonly IFileService _fileService = fileService;
         private readonly IEmailSenderService _emailSender = emailSender;
 
-        public sealed override async Task<Result<IEnumerable<HallRentResponseDto>>> GetAllAsync(QueryObject query)
+        public sealed override async Task<Result<IEnumerable<HallRentResponseDto>>> GetAllAsync(HallRentQuery query)
         {
-            var hallRentQuery = query as HallRentQuery;
-            if (hallRentQuery == null)
-                return Result<IEnumerable<HallRentResponseDto>>.Failure(QueryError.BadQueryObject);
-
             var userResult = await _userService.GetCurrentUser();
             if (!userResult.IsSuccessful)
                 return Result<IEnumerable<HallRentResponseDto>>.Failure(userResult.Error);
@@ -51,7 +47,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             var user = userResult.Value;
             if (user.IsInRole(Roles.Admin))
             {
-                var allHallRents = await _repository.GetAllAsync(q => q.ByQuery(hallRentQuery));
+                var allHallRents = await _repository.GetAllAsync(q => q.ByQuery(query));
 
                 var allHallRentsDto = MapAsDto(allHallRents);
                 return Result<IEnumerable<HallRentResponseDto>>.Success(allHallRentsDto);
@@ -59,9 +55,9 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             else if (user.IsInRole(Roles.User))
             {
                 var userHallRents = await _repository.GetAllAsync(q =>
-                                            q.ByStatus(hallRentQuery.Status)
+                                            q.ByStatus(query.Status)
                                             .Where(hr => hr.User.Id == user.Id)
-                                            .SortBy(hallRentQuery.SortBy, hallRentQuery.SortDirection));
+                                            .SortBy(query.SortBy, query.SortDirection));
 
                 var userHallRentsResponse = MapAsDto(userHallRents);
                 return Result<IEnumerable<HallRentResponseDto>>.Success(userHallRentsResponse);
@@ -246,7 +242,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
         private async Task<Result<HallRent>> CreateHallRentEntity(HallRentRequestDto requestDto, string userId)
         {
             var additionalServices = await _unitOfWork.GetRepository<AdditionalServices>()
-                                      .GetAllAsync(q => q.Where(s => requestDto.AdditionalServicesIds.Contains(s.Id)));
+                                      .GetAllAsync(q => q.Where(s => !s.IsSoftUpdated && !s.IsDeleted && requestDto.AdditionalServicesIds.Contains(s.Id)));
 
             var hallResult = await _copyMaker.MakeCopyOfHall(requestDto.HallId);
             if (!hallResult.IsSuccessful)
@@ -328,13 +324,6 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             if (requestDto == null)
                 return Error.NullParameter;
 
-            /*var isSameEntityExistsResult = await IsSameEntityExistInDatabase(requestDto, id);
-            if (!isSameEntityExistsResult.IsSuccessful) return isSameEntityExistsResult.Error;
-
-            var isSameEntityExistInDb = isSameEntityExistsResult.Value;
-            if (isSameEntityExistInDb)
-                return Error.SuchEntityExistInDb;*/
-
             int paymentTypeId;
             int hallId;
             List<int> additionalServicesIds = [];
@@ -388,7 +377,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
                 return AdditionalServicesError.ServiceDuplicate;
 
             var additionalServices = await _unitOfWork.GetRepository<AdditionalServices>()
-                                        .GetAllAsync(q => q.Where(s => additionalServicesIds.Contains(s.Id)));
+                                        .GetAllAsync(q => q.Where(s => !s.IsSoftUpdated && !s.IsDeleted && additionalServicesIds.Contains(s.Id)));
 
             if (additionalServices.Count() < additionalServicesIds.Count)
                 return AdditionalServicesError.ServiceNotFound;

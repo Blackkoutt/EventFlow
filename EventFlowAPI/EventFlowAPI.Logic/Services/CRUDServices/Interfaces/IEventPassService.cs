@@ -2,6 +2,7 @@
 using EventFlowAPI.Logic.DTO.RequestDto;
 using EventFlowAPI.Logic.DTO.ResponseDto;
 using EventFlowAPI.Logic.DTO.UpdateRequestDto;
+using EventFlowAPI.Logic.Query;
 using EventFlowAPI.Logic.ResultObject;
 using EventFlowAPI.Logic.Services.CRUDServices.Interfaces.BaseInterfaces;
 
@@ -12,7 +13,8 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Interfaces
             EventPass,
             EventPassRequestDto,
             UpdateEventPassRequestDto,
-            EventPassResponseDto
+            EventPassResponseDto,
+            EventPassQuery
         >
     {
         Task<Result<EventPassResponseDto>> BuyEventPass(EventPassRequestDto? requestDto);

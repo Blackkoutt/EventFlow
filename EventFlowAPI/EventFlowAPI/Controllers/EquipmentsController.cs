@@ -1,6 +1,7 @@
 ﻿using EventFlowAPI.Logic.DTO.RequestDto;
 using EventFlowAPI.Logic.DTO.UpdateRequestDto;
 using EventFlowAPI.Logic.Identity.Helpers;
+using EventFlowAPI.Logic.Query;
 using EventFlowAPI.Logic.Query.Abstract;
 using EventFlowAPI.Logic.Services.CRUDServices.Interfaces;
 using EventFlowAPI.Logic.Services.CRUDServices.Services;
@@ -19,7 +20,7 @@ namespace EventFlowAPI.Controllers
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> GetEquipments([FromQuery] QueryObject query)
+        public async Task<IActionResult> GetEquipments([FromQuery] EquipmentQuery query)
         {
             var result = await _equipmentService.GetAllAsync(query);
             return result.IsSuccessful ? Ok(result.Value) : BadRequest(result.Error.Details);
@@ -55,7 +56,7 @@ namespace EventFlowAPI.Controllers
                     _ => StatusCode((int)HttpStatusCode.InternalServerError, result.Error.Details)
                 };
             }
-            return result.IsSuccessful ? CreatedAtAction(nameof(GetEquipmentById), new { id = result.Value.Id }, result.Value) : BadRequest(result.Error.Details);
+            return CreatedAtAction(nameof(GetEquipmentById), new { id = result.Value.Id }, result.Value);
         }
 
 

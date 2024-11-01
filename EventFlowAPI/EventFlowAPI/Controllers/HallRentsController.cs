@@ -5,6 +5,7 @@ using EventFlowAPI.Logic.Identity.Helpers;
 using EventFlowAPI.Logic.Query;
 using EventFlowAPI.Logic.Services.CRUDServices.Interfaces;
 using EventFlowAPI.Logic.Services.OtherServices.Interfaces;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
@@ -92,6 +93,7 @@ namespace EventFlowAPI.Controllers
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<IActionResult> CreateHallRent([FromBody] HallRentRequestDto hallRentReqestDto)
         {
             var result = await _hallRentService.MakeRent(hallRentReqestDto);
@@ -101,6 +103,7 @@ namespace EventFlowAPI.Controllers
                 {
                     HttpStatusCode.BadRequest => BadRequest(result.Error.Details),
                     HttpStatusCode.Unauthorized => Unauthorized(result.Error.Details),
+                    HttpStatusCode.Forbidden => StatusCode((int)HttpStatusCode.Forbidden, result.Error.Details),
                     _ => StatusCode((int)HttpStatusCode.InternalServerError, result.Error.Details)
                 };
             }
@@ -230,14 +233,26 @@ namespace EventFlowAPI.Controllers
         }
 
 
-        [Authorize]
+        [Authorize(Roles = nameof(Roles.Admin))]
         [HttpDelete("{id:int}")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<IActionResult> DeleteHallRent([FromRoute] int id)
         {
             var result = await _hallRentService.DeleteAsync(id);
-            return result.IsSuccessful ? Ok(result.Value) : BadRequest(result.Error.Details);
+            if (!result.IsSuccessful)
+            {
+                return result.Error.Details!.Code switch
+                {
+                    HttpStatusCode.BadRequest => BadRequest(result.Error.Details),
+                    HttpStatusCode.Unauthorized => Unauthorized(result.Error.Details),
+                    HttpStatusCode.Forbidden => StatusCode((int)HttpStatusCode.Forbidden, result.Error.Details),
+                    _ => StatusCode((int)HttpStatusCode.InternalServerError, result.Error.Details)
+                };
+            }
+            return NoContent();
         }
     }
 }

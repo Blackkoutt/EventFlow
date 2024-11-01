@@ -8,5 +8,12 @@
         EventPassesJPG,
         HallViewsPDF,
         HallRentsPDF,
+        EventPhotos,
+        FestivalPhotos,
+        HallTypePhotos,
+        MediaPatronPhotos,
+        OrganizerPhotos,
+        PaymentTypePhotos,
+        SponsorPhotos,
     }
 }

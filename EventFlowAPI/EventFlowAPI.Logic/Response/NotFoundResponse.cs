@@ -8,7 +8,7 @@ namespace EventFlowAPI.Logic.Response
         public NotFoundResponse(string message) : base(message)
         {
             Code = HttpStatusCode.NotFound;
-            Title = "NotFound";
+            Title = "Not Found";
             Type = "https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/404";
         }
     }

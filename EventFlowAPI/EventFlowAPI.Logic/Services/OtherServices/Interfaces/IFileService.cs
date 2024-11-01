@@ -4,6 +4,7 @@ using EventFlowAPI.Logic.Helpers;
 using EventFlowAPI.Logic.ResultObject;
 using EventFlowAPI.Logic.Errors;
 using EventFlowAPI.Logic.Helpers.Enums;
+using Microsoft.AspNetCore.Http;
 
 namespace EventFlowAPI.Logic.Services.OtherServices.Interfaces
 {
@@ -19,5 +20,8 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Interfaces
         Task<Result<BlobResponseDto>> GetFile<TEntity>(int id, FileType fileType, BlobContainer container) where TEntity : class;
         Task<Error> DeleteFile<TEntity>(TEntity entity, FileType fileType, BlobContainer container);
         Task<Result<(byte[] PDFFile, string FileName)>> CreateHallRentPDF(HallRent hallRent, bool isUpdate = false);
+        Task<Error> PostPhoto<TEntity>(TEntity entity, IFormFile? file, string fileName, bool isUpdate = false) where TEntity : class;
+        Task<Result<BlobResponseDto>> GetEntityPhoto<TEntity>(int id) where TEntity : class;
+        Task<Error> DeletePhoto<TEntity>(TEntity entity) where TEntity : class;
     }
 }

@@ -4,40 +4,43 @@ using EventFlowAPI.Logic.DTO.ResponseDto;
 using EventFlowAPI.Logic.Errors;
 using EventFlowAPI.Logic.Extensions;
 using EventFlowAPI.Logic.Mapper.Extensions;
-using EventFlowAPI.Logic.Query.Abstract;
 using EventFlowAPI.Logic.Query;
 using EventFlowAPI.Logic.ResultObject;
 using EventFlowAPI.Logic.Services.CRUDServices.Interfaces;
 using EventFlowAPI.Logic.UnitOfWork;
 using EventFlowAPI.Logic.DTO.UpdateRequestDto;
-using EventFlowAPI.Logic.Services.CRUDServices.Services.BaseServices;
 using EventFlowAPI.Logic.DTO.Interfaces;
 using EventFlowAPI.Logic.Identity.Helpers;
-using System.Linq;
+using EventFlowAPI.Logic.Services.CRUDServices.Services.BaseServices;
+using EventFlowAPI.DB.Entities.Abstract;
+using EventFlowAPI.Logic.Services.OtherServices.Interfaces;
+using Microsoft.VisualBasic;
 
 namespace EventFlowAPI.Logic.Services.CRUDServices.Services
 {
-    public sealed class HallTypeService(IUnitOfWork unitOfWork, IUserService userService) :
+    public sealed class HallTypeService(
+        IUnitOfWork unitOfWork,
+        IUserService userService,
+        IFileService fileService) :
         GenericService<
             HallType,
             HallTypeRequestDto,
             UpdateHallTypeRequestDto,
-            HallTypeResponseDto
+            HallTypeResponseDto,
+            HallTypeQuery
         >(unitOfWork, userService),
         IHallTypeService
     {
-        public sealed override async Task<Result<IEnumerable<HallTypeResponseDto>>> GetAllAsync(QueryObject query)
+        private readonly IFileService _fileService = fileService;
+        public sealed override async Task<Result<IEnumerable<HallTypeResponseDto>>> GetAllAsync(HallTypeQuery query)
         {
-            var hallTypeQuery = query as HallTypeQuery;
-            if (hallTypeQuery == null)
-                return Result<IEnumerable<HallTypeResponseDto>>.Failure(QueryError.BadQueryObject);
-
-            var records = await _repository.GetAllAsync(q => q.Where(s => !s.IsDeleted)
-                                                              .ByName(hallTypeQuery)
-                                                              .SortBy(hallTypeQuery.SortBy, hallTypeQuery.SortDirection));
+            var records = await _repository.GetAllAsync(q => q.Where(ht => !ht.IsDeleted && !ht.IsSoftUpdated)
+                                                              .ByName(query)
+                                                              .SortBy(query.SortBy, query.SortDirection));
             var response = MapAsDto(records);
             return Result<IEnumerable<HallTypeResponseDto>>.Success(response);
         }
+        
 
         public sealed override async Task<Result<HallTypeResponseDto>> AddAsync(HallTypeRequestDto? requestDto)
         {
@@ -55,6 +58,11 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
                 Equipments = equipments.ToList()
             };
 
+            hallType.HallTypeGuid = Guid.NewGuid();
+            var photoPostError = await _fileService.PostPhoto(hallType, requestDto!.HallTypePhoto, $"{hallType.Name}_{hallType.HallTypeGuid}", isUpdate: false);
+            if (photoPostError != Error.None)
+                return Result<HallTypeResponseDto>.Failure(photoPostError);
+
             await _repository.AddAsync(hallType);
             await _unitOfWork.SaveChangesAsync();
 
@@ -69,21 +77,44 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             if (validationError != Error.None)
                 return Result<HallTypeResponseDto>.Failure(validationError);
 
-            var hallType = await _repository.GetOneAsync(id);
-            if (hallType == null)
+            var oldEntity = await _repository.GetOneAsync(id);
+            if (oldEntity == null)
                 return Result<HallTypeResponseDto>.Failure(Error.NotFound);
 
-            var equipments = await _unitOfWork.GetRepository<Equipment>().GetAllAsync(q =>
-                q.Where(e => requestDto!.EquipmentIds.Contains(e.Id)));
+            var newEntity = oldEntity;
 
-            hallType.Name = requestDto!.Name;
-            hallType.Description = requestDto!.Description; 
-            hallType.Equipments = equipments.ToList();
+            if (oldEntity is ISoftUpdateable softUpdateable && oldEntity.Halls.Any(h => h.Rents.Any()))
+            {
+                var entity = MapAsEntity(requestDto!);
+                var hallWithoutRents = oldEntity.Halls.Where(h => !h.Rents.Any());
+                entity.Halls = hallWithoutRents.ToList();
 
-            _repository.Update(hallType);
+                entity.HallTypeGuid = Guid.NewGuid();
+                var photoPostError = await _fileService.PostPhoto(entity, requestDto!.HallTypePhoto, $"{entity.Name}_{entity.HallTypeGuid}", isUpdate: true);
+                if (photoPostError != Error.None)
+                    return Result<HallTypeResponseDto>.Failure(photoPostError);
+                
+                await _repository.AddAsync(entity);
+                ((ISoftUpdateable)newEntity).IsSoftUpdated = true;
+                newEntity.Halls = oldEntity.Halls.Where(s => s.Rents.Any()).ToList();
+            }
+            else
+            {
+                newEntity.Name = requestDto!.Name;
+                newEntity.Description = requestDto!.Description;
+                var equipments = await _unitOfWork.GetRepository<Equipment>().GetAllAsync(q =>
+                                    q.Where(e => requestDto!.EquipmentIds.Contains(e.Id)));
+                newEntity.Equipments = equipments.ToList();
+
+                var photoPostError = await _fileService.PostPhoto(newEntity, requestDto!.HallTypePhoto, $"{newEntity.Name}_{newEntity.HallTypeGuid}", isUpdate: true);
+                if (photoPostError != Error.None)
+                    return Result<HallTypeResponseDto>.Failure(photoPostError);
+            }
+            _repository.Update(newEntity);
+
             await _unitOfWork.SaveChangesAsync();
 
-            var response = MapAsDto(hallType);
+            var response = MapAsDto(newEntity);
 
             return Result<HallTypeResponseDto>.Success(response);
         }
@@ -97,11 +128,25 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             var entity = validationResult.Value.Entity;
             var user = validationResult.Value.User;
 
-            // Meybe only active 
-            if (entity.Halls.Any())
+            if (entity.Name == "Sala ogólna")
+                return Result<object>.Failure(HallTypeError.CannotDeleteDefaultHallType);
+
+            var defaultHallType = (await _repository.GetAllAsync(q => q.Where(s => s.Name == "Sala ogólna"))).FirstOrDefault();
+            if (defaultHallType == null) return Result<object>.Failure(HallTypeError.CannotFoundDefaultHallType);
+
+            var hallsWithoutRents = entity.Halls.Where(h => !h.Rents.Any()).ToList();
+            foreach (var hall in hallsWithoutRents)
             {
-                entity.IsDeleted = true;
-                entity.DeleteDate = DateTime.Now;
+                hall.Type = defaultHallType;
+                _unitOfWork.GetRepository<Hall>().Update(hall);
+            }
+
+            await _fileService.DeletePhoto(entity);
+            if (entity is ISoftDeleteable softDeleteableEntity && entity.Halls.Any(h => h.Rents.Any()))
+            {
+                softDeleteableEntity.IsDeleted = true;
+                softDeleteableEntity.DeleteDate = DateTime.Now;
+                entity.Halls = entity.Halls.Where(h => h.Rents.Any()).ToList();
                 _repository.Update(entity);
             }
             else
@@ -113,6 +158,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
 
             return Result<object>.Success();
         }
+
 
         protected sealed override async Task<Error> ValidateEntity(IRequestDto? requestDto, int? id = null)
         {
@@ -160,7 +206,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             if (id != null)
             {
                 var entity = await _repository.GetOneAsync((int)id);
-                if (entity == null || entity.IsDeleted)
+                if (entity == null)
                     return Error.NotFound;
             }
 
@@ -173,7 +219,8 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
                       q.Where(entity =>
                         entity.Id != id &&
                         entity.Name.ToLower() == ((INameableRequestDto)requestDto).Name.ToLower() &&
-                        !entity.IsDeleted
+                        !entity.IsDeleted &&
+                        !entity.IsSoftUpdated
                       ))).Any();
 
             return Result<bool>.Success(result);

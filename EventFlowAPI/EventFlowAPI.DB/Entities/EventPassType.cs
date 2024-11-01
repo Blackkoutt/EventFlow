@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace EventFlowAPI.DB.Entities
 {
-    public class EventPassType : BaseEntity, INameableEntity, IPriceableEntity, ISoftDeleteable
+    public class EventPassType : BaseEntity, INameableEntity, IPriceableEntity, ISoftDeleteable, IUpdateableEntity, ISoftUpdateable
     {
 
         [MaxLength(40)]
@@ -14,16 +14,18 @@ namespace EventFlowAPI.DB.Entities
          Column(TypeName = "NUMERIC(2)")]
         public int ValidityPeriodInMonths { get; set; }
 
+        [Range(0.00, 9999.99),
+         Column(TypeName = "NUMERIC(6,2)")]
+        public decimal Price { get; set; }
+
         [Range(0.00, 99.99),
         Column(TypeName = "NUMERIC(4,2)")]
         public decimal RenewalDiscountPercentage { get; set; }
         public bool IsDeleted { get; set; } = false;
         public DateTime? DeleteDate { get; set; }
-
-        [Range(0.00, 9999.99),
-         Column(TypeName = "NUMERIC(6,2)")]
-        public decimal Price { get; set; }
-
+        public bool IsUpdated { get; set; } = false;
+        public DateTime? UpdateDate { get; set; }
+        public bool IsSoftUpdated { get; set; } = false;
         public ICollection<EventPass> EventPasses { get; set; } = [];
     }
 }

@@ -1,5 +1,7 @@
 ﻿using EventFlowAPI.Logic.DTO.Interfaces;
 using EventFlowAPI.Logic.DTO.RequestDto;
+using EventFlowAPI.Logic.DTO.Validators;
+using Microsoft.AspNetCore.Http;
 using System.ComponentModel.DataAnnotations;
 
 namespace EventFlowAPI.Logic.DTO.UpdateRequestDto
@@ -26,6 +28,9 @@ namespace EventFlowAPI.Logic.DTO.UpdateRequestDto
         [Required(ErrorMessage = "Wybierz co najmniej jednego sponsora.")]
         public List<int> SponsorIds { get; set; } = [];
         public FestivalDetailsRequestDto? Details { get; set; } = default!;
+
+        [MaxFileSizeValidator(10)]
+        public IFormFile? FestivalPhoto { get; set; }
 
         public ICollection<Event_FestivalTicketRequestDto> FestivalTickets { get; set; } = [];
     }

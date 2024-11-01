@@ -11,17 +11,20 @@ namespace EventFlowAPI.DB.Extensions.SeedingExtensions
                new Organizer
                {
                    Id = 1,
-                   Name = "EventFlow"
+                   Name = "EventFlow", 
+                   OrganizerGuid = Guid.NewGuid(),
                },
                new Organizer
                {
                    Id = 2,
-                   Name = "Snowflake"
+                   Name = "Snowflake",
+                   OrganizerGuid = Guid.NewGuid(),
                },
                new Organizer
                {
                    Id = 3,
-                   Name = "Aura"
+                   Name = "Aura",
+                   OrganizerGuid = Guid.NewGuid(),
                }
             );
         }

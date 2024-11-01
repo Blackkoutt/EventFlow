@@ -20,19 +20,16 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             EventCategory,
             EventCategoryRequestDto,
             UpdateEventCategoryRequestDto,
-            EventCategoryResponseDto
+            EventCategoryResponseDto,
+            EventCategoryQuery
         >(unitOfWork, userService),
         IEventCategoryService
     {
-        public sealed override async Task<Result<IEnumerable<EventCategoryResponseDto>>> GetAllAsync(QueryObject query)
+        public sealed override async Task<Result<IEnumerable<EventCategoryResponseDto>>> GetAllAsync(EventCategoryQuery query)
         {
-            var eventCategoryQuery = query as EventCategoryQuery;
-            if (eventCategoryQuery == null)
-                return Result<IEnumerable<EventCategoryResponseDto>>.Failure(QueryError.BadQueryObject);
-
             var records = await _repository.GetAllAsync(q => q.Where(s => !s.IsDeleted)
-                                                              .ByName(eventCategoryQuery)
-                                                              .SortBy(eventCategoryQuery.SortBy, eventCategoryQuery.SortDirection));
+                                                              .ByName(query)
+                                                              .SortBy(query.SortBy, query.SortDirection));
             var response = MapAsDto(records);
             return Result<IEnumerable<EventCategoryResponseDto>>.Success(response);
         }
@@ -46,22 +43,11 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             var entity = validationResult.Value.Entity;
             var user = validationResult.Value.User;
 
-            // Meybe only active 
-            if (entity.Events.Any())
-            {
-                entity.IsDeleted = true;
-                entity.DeleteDate = DateTime.Now;
-                _repository.Update(entity);
-            }
-            else
-            {
-                _repository.Delete(entity);
-            }
-
-            await _unitOfWork.SaveChangesAsync();
+            await DeleteEntity(entity, isSoftDelete: entity.Events.Any());
 
             return Result<object>.Success();
         }
+
 
         protected sealed override async Task<Error> ValidateEntity(IRequestDto? requestDto, int? id = null)
         {
@@ -102,7 +88,8 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             var result = (await _repository.GetAllAsync(q =>
                           q.Where(entity =>
                             entity.Id != id &&
-                            entity.Name.ToLower() == ((INameableRequestDto)requestDto).Name.ToLower()))).Any();
+                            entity.Name.ToLower() == ((INameableRequestDto)requestDto).Name.ToLower() &&
+                            !entity.IsDeleted))).Any();
 
             return Result<bool>.Success(result);
         }

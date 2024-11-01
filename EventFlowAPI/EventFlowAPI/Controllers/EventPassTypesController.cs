@@ -1,6 +1,7 @@
 ﻿using EventFlowAPI.Logic.DTO.RequestDto;
 using EventFlowAPI.Logic.DTO.UpdateRequestDto;
 using EventFlowAPI.Logic.Identity.Helpers;
+using EventFlowAPI.Logic.Query;
 using EventFlowAPI.Logic.Query.Abstract;
 using EventFlowAPI.Logic.Services.CRUDServices.Interfaces;
 using Microsoft.AspNetCore.Authorization;
@@ -18,7 +19,7 @@ namespace EventFlowAPI.Controllers
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> GetEventPassTypes([FromQuery] QueryObject query)
+        public async Task<IActionResult> GetEventPassTypes([FromQuery] EventPassTypeQuery query)
         {
             var result = await _eventPassTypeService.GetAllAsync(query);
             return result.IsSuccessful ? Ok(result.Value) : BadRequest(result.Error.Details);
@@ -54,7 +55,7 @@ namespace EventFlowAPI.Controllers
                     _ => StatusCode((int)HttpStatusCode.InternalServerError, result.Error.Details)
                 };
             }
-            return result.IsSuccessful ? CreatedAtAction(nameof(GetEventPassTypeById), new { id = result.Value.Id }, result.Value) : BadRequest(result.Error.Details);
+            return CreatedAtAction(nameof(GetEventPassTypeById), new { id = result.Value.Id }, result.Value);
         }
 
 
@@ -77,7 +78,7 @@ namespace EventFlowAPI.Controllers
                     _ => StatusCode((int)HttpStatusCode.InternalServerError, result.Error.Details)
                 };
             }
-            return result.IsSuccessful ? NoContent() : BadRequest(result.Error.Details);
+            return NoContent();
         }
 
 
@@ -100,7 +101,7 @@ namespace EventFlowAPI.Controllers
                     _ => StatusCode((int)HttpStatusCode.InternalServerError, result.Error.Details)
                 };
             }
-            return result.IsSuccessful ? NoContent() : BadRequest(result.Error.Details);
+            return NoContent();
         }
     }
 }

@@ -3,6 +3,7 @@ using EventFlowAPI.Logic.DTO.RequestDto;
 using EventFlowAPI.Logic.DTO.ResponseDto;
 using EventFlowAPI.Logic.DTO.UpdateRequestDto;
 using EventFlowAPI.Logic.Errors;
+using EventFlowAPI.Logic.Query;
 using EventFlowAPI.Logic.ResultObject;
 using EventFlowAPI.Logic.Services.CRUDServices.Interfaces.BaseInterfaces;
 
@@ -13,7 +14,8 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Interfaces
             HallRent,
             HallRentRequestDto,
             UpdateHallRentRequestDto,
-            HallRentResponseDto
+            HallRentResponseDto,
+            HallRentQuery
         >
     {
         Task<Result<HallRentResponseDto>> MakeRent(HallRentRequestDto? requestDto);

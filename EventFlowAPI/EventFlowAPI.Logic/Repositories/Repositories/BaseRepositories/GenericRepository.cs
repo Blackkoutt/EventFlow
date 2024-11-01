@@ -23,7 +23,16 @@ namespace EventFlowAPI.Logic.Repositories.Repositories.BaseRepositories
         public virtual async Task<IEnumerable<T>> GetAllAsync(Func<IQueryable<T>, IQueryable<T>>? query = null)
             => await (query?.Invoke(_table) ?? _table).ToListAsync();
         public virtual async Task<T?> GetOneAsync(int id) => await _table.FindAsync(id);
-        public void Update(T entity) => _table.Update(entity);
+        public void Update(T entity)
+        {
+            if(entity is IUpdateableEntity updateableEntity)
+            {
+                updateableEntity.IsUpdated = true;
+                updateableEntity.UpdateDate = DateTime.Now;
+            }
+            _table.Update(entity);
+        }
+
         public void Delete(T entity) => _table.Remove(entity);
         public void Detach(T entity) => _context.Entry(entity).State = EntityState.Detached;
 

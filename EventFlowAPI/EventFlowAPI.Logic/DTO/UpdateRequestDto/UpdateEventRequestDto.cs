@@ -1,6 +1,8 @@
 ﻿using EventFlowAPI.Logic.DTO.Abstract;
 using EventFlowAPI.Logic.DTO.Interfaces;
 using EventFlowAPI.Logic.DTO.RequestDto;
+using EventFlowAPI.Logic.DTO.Validators;
+using Microsoft.AspNetCore.Http;
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 
@@ -26,6 +28,9 @@ namespace EventFlowAPI.Logic.DTO.UpdateRequestDto
         [Required(ErrorMessage = "Należy podać numer sali w którym odbywa się wydarzenie.")]
         [Range(0, int.MaxValue, ErrorMessage = "Id hali musi być większe lub równe 0.")]
         public int HallId { get; set; }
+
+        [MaxFileSizeValidator(10)]
+        public IFormFile? EventPhoto { get; set; }
 
         public ICollection<Event_FestivalTicketRequestDto> EventTickets { get; set; } = [];
 

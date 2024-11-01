@@ -1,4 +1,5 @@
 ﻿using EventFlowAPI.Logic.DTO.RequestDto;
+using EventFlowAPI.Logic.DTO.UpdateRequestDto;
 using EventFlowAPI.Logic.Identity.Helpers;
 using EventFlowAPI.Logic.Query;
 using EventFlowAPI.Logic.Services.CRUDServices.Interfaces;
@@ -140,7 +141,7 @@ namespace EventFlowAPI.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        public async Task<IActionResult> UpdateFestival([FromRoute] int id, [FromBody] FestivalRequestDto festivalReqestDto)
+        public async Task<IActionResult> UpdateFestival([FromRoute] int id, [FromBody] UpdateFestivalRequestDto festivalReqestDto)
         {
             var result = await _festivalService.UpdateAsync(id, festivalReqestDto);
             if (!result.IsSuccessful)
