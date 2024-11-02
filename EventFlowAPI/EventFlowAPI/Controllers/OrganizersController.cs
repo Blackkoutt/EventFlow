@@ -1,8 +1,10 @@
-﻿using EventFlowAPI.Logic.DTO.RequestDto;
+﻿using EventFlowAPI.DB.Entities;
+using EventFlowAPI.Logic.DTO.RequestDto;
 using EventFlowAPI.Logic.DTO.UpdateRequestDto;
 using EventFlowAPI.Logic.Identity.Helpers;
 using EventFlowAPI.Logic.Query;
 using EventFlowAPI.Logic.Services.CRUDServices.Interfaces;
+using EventFlowAPI.Logic.Services.OtherServices.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
@@ -11,9 +13,12 @@ namespace EventFlowAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class OrganizersController(IOrganizerService organizerService) : ControllerBase
+    public class OrganizersController(
+        IOrganizerService organizerService,
+        IFileService fileService) : ControllerBase
     {
         private readonly IOrganizerService _organizerService = organizerService;
+        private readonly IFileService _fileService = fileService;
 
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -41,7 +46,7 @@ namespace EventFlowAPI.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        public async Task<IActionResult> CreateOrganizer([FromBody] OrganizerRequestDto organizerReqestDto)
+        public async Task<IActionResult> CreateOrganizer([FromForm] OrganizerRequestDto organizerReqestDto)
         {
             var result = await _organizerService.AddAsync(organizerReqestDto);
             if (!result.IsSuccessful)
@@ -65,7 +70,7 @@ namespace EventFlowAPI.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        public async Task<IActionResult> UpdateOrganizer([FromRoute] int id, [FromBody] UpdateOrganizerRequestDto organizerReqestDto)
+        public async Task<IActionResult> UpdateOrganizer([FromRoute] int id, [FromForm] UpdateOrganizerRequestDto organizerReqestDto)
         {
             var result = await _organizerService.UpdateAsync(id, organizerReqestDto);
             if (!result.IsSuccessful)
@@ -102,6 +107,23 @@ namespace EventFlowAPI.Controllers
                 };
             }
             return NoContent();
+        }
+
+        [HttpGet("{id:int}/image")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> GetOrganizerImage([FromRoute] int id)
+        {
+            var result = await _fileService.GetEntityPhoto<Organizer>(id);
+            if (!result.IsSuccessful)
+            {
+                return result.Error.Details!.Code switch
+                {
+                    HttpStatusCode.BadRequest => BadRequest(result.Error.Details),
+                    _ => StatusCode((int)HttpStatusCode.InternalServerError, result.Error.Details)
+                };
+            }
+            return File(result.Value.Data, result.Value.ContentType, result.Value.FileName);
         }
     }
 }

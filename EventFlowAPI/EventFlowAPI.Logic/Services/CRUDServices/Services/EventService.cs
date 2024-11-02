@@ -565,6 +565,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
                 responseDto.Hall!.Seats = [];
                 responseDto.Hall!.Type = null;
                 responseDto.Hall!.HallDetails = null;
+                responseDto.PhotoEndpoint = $"/api/Events/{responseDto.Id}/image";
                 return responseDto;
             });
         }

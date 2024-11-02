@@ -1,9 +1,11 @@
-﻿using EventFlowAPI.Logic.DTO.RequestDto;
+﻿using EventFlowAPI.DB.Entities;
+using EventFlowAPI.Logic.DTO.RequestDto;
 using EventFlowAPI.Logic.DTO.UpdateRequestDto;
 using EventFlowAPI.Logic.Identity.Helpers;
 using EventFlowAPI.Logic.Query;
 using EventFlowAPI.Logic.Query.Abstract;
 using EventFlowAPI.Logic.Services.CRUDServices.Interfaces;
+using EventFlowAPI.Logic.Services.OtherServices.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
@@ -12,9 +14,12 @@ namespace EventFlowAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class SponsorsController(ISponsorService sponsorService) : ControllerBase
+    public class SponsorsController(
+        ISponsorService sponsorService,
+        IFileService fileService) : ControllerBase
     {
         private readonly ISponsorService _sponsorService = sponsorService;
+        private readonly IFileService _fileService = fileService;
 
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -42,7 +47,7 @@ namespace EventFlowAPI.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        public async Task<IActionResult> CreateSponsor([FromBody] SponsorRequestDto sponsorReqestDto)
+        public async Task<IActionResult> CreateSponsor([FromForm] SponsorRequestDto sponsorReqestDto)
         {
             var result = await _sponsorService.AddAsync(sponsorReqestDto);
             if (!result.IsSuccessful)
@@ -65,7 +70,7 @@ namespace EventFlowAPI.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        public async Task<IActionResult> UpdateSponsor([FromRoute] int id, [FromBody] UpdateSponsorRequestDto sponsorReqestDto)
+        public async Task<IActionResult> UpdateSponsor([FromRoute] int id, [FromForm] UpdateSponsorRequestDto sponsorReqestDto)
         {
             var result = await _sponsorService.UpdateAsync(id, sponsorReqestDto);
             if (!result.IsSuccessful)
@@ -102,6 +107,23 @@ namespace EventFlowAPI.Controllers
                 };
             }
             return NoContent();
+        }
+
+        [HttpGet("{id:int}/image")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> GetEventImage([FromRoute] int id)
+        {
+            var result = await _fileService.GetEntityPhoto<Sponsor>(id);
+            if (!result.IsSuccessful)
+            {
+                return result.Error.Details!.Code switch
+                {
+                    HttpStatusCode.BadRequest => BadRequest(result.Error.Details),
+                    _ => StatusCode((int)HttpStatusCode.InternalServerError, result.Error.Details)
+                };
+            }
+            return File(result.Value.Data, result.Value.ContentType, result.Value.FileName);
         }
     }
 }

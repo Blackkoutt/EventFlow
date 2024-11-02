@@ -226,10 +226,22 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             return Result<bool>.Success(result);
         }
 
+        protected sealed override IEnumerable<HallTypeResponseDto> MapAsDto(IEnumerable<HallType> records)
+        {
+            return records.Select(entity =>
+            {
+                var responseDto = entity.AsDto<HallTypeResponseDto>();
+                responseDto.Equipments = entity.Equipments.Select(eq => eq.AsDto<EquipmentResponseDto>()).ToList();
+                responseDto.PhotoEndpoint = $"/api/HallTypes/{responseDto.Id}/image";
+                return responseDto;
+            });
+        }
+
         protected sealed override HallTypeResponseDto MapAsDto(HallType entity)
         {
             var responseDto = entity.AsDto<HallTypeResponseDto>();
             responseDto.Equipments = entity.Equipments.Select(eq => eq.AsDto<EquipmentResponseDto>()).ToList();
+            responseDto.PhotoEndpoint = $"/api/HallTypes/{responseDto.Id}/image";
             return responseDto;
         }
     }

@@ -12,6 +12,7 @@ using EventFlowAPI.Logic.DTO.UpdateRequestDto;
 using EventFlowAPI.Logic.DTO.Interfaces;
 using EventFlowAPI.Logic.Identity.Helpers;
 using EventFlowAPI.Logic.Services.OtherServices.Interfaces;
+using EventFlowAPI.Logic.Mapper.Extensions;
 
 namespace EventFlowAPI.Logic.Services.CRUDServices.Services
 {
@@ -141,6 +142,23 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
                       ))).Any();
 
             return Result<bool>.Success(result);
+        }
+
+        protected sealed override IEnumerable<SponsorResponseDto> MapAsDto(IEnumerable<Sponsor> records)
+        {
+            return records.Select(entity =>
+            {
+                var responseDto = entity.AsDto<SponsorResponseDto>();
+                responseDto.PhotoEndpoint = $"/api/Sponsors/{responseDto.Id}/image";
+                return responseDto;
+            });
+        }
+
+        protected sealed override SponsorResponseDto MapAsDto(Sponsor entity)
+        {
+            var responseDto = entity.AsDto<SponsorResponseDto>();
+            responseDto.PhotoEndpoint = $"/api/Sponsors/{responseDto.Id}/image";
+            return responseDto;
         }
     }
 }

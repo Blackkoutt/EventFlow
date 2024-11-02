@@ -12,6 +12,7 @@ using EventFlowAPI.Logic.DTO.UpdateRequestDto;
 using EventFlowAPI.Logic.DTO.Interfaces;
 using EventFlowAPI.Logic.Identity.Helpers;
 using EventFlowAPI.Logic.Services.OtherServices.Interfaces;
+using EventFlowAPI.Logic.Mapper.Extensions;
 
 namespace EventFlowAPI.Logic.Services.CRUDServices.Services
 {
@@ -143,6 +144,23 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
                       ))).Any();
 
             return Result<bool>.Success(result);
+        }
+
+        protected sealed override IEnumerable<PaymentTypeResponseDto> MapAsDto(IEnumerable<PaymentType> records)
+        {
+            return records.Select(entity =>
+            {
+                var responseDto = entity.AsDto<PaymentTypeResponseDto>();
+                responseDto.PhotoEndpoint = $"/api/PaymentTypes/{responseDto.Id}/image";
+                return responseDto;
+            });
+        }
+
+        protected sealed override PaymentTypeResponseDto MapAsDto(PaymentType entity)
+        {
+            var responseDto = entity.AsDto<PaymentTypeResponseDto>();
+            responseDto.PhotoEndpoint = $"/api/PaymentTypes/{responseDto.Id}/image";
+            return responseDto;
         }
     }
 }

@@ -5,5 +5,7 @@ namespace EventFlowAPI.Logic.DTO.ResponseDto
     public class MediaPatronResponseDto : BaseResponseDto
     {
         public string Name { get; set; } = string.Empty;
+        public string PhotoName { get; set; } = string.Empty;
+        public string PhotoEndpoint { get; set; } = string.Empty;
     }
 }

@@ -13,6 +13,7 @@ using EventFlowAPI.Logic.DTO.Interfaces;
 using EventFlowAPI.Logic.Identity.Helpers;
 using EventFlowAPI.Logic.Services.OtherServices.Interfaces;
 using EventFlowAPI.DB.Entities.Abstract;
+using EventFlowAPI.Logic.Mapper.Extensions;
 
 namespace EventFlowAPI.Logic.Services.CRUDServices.Services
 {
@@ -142,6 +143,23 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
                       ))).Any();
 
             return Result<bool>.Success(result);
+        }
+
+        protected sealed override IEnumerable<MediaPatronResponseDto> MapAsDto(IEnumerable<MediaPatron> records)
+        {
+            return records.Select(entity =>
+            {
+                var responseDto = entity.AsDto<MediaPatronResponseDto>();
+                responseDto.PhotoEndpoint = $"/api/MediaPatrons/{responseDto.Id}/image";
+                return responseDto;
+            });
+        }
+
+        protected sealed override MediaPatronResponseDto MapAsDto(MediaPatron entity)
+        {
+            var responseDto = entity.AsDto<MediaPatronResponseDto>();
+            responseDto.PhotoEndpoint = $"/api/MediaPatrons/{responseDto.Id}/image";
+            return responseDto;
         }
     }
 }
