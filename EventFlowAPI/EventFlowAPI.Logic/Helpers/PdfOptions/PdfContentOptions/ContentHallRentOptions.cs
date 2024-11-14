@@ -58,8 +58,6 @@ namespace EventFlowAPI.Logic.Helpers.PdfOptions.PdfContentOptions
             Space = 5f,
         };
 
-
-
         public LabelValueTextOptions RentDuration => new LabelValueTextOptions
         {
             Label = "Czas trwania wynajmu: ",

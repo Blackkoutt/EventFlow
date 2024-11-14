@@ -1,5 +1,6 @@
 ﻿using EventFlowAPI.DB.Entities;
 using EventFlowAPI.DB.Entities.Abstract;
+using EventFlowAPI.Logic.DTO.Statistics.RequestDto;
 using EventFlowAPI.Logic.Errors;
 using EventFlowAPI.Logic.Extensions;
 using EventFlowAPI.Logic.Helpers;
@@ -11,6 +12,7 @@ using EventFlowAPI.Logic.Services.CRUDServices.Interfaces;
 using EventFlowAPI.Logic.Services.OtherServices.Interfaces;
 using EventFlowAPI.Logic.UnitOfWork;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using System.IO.Compression;
 
 namespace EventFlowAPI.Logic.Services.OtherServices.Services
@@ -20,7 +22,8 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
         IBlobService blobService,
         IUserService userService,
         IPdfBuilderService pdfBuilderService,
-        IJPGCreatorService jpgCreatorService
+        IJPGCreatorService jpgCreatorService, 
+        IStatisticsService statisticsService
        ) : IFileService
     {
         private readonly IBlobService _blobService = blobService;
@@ -28,11 +31,24 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
         private readonly IUserService _userService = userService;   
         private readonly IPdfBuilderService _pdfBuilder = pdfBuilderService;
         private readonly IJPGCreatorService _jpgCreator = jpgCreatorService;
+        private readonly IStatisticsService _statisticsService = statisticsService;
 
         private string zipArchiveName = @$"twoje_bilety_rezerwacja_nr_{{0}}.zip";
         private string hallRentPDFFileNameTemplate = @$"wynajem_sali_{{0}}.pdf";
         private readonly string defaultPhoto = @"default.jpg";
         
+        public async Task<(byte[] Bitmap, string FileName)> CreateStatisticsPDF(StatisticsRequestDto statisticsRequestDto)
+        {
+            var statisticsPDFData = await _statisticsService.GenerateDataForStatisticsPDF(statisticsRequestDto);
+
+            var statisticsPDFBitmap = await _pdfBuilder.CreateStatisticsPdf(statisticsPDFData);
+
+            var fileName = $"raport_{statisticsPDFData.StatisticsResponseDto.ReportGuid}.pdf";
+
+            return (statisticsPDFBitmap, fileName); 
+        }
+
+
         // To Do
         private async Task<string?> GetPDFFileName<TEntity>(TEntity entity, FileType fileType)
         {

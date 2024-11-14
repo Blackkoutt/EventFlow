@@ -6,7 +6,7 @@ using QuestPDF.Infrastructure;
 
 namespace EventFlowAPI.Logic.Extensions.PdfBuilderExtensions
 {
-    public static class OrderInfo
+    public static class Info
     {
         public static void AddOrderInfo(this IContainer column, InfoOptions options)
         {
@@ -35,10 +35,25 @@ namespace EventFlowAPI.Logic.Extensions.PdfBuilderExtensions
 
             });
         }
+
+        public static void AddStatisticsInfo(this IContainer column, InfoStatisticsOptions options)
+        {
+            column
+             .AlignLeft()
+             .ExtendHorizontal()
+             .PaddingLeft(options.PadLeft)
+             .Column(column =>
+             {
+                 column.AddTextItem(options.ReportNr);
+                 column.AddTextItem(options.ReportFromToDate);
+                 column.AddTextItem(options.ReportDate);
+                 column.AddTextItem(options.User);
+             });
+        }
+
+
         public static void AddHallViewInfo(this IContainer column, HallViewInfoOptions options)
         {
-
-
             if (options.HallRent != null || options.Event != null)
             {
                 column

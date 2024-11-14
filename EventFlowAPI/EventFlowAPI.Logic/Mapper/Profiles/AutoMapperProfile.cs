@@ -2,6 +2,7 @@
 using EventFlowAPI.DB.Entities;
 using EventFlowAPI.Logic.DTO.RequestDto;
 using EventFlowAPI.Logic.DTO.ResponseDto;
+using EventFlowAPI.Logic.DTO.UpdateRequestDto;
 using EventFlowAPI.Logic.Identity.DTO.RequestDto;
 using EventFlowAPI.Logic.Identity.DTO.ResponseDto;
 
@@ -36,6 +37,7 @@ namespace EventFlowAPI.Logic.Mapper.Profiles
             CreateMap<EventPassType, EventPassTypeResponseDto>();
 
             CreateMap<Event, Event>();
+            CreateMap<UpdateEventRequestDto, Event>();
             CreateMap<EventRequestDto, Event>();
             CreateMap<Event, EventResponseDto>();
 
@@ -48,6 +50,7 @@ namespace EventFlowAPI.Logic.Mapper.Profiles
             CreateMap<FestivalDetails, FestivalDetailsResponseDto>();
 
             CreateMap<Festival, Festival>();
+            CreateMap<UpdateFestivalRequestDto, Festival>();
             CreateMap<FestivalRequestDto, Festival>();
             CreateMap<Festival, FestivalResponseDto>();
 

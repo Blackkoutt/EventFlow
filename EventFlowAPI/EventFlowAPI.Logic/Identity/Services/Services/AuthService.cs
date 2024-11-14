@@ -34,6 +34,7 @@ namespace EventFlowAPI.Logic.Identity.Services.Services
             }
 
             var user = requestDto.AsEntity<User>();
+            user.RegisteredDate = DateTime.Now;
 
             var result = await _userManager.CreateAsync(user, requestDto.Password);
             if (!result.Succeeded)

@@ -63,17 +63,6 @@ namespace EventFlowAPI.Controllers
         }
 
 
-        [HttpPut("{id:int}")]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> UpdatePaymentType([FromRoute] int id, [FromForm] PaymentTypeRequestDto paymentTypeReqestDto)
-        {
-            /*var result = await _paymentTypeService.UpdateAsync(id, paymentTypeReqestDto);
-            return result.IsSuccessful ? NoContent() : BadRequest(result.Error.Details);*/
-            return StatusCode((int)HttpStatusCode.MethodNotAllowed);
-        }
-
-
         [Authorize(Roles = nameof(Roles.Admin))]
         [HttpDelete("{id:int}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]

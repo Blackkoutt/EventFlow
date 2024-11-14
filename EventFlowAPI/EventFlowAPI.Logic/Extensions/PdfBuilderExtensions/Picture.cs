@@ -1,4 +1,5 @@
-﻿using EventFlowAPI.Logic.Helpers.PdfOptions.PdfCommonOptions;
+﻿using EventFlowAPI.Logic.Helpers.Enums;
+using EventFlowAPI.Logic.Helpers.PdfOptions.PdfCommonOptions;
 using EventFlowAPI.Logic.Helpers.PdfOptions.PdfPictureOptions;
 using QuestPDF.Fluent;
 using QuestPDF.Infrastructure;
@@ -43,8 +44,31 @@ namespace EventFlowAPI.Logic.Extensions.PdfBuilderExtensions
             column
             .PaddingTop(options.PadTop)
             .PaddingBottom(options.PadBottom)
-            .Image(bitmap)
-            .WithCompressionQuality(ImageCompressionQuality.VeryHigh);
+            .Image(bitmap);
+        }
+
+        public static void AddPlotPicture(this IContainer column, byte[] bitmap, PlotType plotType, PictureOptions options)
+        {
+            if(plotType == PlotType.Pie)
+            {
+                column
+                    .AlignCenter()
+                    .PaddingTop(options.PadTop)
+                    .PaddingBottom(options.PadBottom)
+                    .Width(310)
+                    .Height(310)
+                    .Image(bitmap).FitArea();
+            }
+            else
+            {
+                column
+                    .AlignCenter()
+                    .PaddingTop(options.PadTop)
+                    .Width(390)
+                    .Height(290)
+                    .PaddingBottom(options.PadBottom)
+                    .Image(bitmap).FitArea();
+            }
         }
     }
 }

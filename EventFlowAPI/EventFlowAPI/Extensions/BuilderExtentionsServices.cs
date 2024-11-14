@@ -67,6 +67,8 @@ namespace EventFlowAPI.Extensions
             services.AddScoped<ICollisionCheckerService, CollisionCheckerService>();
             services.AddScoped<IHallSeatsConfiguration, HallSeatsConfiguration>();
             services.AddScoped<ICopyMakerService, CopyMakerService>();
+            services.AddScoped<IStatisticsService, StatisticsService>();
+            services.AddScoped<IPlotService, PlotService>();
         }
     }
 }

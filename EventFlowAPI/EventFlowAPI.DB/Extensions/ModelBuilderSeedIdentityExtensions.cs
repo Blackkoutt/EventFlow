@@ -6,7 +6,7 @@ namespace EventFlowAPI.DB.Extensions
 {
     public static class ModelBuilderSeedIdentityExtensions
     {
-        public static void SeedUsers(this ModelBuilder modelBuilder)
+        public static void SeedUsers(this ModelBuilder modelBuilder, DateTime today)
         {
             var hasher = new PasswordHasher<User>();
             var user1 = new User
@@ -19,6 +19,7 @@ namespace EventFlowAPI.DB.Extensions
                 NormalizedEmail = "admin@gmail.com".ToUpper(),
                 NormalizedUserName = "admin@gmail.com".ToUpper(),
                 EmailConfirmed = true,
+                RegisteredDate = today,
                 DateOfBirth = new DateTime(2000, 4, 3)
             };
             user1.PasswordHash = hasher.HashPassword(user1, "admin123");
@@ -32,6 +33,7 @@ namespace EventFlowAPI.DB.Extensions
                 UserName = "mateusz.strapczuk2@gmail.com",
                 NormalizedEmail = "mateusz.strapczuk2@gmail.com".ToUpper(),
                 NormalizedUserName = "mateusz.strapczuk2@gmail.com".ToUpper(),
+                RegisteredDate = today,
                 EmailConfirmed = true,
                 DateOfBirth = new DateTime(1985, 2, 1)
             };
@@ -46,6 +48,7 @@ namespace EventFlowAPI.DB.Extensions
                 UserName = "mateusz.strapczuk3@gmail.com",
                 NormalizedEmail = "mateusz.strapczuk3@gmail.com".ToUpper(),
                 NormalizedUserName = "mateusz.strapczuk3@gmail.com".ToUpper(),
+                RegisteredDate = today,
                 EmailConfirmed = true,
                 DateOfBirth = new DateTime(1979, 12, 11)
             };
@@ -60,6 +63,7 @@ namespace EventFlowAPI.DB.Extensions
                 UserName = "mateusz.strapczuk4@gmail.com",
                 NormalizedEmail = "mateusz.strapczuk4@gmail.com".ToUpper(),
                 NormalizedUserName = "mateusz.strapczuk4@gmail.com".ToUpper(),
+                RegisteredDate = today,
                 EmailConfirmed = true,
                 DateOfBirth = new DateTime(1979, 12, 11)
             };
@@ -74,6 +78,7 @@ namespace EventFlowAPI.DB.Extensions
                 UserName = "mateusz.strapczuk1@gmail.com",
                 NormalizedEmail = "mateusz.strapczuk1@gmail.com".ToUpper(),
                 NormalizedUserName = "mateusz.strapczuk1@gmail.com".ToUpper(),
+                RegisteredDate = today,
                 EmailConfirmed = true,
                 DateOfBirth = new DateTime(1979, 12, 11)
             };

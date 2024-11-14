@@ -1,11 +1,10 @@
 ﻿using EventFlowAPI.Logic.Helpers.PdfOptions.PdfContentOptions;
 using QuestPDF.Fluent;
-using QuestPDF.Helpers;
 using QuestPDF.Infrastructure;
 
 namespace EventFlowAPI.Logic.Extensions.PdfBuilderExtensions
 {
-    public static class ContentInfo
+    public static class Content
     {
         public static void AddEventOrFestivalContent(this IContainer column, ContentFestivalEventOptions options)
         {
@@ -64,5 +63,6 @@ namespace EventFlowAPI.Logic.Extensions.PdfBuilderExtensions
                 column.AddTextItem(options.Equipment);
             });
         }
+
     }
 }

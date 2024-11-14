@@ -12,7 +12,7 @@ namespace EventFlowAPI.DB.Entities
 
         [MaxLength(40)]
         public string Surname { get; set; } = string.Empty;
-
+        public DateTime RegisteredDate { get; set; }
         public string Provider { get; set; } = "APP";
 
         public DateTime DateOfBirth { get; set; }

@@ -221,9 +221,9 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             // Tickets
             await _ticketService.UpdateTicketsForFestival(requestDto!.FestivalTickets, festival);
 
-            var photoPostError = await _fileService.PostPhoto(festival, requestDto!.FestivalPhoto, $"{festival.Name}_{festival.FestivalGuid}", isUpdate: true);
+            /*var photoPostError = await _fileService.PostPhoto(festival, requestDto!.FestivalPhoto, $"{festival.Name}_{festival.FestivalGuid}", isUpdate: true);
             if (photoPostError != Error.None)
-                return Result<FestivalResponseDto>.Failure(photoPostError);
+                return Result<FestivalResponseDto>.Failure(photoPostError);*/
 
             _repository.Update(festival);
             await _unitOfWork.SaveChangesAsync();

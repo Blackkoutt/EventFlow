@@ -12,7 +12,7 @@ namespace EventFlowAPI.DB.Extensions
 
             // Seed Identity
             modelBuilder.SeedUsersData();
-            modelBuilder.SeedUsers();
+            modelBuilder.SeedUsers(today);
             modelBuilder.SeedRoles();
             modelBuilder.SeedUsersInRoles();
 
