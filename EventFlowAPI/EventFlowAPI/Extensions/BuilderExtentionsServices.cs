@@ -43,6 +43,9 @@ namespace EventFlowAPI.Extensions
             services.AddScoped<ITicketTypeService, TicketTypeService>();
             services.AddScoped<IUserDataService, UserDataService>();
             services.AddScoped<IUserService, UserService>();
+            services.AddScoped<INewsService, NewsService>();
+            services.AddScoped<IPartnerService, PartnerService>();
+            services.AddScoped<IFAQService, FAQService>();
         }
         public static void AddApplicationAuthServices(this IServiceCollection services)
         {

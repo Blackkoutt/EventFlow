@@ -33,6 +33,9 @@ builder.AddAuthentication(jwtSettingsSection: "JWTSettings",
 // UnitOfWork
 builder.Services.AddUnitOfWork();
 
+// CORS
+builder.Services.AddCorsPolicy();
+
 // App Services
 builder.Services.AddApplicationCRUDServices();
 builder.Services.AddApplicationAuthServices();
@@ -64,6 +67,7 @@ app.AddApplicationMiddleware();
 app.UseAuthentication();
 app.UseAuthorization();
 
+app.UseCors("AllowSpecificOrigins");
 app.UseAutoMapper();
 
 app.MapControllers();

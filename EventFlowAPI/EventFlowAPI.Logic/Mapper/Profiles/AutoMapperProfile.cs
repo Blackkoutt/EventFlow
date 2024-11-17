@@ -14,14 +14,17 @@ namespace EventFlowAPI.Logic.Mapper.Profiles
         {
             CreateMap<AdditionalServices, AdditionalServices>();
             CreateMap<AdditionalServicesRequestDto, AdditionalServices>();
+            CreateMap<UpdateAdditionalServicesRequestDto, AdditionalServices>();
             CreateMap<AdditionalServices, AdditionalServicesResponseDto>();
 
             CreateMap<Equipment, Equipment>();
             CreateMap<EquipmentRequestDto, Equipment>();
+            CreateMap<UpdateEquipmentRequestDto, Equipment>();
             CreateMap<Equipment, EquipmentResponseDto>();
 
             CreateMap<EventCategory, EventCategory>();
             CreateMap<EventCategoryRequestDto, EventCategory>();
+            CreateMap<UpdateEventCategoryRequestDto, EventCategory>();
             CreateMap<EventCategory, EventCategoryResponseDto>();
 
             //CreateMap<EventDetailsRequestDto, EventDetails>();
@@ -30,10 +33,12 @@ namespace EventFlowAPI.Logic.Mapper.Profiles
 
             CreateMap<EventPass, EventPass>();
             CreateMap<EventPassRequestDto, EventPass>();
+            CreateMap<UpdateEventPassRequestDto, EventPass>();
             CreateMap<EventPass, EventPassResponseDto>();
 
             CreateMap<EventPassType, EventPassType>();
             CreateMap<EventPassTypeRequestDto, EventPassType>();
+            CreateMap<UpdateEventPassTypeRequestDto, EventPassType>();
             CreateMap<EventPassType, EventPassTypeResponseDto>();
 
             CreateMap<Event, Event>();
@@ -56,10 +61,12 @@ namespace EventFlowAPI.Logic.Mapper.Profiles
 
             CreateMap<HallRent, HallRent>();
             CreateMap<HallRentRequestDto, HallRent>();
+            CreateMap<UpdateHallRentRequestDto, HallRent>();
             CreateMap<HallRent, HallRentResponseDto>();
 
             CreateMap<Hall, Hall>();
             CreateMap<HallRequestDto, Hall>();
+            CreateMap<UpdateHallRequestDto, Hall>();
             CreateMap<EventHallRequestDto, Hall>();
             CreateMap<HallRent_HallRequestDto, Hall>();
             CreateMap<Hall, HallResponseDto>();
@@ -72,22 +79,27 @@ namespace EventFlowAPI.Logic.Mapper.Profiles
 
             CreateMap<HallType, HallType>();
             CreateMap<HallTypeRequestDto, HallType>();
+            CreateMap<UpdateHallTypeRequestDto, HallType>();
             CreateMap<HallType, HallTypeResponseDto>();
 
             CreateMap<MediaPatron, MediaPatron>();
             CreateMap<MediaPatronRequestDto, MediaPatron>();
+            CreateMap<UpdateMediaPatronRequestDto, MediaPatron>();
             CreateMap<MediaPatron, MediaPatronResponseDto>();
 
             CreateMap<Organizer, Organizer>();
             CreateMap<OrganizerRequestDto, Organizer>();
+            CreateMap<UpdateOrganizerRequestDto, Organizer>();
             CreateMap<Organizer, OrganizerResponseDto>();
 
             CreateMap<PaymentType, PaymentType>();
             CreateMap<PaymentTypeRequestDto, PaymentType>();
+            CreateMap<UpdatePaymentTypeRequestDto, PaymentType>();
             CreateMap<PaymentType, PaymentTypeResponseDto>();
 
             CreateMap<Reservation, Reservation>();
             CreateMap<ReservationRequestDto, Reservation>();
+            CreateMap<UpdateReservationRequestDto, Reservation>();
             CreateMap<Reservation, ReservationResponseDto>();
 
             CreateMap<Seat, Seat>();
@@ -96,18 +108,37 @@ namespace EventFlowAPI.Logic.Mapper.Profiles
 
             CreateMap<SeatType, SeatType>();
             CreateMap<SeatTypeRequestDto, SeatType>();
+            CreateMap<UpdateSeatTypeRequestDto, SeatType>();
             CreateMap<SeatType, SeatTypeResponseDto>();
 
             CreateMap<Sponsor, Sponsor>();
             CreateMap<SponsorRequestDto, Sponsor>();
+            CreateMap<UpdateSponsorRequestDto, Sponsor>();
             CreateMap<Sponsor, SponsorResponseDto>();
+
+            CreateMap<News, News>();
+            CreateMap<NewsRequestDto, News>();
+            CreateMap<UpdateNewsRequestDto, News>();
+            CreateMap<News, NewsResponseDto>();
+
+            CreateMap<Partner, Partner>();
+            CreateMap<PartnerRequestDto, Partner>();
+            CreateMap<UpdatePartnerRequestDto, Partner>();
+            CreateMap<Partner, PartnerResponseDto>();
+
+            CreateMap<FAQ, FAQ>();
+            CreateMap<FAQRequestDto, FAQ>();
+            CreateMap<UpdateFAQRequestDto, FAQ>();
+            CreateMap<FAQ, FAQResponseDto>();
 
             CreateMap<TicketType, TicketType>();
             CreateMap<TicketTypeRequestDto, TicketType>();
+            CreateMap<UpdateTicketTypeRequestDto, TicketType>();
             CreateMap<TicketType, TicketTypeResponseDto>();
 
             CreateMap<UserData, UserData>();
             CreateMap<UserDataRequestDto, UserData>();
+            CreateMap<UpdateUserDataRequestDto, UserData>();
             CreateMap<UserData, UserDataResponseDto>();
 
             CreateMap<User, User>();

@@ -15,5 +15,7 @@
         OrganizerPhotos,
         PaymentTypePhotos,
         SponsorPhotos,
+        NewsPhotos,
+        PartnerPhotos,
     }
 }

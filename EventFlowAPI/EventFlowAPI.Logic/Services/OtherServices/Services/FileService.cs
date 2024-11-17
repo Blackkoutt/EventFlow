@@ -12,7 +12,6 @@ using EventFlowAPI.Logic.Services.CRUDServices.Interfaces;
 using EventFlowAPI.Logic.Services.OtherServices.Interfaces;
 using EventFlowAPI.Logic.UnitOfWork;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
 using System.IO.Compression;
 
 namespace EventFlowAPI.Logic.Services.OtherServices.Services
@@ -147,6 +146,8 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
                 Organizer => Result<BlobContainer>.Success(BlobContainer.OrganizerPhotos),
                 PaymentType => Result<BlobContainer>.Success(BlobContainer.PaymentTypePhotos),
                 Sponsor => Result<BlobContainer>.Success(BlobContainer.SponsorPhotos),
+                News => Result<BlobContainer>.Success(BlobContainer.NewsPhotos),
+                Partner => Result<BlobContainer>.Success(BlobContainer.PartnerPhotos),
                 _ => Result<BlobContainer>.Failure(BlobError.NoPhotoContainerForGivenEntityType)
             };
         }

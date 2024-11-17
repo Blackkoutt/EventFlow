@@ -11,7 +11,5 @@ namespace EventFlowAPI.Logic.DTO.ResponseDto
         public bool IsAvailable { get; set; }
         public int GridColumn { get; set; }
         public SeatTypeResponseDto? SeatType { get; set; }
-        //public HallResponseDto? Hall { get; set; }
-        //public ICollection<ReservationResponseDto> Reservations { get; set; } = [];
     }
 }

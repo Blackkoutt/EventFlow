@@ -11,7 +11,7 @@ namespace EventFlowAPI.DB.Extensions.SeedingExtensions
                 new Event
                 {
                     Id = 1,
-                    Name = "Koncert Mystic Waves",
+                    Name = "Koncert: Mystic Waves",
                     ShortDescription = "Któtki opis koncertu Mystic Waves.",
                     StartDate = today.AddMonths(1).AddDays(1),
                     EndDate = today.AddMonths(1).AddDays(1).AddHours(1),
@@ -19,6 +19,7 @@ namespace EventFlowAPI.DB.Extensions.SeedingExtensions
                     CategoryId = 1,
                     HallId = 6,
                     EventGuid = Guid.NewGuid(),
+                    PhotoName = "koncert_mystic_waves.png"
                 },
                 new Event
                 {
@@ -31,6 +32,7 @@ namespace EventFlowAPI.DB.Extensions.SeedingExtensions
                     CategoryId = 3,
                     HallId = 7,
                     EventGuid = Guid.NewGuid(),
+                    PhotoName = "cien_przeszlosci.png"
                 },
                 new Event
                 {
@@ -43,6 +45,7 @@ namespace EventFlowAPI.DB.Extensions.SeedingExtensions
                     CategoryId = 2,
                     HallId = 5,
                     EventGuid = Guid.NewGuid(),
+                    PhotoName = "krolestwo_planety_malp.png"
                 },
                 new Event
                 {
@@ -55,6 +58,7 @@ namespace EventFlowAPI.DB.Extensions.SeedingExtensions
                     CategoryId = 4,
                     HallId = 8,
                     EventGuid = Guid.NewGuid(),
+                    PhotoName = "nowe_inspiracje.png"
                 },
                 new Event
                 {

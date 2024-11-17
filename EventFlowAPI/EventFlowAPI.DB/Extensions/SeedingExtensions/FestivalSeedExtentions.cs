@@ -11,12 +11,13 @@ namespace EventFlowAPI.DB.Extensions.SeedingExtensions
                 new Festival
                 {
                     Id = 1,
-                    Name = "Festiwal muzyki współczesnej",
-                    ShortDescription = "Festiwal muzyki współczesnej to nowy festiwal organizowany przez XYZ.",
+                    Name = "Festiwal muzyki hip-hop",
+                    ShortDescription = "Festiwal muzyki hip-hop to nowy festiwal organizowany przez XYZ.",
                     StartDate = today.AddMonths(1).AddDays(1),
                     EndDate = today.AddMonths(2).AddDays(1).AddHours(1),
                     DurationTimeSpan = today.AddMonths(1) - today.AddMonths(2).AddDays(1).AddHours(1),
                     FestivalGuid = Guid.NewGuid(),
+                    PhotoName = "festival.png"
                 },
                 new Festival
                 {

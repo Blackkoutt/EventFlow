@@ -11,22 +11,30 @@ namespace EventFlowAPI.DB.Extensions.SeedingExtensions
                 new EventCategory
                 {
                     Id = 1,
-                    Name = "Koncert"
+                    Name = "Koncert",
+                    Icon = "fa-solid fa-music",
+                    Color = "#82CAFC"
                 },
                 new EventCategory
                 {
                     Id = 2,
-                    Name = "Film"
+                    Name = "Film",
+                    Icon = "fa-solid fa-film",
+                    Color = "#6BD49B"
                 },
                 new EventCategory
                 {
                     Id = 3,
-                    Name = "Spektakl"
+                    Name = "Spektakl",
+                    Icon = "fa-solid fa-masks-theater",
+                    Color = "#C33EB1"
                 },
                 new EventCategory
                 {
                     Id = 4,
-                    Name = "Wystawa"
+                    Name = "Wystawa",
+                    Icon = "fa-solid fa-landmark",
+                    Color = "#FC5353"
                 }
             );
         }

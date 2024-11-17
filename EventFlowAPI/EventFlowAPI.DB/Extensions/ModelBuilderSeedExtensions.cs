@@ -10,6 +10,7 @@ namespace EventFlowAPI.DB.Extensions
         {
             var today = new DateTime(2024, 10, 25);
 
+
             // Seed Identity
             modelBuilder.SeedUsersData();
             modelBuilder.SeedUsers(today);
@@ -17,6 +18,9 @@ namespace EventFlowAPI.DB.Extensions
             modelBuilder.SeedUsersInRoles();
 
             // Seed Entities
+            modelBuilder.Entity<FAQ>().Seed();
+            modelBuilder.Entity<News>().Seed(today);
+            modelBuilder.Entity<Partner>().Seed();
             modelBuilder.Entity<AdditionalServices>().Seed();            
             modelBuilder.Entity<Equipment>().Seed();
             modelBuilder.Entity<EventCategory>().Seed();
