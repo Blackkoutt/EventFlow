@@ -1,26 +1,19 @@
-import { baseUrl } from "../../environment/environment";
+import { baseUrl } from "../../config/environment/Environment.ts";
 import axios, { AxiosInstance } from "axios";
-import { AdditionalServices } from "../../models/response_models/AdditionalServices";
+import { ApiModelConfig } from "../../config/ApiModelConfig";
+import { ApiEndpoint } from "../../helpers/enums/ApiEndpointEnum.ts";
 
 export const api: AxiosInstance = axios.create({
   baseURL: baseUrl,
 });
 
-export enum Model {
-  AdditionalServices,
-}
-
-const modelConfig = {
-  [Model.AdditionalServices]: {
-    url: "/additionalservices",
-    modelType: {} as AdditionalServices,
-  },
-};
-
-async function Get(model: Model) {
+async function Get<TEntity>(model: ApiEndpoint, queryParams?: Record<string, any>) {
   try {
-    const { url, modelType } = modelConfig[model];
-    const response = await api.get<typeof modelType>(url);
+    const { url } = ApiModelConfig[model];
+
+    const queryString = queryParams ? `?${new URLSearchParams(queryParams).toString()}` : "";
+
+    const response = await api.get<TEntity>(url + queryString);
     return response.data;
   } catch (error) {
     console.error("Błąd przy wysyłaniu żądania GET:", error);
@@ -28,8 +21,8 @@ async function Get(model: Model) {
   }
 }
 
-const Api = {
+const ApiMethod = {
   Get,
 };
 
-export default Api;
+export default ApiMethod;
