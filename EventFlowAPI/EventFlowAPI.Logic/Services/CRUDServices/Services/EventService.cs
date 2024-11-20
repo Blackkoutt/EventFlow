@@ -560,12 +560,18 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
                 var responseDto = entity.AsDto<EventResponseDto>();
                 responseDto.Category = entity.Category?.AsDto<EventCategoryResponseDto>();
                 responseDto.Details = entity.Details?.AsDto<EventDetailsResponseDto>();
-                responseDto.Tickets = [];
+                responseDto.Tickets = entity.Tickets.Select(t =>
+                {
+                    var ticket = t.AsDto<TicketResponseDto>();
+                    ticket.Event = null;
+                    ticket.Festival = null;
+                    return ticket;
+                }).ToList();
                 responseDto.Hall = entity.Hall?.AsDto<HallResponseDto>();
                 responseDto.Hall!.Seats = [];
                 responseDto.Hall!.Type = null;
                 responseDto.Hall!.HallDetails = null;
-                responseDto.PhotoEndpoint = $"/api/Events/{responseDto.Id}/image";
+                responseDto.PhotoEndpoint = $"/Events/{responseDto.Id}/image";
                 return responseDto;
             });
         }
@@ -587,7 +593,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             responseDto.Hall!.Seats = [];
             responseDto.Hall!.Type = null;
             responseDto.Hall!.HallDetails = null;
-            responseDto.PhotoEndpoint = $"/api/Events/{responseDto.Id}/image";
+            responseDto.PhotoEndpoint = $"/Events/{responseDto.Id}/image";
             return responseDto;
         }
     }

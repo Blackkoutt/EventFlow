@@ -232,7 +232,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             {
                 var responseDto = entity.AsDto<HallTypeResponseDto>();
                 responseDto.Equipments = entity.Equipments.Select(eq => eq.AsDto<EquipmentResponseDto>()).ToList();
-                responseDto.PhotoEndpoint = $"/api/HallTypes/{responseDto.Id}/image";
+                responseDto.PhotoEndpoint = $"/HallTypes/{responseDto.Id}/image";
                 return responseDto;
             });
         }
@@ -241,7 +241,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
         {
             var responseDto = entity.AsDto<HallTypeResponseDto>();
             responseDto.Equipments = entity.Equipments.Select(eq => eq.AsDto<EquipmentResponseDto>()).ToList();
-            responseDto.PhotoEndpoint = $"/api/HallTypes/{responseDto.Id}/image";
+            responseDto.PhotoEndpoint = $"/HallTypes/{responseDto.Id}/image";
             return responseDto;
         }
     }

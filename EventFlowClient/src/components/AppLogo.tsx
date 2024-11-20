@@ -6,7 +6,7 @@ interface AppLogoProps {
   height?: number;
 }
 
-function AppLogo({ width = 250, height = 100 }: AppLogoProps) {
+function AppLogo({ width = 368, height = 66 }: AppLogoProps) {
   const logoStyles = {
     width: `${width}px`,
     height: `${height}px`,

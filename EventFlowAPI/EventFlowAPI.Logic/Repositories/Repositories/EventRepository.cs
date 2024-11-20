@@ -14,6 +14,7 @@ namespace EventFlowAPI.Logic.Repositories.Repositories
                         .Include(e => e.Hall)
                         .Include(e => e.Category)
                         .Include(e => e.Details)
+                        .Include(e => e.Tickets)
                         .Include(e => e.Festivals);
 
             return await (query != null ? query(_table).ToListAsync() : _table.ToListAsync());

@@ -150,7 +150,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             return records.Select(entity =>
             {
                 var responseDto = entity.AsDto<MediaPatronResponseDto>();
-                responseDto.PhotoEndpoint = $"/api/MediaPatrons/{responseDto.Id}/image";
+                responseDto.PhotoEndpoint = $"/MediaPatrons/{responseDto.Id}/image";
                 return responseDto;
             });
         }
@@ -158,7 +158,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
         protected sealed override MediaPatronResponseDto MapAsDto(MediaPatron entity)
         {
             var responseDto = entity.AsDto<MediaPatronResponseDto>();
-            responseDto.PhotoEndpoint = $"/api/MediaPatrons/{responseDto.Id}/image";
+            responseDto.PhotoEndpoint = $"/MediaPatrons/{responseDto.Id}/image";
             return responseDto;
         }
     }

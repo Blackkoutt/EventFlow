@@ -151,7 +151,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             return records.Select(entity =>
             {
                 var responseDto = entity.AsDto<PaymentTypeResponseDto>();
-                responseDto.PhotoEndpoint = $"/api/PaymentTypes/{responseDto.Id}/image";
+                responseDto.PhotoEndpoint = $"/PaymentTypes/{responseDto.Id}/image";
                 return responseDto;
             });
         }
@@ -159,7 +159,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
         protected sealed override PaymentTypeResponseDto MapAsDto(PaymentType entity)
         {
             var responseDto = entity.AsDto<PaymentTypeResponseDto>();
-            responseDto.PhotoEndpoint = $"/api/PaymentTypes/{responseDto.Id}/image";
+            responseDto.PhotoEndpoint = $"/PaymentTypes/{responseDto.Id}/image";
             return responseDto;
         }
     }

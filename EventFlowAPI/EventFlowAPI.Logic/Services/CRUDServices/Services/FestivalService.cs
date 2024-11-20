@@ -580,7 +580,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
                 responseDto.MediaPatrons = entity.MediaPatrons.Select(e => e.AsDto<MediaPatronResponseDto>()).ToList();
                 responseDto.Organizers = entity.Organizers.Select(e => e.AsDto<OrganizerResponseDto>()).ToList();
                 responseDto.Sponsors = entity.Sponsors.Select(e => e.AsDto<SponsorResponseDto>()).ToList();
-                responseDto.PhotoEndpoint = $"/api/Festivals/{responseDto.Id}/image";
+                responseDto.PhotoEndpoint = $"/Festivals/{responseDto.Id}/image";
                 return responseDto;
             });
         }
@@ -608,7 +608,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             responseDto.MediaPatrons = entity.MediaPatrons.Select(e => e.AsDto<MediaPatronResponseDto>()).ToList();
             responseDto.Organizers = entity.Organizers.Select(e => e.AsDto<OrganizerResponseDto>()).ToList();
             responseDto.Sponsors = entity.Sponsors.Select(e => e.AsDto<SponsorResponseDto>()).ToList();
-            responseDto.PhotoEndpoint = $"/api/Festivals/{responseDto.Id}/image";
+            responseDto.PhotoEndpoint = $"/Festivals/{responseDto.Id}/image";
             return responseDto;
         }
     }

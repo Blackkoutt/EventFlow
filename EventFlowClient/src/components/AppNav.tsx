@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 function AppNav() {
   return (
     <>
-      <nav className="flex flex-row justify-center items-center gap-7">
+      <nav className="flex flex-row justify-center items-center gap-9">
         <Link to="/" className="text-black text-2xl font-semibold">
           Strona główna
         </Link>

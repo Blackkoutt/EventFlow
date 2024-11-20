@@ -7,6 +7,9 @@ export default {
         primaryPurple: "#7B2CBF",
         secondaryPurple: "#987EFE",
       },
+      screens: {
+        "3xl": "1700px",
+      },
     },
   },
   plugins: [],

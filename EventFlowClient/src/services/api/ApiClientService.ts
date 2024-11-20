@@ -16,13 +16,18 @@ async function Get<TEntity>(model: ApiEndpoint, queryParams?: Record<string, any
     const response = await api.get<TEntity>(url + queryString);
     return response.data;
   } catch (error) {
-    console.error("Błąd przy wysyłaniu żądania GET:", error);
+    console.error("GET Error:", error);
     throw error;
   }
 }
 
+const GetPhotoEndpoint = (photoEndpoint: string): string => {
+  return `${baseUrl}${photoEndpoint}`;
+};
+
 const ApiMethod = {
   Get,
+  GetPhotoEndpoint,
 };
 
 export default ApiMethod;
