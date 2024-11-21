@@ -33,7 +33,8 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
 
         public sealed override async Task<Result<IEnumerable<PartnerResponseDto>>> GetAllAsync(PartnerQuery query)
         {
-            var records = await _repository.GetAllAsync(q => q.SortBy(query.SortBy, query.SortDirection));
+            var records = await _repository.GetAllAsync(q => q.SortBy(query.SortBy, query.SortDirection)
+                                                              .GetPage(query.PageNumber, query.PageSize));
             var response = MapAsDto(records);
             return Result<IEnumerable<PartnerResponseDto>>.Success(response);
         }

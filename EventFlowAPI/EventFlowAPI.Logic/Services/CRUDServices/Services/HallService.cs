@@ -47,7 +47,9 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
 
         public sealed override async Task<Result<IEnumerable<HallResponseDto>>> GetAllAsync(HallQuery query)
         {
-            var records = await _repository.GetAllAsync(q => q.Where(entity => entity.IsVisible).ByQuery(query));
+            var records = await _repository.GetAllAsync(q => q.Where(entity => entity.IsVisible)
+                                                              .ByQuery(query)
+                                                              .GetPage(query.PageNumber, query.PageSize));
             var response = MapAsDto(records);
 
             return Result<IEnumerable<HallResponseDto>>.Success(response);

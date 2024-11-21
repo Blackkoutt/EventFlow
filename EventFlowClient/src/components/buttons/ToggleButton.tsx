@@ -16,7 +16,6 @@ const ToggleButton = ({
 }: ToggleButton) => {
   const [toggled, setToggled] = useState(false);
   const [focused, setFocused] = useState(false);
-  console.log(toggled);
   return (
     <>
       <button

@@ -47,7 +47,8 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             var user = userResult.Value;
             if (user.IsInRole(Roles.Admin))
             {
-                var allEventPasses = await _repository.GetAllAsync(q => q.ByQuery(query));
+                var allEventPasses = await _repository.GetAllAsync(q => q.ByQuery(query)
+                                                                         .GetPage(query.PageNumber, query.PageSize));
 
                 var allEventPassesDto = MapAsDto(allEventPasses);
                 return Result<IEnumerable<EventPassResponseDto>>.Success(allEventPassesDto);
@@ -56,7 +57,8 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             {
                 var userEventPasses = await _repository.GetAllAsync(q =>
                                             q.ByQuery(query)
-                                            .Where(r => r.User.Id == user.Id));
+                                            .Where(r => r.User.Id == user.Id)
+                                            .GetPage(query.PageNumber, query.PageSize));
 
                 var userEventPassesResponse = MapAsDto(userEventPasses);
                 return Result<IEnumerable<EventPassResponseDto>>.Success(userEventPassesResponse);

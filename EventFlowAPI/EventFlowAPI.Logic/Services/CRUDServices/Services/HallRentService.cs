@@ -47,7 +47,8 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             var user = userResult.Value;
             if (user.IsInRole(Roles.Admin))
             {
-                var allHallRents = await _repository.GetAllAsync(q => q.ByQuery(query));
+                var allHallRents = await _repository.GetAllAsync(q => q.ByQuery(query)
+                                                                       .GetPage(query.PageNumber, query.PageSize));
 
                 var allHallRentsDto = MapAsDto(allHallRents);
                 return Result<IEnumerable<HallRentResponseDto>>.Success(allHallRentsDto);
@@ -57,7 +58,8 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
                 var userHallRents = await _repository.GetAllAsync(q =>
                                             q.ByStatus(query.Status)
                                             .Where(hr => hr.User.Id == user.Id)
-                                            .SortBy(query.SortBy, query.SortDirection));
+                                            .SortBy(query.SortBy, query.SortDirection)
+                                            .GetPage(query.PageNumber, query.PageSize));
 
                 var userHallRentsResponse = MapAsDto(userHallRents);
                 return Result<IEnumerable<HallRentResponseDto>>.Success(userHallRentsResponse);

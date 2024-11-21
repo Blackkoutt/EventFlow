@@ -34,7 +34,8 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
         {
             var records = await _repository.GetAllAsync(q => q.Where(s => !s.IsDeleted)
                                                               .ByName(query)
-                                                              .SortBy(query.SortBy, query.SortDirection));
+                                                              .SortBy(query.SortBy, query.SortDirection)
+                                                              .GetPage(query.PageNumber, query.PageSize));
             var response = MapAsDto(records);
             return Result<IEnumerable<OrganizerResponseDto>>.Success(response);
         }

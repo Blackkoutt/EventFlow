@@ -3,7 +3,6 @@ using EventFlowAPI.DB.Entities.Abstract;
 using EventFlowAPI.Logic.Helpers.Enums;
 using EventFlowAPI.Logic.Query;
 using EventFlowAPI.Logic.Query.Abstract;
-using Microsoft.AspNetCore.Mvc;
 using System.Linq.Expressions;
 using System.Reflection;
 
@@ -11,6 +10,15 @@ namespace EventFlowAPI.Logic.Extensions
 {
     public static class QueryableExtensions
     {
+        public static IQueryable<TEntity> GetPage<TEntity>(this IQueryable<TEntity> query, int? pageNumber, int? pageSize)
+        {
+            if(pageNumber != null && pageSize != null)
+            {
+                var skipNumber = (int)((pageNumber - 1) * pageSize);
+                return query.Skip(skipNumber).Take((int)pageSize);
+            }
+            return query;
+        }
         public static IQueryable<TEntity> SortBy<TEntity>(this IQueryable<TEntity> query, string? sortBy, SortDirection sortDirection) where TEntity : class
         {
             if (!string.IsNullOrEmpty(sortBy))

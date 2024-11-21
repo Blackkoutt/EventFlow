@@ -39,7 +39,8 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
         private readonly IFileService _fileService = fileService;
         public sealed override async Task<Result<IEnumerable<FestivalResponseDto>>> GetAllAsync(FestivalQuery query)
         {
-            var records = await _repository.GetAllAsync(q => q.ByQuery(query));
+            var records = await _repository.GetAllAsync(q => q.ByQuery(query)
+                                                              .GetPage(query.PageNumber, query.PageSize));
 
             var response = MapAsDto(records);
 

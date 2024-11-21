@@ -29,7 +29,8 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
         public sealed override async Task<Result<IEnumerable<EquipmentResponseDto>>> GetAllAsync(EquipmentQuery query)
         {
             var records = await _repository.GetAllAsync(q => q.ByName(query)
-                                                              .SortBy(query.SortBy, query.SortDirection));
+                                                              .SortBy(query.SortBy, query.SortDirection)
+                                                              .GetPage(query.PageNumber, query.PageSize));
             var response = MapAsDto(records);
             return Result<IEnumerable<EquipmentResponseDto>>.Success(response);
         }

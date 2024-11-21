@@ -53,7 +53,8 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             {
                 var allReservations = await _repository.GetAllAsync(q =>
                                                 q.ByStatus(query.Status)
-                                                .SortBy(query.SortBy, query.SortDirection));
+                                                .SortBy(query.SortBy, query.SortDirection)
+                                                .GetPage(query.PageNumber, query.PageSize));
 
                 var allReservationsDto = MapAsDto(allReservations);
                 return Result<IEnumerable<ReservationResponseDto>>.Success(allReservationsDto);
@@ -63,7 +64,8 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
                 var userReservations = await _repository.GetAllAsync(q =>
                                             q.ByStatus(query.Status)
                                             .Where(r => r.User.Id == user.Id)
-                                            .SortBy(query.SortBy, query.SortDirection));
+                                            .SortBy(query.SortBy, query.SortDirection)
+                                            .GetPage(query.PageNumber, query.PageSize));
 
                 var userReservationsResponse = MapAsDto(userReservations);
                 return Result<IEnumerable<ReservationResponseDto>>.Success(userReservationsResponse);

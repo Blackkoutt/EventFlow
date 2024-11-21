@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 
-function AppNav() {
+const AppNav = () => {
   return (
     <>
       <nav className="flex flex-row justify-center items-center gap-9">
@@ -31,5 +31,5 @@ function AppNav() {
       </nav>
     </>
   );
-}
+};
 export default AppNav;
