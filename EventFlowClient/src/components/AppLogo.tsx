@@ -15,7 +15,9 @@ function AppLogo({ width = 368, height = 66 }: AppLogoProps) {
   return (
     <>
       <Link to="/">
-        <img src={appLogo} alt="EventFlow Logo" style={logoStyles} className="object-cover" />
+        <div style={logoStyles}>
+          <img src={appLogo} alt="EventFlow Logo" className="object-contain w-full h-full" />
+        </div>
       </Link>
     </>
   );
