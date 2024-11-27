@@ -1,16 +1,27 @@
 import { ApiEndpoint } from "../helpers/enums/ApiEndpointEnum";
 
-export const ApiModelConfig = {
+export const ApiUrlConfig = {
   [ApiEndpoint.AdditionalServices]: {
     url: "/additionalservices",
+  },
+  [ApiEndpoint.AuthValidate]: {
+    url: "/auth/validate",
+  },
+  [ApiEndpoint.AuthRegister]: {
+    url: "/auth/register",
+  },
+  [ApiEndpoint.AuthLogin]: {
+    url: "/auth/login",
+  },
+  [ApiEndpoint.AuthLoginGoogle]: {
+    url: "/auth/register/signin-google",
+  },
+  [ApiEndpoint.AuthLoginFacebook]: {
+    url: "/auth/register/signin-facebook",
   },
   [ApiEndpoint.Equipment]: {
     url: "/equipments",
   },
-  /*[ApiEndpoint.Auth]: {
-    url: "/auth",
-    mappingType: {} as Sponsor,
-  },*/
   [ApiEndpoint.EventCategory]: {
     url: "/eventcategories",
   },

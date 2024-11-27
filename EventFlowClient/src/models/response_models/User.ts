@@ -6,6 +6,6 @@ export type User = {
   surname: string;
   email: string;
   dateOfBirth: string;
-  userData: UserData;
+  userData?: UserData;
   userRoles: string[];
 };

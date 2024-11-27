@@ -34,7 +34,36 @@ namespace EventFlowAPI.Extensions
             }).AddJwtBearer(options =>
             {
                 options.TokenValidationParameters = GetJWTTokenOptions(jwtSettings);
-            }).AddGoogle(options =>
+                options.Events = new JwtBearerEvents
+                {
+                    OnMessageReceived = context =>
+                    {
+                        foreach (var header in context.Request.Headers)
+                        {
+                            Console.WriteLine($"{header.Key}: {header.Value}");
+                        }
+
+                        var token = context.Request.Cookies["EventFlowJWTCookie"];
+                        Console.WriteLine($"token {token}");
+                        if (!string.IsNullOrEmpty(token))
+                        {
+                            context.Token = token;
+                        }
+                        return Task.CompletedTask;
+                    }
+                };
+            })/*.AddCookie("CookieAuthentication", options =>
+            {
+                options.Cookie.HttpOnly = true;
+                options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+                options.Cookie.Name = "jwt";
+                options.Cookie.SameSite = SameSiteMode.Strict;
+                options.Events.OnRedirectToLogin = context =>
+                {
+                    context.Response.StatusCode = 401;
+                    return Task.CompletedTask;
+                };
+            })*/.AddGoogle(options =>
             {
                 options.GetGoogleOptions(googleSettings);
             }) 

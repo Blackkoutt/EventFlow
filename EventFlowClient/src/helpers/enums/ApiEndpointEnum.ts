@@ -1,6 +1,10 @@
 export enum ApiEndpoint {
   AdditionalServices,
-  // /Auth,
+  AuthValidate,
+  AuthRegister,
+  AuthLogin,
+  AuthLoginGoogle,
+  AuthLoginFacebook,
   Equipment,
   EventCategory,
   Event,

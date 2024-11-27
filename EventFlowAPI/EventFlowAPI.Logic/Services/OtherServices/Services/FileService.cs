@@ -494,8 +494,8 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
             if (entity == null)
                 return Result<TEntity>.Failure(Error.NotFound);
 
-            if (entity is IExpireable expireableEntity && expireableEntity.IsExpired)
-                return Result<TEntity>.Failure(Error.EntityIsExpired);
+            /*if (entity is IExpireable expireableEntity && expireableEntity.IsExpired)
+                return Result<TEntity>.Failure(Error.EntityIsExpired);*/
 
             if (entity is ISoftDeleteable deleteableEntity && deleteableEntity.IsDeleted)
                 return Result<TEntity>.Failure(Error.EntityIsDeleted);

@@ -4,6 +4,7 @@ using EventFlowAPI.Logic.Services.CRUDServices.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
+using System.Security.Claims;
 
 namespace EventFlowAPI.Controllers
 {
@@ -19,6 +20,23 @@ namespace EventFlowAPI.Controllers
         private readonly IUserService _userService = userService;
         private readonly IGoogleAuthService _googleAuthService = googleAuthService;
         private readonly IFacebookAuthService _facebookAuthService = facebookAuthService;
+
+
+        [HttpGet("validate")]
+        [Authorize]
+        public IActionResult ValidateUser()
+        {
+            var userClaims = User.Claims.ToList();
+            return Ok(new
+            {
+                id = userClaims.FirstOrDefault(c => c.Type == "Id")?.Value,
+                name = userClaims.FirstOrDefault(c => c.Type == "Name")?.Value,
+                surname = userClaims.FirstOrDefault(c => c.Type == "Surname")?.Value,
+                email = userClaims.FirstOrDefault(c => c.Type == "Email")?.Value,
+                dateOfBirth = userClaims.FirstOrDefault(c => c.Type == "DateOfBirth")?.Value,
+                roles = userClaims.Where(c => c.Type == "Role").Select(c => c.Value).ToList()
+            });
+        }
 
         /// <summary>
         /// 

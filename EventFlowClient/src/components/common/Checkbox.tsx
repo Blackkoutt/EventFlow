@@ -3,16 +3,21 @@ import { useState } from "react";
 interface CheckboxProps {
   color: string;
   text: string;
+  textColor: string;
   fontSize?: number;
   width?: number;
   height?: number;
 }
 
-const Checkbox = ({ color, text, fontSize = 12, width = 16, height = 16 }: CheckboxProps) => {
+const Checkbox = ({
+  color,
+  text,
+  textColor,
+  fontSize = 12,
+  width = 16,
+  height = 16,
+}: CheckboxProps) => {
   const [isChecked, setIsChecked] = useState(false);
-
-  const checkBoxClasses = `checked: bg-[${color}]`;
-  console.log(checkBoxClasses);
 
   return (
     <div className="flex gap-2">
@@ -31,7 +36,7 @@ const Checkbox = ({ color, text, fontSize = 12, width = 16, height = 16 }: Check
       />
       <label
         htmlFor="some_id"
-        style={{ fontSize: `${fontSize}px` }}
+        style={{ fontSize: `${fontSize}px`, color: textColor }}
         className="text-left flex items-center hover:cursor-pointer"
       >
         {text}

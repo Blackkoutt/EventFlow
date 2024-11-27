@@ -1,4 +1,5 @@
 ﻿using EventFlowAPI.DB.Entities;
+using EventFlowAPI.Logic.Helpers;
 using EventFlowAPI.Logic.Identity.Services.Interfaces;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
@@ -40,13 +41,17 @@ namespace EventFlowAPI.Logic.Identity.Services.Services
         {
             var claims = new List<Claim>
             {
-                new Claim(ClaimTypes.Name, user.UserName!)
+                new Claim("Id", user.Id!),
+                new Claim("Name", user.Name!),
+                new Claim("Surname", user.Surname!),
+                new Claim("Email", user.Email!),
+                new Claim("DateOfBirth", user.DateOfBirth.ToString(DateFormat.Date)!),
             };
             if(roles != null)
             {
                 foreach (var role in roles)
                 {
-                    claims.Add(new Claim(ClaimTypes.Role, role));
+                    claims.Add(new Claim("Role", role));
                 }
             }
            

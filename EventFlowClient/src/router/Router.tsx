@@ -9,6 +9,9 @@ import FestivalsPage from "../pages/FestivalsPage";
 import NewsPage from "../pages/NewsPage";
 import RentsPage from "../pages/RentsPage";
 import AppLayout from "../layout/AppLayout";
+import LoginPage from "../pages/LoginPage";
+import RegisterPage from "../pages/RegisterPage";
+import ForgotPasswordPage from "../pages/ForgotPasswordPage";
 
 export const router = createBrowserRouter([
   {
@@ -47,6 +50,18 @@ export const router = createBrowserRouter([
       {
         path: "/rents",
         element: <RentsPage />,
+      },
+      {
+        path: "/sign-in",
+        element: <LoginPage />,
+      },
+      {
+        path: "/sign-up",
+        element: <RegisterPage />,
+      },
+      {
+        path: "/forgot-password",
+        element: <ForgotPasswordPage />,
       },
     ],
   },

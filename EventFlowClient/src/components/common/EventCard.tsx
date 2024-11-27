@@ -15,7 +15,6 @@ const EventCard = ({ event }: EventCardProps) => {
     const date = DateFormatter.FormatDate(event.startDate, DateFormat.DayDateTime).split(" ");
     return date;
   };
-
   const [dayOfWeek, date, timeLabel, time] = FormatEventDate();
 
   return (

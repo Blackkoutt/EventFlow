@@ -65,10 +65,11 @@ app.UseHttpsRedirection();
 
 app.AddApplicationMiddleware();
 
+app.UseCors("AllowSpecificOrigins");
+
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.UseCors("AllowSpecificOrigins");
 app.UseAutoMapper();
 
 app.MapControllers();

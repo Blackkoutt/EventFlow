@@ -20,6 +20,8 @@ namespace EventFlowAPI.Logic.Identity.Services.Services
         IJWTGeneratorService jwtGeneratorService) : BaseAuthService(userManager, httpContextAccessor, configuration, jwtGeneratorService), IAuthService
     {
 
+
+
         public async Task<Result<UserRegisterResponseDto>> RegisterUser(UserRegisterRequestDto? requestDto)
         {
             if(requestDto == null)

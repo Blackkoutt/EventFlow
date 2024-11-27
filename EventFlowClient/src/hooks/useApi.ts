@@ -2,11 +2,13 @@ import { useState, useCallback } from "react";
 import ApiClient from "../services/api/ApiClientService";
 import { ApiEndpoint } from "../helpers/enums/ApiEndpointEnum";
 import { HTTPMethod } from "../helpers/enums/HTTPMethodEnum";
+import { AxiosError } from "axios";
+import { APIError } from "../models/error/APIError";
 
-interface RequestParams<TEntity> {
+interface RequestParams<TPostEntity, TPutEntity> {
   httpMethod: HTTPMethod;
   id?: number;
-  body?: TEntity;
+  body?: TPostEntity | TPutEntity;
   queryParams?: Record<string, any>;
 }
 
@@ -14,45 +16,68 @@ interface GETRequestParams {
   id?: number;
   queryParams?: Record<string, any>;
 }
-interface POSTRequestParams<TEntity> {
-  body: TEntity;
+interface POSTRequestParams<TPostEntity> {
+  body: TPostEntity;
 }
-interface PUTRequestParams<TEntity> {
+interface PUTRequestParams<TPutEntity> {
   id: number;
-  body: TEntity;
+  body: TPutEntity;
 }
 interface DELETERequestParams {
   id: number;
 }
 
-function useApi<TEntity>(endpoint: ApiEndpoint) {
+function useApi<TEntity, TPostEntity = undefined, TPutEntity = undefined>(endpoint: ApiEndpoint) {
   const [data, setData] = useState<TEntity[]>([]);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<APIError | null>(null);
   const [loading, setLoading] = useState(false);
 
   const request = useCallback(
-    async ({ httpMethod, id, body, queryParams }: RequestParams<TEntity>) => {
+    async ({ httpMethod, id, body, queryParams }: RequestParams<TPostEntity, TPutEntity>) => {
       setLoading(true);
       setError(null);
       try {
-        let response: TEntity[];
+        let response: TEntity[] = [];
         switch (httpMethod) {
           case HTTPMethod.GET:
             response = await ApiClient.Get<TEntity[]>(endpoint, queryParams);
-            console.log(
-              `${HTTPMethod[httpMethod]} ${ApiEndpoint[endpoint]}${id ? `/${id}` : ""}:`,
-              response
-            );
             setData(response);
             break;
+
+          case HTTPMethod.POST:
+            if (typeof body === undefined || body === undefined)
+              throw Error("POST Error: body is undefined");
+            response = await ApiClient.Post<TEntity, TPostEntity>(endpoint, body as TPostEntity);
+            setData((prev) => [...prev, ...response]);
+            break;
+
+          case HTTPMethod.PUT:
+            if (id === undefined) throw Error("PUT Error: id is undefined");
+            if (typeof body === undefined || body === undefined)
+              throw Error("PUT Error: body is undefined");
+            response = await ApiClient.Put<TEntity, TPutEntity>(
+              endpoint,
+              id as number,
+              body as TPutEntity
+            );
+            /* setData((prev) =>
+              prev.map((item) => (item.id === id ? { ...item, ...putResponse } : item))
+            );*/
+            break;
+
+          case HTTPMethod.DELETE:
+            if (id === undefined) throw Error("DELETE Error: id is undefined");
+            await ApiClient.Delete(endpoint, id);
+            //setData((prev) => prev.filter((item) => item.id !== id));
+            break;
+          default:
+            throw new Error(`Unsupported HTTP method: ${httpMethod}`);
         }
       } catch (error) {
-        if (error instanceof Error) {
-          setError(error.message);
-        } else {
-          setError("Something went wrong");
+        if (error instanceof AxiosError) {
+          const apiError: APIError = error.response?.data as APIError;
+          setError(apiError);
         }
-        console.log("Error: ", error);
       } finally {
         setLoading(false);
       }
@@ -60,19 +85,84 @@ function useApi<TEntity>(endpoint: ApiEndpoint) {
     [endpoint]
   );
 
-  const get = ({ id, queryParams }: GETRequestParams): Promise<void> =>
-    request({ httpMethod: HTTPMethod.GET, id: id, queryParams: queryParams });
+  const get = useCallback(
+    ({ id, queryParams }: GETRequestParams): Promise<void> =>
+      request({ httpMethod: HTTPMethod.GET, id, queryParams }),
+    [request]
+  );
 
-  const post = ({ body }: POSTRequestParams<TEntity>): Promise<void> =>
-    request({ httpMethod: HTTPMethod.POST, body: body });
+  const post = useCallback(
+    ({ body }: POSTRequestParams<TPostEntity>): Promise<void> =>
+      request({ httpMethod: HTTPMethod.POST, body }),
+    [request]
+  );
 
-  const put = ({ id, body }: PUTRequestParams<TEntity>): Promise<void> =>
-    request({ httpMethod: HTTPMethod.PUT, id: id, body: body });
+  const put = useCallback(
+    ({ id, body }: PUTRequestParams<TPutEntity>): Promise<void> =>
+      request({ httpMethod: HTTPMethod.PUT, id, body }),
+    [request]
+  );
 
-  const del = ({ id }: DELETERequestParams): Promise<void> =>
-    request({ httpMethod: HTTPMethod.DELETE, id: id });
+  const del = useCallback(
+    ({ id }: DELETERequestParams): Promise<void> => request({ httpMethod: HTTPMethod.DELETE, id }),
+    [request]
+  );
 
   return { data, error, loading, get, post, put, del };
 }
 
 export default useApi;
+
+// function useApi<TEntity, TPostEntity=undefined, TPutEntity=undefined>(endpoint: ApiEndpoint) {
+//   const [data, setData] = useState<TEntity[]>([]);
+//   const [error, setError] = useState<string | null>(null);
+//   const [loading, setLoading] = useState(false);
+
+//   const request = useCallback(
+//     async ({ httpMethod, id, body, queryParams }: RequestParams<TPostEntity, TPutEntity>) => {
+//       setLoading(true);
+//       setError(null);
+//       try {
+//         let response: TEntity[] = [];
+//         switch (httpMethod) {
+//           case HTTPMethod.GET:
+//             response = await ApiClient.Get<TEntity[]>(endpoint, queryParams);
+//             setData(response);
+//             break;
+//           case HTTPMethod.POST:
+//             if()
+//         }
+//         console.log(
+//           `${HTTPMethod[httpMethod]} ${ApiEndpoint[endpoint]}${id ? `/${id}` : ""}:`,
+//           response
+//         );
+//       } catch (error) {
+//         if (error instanceof Error) {
+//           setError(`${HTTPMethod[httpMethod]} ${ApiEndpoint[endpoint]}${id ? `/${id}` : ""}: ${error.message}`);
+//         } else {
+//           setError("Something went wrong");
+//         }
+//         console.log("Error: ", error);
+//       } finally {
+//         setLoading(false);
+//       }
+//     },
+//     [endpoint]
+//   );
+
+//   const get = ({ id, queryParams }: GETRequestParams): Promise<void> =>
+//     request({ httpMethod: HTTPMethod.GET, id: id, queryParams: queryParams });
+
+//   const post = <TPostEntity>({ body }: POSTRequestParams<TPostEntity>): Promise<void> =>
+//     request({ httpMethod: HTTPMethod.POST, body: body });
+
+//   const put = ({ id, body }: PUTRequestParams<TEntity>): Promise<void> =>
+//     request({ httpMethod: HTTPMethod.PUT, id: id, body: body });
+
+//   const del = ({ id }: DELETERequestParams): Promise<void> =>
+//     request({ httpMethod: HTTPMethod.DELETE, id: id });
+
+//   return { data, error, loading, get, post, put, del };
+// }
+
+// export default useApi;

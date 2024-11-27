@@ -13,8 +13,8 @@ const ContactItem = ({ icon, header, text }: ContactItemProps) => {
         <FontAwesomeIcon icon={icon} className="text-4xl" style={{ color: "#7B2CBF" }} />
       </div>
       <div className="flex flex-col justify-start items-start gap-1">
-        <p className="font-semibold text-black text-[18px]">{header}</p>
-        <p dangerouslySetInnerHTML={{ __html: text }}></p>
+        <p className="font-semibold text-black text-[17px]">{header}</p>
+        <p className="text-[15px]" dangerouslySetInnerHTML={{ __html: text }}></p>
       </div>
     </div>
   );

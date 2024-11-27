@@ -7,7 +7,7 @@ interface AppNavProps {
   gap?: number;
 }
 const AppNav = ({
-  fontSize = 26,
+  fontSize = 24,
   isSemibold = true,
   textColor = "#000000",
   gap = 36,
