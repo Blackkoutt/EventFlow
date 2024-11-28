@@ -1,8 +1,9 @@
 import { z } from "zod";
+import DateFormatter from "../../helpers/DateFormatter";
 
 export const dateOfBirthValidator = (minAge: number) =>
   z
-    .preprocess((input) => new Date(input as string), z.date())
+    .preprocess((input) => DateFormatter.ParseDate(input as string), z.date())
     .refine(
       (date) => {
         const today = new Date();

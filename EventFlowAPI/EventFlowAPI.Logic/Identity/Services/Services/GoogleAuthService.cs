@@ -42,7 +42,8 @@ namespace EventFlowAPI.Logic.Identity.Services.Services
             var request = _httpContextAccessor.HttpContext?.Request;
             var baseURL = $"{request?.Scheme}://{request?.Host}";
 
-            var redirectURI = $"{baseURL}/api/auth/google-login";
+            //var redirectURI = $"{baseURL}/api/auth/google-login";
+            var redirectURI = $"http://localhost:5173/sign-in";
 
             return $"https://accounts.google.com/o/oauth2/v2/auth?" +
                    $"response_type=code" +
@@ -61,7 +62,7 @@ namespace EventFlowAPI.Logic.Identity.Services.Services
                     {"code", code},
                     {"client_id", _configuration.GetSection("Authentication:Google")["clientId"]!},
                     {"client_secret", _configuration.GetSection("Authentication:Google")["clientSecret"]!},
-                    {"redirect_uri", "https://localhost:7229/api/auth/google-login"},
+                    {"redirect_uri", $"http://localhost:5173/sign-in"},
                     {"grant_type", "authorization_code"}
                 })
             };

@@ -18,6 +18,7 @@ namespace EventFlowAPI.DB.Extensions
                 UserName = "admin@gmail.com",
                 NormalizedEmail = "admin@gmail.com".ToUpper(),
                 NormalizedUserName = "admin@gmail.com".ToUpper(),
+                IsVerified = true,
                 EmailConfirmed = true,
                 RegisteredDate = today,
                 DateOfBirth = new DateTime(2000, 4, 3)
@@ -33,6 +34,7 @@ namespace EventFlowAPI.DB.Extensions
                 UserName = "mateusz.strapczuk2@gmail.com",
                 NormalizedEmail = "mateusz.strapczuk2@gmail.com".ToUpper(),
                 NormalizedUserName = "mateusz.strapczuk2@gmail.com".ToUpper(),
+                IsVerified = true,
                 RegisteredDate = today,
                 EmailConfirmed = true,
                 DateOfBirth = new DateTime(1985, 2, 1)
@@ -48,6 +50,7 @@ namespace EventFlowAPI.DB.Extensions
                 UserName = "mateusz.strapczuk3@gmail.com",
                 NormalizedEmail = "mateusz.strapczuk3@gmail.com".ToUpper(),
                 NormalizedUserName = "mateusz.strapczuk3@gmail.com".ToUpper(),
+                IsVerified = true,
                 RegisteredDate = today,
                 EmailConfirmed = true,
                 DateOfBirth = new DateTime(1979, 12, 11)
@@ -63,6 +66,7 @@ namespace EventFlowAPI.DB.Extensions
                 UserName = "mateusz.strapczuk4@gmail.com",
                 NormalizedEmail = "mateusz.strapczuk4@gmail.com".ToUpper(),
                 NormalizedUserName = "mateusz.strapczuk4@gmail.com".ToUpper(),
+                IsVerified = true,
                 RegisteredDate = today,
                 EmailConfirmed = true,
                 DateOfBirth = new DateTime(1979, 12, 11)
@@ -78,6 +82,7 @@ namespace EventFlowAPI.DB.Extensions
                 UserName = "mateusz.strapczuk1@gmail.com",
                 NormalizedEmail = "mateusz.strapczuk1@gmail.com".ToUpper(),
                 NormalizedUserName = "mateusz.strapczuk1@gmail.com".ToUpper(),
+                IsVerified = true,
                 RegisteredDate = today,
                 EmailConfirmed = true,
                 DateOfBirth = new DateTime(1979, 12, 11)

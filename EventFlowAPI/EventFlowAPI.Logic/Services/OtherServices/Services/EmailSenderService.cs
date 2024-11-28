@@ -1,4 +1,5 @@
 ﻿using EventFlowAPI.DB.Entities;
+using EventFlowAPI.DB.Entities.Abstract;
 using EventFlowAPI.Logic.Errors;
 using EventFlowAPI.Logic.Helpers;
 using EventFlowAPI.Logic.Helpers.Enums;
@@ -61,6 +62,28 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
         private string ReservationPDFFileName => $"eventflow_bilet_{{0}}.pdf";
         private string EventPassPDFFileName => $"eventflow_karnet_{{0}}.pdf";
         private string HallRentPDFFileName => $"eventflow_wynajem_sali_{{0}}.pdf";
+
+
+        public async Task<Error> SendVerificationEmail(string userEmail, string name, string activationLink)
+        {
+            if (string.IsNullOrEmpty(userEmail))
+                return MailSenderError.UserEmailIsNullOrEmpty;
+
+            var paramDictionary = GetVerificationEmailParams(activationLink, name);
+            var emailBody = await _htmlRenderer.RenderHtmlToStringAsync<UserVerificationEmailBody>(paramDictionary);
+
+            var emailDto = new EmailDto
+            {
+                Email = userEmail,
+                Subject = "Konto EventFlow - weryfikacja adresu e-mail",
+                Body = emailBody,
+                IsBodyHTML = true,
+                LinkedResources = { logoResource },
+            };
+            await SendEmailAsync(emailDto);
+
+            return Error.None;
+        }
 
 
         // EventPass
@@ -381,6 +404,15 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
             };
         }
 
+        private Dictionary<string, object?> GetVerificationEmailParams(string activationLink, string name)
+        {
+            return new Dictionary<string, object?>()
+            {
+                { "Name", name},
+                { "ActivationLink", activationLink},
+                { "LogoContentId", LogoContentId },
+            };
+        }
 
         private Dictionary<string, object?> GetDefaultHTMLParams<TEntity>(TEntity entity)
         {

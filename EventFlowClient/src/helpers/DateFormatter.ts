@@ -1,5 +1,12 @@
 import { DateFormat } from "./enums/DateFormatEnum";
 
+const ParseDate = (input: string): Date | null => {
+  const [day, month, year] = input.split(".").map(Number);
+  if (!day || !month || !year) return null;
+  const parsedDate = new Date(year, month - 1, day);
+  return isNaN(parsedDate.getTime()) ? null : parsedDate;
+};
+
 const FormatDate = (date: string, dateFormat: DateFormat): string => {
   const dateObj = new Date(date);
   let formatter: Intl.DateTimeFormat;
@@ -53,6 +60,7 @@ const FormatDate = (date: string, dateFormat: DateFormat): string => {
 
 const DateFormatter = {
   FormatDate,
+  ParseDate,
 };
 
 export default DateFormatter;

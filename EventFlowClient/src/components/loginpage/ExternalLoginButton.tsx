@@ -1,21 +1,28 @@
+import { baseUrl } from "../../config/environment/Environment";
+
 interface ExternalLoginButtonProps {
-  onClick: () => void;
   text: string;
+  loginUrl: string;
   logo: string;
+  onClick: () => void;
   logoWidth?: number;
   logoHeight?: number;
 }
 
 const ExternalLoginButton = ({
-  onClick,
   text,
   logo,
+  loginUrl,
+  onClick,
   logoWidth = 32,
   logoHeight = 32,
 }: ExternalLoginButtonProps) => {
   return (
     <button
-      onClick={() => onClick()}
+      onClick={() => {
+        onClick();
+        window.location.href = `${baseUrl}/auth${loginUrl}`;
+      }}
       className="w-full bg-white flex flex-row py-4 gap-4 justify-center items-center rounded-md shadow-md"
     >
       <img

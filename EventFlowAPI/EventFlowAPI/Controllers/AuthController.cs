@@ -104,13 +104,13 @@ namespace EventFlowAPI.Controllers
         [HttpGet("signin-facebook")]
         public IActionResult SiginFacebook() => Redirect(_facebookAuthService.GetLinkToSigninPage());
 
-        [HttpGet("google-login")]
+        [HttpPost("google-login")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<IActionResult> LoginViaGoogle(string code)
+        public async Task<IActionResult> LoginViaGoogle([FromBody] ExternalLoginRequest externalLoginRequest)
         {
-            var result = await _googleAuthService.Login(code);
+            var result = await _googleAuthService.Login(externalLoginRequest);
             if (!result.IsSuccessful)
             {
                 return result.Error.Details!.Code switch
@@ -123,13 +123,13 @@ namespace EventFlowAPI.Controllers
             return Ok(result.Value);
         }
 
-        [HttpGet("facebook-login")]
+        [HttpPost("facebook-login")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<IActionResult> LoginViaFacebook(string code)
+        public async Task<IActionResult> LoginViaFacebook([FromBody] ExternalLoginRequest externalLoginRequest)
         {
-            var result = await _facebookAuthService.Login(code);
+            var result = await _facebookAuthService.Login(externalLoginRequest);
             if (!result.IsSuccessful)
             {
                 return result.Error.Details!.Code switch

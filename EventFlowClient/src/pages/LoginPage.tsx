@@ -9,33 +9,66 @@ import fbLogo from "../assets/facebookLogo.png";
 import loginHero from "../assets/loginHero.png";
 import ExternalLoginButton from "../components/loginpage/ExternalLoginButton";
 import Checkbox from "../components/common/Checkbox";
-import { Link, useNavigate } from "react-router-dom";
-import { useEffect } from "react";
+import { Link, useNavigate, useParams } from "react-router-dom";
+import { useEffect, useState } from "react";
+import FormButton from "../components/common/forms/FormButton";
+import { ExternalLoginProvider } from "../helpers/enums/ExternalLoginProviders";
 
 const LoginPage = () => {
-  const { authenticated, handleLogin, handleLogout } = useAuth();
+  const { authenticated, handleLogin, handleExternalLogin, performAuthentication, handleLogout } =
+    useAuth();
+
   const navigate = useNavigate();
+
   const {
     register,
     handleSubmit,
-    setError,
-    setValue,
     formState: { errors, isSubmitting },
   } = useForm<UserLoginRequest>({
     defaultValues: {},
     resolver: zodResolver(userLoginSchema),
   });
 
-  console.log(authenticated);
+  useEffect(() => {
+    // External Login - exchange code from Google or Facebook for JWT token via API and set Cookie with token
+    const externalLogin = async () => {
+      const queryParams = new URLSearchParams(window.location.search);
+      const codeFromUrl = queryParams.get("code");
+      const provider = localStorage.getItem("selectedProvider");
+
+      if (codeFromUrl !== null && provider !== null) {
+        await handleExternalLogin({ code: codeFromUrl }, provider as ExternalLoginProvider);
+      } else {
+        localStorage.removeItem("selectedProvider");
+      }
+    };
+
+    // Register Login - after click verification link in email
+    const loginAfterRegister = () => {
+      const queryParams = new URLSearchParams(window.location.search);
+      const token = queryParams.get("confirm");
+      console.log(token);
+      if (token !== null) {
+        performAuthentication(token);
+      }
+    };
+
+    externalLogin();
+    loginAfterRegister();
+  }, []);
+
+  // Login direct in application
+  const onSubmit: SubmitHandler<UserLoginRequest> = async (data) => {
+    await handleLogin(data);
+  };
+
+  // Redirect after authentication to main page
   useEffect(() => {
     if (authenticated) {
       navigate("/");
     }
   }, [authenticated]);
 
-  const onSubmit: SubmitHandler<UserLoginRequest> = async (data) => {
-    await handleLogin(data);
-  };
   return (
     <div className="flex flex-row justify-center items-center gap-20 py-16 w-full">
       <div className="flex flex-col justify-center items-start">
@@ -43,7 +76,11 @@ const LoginPage = () => {
           <span className="text-[#2F2F2F] text-4xl font-semibold">Witaj w </span>
           <span className="text-primaryPurple font-extrabold text-5xl">EventFlow!</span>
         </h2>
-        <img src={loginHero} alt="Obrazek powitalny logowania" className="object-contain" />
+        <img
+          src={loginHero}
+          alt="Obrazek powitalny logowania"
+          className="object-contain w-[460px] h-[460px]"
+        />
       </div>
       <div className="bg-white min-w-[580px] rounded-md drop-shadow-xl p-10 flex flex-col justify-center items-center gap-10">
         <h3 className="text-black font-bold text-4xl">Zaloguj się</h3>
@@ -51,12 +88,18 @@ const LoginPage = () => {
           <ExternalLoginButton
             text="Zaloguj się za pomocą konta Google"
             logo={googleLogo}
-            onClick={() => {}}
+            loginUrl="/signin-google"
+            onClick={() => {
+              localStorage.setItem("selectedProvider", ExternalLoginProvider.Google);
+            }}
           />
           <ExternalLoginButton
             text="Zaloguj się za pomocą konta Facebook"
             logo={fbLogo}
-            onClick={() => {}}
+            loginUrl="/signin-facebook"
+            onClick={() => {
+              localStorage.setItem("selectedProvider", ExternalLoginProvider.Facebook);
+            }}
           />
           <div className="flex flex-row justify-between items-center w-full">
             <div className="bg-[#2F2F2F] min-h-[0.5px]" style={{ width: "43%" }}></div>
@@ -73,8 +116,8 @@ const LoginPage = () => {
               label="Email"
               type="text"
               name="email"
+              error={errors.email}
             />
-            {errors.email && <div className="text-red-500">{errors.email.message}</div>}
 
             <Input
               {...register("password")}
@@ -82,8 +125,8 @@ const LoginPage = () => {
               label="Hasło"
               type="password"
               name="password"
+              error={errors.password}
             />
-            {errors.password && <div className="text-red-500">{errors.password.message}</div>}
 
             <div className="flex flex-row justify-between items-center w-full">
               <Checkbox color="#7B2CBF" textColor="#2F2F2F" fontSize={16} text="Zapamiętaj mnie" />
@@ -91,13 +134,7 @@ const LoginPage = () => {
                 Zapomniałeś hasła?
               </Link>
             </div>
-            <button
-              disabled={isSubmitting}
-              className="bg-primaryPurple rounded-md w-full py-5 text-white"
-              type="submit"
-            >
-              {isSubmitting ? "Ładowanie..." : "Zaloguj się"}
-            </button>
+            <FormButton isSubmitting={isSubmitting} text="Zaloguj się" />
             {/* {errors.root && <div className="text-red-500">{errors.email.message}</div>} */}
             <div className="flex flex-row justify-center items-center gap-1">
               <p className="text-base text-[#2f2f2f]">Nie masz jeszcze konta? </p>

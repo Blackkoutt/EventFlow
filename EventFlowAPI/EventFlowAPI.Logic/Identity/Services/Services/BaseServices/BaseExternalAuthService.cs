@@ -1,5 +1,6 @@
 ﻿using EventFlowAPI.DB.Entities;
 using EventFlowAPI.Logic.Errors;
+using EventFlowAPI.Logic.Identity.DTO.RequestDto;
 using EventFlowAPI.Logic.Identity.DTO.ResponseDto;
 using EventFlowAPI.Logic.Identity.Helpers;
 using EventFlowAPI.Logic.Identity.Services.Interfaces;
@@ -17,14 +18,14 @@ namespace EventFlowAPI.Logic.Identity.Services.Services.BaseServices
         IConfiguration configuration,
         IJWTGeneratorService jwtGeneratorService) : BaseAuthService(userManager, httpContextAccessor, configuration, jwtGeneratorService)
     {
-        public async Task<Result<LoginResponseDto>> Login(string? code)
+        public async Task<Result<LoginResponseDto>> Login(ExternalLoginRequest externalLoginRequest)
         {
-            if (code == null)
+            Console.WriteLine($"\n\n\n\n\n\n\n\n\nexternalCode {externalLoginRequest.Code}");
+            if (externalLoginRequest.Code == null)
             {
                 return Result<LoginResponseDto>.Failure(Error.NullParameter);
             }
-
-            var token = await ExchangeCodeForTokenAsync(code);
+            var token = await ExchangeCodeForTokenAsync(externalLoginRequest.Code);
 
             if (token == null)
             {
@@ -42,7 +43,7 @@ namespace EventFlowAPI.Logic.Identity.Services.Services.BaseServices
             }
 
             var user = await _userManager.FindByEmailAsync(userInfoResult.Value.Email);
-
+            Console.WriteLine($"user {user is null}");
             if (user == null)
             {
                 user = await CreateNewUserAsync(userInfoResult.Value);
@@ -67,6 +68,14 @@ namespace EventFlowAPI.Logic.Identity.Services.Services.BaseServices
             var response = await client.SendAsync(tokenRequest);
 
             var content = await response.Content.ReadAsStringAsync();
+
+            Console.WriteLine("Response content: " + content);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                Console.WriteLine("Error response: " + response.StatusCode);
+                return null;
+            }
 
             return JsonConvert.DeserializeObject<TokenResponse>(content) ?? null;
         }

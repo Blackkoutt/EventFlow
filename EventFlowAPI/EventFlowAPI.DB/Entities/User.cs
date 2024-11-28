@@ -14,6 +14,7 @@ namespace EventFlowAPI.DB.Entities
         public string Surname { get; set; } = string.Empty;
         public DateTime RegisteredDate { get; set; }
         public string Provider { get; set; } = "APP";
+        public bool IsVerified { get; set; }
 
         public DateTime DateOfBirth { get; set; }
         public UserData? UserData { get; set; }

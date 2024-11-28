@@ -2,7 +2,7 @@
 
 namespace EventFlowAPI.Logic.Identity.DTO.RequestDto
 {
-    public class GoogleLoginRequestDto
+    public class ExternalLoginRequest
     {
         public string Code { get; set; } = string.Empty;
     }

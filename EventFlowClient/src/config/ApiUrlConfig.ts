@@ -14,10 +14,10 @@ export const ApiUrlConfig = {
     url: "/auth/login",
   },
   [ApiEndpoint.AuthLoginGoogle]: {
-    url: "/auth/register/signin-google",
+    url: "/auth/google-login",
   },
   [ApiEndpoint.AuthLoginFacebook]: {
-    url: "/auth/register/signin-facebook",
+    url: "/auth/facebook-login",
   },
   [ApiEndpoint.Equipment]: {
     url: "/equipments",

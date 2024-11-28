@@ -46,13 +46,19 @@ namespace EventFlowAPI.Logic.Identity.Services.Services
 
         protected sealed override HttpRequestMessage GetExchangeCodeForTokenRequest(string code)
         {
+            var request = _httpContextAccessor.HttpContext?.Request;
+            var baseURL = $"{request?.Scheme}://{request?.Host}";
+
+            //var redirectUri = $"{baseURL}/api/auth/facebook-login";
+            var redirectUri = $"http://localhost:5173/sign-in";     
+
             return new HttpRequestMessage(HttpMethod.Post, "https://graph.facebook.com/v10.0/oauth/access_token")
             {
                 Content = new FormUrlEncodedContent(new Dictionary<string, string>
                 {
                     {"client_id", _configuration.GetSection("Authentication:Facebook")["AppId"]!},
                     {"client_secret", _configuration.GetSection("Authentication:Facebook")["AppSecret"]!},
-                    {"redirect_uri", "https://localhost:7229/api/auth/facebook-login"},
+                    {"redirect_uri", redirectUri},
                     {"code", code},
                     {"grant_type", "authorization_code"}
                 })
@@ -66,7 +72,8 @@ namespace EventFlowAPI.Logic.Identity.Services.Services
             var request = _httpContextAccessor.HttpContext?.Request;
             var baseURL = $"{request?.Scheme}://{request?.Host}";
 
-            var redirectURI = $"{baseURL}/api/auth/facebook-login";
+            //var redirectURI = $"{baseURL}/api/auth/facebook-login";
+            var redirectURI = $"http://localhost:5173/sign-in";
 
             return $"https://www.facebook.com/v10.0/dialog/oauth?" +
                    $"client_id={appId}" +
