@@ -11,10 +11,14 @@ import fbLogo from "../assets/facebookLogo.png";
 import { UserLoginRequest } from "../models/create_schemas/auth/UserLoginSchema";
 import Input from "../components/common/forms/Input";
 import { faEnvelope, faKey, faCalendar, faUserCircle } from "@fortawesome/free-solid-svg-icons";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import DatePicker from "../components/common/forms/DatePicker";
 import FormButton from "../components/common/forms/FormButton";
 import { ExternalLoginProvider } from "../helpers/enums/ExternalLoginProviders";
+import useApi from "../hooks/useApi";
+import { ApiEndpoint } from "../helpers/enums/ApiEndpointEnum";
+import { useEffect } from "react";
+import { HTTPStatusCode } from "../helpers/enums/HTTPStatusCode";
 
 const RegisterPage = () => {
   const methods = useForm<UserRegisterRequest>({
@@ -23,11 +27,23 @@ const RegisterPage = () => {
   const { register, handleSubmit, formState } = methods;
   const { errors, isSubmitting } = formState;
 
+  const {
+    statusCode: registerStatusCode,
+    post: registerUser,
+    error: registerError,
+  } = useApi<[], UserRegisterRequest>(ApiEndpoint.AuthRegister);
+
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (registerStatusCode === HTTPStatusCode.Ok) {
+      navigate("/email-verification");
+    }
+  }, [registerStatusCode]);
+
   // Register user in application
-  const onSubmit: SubmitHandler<UserLoginRequest> = async (data) => {
-    // send request to the backend
-    // redirect to page "email z weryfikacją został wysłany.."
-    // notification
+  const onSubmit: SubmitHandler<UserRegisterRequest> = async (data) => {
+    await registerUser({ body: data });
   };
 
   return (

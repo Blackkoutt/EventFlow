@@ -15,8 +15,15 @@ import FormButton from "../components/common/forms/FormButton";
 import { ExternalLoginProvider } from "../helpers/enums/ExternalLoginProviders";
 
 const LoginPage = () => {
-  const { authenticated, handleLogin, handleExternalLogin, performAuthentication, handleLogout } =
-    useAuth();
+  const {
+    currentUser,
+    authenticated,
+    handleLogin,
+    handleExternalLogin,
+    activateUser,
+    performAuthentication,
+    handleLogout,
+  } = useAuth();
 
   const navigate = useNavigate();
 
@@ -65,6 +72,11 @@ const LoginPage = () => {
   // Redirect after authentication to main page
   useEffect(() => {
     if (authenticated) {
+      console.log("currentUser", currentUser);
+      if (!currentUser?.isVerified) {
+        console.log("!verified");
+        activateUser();
+      }
       navigate("/");
     }
   }, [authenticated]);

@@ -10,7 +10,7 @@ import { useAuth } from "../context/AuthContext";
 
 function AppLayout() {
   const { authenticated } = useAuth();
-  console.log(authenticated);
+  //console.log(authenticated);
   return (
     <>
       <header className="flex flex-col justify-center items-center">

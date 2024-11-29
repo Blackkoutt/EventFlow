@@ -1,8 +1,10 @@
-﻿using EventFlowAPI.Logic.Identity.DTO.RequestDto;
+﻿using EventFlowAPI.Logic.Errors;
+using EventFlowAPI.Logic.Identity.DTO.RequestDto;
 using EventFlowAPI.Logic.Identity.Services.Interfaces;
 using EventFlowAPI.Logic.Services.CRUDServices.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Serilog;
 using System.Net;
 using System.Security.Claims;
 
@@ -22,19 +24,32 @@ namespace EventFlowAPI.Controllers
         private readonly IFacebookAuthService _facebookAuthService = facebookAuthService;
 
 
+        [HttpPatch("activate")]
+        [Authorize]
+        public async Task<IActionResult> ActivateUser()
+        {
+            Log.Information("\n\n\n\n\n\n\n\n\n\nHellolooo01");
+            var verifyError = await _authService.VerifyUser();
+            return verifyError == Error.None ? Ok() : BadRequest(verifyError);
+        }
+
+
         [HttpGet("validate")]
         [Authorize]
         public IActionResult ValidateUser()
         {
+            //Log.Information("\n\n\n\n\n\n\n\n\n\nHellolooo02");
             var userClaims = User.Claims.ToList();
+
             return Ok(new
             {
-                id = userClaims.FirstOrDefault(c => c.Type == "Id")?.Value,
-                name = userClaims.FirstOrDefault(c => c.Type == "Name")?.Value,
-                surname = userClaims.FirstOrDefault(c => c.Type == "Surname")?.Value,
-                email = userClaims.FirstOrDefault(c => c.Type == "Email")?.Value,
-                dateOfBirth = userClaims.FirstOrDefault(c => c.Type == "DateOfBirth")?.Value,
-                roles = userClaims.Where(c => c.Type == "Role").Select(c => c.Value).ToList()
+                id = userClaims.FirstOrDefault(c => c.Type == "id")?.Value,
+                name = userClaims.FirstOrDefault(c => c.Type == "name")?.Value,
+                surname = userClaims.FirstOrDefault(c => c.Type == "surname")?.Value,
+                email = userClaims.FirstOrDefault(c => c.Type == "email")?.Value,
+                dateOfBirth = userClaims.FirstOrDefault(c => c.Type == "dateOfBirth")?.Value,
+                isVerified = userClaims.FirstOrDefault(c => c.Type == "isVerified")?.Value,
+                roles = userClaims.Where(c => c.Type == "userRoles").Select(c => c.Value).ToList()
             });
         }
 

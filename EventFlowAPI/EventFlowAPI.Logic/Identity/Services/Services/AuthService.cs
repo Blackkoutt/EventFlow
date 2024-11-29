@@ -6,13 +6,14 @@ using EventFlowAPI.Logic.Identity.Helpers;
 using EventFlowAPI.Logic.Identity.Services.Interfaces;
 using EventFlowAPI.Logic.Identity.Services.Services.BaseServices;
 using EventFlowAPI.Logic.Mapper.Extensions;
+using EventFlowAPI.Logic.Repositories.Interfaces;
 using EventFlowAPI.Logic.ResultObject;
 using EventFlowAPI.Logic.Services.OtherServices.Interfaces;
+using EventFlowAPI.Logic.UnitOfWork;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.UI.Services;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
+using Serilog;
 
 namespace EventFlowAPI.Logic.Identity.Services.Services
 {
@@ -21,9 +22,37 @@ namespace EventFlowAPI.Logic.Identity.Services.Services
         IHttpContextAccessor httpContextAccessor,
         IConfiguration configuration,
         IEmailSenderService emailSender,
-        IJWTGeneratorService jwtGeneratorService) : BaseAuthService(userManager, httpContextAccessor, configuration, jwtGeneratorService), IAuthService
+        IUnitOfWork unitOfWork,
+        IJWTGeneratorService jwtGeneratorService) : BaseAuthService(userManager, httpContextAccessor, configuration, unitOfWork, jwtGeneratorService), IAuthService
     {
-        private readonly IEmailSenderService _emailSender = emailSender;   
+        private readonly IEmailSenderService _emailSender = emailSender; 
+        
+        public async Task<Error> VerifyUser()
+        {
+            Log.Information("Veryfying1");
+            var currentUserIdResult = GetCurrentUserId();
+            if (!currentUserIdResult.IsSuccessful)
+                return currentUserIdResult.Error;
+
+            Log.Information("Veryfying3");
+
+            var userId = currentUserIdResult.Value;
+
+            Log.Information($"UserId {userId}");
+
+            var _userRepository = (IUserRepository)_unitOfWork.GetRepository<User>();
+
+            var user = await _userRepository.GetOneAsync(userId);
+            if (user is null)
+                return UserError.UserNotFound;
+
+            user.IsVerified = true;
+            _userRepository.Update(user);
+            await _unitOfWork.SaveChangesAsync();
+
+            return Error.None;
+        }
+        
         public async Task<Result<UserRegisterResponseDto>> RegisterUser(UserRegisterRequestDto? requestDto)
         {
             if(requestDto == null)

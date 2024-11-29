@@ -16,7 +16,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
         public async Task<Result<UserResponseDto>> GetCurrentUser()
         {
-            var currentUserIdResult = await _authService.GetCurrentUserId();
+            var currentUserIdResult = _authService.GetCurrentUserId();
             if (!currentUserIdResult.IsSuccessful)
                 return Result<UserResponseDto>.Failure(currentUserIdResult.Error);
 

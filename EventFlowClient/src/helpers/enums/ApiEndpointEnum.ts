@@ -3,6 +3,7 @@ export enum ApiEndpoint {
   AuthValidate,
   AuthRegister,
   AuthLogin,
+  AuthActivate,
   AuthLoginGoogle,
   AuthLoginFacebook,
   Equipment,

@@ -5,10 +5,10 @@ import { HTTPMethod } from "../helpers/enums/HTTPMethodEnum";
 import { AxiosError } from "axios";
 import { APIError } from "../models/error/APIError";
 
-interface RequestParams<TPostEntity, TPutEntity> {
+interface RequestParams<TPostEntity, TPutEntity, TPatchEntity> {
   httpMethod: HTTPMethod;
   id?: number;
-  body?: TPostEntity | TPutEntity;
+  body?: TPostEntity | TPutEntity | TPatchEntity;
   queryParams?: Record<string, any>;
 }
 
@@ -23,39 +23,64 @@ interface PUTRequestParams<TPutEntity> {
   id: number;
   body: TPutEntity;
 }
+interface PATCHRequestParams<TPatchEntity> {
+  id?: number;
+  body?: TPatchEntity;
+}
 interface DELETERequestParams {
   id: number;
 }
 
-function useApi<TEntity, TPostEntity = undefined, TPutEntity = undefined>(endpoint: ApiEndpoint) {
+function useApi<TEntity, TPostEntity = undefined, TPutEntity = undefined, TPatchEntity = undefined>(
+  endpoint: ApiEndpoint
+) {
   const [data, setData] = useState<TEntity[]>([]);
+  const [statusCode, setStatusCode] = useState<number | null>(null);
   const [error, setError] = useState<APIError | null>(null);
   const [loading, setLoading] = useState(false);
 
   const request = useCallback(
-    async ({ httpMethod, id, body, queryParams }: RequestParams<TPostEntity, TPutEntity>) => {
+    async ({
+      httpMethod,
+      id,
+      body,
+      queryParams,
+    }: RequestParams<TPostEntity, TPutEntity, TPatchEntity>) => {
       setLoading(true);
       setError(null);
       try {
-        let response: TEntity[] = [];
         switch (httpMethod) {
           case HTTPMethod.GET:
-            response = await ApiClient.Get<TEntity[]>(endpoint, queryParams);
-            setData(response);
+            const [getData, getCode] = await ApiClient.Get<TEntity[]>(endpoint, queryParams);
+            let dataArray: TEntity[] = getData as TEntity[];
+            if (!Array.isArray(dataArray)) dataArray = [getData as TEntity];
+            setData(dataArray);
+            setStatusCode(getCode as number);
             break;
 
           case HTTPMethod.POST:
             if (typeof body === undefined || body === undefined)
               throw Error("POST Error: body is undefined");
-            response = await ApiClient.Post<TEntity, TPostEntity>(endpoint, body as TPostEntity);
-            setData((prev) => [...prev, ...response]);
+            const [postData, postCode] = await ApiClient.Post<TEntity, TPostEntity>(
+              endpoint,
+              body as TPostEntity
+            );
+            /* setData((prev) => {
+              if (Array.isArray(prev)) {
+                return [...prev, postData as TEntity];
+              } else {
+                return postData as TEntity;
+              }
+            });*/
+            setData((prev) => [...prev, postData as TEntity]);
+            setStatusCode(postCode as number);
             break;
 
           case HTTPMethod.PUT:
             if (id === undefined) throw Error("PUT Error: id is undefined");
             if (typeof body === undefined || body === undefined)
               throw Error("PUT Error: body is undefined");
-            response = await ApiClient.Put<TEntity, TPutEntity>(
+            const [putData, putCode] = await ApiClient.Put<TEntity, TPutEntity>(
               endpoint,
               id as number,
               body as TPutEntity
@@ -63,12 +88,29 @@ function useApi<TEntity, TPostEntity = undefined, TPutEntity = undefined>(endpoi
             /* setData((prev) =>
               prev.map((item) => (item.id === id ? { ...item, ...putResponse } : item))
             );*/
+            setStatusCode(putCode as number);
+            break;
+
+          case HTTPMethod.PATCH:
+            console.log("heloov2");
+            console.log("endpoint", endpoint);
+            const [patchData, patchCode] = await ApiClient.Patch<TEntity, TPatchEntity>(
+              endpoint,
+              body as TPatchEntity | undefined,
+              id
+            );
+            console.log("patchCode", patchCode);
+            /* setData((prev) =>
+                prev.map((item) => (item.id === id ? { ...item, ...putResponse } : item))
+              );*/
+            setStatusCode(patchCode as number);
             break;
 
           case HTTPMethod.DELETE:
             if (id === undefined) throw Error("DELETE Error: id is undefined");
-            await ApiClient.Delete(endpoint, id);
+            const [deleteData, deleteCode] = await ApiClient.Delete(endpoint, id);
             //setData((prev) => prev.filter((item) => item.id !== id));
+            setStatusCode(deleteCode as number);
             break;
           default:
             throw new Error(`Unsupported HTTP method: ${httpMethod}`);
@@ -76,7 +118,9 @@ function useApi<TEntity, TPostEntity = undefined, TPutEntity = undefined>(endpoi
       } catch (error) {
         if (error instanceof AxiosError) {
           const apiError: APIError = error.response?.data as APIError;
+          console.log(error);
           setError(apiError);
+          setStatusCode(apiError.code);
         }
       } finally {
         setLoading(false);
@@ -103,12 +147,18 @@ function useApi<TEntity, TPostEntity = undefined, TPutEntity = undefined>(endpoi
     [request]
   );
 
+  const patch = useCallback(
+    ({ id, body }: PATCHRequestParams<TPatchEntity>): Promise<void> =>
+      request({ httpMethod: HTTPMethod.PATCH, id, body }),
+    [request]
+  );
+
   const del = useCallback(
     ({ id }: DELETERequestParams): Promise<void> => request({ httpMethod: HTTPMethod.DELETE, id }),
     [request]
   );
 
-  return { data, error, loading, get, post, put, del };
+  return { data, error, statusCode, loading, get, post, put, patch, del };
 }
 
 export default useApi;

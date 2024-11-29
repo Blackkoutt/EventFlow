@@ -5,6 +5,7 @@ using EventFlowAPI.Logic.Identity.DTO.ResponseDto;
 using EventFlowAPI.Logic.Identity.Helpers;
 using EventFlowAPI.Logic.Identity.Services.Interfaces;
 using EventFlowAPI.Logic.ResultObject;
+using EventFlowAPI.Logic.UnitOfWork;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
@@ -16,7 +17,8 @@ namespace EventFlowAPI.Logic.Identity.Services.Services.BaseServices
         UserManager<User> userManager,
         IHttpContextAccessor httpContextAccessor,
         IConfiguration configuration,
-        IJWTGeneratorService jwtGeneratorService) : BaseAuthService(userManager, httpContextAccessor, configuration, jwtGeneratorService)
+        IUnitOfWork unitOfWork,
+        IJWTGeneratorService jwtGeneratorService) : BaseAuthService(userManager, httpContextAccessor, configuration, unitOfWork, jwtGeneratorService)
     {
         public async Task<Result<LoginResponseDto>> Login(ExternalLoginRequest externalLoginRequest)
         {
@@ -95,6 +97,7 @@ namespace EventFlowAPI.Logic.Identity.Services.Services.BaseServices
                 Surname = nameAndSurnameDictionary["Surname"],
                 UserName = user.Email,
                 Email = user.Email,
+                IsVerified = true,
                 Provider = GetProviderName()
             };
             await _userManager.CreateAsync(newUser);

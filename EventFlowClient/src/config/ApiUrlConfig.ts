@@ -13,6 +13,9 @@ export const ApiUrlConfig = {
   [ApiEndpoint.AuthLogin]: {
     url: "/auth/login",
   },
+  [ApiEndpoint.AuthActivate]: {
+    url: "/auth/activate",
+  },
   [ApiEndpoint.AuthLoginGoogle]: {
     url: "/auth/google-login",
   },

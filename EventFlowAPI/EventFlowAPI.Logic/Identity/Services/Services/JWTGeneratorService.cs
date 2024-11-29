@@ -41,17 +41,18 @@ namespace EventFlowAPI.Logic.Identity.Services.Services
         {
             var claims = new List<Claim>
             {
-                new Claim("Id", user.Id!),
-                new Claim("Name", user.Name!),
-                new Claim("Surname", user.Surname!),
-                new Claim("Email", user.Email!),
-                new Claim("DateOfBirth", user.DateOfBirth.ToString(DateFormat.Date)!),
+                new Claim("id", user.Id!),
+                new Claim("name", user.Name!),
+                new Claim("surname", user.Surname!),
+                new Claim("email", user.Email!),
+                new Claim("dateOfBirth", user.DateOfBirth.ToString(DateFormat.Date)!),
+                new Claim("isVerified", user.IsVerified.ToString())
             };
             if(roles != null)
             {
                 foreach (var role in roles)
                 {
-                    claims.Add(new Claim("Role", role));
+                    claims.Add(new Claim("userRoles", role));
                 }
             }
            

@@ -9,6 +9,7 @@ import { removeJWTTokenCookie, setJWTTokenCookie } from "../helpers/cookies/JWTC
 import { ExternalLoginRequest } from "../models/create_schemas/auth/ExternalLoginSchema";
 import { ExternalLoginProvider } from "../helpers/enums/ExternalLoginProviders";
 import { APIError } from "../models/error/APIError";
+import { BlockList } from "net";
 
 type AuthContextType = {
   authenticated?: boolean | null;
@@ -19,6 +20,7 @@ type AuthContextType = {
     provider: ExternalLoginProvider
   ) => Promise<void>;
   performAuthentication: (token?: string, errorMessages?: APIError[]) => void;
+  activateUser: () => void;
   handleLogout: () => void;
 };
 
@@ -51,9 +53,16 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     error: loginFacebookError,
   } = useApi<UserLogin, ExternalLoginRequest>(ApiEndpoint.AuthLoginFacebook);
 
+  // Activate User
+  const {
+    statusCode: activateStatusCode,
+    patch: patchActivateUser,
+    error: activateError,
+  } = useApi<UserLogin, ExternalLoginRequest>(ApiEndpoint.AuthActivate);
+
   // Auth Validation
   const {
-    data: user,
+    data: validatedUser,
     get: validateUser,
     error: userError,
   } = useApi<User>(ApiEndpoint.AuthValidate);
@@ -65,13 +74,24 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   }, []);
 
   useEffect(() => {
-    console.log("user", user);
-    if (user.length == 0) {
+    console.log(validatedUser[0]);
+    if (validatedUser.length == 0) {
       setAuthenticated(false);
+      setCurrentUser(null);
     } else {
       setAuthenticated(true);
+      const user = validatedUser[0];
+      setCurrentUser({
+        id: user.id,
+        name: user.name,
+        surname: user.surname,
+        email: user.email,
+        isVerified: JSON.parse(`${user.isVerified}`.toLowerCase()),
+        dateOfBirth: user.dateOfBirth,
+        userRoles: user.userRoles,
+      });
     }
-  }, [user]);
+  }, [validatedUser]);
 
   // Set Cookie with JWT token if user is Authenticated
   useEffect(() => {
@@ -82,14 +102,13 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     ];
 
     let token: string | undefined = undefined;
-
     for (const { response, error } of loginResponses) {
       if (error === null && response.length > 0) {
         token = response[0].token;
         break;
       }
     }
-
+    console.log("token", token);
     const errorMessages = [loginError, loginGoogleError, loginFacebookError].filter(
       (error) => error !== null
     );
@@ -106,10 +125,18 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
   const performAuthentication = (token?: string, errorMessages?: APIError[]) => {
     if (token !== undefined) {
-      console.log(token);
       setAuthenticated(true);
-      const decodedToken = jwtDecode(token);
-      console.log(decodedToken);
+      const decodedToken = jwtDecode(token) as User;
+      console.log("decodedToken", decodedToken);
+      setCurrentUser({
+        id: decodedToken.id,
+        name: decodedToken.name,
+        surname: decodedToken.surname,
+        email: decodedToken.email,
+        isVerified: JSON.parse(`${decodedToken.isVerified}`.toLowerCase()),
+        dateOfBirth: decodedToken.dateOfBirth,
+        userRoles: decodedToken.userRoles,
+      });
       setJWTTokenCookie(token);
     } else if (errorMessages !== undefined && errorMessages.length > 0) {
       console.log("Error:", errorMessages[0]);
@@ -118,6 +145,10 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
   const handleLogin = async (loginRequest: UserLoginRequest) => {
     await loginUser({ body: loginRequest });
+  };
+
+  const activateUser = async () => {
+    await patchActivateUser({ id: undefined, body: undefined });
   };
 
   const handleExternalLogin = async (
@@ -148,6 +179,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         handleLogin,
         handleExternalLogin,
         performAuthentication,
+        activateUser,
         handleLogout,
       }}
     >

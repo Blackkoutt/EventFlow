@@ -4,6 +4,7 @@ using EventFlowAPI.Logic.Identity.DTO.ResponseDto;
 using EventFlowAPI.Logic.Identity.Services.Interfaces;
 using EventFlowAPI.Logic.Identity.Services.Services.BaseServices;
 using EventFlowAPI.Logic.ResultObject;
+using EventFlowAPI.Logic.UnitOfWork;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
@@ -16,7 +17,8 @@ namespace EventFlowAPI.Logic.Identity.Services.Services
         UserManager<User> userManager,
         IHttpContextAccessor httpContextAccessor,
         IConfiguration configuration,
-        IJWTGeneratorService jwtGeneratorService) : BaseExternalAuthService(userManager, httpContextAccessor, configuration, jwtGeneratorService), IGoogleAuthService
+        IUnitOfWork unitOfWork,
+        IJWTGeneratorService jwtGeneratorService) : BaseExternalAuthService(userManager, httpContextAccessor, configuration, unitOfWork, jwtGeneratorService), IGoogleAuthService
     {
 
         protected sealed override async Task<Result<ExternalLoginUserResponse>> GetInfoAboutUser(DTO.ResponseDto.TokenResponse token)

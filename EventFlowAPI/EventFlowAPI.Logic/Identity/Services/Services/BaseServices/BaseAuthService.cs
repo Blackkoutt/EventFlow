@@ -3,9 +3,11 @@ using EventFlowAPI.Logic.Errors;
 using EventFlowAPI.Logic.Identity.Services.Interfaces;
 using EventFlowAPI.Logic.Identity.Services.Interfaces.BaseInterfaces;
 using EventFlowAPI.Logic.ResultObject;
+using EventFlowAPI.Logic.UnitOfWork;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
+using Serilog;
 
 namespace EventFlowAPI.Logic.Identity.Services.Services.BaseServices
 {
@@ -13,31 +15,30 @@ namespace EventFlowAPI.Logic.Identity.Services.Services.BaseServices
         UserManager<User> userManager,
         IHttpContextAccessor httpContextAccessor,
         IConfiguration configuration,
+        IUnitOfWork unitOfWork,
         IJWTGeneratorService jwtGeneratorService) : IBaseAuthService
     {
         protected readonly UserManager<User> _userManager = userManager;
         protected readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
         protected readonly IJWTGeneratorService _jwtGeneratorService = jwtGeneratorService;
         protected readonly IConfiguration _configuration = configuration;
+        protected readonly IUnitOfWork _unitOfWork = unitOfWork;
 
-        public async Task<Result<string>> GetCurrentUserId()
+        public Result<string> GetCurrentUserId()
         {
             var httpContext = _httpContextAccessor.HttpContext;
             if (httpContext == null)
-            {
                 return Result<string>.Failure(AuthError.HttpContextNotAvailable);
-            }
-            var userEmail = httpContext.User.Identity?.Name;
-            if (userEmail == null)
-            {
+
+            var userIdentity = httpContext.User.Identities.FirstOrDefault();
+            if (userIdentity == null)
                 return Result<string>.Failure(AuthError.CanNotConfirmIdentity);
-            }
-            var user = await _userManager.FindByEmailAsync(userEmail);
-            if (user == null)
-            {
-                return Result<string>.Failure(AuthError.CanNotFoundUserInDB);
-            }
-            return Result<string>.Success(user.Id);
+
+            var userId = userIdentity.Claims.FirstOrDefault(c => c.Type == "id")?.Value;
+            if(userId == null)
+                return Result<string>.Failure(AuthError.UserHaventIdClaim);
+
+            return Result<string>.Success(userId);
         }
         public async Task<IList<string>?> GetRolesForCurrentUser(User user) => await _userManager.GetRolesAsync(user);
     }

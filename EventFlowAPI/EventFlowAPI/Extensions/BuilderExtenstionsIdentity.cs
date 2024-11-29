@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
+using Serilog;
 using System.Text;
 
 namespace EventFlowAPI.Extensions
@@ -38,13 +39,13 @@ namespace EventFlowAPI.Extensions
                 {
                     OnMessageReceived = context =>
                     {
-                        foreach (var header in context.Request.Headers)
+                       /* foreach (var header in context.Request.Headers)
                         {
                             Console.WriteLine($"{header.Key}: {header.Value}");
-                        }
+                        }*/
 
                         var token = context.Request.Cookies["EventFlowJWTCookie"];
-                        Console.WriteLine($"token {token}");
+                       // Log.Information($"Token {token}");
                         if (!string.IsNullOrEmpty(token))
                         {
                             context.Token = token;

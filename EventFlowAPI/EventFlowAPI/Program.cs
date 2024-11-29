@@ -8,6 +8,7 @@ using EventFlowAPI.Logic.Services.OtherServices.Services;
 using EventFlowAPI.Logic.UnitOfWork;
 using EventFlowAPI.Middleware;
 using QuestPDF.Infrastructure;
+using Serilog;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -29,6 +30,8 @@ builder.AddIdentity();
 builder.AddAuthentication(jwtSettingsSection: "JWTSettings",
                           googleAuthSection: "Authentication:Google",
                           facebookAuthSection: "Authentication:Facebook");
+
+Log.Logger = new LoggerConfiguration().MinimumLevel.Information().WriteTo.Console().CreateLogger();
 
 // UnitOfWork
 builder.Services.AddUnitOfWork();
