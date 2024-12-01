@@ -16,7 +16,7 @@ const DatePicker = React.forwardRef<HTMLInputElement, DatePickerProps>(
     const [selectedDate, setSelectedDate] = useState<Date | null>(null);
     const [currentMonth, setCurrentMonth] = useState(new Date());
 
-    const { setValue } = useFormContext();
+    const { setValue, register } = useFormContext();
 
     useEffect(() => {
       if (selectedDate !== null) setValue(name, selectedDate.toLocaleDateString());
@@ -93,7 +93,8 @@ const DatePicker = React.forwardRef<HTMLInputElement, DatePickerProps>(
               {label}
             </label>
             <input
-              ref={ref}
+              {...register(name)}
+              //ref={ref}
               name={name}
               id={name}
               type="text"

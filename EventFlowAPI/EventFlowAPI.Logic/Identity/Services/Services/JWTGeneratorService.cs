@@ -44,7 +44,7 @@ namespace EventFlowAPI.Logic.Identity.Services.Services
                 new Claim("id", user.Id!),
                 new Claim("name", user.Name!),
                 new Claim("surname", user.Surname!),
-                new Claim("email", user.Email!),
+                new Claim("emailAddress", user.Email!),
                 new Claim("dateOfBirth", user.DateOfBirth.ToString(DateFormat.Date)!),
                 new Claim("isVerified", user.IsVerified.ToString())
             };

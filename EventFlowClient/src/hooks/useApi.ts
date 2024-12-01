@@ -1,9 +1,10 @@
 import { useState, useCallback } from "react";
-import ApiClient from "../services/api/ApiClientService";
+import ApiClient, { api } from "../services/api/ApiClientService";
 import { ApiEndpoint } from "../helpers/enums/ApiEndpointEnum";
 import { HTTPMethod } from "../helpers/enums/HTTPMethodEnum";
 import { AxiosError } from "axios";
 import { APIError } from "../models/error/APIError";
+import { toast } from "react-toastify";
 
 interface RequestParams<TPostEntity, TPutEntity, TPatchEntity> {
   httpMethod: HTTPMethod;
@@ -115,12 +116,23 @@ function useApi<TEntity, TPostEntity = undefined, TPutEntity = undefined, TPatch
           default:
             throw new Error(`Unsupported HTTP method: ${httpMethod}`);
         }
-      } catch (error) {
-        if (error instanceof AxiosError) {
-          const apiError: APIError = error.response?.data as APIError;
-          console.log(error);
+      } catch (catchedError) {
+        if (catchedError instanceof AxiosError) {
+          const apiError: APIError = {
+            code: catchedError.response?.data.Code || catchedError.response?.data.code,
+            title: catchedError.response?.data.Title || catchedError.response?.data.title,
+            type: catchedError.response?.data.Type || catchedError.response?.data.type,
+            details: catchedError.response?.data.Details || catchedError.response?.data.details,
+          };
+
+          console.log("API Error: ", apiError);
           setError(apiError);
           setStatusCode(apiError.code);
+          if (apiError.details.errors.length > 0) {
+            apiError.details.errors.forEach((error) => {
+              toast.error(error);
+            });
+          }
         }
       } finally {
         setLoading(false);

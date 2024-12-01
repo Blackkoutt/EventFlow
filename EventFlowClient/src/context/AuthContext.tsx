@@ -5,11 +5,14 @@ import { ApiEndpoint } from "../helpers/enums/ApiEndpointEnum";
 import useApi from "../hooks/useApi";
 import { UserLoginRequest } from "../models/create_schemas/auth/UserLoginSchema";
 import { jwtDecode } from "jwt-decode";
-import { removeJWTTokenCookie, setJWTTokenCookie } from "../helpers/cookies/JWTCookie";
+import {
+  isJWTTokenCookieExist,
+  removeJWTTokenCookie,
+  setJWTTokenCookie,
+} from "../helpers/cookies/JWTCookie";
 import { ExternalLoginRequest } from "../models/create_schemas/auth/ExternalLoginSchema";
 import { ExternalLoginProvider } from "../helpers/enums/ExternalLoginProviders";
 import { APIError } from "../models/error/APIError";
-import { BlockList } from "net";
 
 type AuthContextType = {
   authenticated?: boolean | null;
@@ -29,56 +32,54 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 type AuthProviderProps = PropsWithChildren;
 
 export const AuthProvider = ({ children }: AuthProviderProps) => {
-  const [authenticated, setAuthenticated] = useState<boolean | null>();
+  const [authenticated, setAuthenticated] = useState<boolean | null>(isJWTTokenCookieExist());
   const [currentUser, setCurrentUser] = useState<User | null>();
 
   // Login in application
-  const {
-    data: loginResponse,
-    post: loginUser,
-    error: loginError,
-  } = useApi<UserLogin, UserLoginRequest>(ApiEndpoint.AuthLogin);
+  const { data: loginResponse, post: loginUser } = useApi<UserLogin, UserLoginRequest>(
+    ApiEndpoint.AuthLogin
+  );
 
   // External login in application via Google
-  const {
-    data: loginGoogleResponse,
-    post: loginGoogleUser,
-    error: loginGoogleError,
-  } = useApi<UserLogin, ExternalLoginRequest>(ApiEndpoint.AuthLoginGoogle);
+  const { data: loginGoogleResponse, post: loginGoogleUser } = useApi<
+    UserLogin,
+    ExternalLoginRequest
+  >(ApiEndpoint.AuthLoginGoogle);
 
   // External login in application via Facebook
-  const {
-    data: loginFacebookResponse,
-    post: loginFacebookUser,
-    error: loginFacebookError,
-  } = useApi<UserLogin, ExternalLoginRequest>(ApiEndpoint.AuthLoginFacebook);
+  const { data: loginFacebookResponse, post: loginFacebookUser } = useApi<
+    UserLogin,
+    ExternalLoginRequest
+  >(ApiEndpoint.AuthLoginFacebook);
 
   // Activate User
-  const {
-    statusCode: activateStatusCode,
-    patch: patchActivateUser,
-    error: activateError,
-  } = useApi<UserLogin, ExternalLoginRequest>(ApiEndpoint.AuthActivate);
+  const { statusCode: activateStatusCode, patch: patchActivateUser } = useApi<
+    UserLogin,
+    ExternalLoginRequest
+  >(ApiEndpoint.AuthActivate);
 
   // Auth Validation
   const {
     data: validatedUser,
     get: validateUser,
-    error: userError,
+    error: validateUserError,
   } = useApi<User>(ApiEndpoint.AuthValidate);
 
   // Auth Validation
   useEffect(() => {
-    // get info from local storage
-    validateUser({ id: undefined, queryParams: undefined });
+    if (isJWTTokenCookieExist()) {
+      validateUser({ id: undefined, queryParams: undefined });
+    } else {
+      setAuthenticated(false);
+      setCurrentUser(null);
+    }
   }, []);
 
   useEffect(() => {
-    console.log(validatedUser[0]);
-    if (validatedUser.length == 0) {
+    if (validateUserError !== null) {
       setAuthenticated(false);
       setCurrentUser(null);
-    } else {
+    } else if (validateUser.length !== 0 && validatedUser[0] !== undefined) {
       setAuthenticated(true);
       const user = validatedUser[0];
       setCurrentUser({
@@ -91,55 +92,44 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         userRoles: user.userRoles,
       });
     }
-  }, [validatedUser]);
+  }, [validatedUser, validateUserError]);
 
   // Set Cookie with JWT token if user is Authenticated
   useEffect(() => {
-    const loginResponses = [
-      { response: loginResponse, error: loginError },
-      { response: loginGoogleResponse, error: loginGoogleError },
-      { response: loginFacebookResponse, error: loginFacebookError },
-    ];
+    const loginResponses = [loginResponse, loginGoogleResponse, loginFacebookResponse];
 
     let token: string | undefined = undefined;
-    for (const { response, error } of loginResponses) {
-      if (error === null && response.length > 0) {
+    for (const response of loginResponses) {
+      if (response.length > 0) {
         token = response[0].token;
         break;
       }
     }
     console.log("token", token);
-    const errorMessages = [loginError, loginGoogleError, loginFacebookError].filter(
-      (error) => error !== null
-    );
 
-    performAuthentication(token, errorMessages);
-  }, [
-    loginResponse,
-    loginError,
-    loginGoogleResponse,
-    loginGoogleError,
-    loginFacebookResponse,
-    loginFacebookError,
-  ]);
+    performAuthentication(token);
+  }, [loginResponse, loginGoogleResponse, loginFacebookResponse]);
 
-  const performAuthentication = (token?: string, errorMessages?: APIError[]) => {
+  const performAuthentication = (token?: string) => {
     if (token !== undefined) {
       setAuthenticated(true);
-      const decodedToken = jwtDecode(token) as User;
-      console.log("decodedToken", decodedToken);
+      const decodedToken = jwtDecode(token);
+      console.log(decodedToken);
+      const userDecodedToken = decodedToken as User;
+      let tokenExpirationDate: Date | undefined = undefined;
+      if (decodedToken.exp !== undefined) {
+        tokenExpirationDate = new Date(decodedToken.exp * 1000);
+      }
       setCurrentUser({
-        id: decodedToken.id,
-        name: decodedToken.name,
-        surname: decodedToken.surname,
-        email: decodedToken.email,
-        isVerified: JSON.parse(`${decodedToken.isVerified}`.toLowerCase()),
-        dateOfBirth: decodedToken.dateOfBirth,
-        userRoles: decodedToken.userRoles,
+        id: userDecodedToken.id,
+        name: userDecodedToken.name,
+        surname: userDecodedToken.surname,
+        email: userDecodedToken.email,
+        isVerified: JSON.parse(`${userDecodedToken.isVerified}`.toLowerCase()),
+        dateOfBirth: userDecodedToken.dateOfBirth,
+        userRoles: userDecodedToken.userRoles,
       });
-      setJWTTokenCookie(token);
-    } else if (errorMessages !== undefined && errorMessages.length > 0) {
-      console.log("Error:", errorMessages[0]);
+      setJWTTokenCookie(token, tokenExpirationDate);
     }
   };
 

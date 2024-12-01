@@ -7,10 +7,12 @@ import { faLocationDot, faEnvelope } from "@fortawesome/free-solid-svg-icons";
 import SocialMediaIcon from "../components/common/SocialMediaIcon";
 import ContactItem from "../components/layout/ContactItem";
 import { useAuth } from "../context/AuthContext";
+import { Slide, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function AppLayout() {
   const { authenticated } = useAuth();
-  //console.log(authenticated);
+
   return (
     <>
       <header className="flex flex-col justify-center items-center">
@@ -52,6 +54,20 @@ function AppLayout() {
       </header>
       <main className="flex flex-col justify-center items-center">
         <Outlet />
+        <ToastContainer
+          position="bottom-right"
+          autoClose={3000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          theme="colored"
+          transition={Slide}
+          limit={5}
+        />
       </main>
       <footer className="w-full border-t-4 border-black pt-6 pb-10 flex flex-col gap-8 items-start justify-start">
         <div className="flex flex-row justify-between items-center w-full pr-8">

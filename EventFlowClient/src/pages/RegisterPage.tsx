@@ -8,9 +8,8 @@ import registerHero from "../assets/registerHero.png";
 import ExternalLoginButton from "../components/loginpage/ExternalLoginButton";
 import googleLogo from "../assets/googleLogo.png";
 import fbLogo from "../assets/facebookLogo.png";
-import { UserLoginRequest } from "../models/create_schemas/auth/UserLoginSchema";
 import Input from "../components/common/forms/Input";
-import { faEnvelope, faKey, faCalendar, faUserCircle } from "@fortawesome/free-solid-svg-icons";
+import { faEnvelope, faKey, faUserCircle } from "@fortawesome/free-solid-svg-icons";
 import { Link, useNavigate } from "react-router-dom";
 import DatePicker from "../components/common/forms/DatePicker";
 import FormButton from "../components/common/forms/FormButton";
@@ -24,7 +23,7 @@ const RegisterPage = () => {
   const methods = useForm<UserRegisterRequest>({
     resolver: zodResolver(userRegisterSchema),
   });
-  const { register, handleSubmit, formState } = methods;
+  const { register, handleSubmit, formState, watch } = methods;
   const { errors, isSubmitting } = formState;
 
   const {
@@ -67,16 +66,8 @@ const RegisterPage = () => {
               className="flex flex-col justify-center items-center gap-6 w-full"
               onSubmit={handleSubmit(onSubmit)}
             >
+              <Input icon={faUserCircle} label="Imię" type="text" name="name" error={errors.name} />
               <Input
-                {...register("name")}
-                icon={faUserCircle}
-                label="Imię"
-                type="text"
-                name="name"
-                error={errors.name}
-              />
-              <Input
-                {...register("surname")}
                 icon={faUserCircle}
                 label="Nazwisko"
                 type="text"
@@ -85,7 +76,6 @@ const RegisterPage = () => {
               />
 
               <Input
-                {...register("email")}
                 icon={faEnvelope}
                 label="Email"
                 type="email"
@@ -94,14 +84,13 @@ const RegisterPage = () => {
               />
 
               <DatePicker
-                {...register("dateOfBirth")}
+                //{...register("dateOfBirth")}
                 label="Data urodzenia"
                 name="dateOfBirth"
                 error={errors.dateOfBirth}
               />
 
               <Input
-                {...register("password")}
                 icon={faKey}
                 label="Hasło"
                 type="password"
@@ -110,7 +99,6 @@ const RegisterPage = () => {
               />
 
               <Input
-                {...register("confirmPassword")}
                 icon={faKey}
                 label="Powtórz hasło"
                 type="password"

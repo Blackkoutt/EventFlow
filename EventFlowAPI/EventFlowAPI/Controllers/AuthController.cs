@@ -1,4 +1,5 @@
-﻿using EventFlowAPI.Logic.Errors;
+﻿using EventFlowAPI.DB.Entities;
+using EventFlowAPI.Logic.Errors;
 using EventFlowAPI.Logic.Identity.DTO.RequestDto;
 using EventFlowAPI.Logic.Identity.Services.Interfaces;
 using EventFlowAPI.Logic.Services.CRUDServices.Interfaces;
@@ -38,15 +39,16 @@ namespace EventFlowAPI.Controllers
         [Authorize]
         public IActionResult ValidateUser()
         {
-            //Log.Information("\n\n\n\n\n\n\n\n\n\nHellolooo02");
+
             var userClaims = User.Claims.ToList();
+
 
             return Ok(new
             {
                 id = userClaims.FirstOrDefault(c => c.Type == "id")?.Value,
                 name = userClaims.FirstOrDefault(c => c.Type == "name")?.Value,
                 surname = userClaims.FirstOrDefault(c => c.Type == "surname")?.Value,
-                email = userClaims.FirstOrDefault(c => c.Type == "email")?.Value,
+                email = userClaims.FirstOrDefault(c => c.Type == "emailAddress")?.Value,
                 dateOfBirth = userClaims.FirstOrDefault(c => c.Type == "dateOfBirth")?.Value,
                 isVerified = userClaims.FirstOrDefault(c => c.Type == "isVerified")?.Value,
                 roles = userClaims.Where(c => c.Type == "userRoles").Select(c => c.Value).ToList()

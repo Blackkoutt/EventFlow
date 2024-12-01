@@ -2,7 +2,7 @@ import Input from "../components/common/forms/Input";
 import { useAuth } from "../context/AuthContext";
 import { faEnvelope, faKey } from "@fortawesome/free-solid-svg-icons";
 import { UserLoginRequest, userLoginSchema } from "../models/create_schemas/auth/UserLoginSchema";
-import { SubmitHandler, useForm } from "react-hook-form";
+import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import googleLogo from "../assets/googleLogo.png";
 import fbLogo from "../assets/facebookLogo.png";
@@ -13,6 +13,7 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import FormButton from "../components/common/forms/FormButton";
 import { ExternalLoginProvider } from "../helpers/enums/ExternalLoginProviders";
+import { toast } from "react-toastify";
 
 const LoginPage = () => {
   const {
@@ -27,14 +28,11 @@ const LoginPage = () => {
 
   const navigate = useNavigate();
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors, isSubmitting },
-  } = useForm<UserLoginRequest>({
-    defaultValues: {},
+  const methods = useForm<UserLoginRequest>({
     resolver: zodResolver(userLoginSchema),
   });
+  const { register, handleSubmit, formState, watch } = methods;
+  const { errors, isSubmitting } = formState;
 
   useEffect(() => {
     // External Login - exchange code from Google or Facebook for JWT token via API and set Cookie with token
@@ -74,7 +72,6 @@ const LoginPage = () => {
     if (authenticated) {
       console.log("currentUser", currentUser);
       if (!currentUser?.isVerified) {
-        console.log("!verified");
         activateUser();
       }
       navigate("/");
@@ -118,43 +115,48 @@ const LoginPage = () => {
             <p className="text-[#2F2F2F] text-base">LUB</p>
             <div className="bg-[#2F2F2F] min-h-[0.5px]" style={{ width: "43%" }}></div>
           </div>
-          <form
-            className="flex flex-col justify-center items-center gap-6 w-full"
-            onSubmit={handleSubmit(onSubmit)}
-          >
-            <Input
-              {...register("email")}
-              icon={faEnvelope}
-              label="Email"
-              type="text"
-              name="email"
-              error={errors.email}
-            />
+          <FormProvider {...methods}>
+            <form
+              className="flex flex-col justify-center items-center gap-6 w-full"
+              onSubmit={handleSubmit(onSubmit)}
+            >
+              <Input
+                icon={faEnvelope}
+                label="Email"
+                type="text"
+                name="email"
+                error={errors.email}
+              />
 
-            <Input
-              {...register("password")}
-              icon={faKey}
-              label="Hasło"
-              type="password"
-              name="password"
-              error={errors.password}
-            />
+              <Input
+                icon={faKey}
+                label="Hasło"
+                type="password"
+                name="password"
+                error={errors.password}
+              />
 
-            <div className="flex flex-row justify-between items-center w-full">
-              <Checkbox color="#7B2CBF" textColor="#2F2F2F" fontSize={16} text="Zapamiętaj mnie" />
-              <Link to="/forgot-password" className="text-[#6358DC] text-base">
-                Zapomniałeś hasła?
-              </Link>
-            </div>
-            <FormButton isSubmitting={isSubmitting} text="Zaloguj się" />
-            {/* {errors.root && <div className="text-red-500">{errors.email.message}</div>} */}
-            <div className="flex flex-row justify-center items-center gap-1">
-              <p className="text-base text-[#2f2f2f]">Nie masz jeszcze konta? </p>
-              <Link to="/sign-up" className="text-[#6358DC] text-base">
-                Zarejestruj się
-              </Link>
-            </div>
-          </form>
+              <div className="flex flex-row justify-between items-center w-full">
+                <Checkbox
+                  color="#7B2CBF"
+                  textColor="#2F2F2F"
+                  fontSize={16}
+                  text="Zapamiętaj mnie"
+                />
+                <Link to="/forgot-password" className="text-[#6358DC] text-base">
+                  Zapomniałeś hasła?
+                </Link>
+              </div>
+              <FormButton isSubmitting={isSubmitting} text="Zaloguj się" />
+              {/* {errors.root && <div className="text-red-500">{errors.email.message}</div>} */}
+              <div className="flex flex-row justify-center items-center gap-1">
+                <p className="text-base text-[#2f2f2f]">Nie masz jeszcze konta? </p>
+                <Link to="/sign-up" className="text-[#6358DC] text-base">
+                  Zarejestruj się
+                </Link>
+              </div>
+            </form>
+          </FormProvider>
         </div>
       </div>
     </div>
