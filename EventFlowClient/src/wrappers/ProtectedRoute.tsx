@@ -1,5 +1,6 @@
 import { PropsWithChildren } from "react";
 import { useAuth } from "../context/AuthContext";
+import { Roles } from "../helpers/enums/UserRoleEnum";
 
 type ProtectedRouteProps = PropsWithChildren & {
   allowedRoles?: string[];

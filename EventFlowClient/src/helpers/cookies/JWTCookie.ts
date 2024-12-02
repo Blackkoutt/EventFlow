@@ -1,4 +1,6 @@
 import Cookies from "js-cookie";
+import { User } from "../../models/response_models";
+import { jwtDecode } from "jwt-decode";
 
 const jwtTokenCookieName = "EventFlowJWTCookie";
 
@@ -15,6 +17,22 @@ export const setJWTTokenCookie = (token: string, expirationDate?: Date): void =>
 
 export const isJWTTokenCookieExist = () => {
   return Cookies.get(jwtTokenCookieName) !== undefined;
+};
+
+export const getUserFormCookie = () => {
+  const token = Cookies.get(jwtTokenCookieName);
+  if (token === undefined) return null;
+  const decodedToken = jwtDecode(token) as User;
+  const user: User = {
+    id: decodedToken.id,
+    name: decodedToken.name,
+    surname: decodedToken.surname,
+    email: decodedToken.email,
+    isVerified: JSON.parse(`${decodedToken.isVerified}`.toLowerCase()),
+    dateOfBirth: decodedToken.dateOfBirth,
+    userRoles: decodedToken.userRoles,
+  };
+  return user;
 };
 
 export const removeJWTTokenCookie = (): void => {

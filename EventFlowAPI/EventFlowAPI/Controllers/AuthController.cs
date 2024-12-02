@@ -51,7 +51,7 @@ namespace EventFlowAPI.Controllers
                 email = userClaims.FirstOrDefault(c => c.Type == "emailAddress")?.Value,
                 dateOfBirth = userClaims.FirstOrDefault(c => c.Type == "dateOfBirth")?.Value,
                 isVerified = userClaims.FirstOrDefault(c => c.Type == "isVerified")?.Value,
-                roles = userClaims.Where(c => c.Type == "userRoles").Select(c => c.Value).ToList()
+                userRoles = userClaims.Where(c => c.Type == "userRoles").Select(c => c.Value).ToList()
             });
         }
 

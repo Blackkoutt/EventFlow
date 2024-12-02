@@ -6,6 +6,7 @@ import useApi from "../hooks/useApi";
 import { UserLoginRequest } from "../models/create_schemas/auth/UserLoginSchema";
 import { jwtDecode } from "jwt-decode";
 import {
+  getUserFormCookie,
   isJWTTokenCookieExist,
   removeJWTTokenCookie,
   setJWTTokenCookie,
@@ -33,7 +34,7 @@ type AuthProviderProps = PropsWithChildren;
 
 export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [authenticated, setAuthenticated] = useState<boolean | null>(isJWTTokenCookieExist());
-  const [currentUser, setCurrentUser] = useState<User | null>();
+  const [currentUser, setCurrentUser] = useState<User | null>(getUserFormCookie());
 
   // Login in application
   const { data: loginResponse, post: loginUser } = useApi<UserLogin, UserLoginRequest>(

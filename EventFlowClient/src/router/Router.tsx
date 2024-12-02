@@ -13,6 +13,10 @@ import LoginPage from "../pages/LoginPage";
 import RegisterPage from "../pages/RegisterPage";
 import ForgotPasswordPage from "../pages/ForgotPasswordPage";
 import VerificationEmailSent from "../pages/VerificationEmailSent";
+import ProtectedRoute from "../wrappers/ProtectedRoute";
+import UserProfile from "../pages/UserProfile";
+import Management from "../pages/Management";
+import { Roles } from "../helpers/enums/UserRoleEnum";
 
 export const router = createBrowserRouter([
   {
@@ -67,6 +71,22 @@ export const router = createBrowserRouter([
       {
         path: "/email-verification",
         element: <VerificationEmailSent />,
+      },
+      {
+        path: "/profile",
+        element: (
+          <ProtectedRoute>
+            <UserProfile />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "/management",
+        element: (
+          <ProtectedRoute allowedRoles={[Roles.Admin]}>
+            <Management />
+          </ProtectedRoute>
+        ),
       },
     ],
   },
