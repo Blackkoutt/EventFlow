@@ -20,36 +20,40 @@ const UserAccordion = () => {
 
   return (
     <button
-      className="flex flex-row justify-center items-center gap-4 pr-2 relative"
+      className="flex flex-row justify-center rounded-2xl items-center gap-4 px-6 py-4 relative bg-primaryPurple text-white"
       onClick={() => setTrigger(!trigger)}
+      style={{ outline: "none" }}
+      onBlur={() => setTrigger(false)}
     >
-      <p className="text-[20px]">Witaj, {currentUser?.name}!</p>
-      <FontAwesomeIcon icon={faUser} fontSize={50} />
+      <p className="text-[17px] text-white">Witaj, {currentUser?.name}!</p>
+      <FontAwesomeIcon icon={faUser} fontSize={30} />
       <div
-        className={`accordion-content absolute w-full top-[100%] left-0 mt-2 shadow-xl flex flex-col bg-white px-3  rounded-lg ${contentClass}`}
+        className={`accordion-content absolute w-full top-[100%] left-0 mt-2 shadow-xl flex flex-col bg-white px-1 rounded-lg ${contentClass}`}
       >
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col px-2">
           <Link to="/profile">
-            <button className="flex flex-row w-full justify-start items-center gap-2 py-3 mt-3 cursor-pointer">
-              <FontAwesomeIcon icon={faUser} fontSize={22} />
+            <div className="flex flex-row w-full justify-start items-center gap-4 pt-3 pl-2 pb-4 mt-2 cursor-pointer rounded-sm hover:bg-[#efdaff] border-b-[1px] border-dashed border-primaryPurple">
+              <FontAwesomeIcon icon={faUser} fontSize={22} color="#7B2CBF" />
               <p className="text-[17px]">Profil</p>
-            </button>
+            </div>
           </Link>
+
           {isUserInRole(currentUser, Roles.Admin) ? (
             <Link to="/management">
-              <button className="flex flex-row w-full justify-start items-center gap-2 py-3 cursor-pointer">
-                <FontAwesomeIcon icon={faBriefcase} fontSize={22} />
+              <div className="flex flex-row w-full justify-start items-center gap-4 py-4 pl-2 cursor-pointer border-b-[1px] border-dashed border-primaryPurple rounded-sm hover:bg-[#efdaff]">
+                <FontAwesomeIcon icon={faBriefcase} fontSize={22} color="#7B2CBF" />
                 <p className="text-[17px]">Zarządzaj</p>
-              </button>
+              </div>
             </Link>
           ) : null}
-          <button
-            className="flex flex-row w-full justify-start items-center gap-2 py-3 mb-3 cursor-pointer"
+
+          <div
+            className="flex flex-row w-full justify-start items-center gap-4 pt-4 pb-4 pl-2 mb-2 cursor-pointer rounded-sm hover:bg-[#efdaff]"
             onClick={handleLogout}
           >
-            <FontAwesomeIcon icon={faRightFromBracket} fontSize={22} />
+            <FontAwesomeIcon icon={faRightFromBracket} fontSize={22} color="#7B2CBF" />
             <p className="text-[17px]">Wyloguj się</p>
-          </button>
+          </div>
         </div>
       </div>
     </button>

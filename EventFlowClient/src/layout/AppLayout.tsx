@@ -29,8 +29,8 @@ function AppLayout() {
                 <Link to="/sign-in">
                   <Button
                     text="Zaloguj się"
-                    width={175}
-                    height={55}
+                    width={170}
+                    height={52}
                     fontSize={16}
                     style={ButtonStyle.Primary}
                     action={() => {}}
@@ -39,8 +39,8 @@ function AppLayout() {
                 <Link to="/sign-up">
                   <Button
                     text="Zarejestruj się"
-                    width={175}
-                    height={55}
+                    width={170}
+                    height={52}
                     fontSize={16}
                     style={ButtonStyle.Secondary}
                     action={() => {}}
@@ -127,7 +127,7 @@ function AppLayout() {
               <h4 className="text-[17px] font-semibold text-black border-b-4 border-b-primaryPurple">
                 MENU
               </h4>
-              <AppNav fontSize={16} isSemibold={false} textColor="#000" gap={35} />
+              <AppNav fontSize={16} isSemibold={false} textColor="#000" gap={28} />
             </div>
             <div className="flex flex-row justify-between w-full items-end">
               <div className="flex flex-col justify-start items-start gap-2">

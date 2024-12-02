@@ -1,6 +1,7 @@
 import { PropsWithChildren } from "react";
 import { useAuth } from "../context/AuthContext";
 import { Roles } from "../helpers/enums/UserRoleEnum";
+import AccessDenied from "../pages/AccessDenied";
 
 type ProtectedRouteProps = PropsWithChildren & {
   allowedRoles?: string[];
@@ -15,7 +16,7 @@ const ProtectedRoute = ({ allowedRoles, children }: ProtectedRouteProps) => {
     currentUser === null ||
     (allowedRoles && !currentUser.userRoles.some((role) => allowedRoles.includes(role)))
   ) {
-    return <div>Odmowa dostępu</div>;
+    return <AccessDenied />;
   }
 
   return children;

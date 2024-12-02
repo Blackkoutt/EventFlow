@@ -17,6 +17,8 @@ import ProtectedRoute from "../wrappers/ProtectedRoute";
 import UserProfile from "../pages/UserProfile";
 import Management from "../pages/Management";
 import { Roles } from "../helpers/enums/UserRoleEnum";
+import UserInfo from "../pages/Profile/UserInfo";
+import UserAdditionalInfo from "../pages/Profile/UserAdditionalInfo";
 
 export const router = createBrowserRouter([
   {
@@ -79,6 +81,24 @@ export const router = createBrowserRouter([
             <UserProfile />
           </ProtectedRoute>
         ),
+        children: [
+          {
+            path: "/profile",
+            element: (
+              <ProtectedRoute>
+                <UserInfo />
+              </ProtectedRoute>
+            ),
+          },
+          {
+            path: "/profile/info",
+            element: (
+              <ProtectedRoute>
+                <UserAdditionalInfo />
+              </ProtectedRoute>
+            ),
+          },
+        ],
       },
       {
         path: "/management",

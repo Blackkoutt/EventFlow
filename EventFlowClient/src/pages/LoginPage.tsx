@@ -41,6 +41,9 @@ const LoginPage = () => {
       const codeFromUrl = queryParams.get("code");
       const provider = localStorage.getItem("selectedProvider");
 
+      console.log("Code", codeFromUrl);
+      console.log("Provider", provider);
+      console.log("Autheniticated", authenticated);
       if (codeFromUrl !== null && provider !== null) {
         await handleExternalLogin({ code: codeFromUrl }, provider as ExternalLoginProvider);
       } else {

@@ -19,7 +19,7 @@ const HomePage = () => {
         <div className="flex flex-col justify-center items-start gap-7 max-w-lg lg:max-w-none">
           <article className="flex flex-col justify-start items-start gap-5 max-w-[1200px]">
             <h1>Witaj w EventFlow!</h1>
-            <p className="text-[16px]">
+            <p className="text-[16px] font-normal">
               Zajmujemy się organizacją różnorodnych wydarzeń kulturalnych, takich jak pokazy
               teatralne, koncerty i festiwale. Nasze przestrzenie są dostępne na wynajem z opcją
               dodatkowych usług, co sprawia, że organizacja Twojego wydarzenia będzie prosta i
@@ -29,8 +29,8 @@ const HomePage = () => {
           </article>
           <Button
             text="Sprawdź wydarzenia"
-            width={230}
-            height={62}
+            width={220}
+            height={60}
             fontSize={16}
             style={ButtonStyle.Primary}
             action={() => {}}

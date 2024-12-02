@@ -39,16 +39,14 @@ namespace EventFlowAPI.Controllers
         [Authorize]
         public IActionResult ValidateUser()
         {
-
             var userClaims = User.Claims.ToList();
-
 
             return Ok(new
             {
                 id = userClaims.FirstOrDefault(c => c.Type == "id")?.Value,
                 name = userClaims.FirstOrDefault(c => c.Type == "name")?.Value,
                 surname = userClaims.FirstOrDefault(c => c.Type == "surname")?.Value,
-                email = userClaims.FirstOrDefault(c => c.Type == "emailAddress")?.Value,
+                emailAddress = userClaims.FirstOrDefault(c => c.Type == "emailAddress")?.Value,
                 dateOfBirth = userClaims.FirstOrDefault(c => c.Type == "dateOfBirth")?.Value,
                 isVerified = userClaims.FirstOrDefault(c => c.Type == "isVerified")?.Value,
                 userRoles = userClaims.Where(c => c.Type == "userRoles").Select(c => c.Value).ToList()

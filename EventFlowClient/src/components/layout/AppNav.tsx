@@ -10,7 +10,7 @@ const AppNav = ({
   fontSize = 24,
   isSemibold = true,
   textColor = "#000000",
-  gap = 36,
+  gap = 28,
 }: AppNavProps) => {
   return (
     <>
