@@ -83,4 +83,7 @@ export const ApiUrlConfig = {
   [ApiEndpoint.TicketType]: {
     url: "/tickettypes",
   },
+  [ApiEndpoint.UserInfo]: {
+    url: "/users/info",
+  },
 };

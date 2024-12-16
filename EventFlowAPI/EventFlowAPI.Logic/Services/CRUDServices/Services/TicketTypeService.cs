@@ -12,17 +12,18 @@ using EventFlowAPI.Logic.Services.CRUDServices.Services.BaseServices;
 using EventFlowAPI.Logic.DTO.Interfaces;
 using EventFlowAPI.Logic.Identity.Helpers;
 using EventFlowAPI.DB.Entities.Abstract;
+using EventFlowAPI.Logic.Identity.Services.Interfaces;
 
 namespace EventFlowAPI.Logic.Services.CRUDServices.Services
 {
-    public sealed class TicketTypeService(IUnitOfWork unitOfWork, IUserService userService) :
+    public sealed class TicketTypeService(IUnitOfWork unitOfWork, IAuthService authService) :
         GenericService<
             TicketType,
             TicketTypeRequestDto,
             UpdateTicketTypeRequestDto,
             TicketTypeResponseDto,
             TicketTypeQuery
-        >(unitOfWork, userService),
+        >(unitOfWork, authService),
         ITicketTypeService
     {
         public sealed override async Task<Result<IEnumerable<TicketTypeResponseDto>>> GetAllAsync(TicketTypeQuery query)
@@ -93,7 +94,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             if (isSameEntityExistInDb)
                 return Error.SuchEntityExistInDb;
 
-            var userResult = await _userService.GetCurrentUser();
+            var userResult = await _authService.GetCurrentUser();
             if (!userResult.IsSuccessful)
                 return userResult.Error;
 

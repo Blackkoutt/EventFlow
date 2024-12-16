@@ -8,6 +8,7 @@ using EventFlowAPI.Logic.DTO.UpdateRequestDto;
 using EventFlowAPI.Logic.Errors;
 using EventFlowAPI.Logic.Extensions;
 using EventFlowAPI.Logic.Identity.Helpers;
+using EventFlowAPI.Logic.Identity.Services.Interfaces;
 using EventFlowAPI.Logic.Mapper.Extensions;
 using EventFlowAPI.Logic.Query;
 using EventFlowAPI.Logic.ResultObject;
@@ -20,7 +21,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
 {
     public sealed class HallService(
         IUnitOfWork unitOfWork,
-        IUserService userService,
+        IAuthService authService,
         ISeatService seatService,
         IReservationService reservationService,
         IEmailSenderService emailSender, 
@@ -34,7 +35,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             UpdateHallRequestDto,
             HallResponseDto,
             HallQuery
-        >(unitOfWork, userService),
+        >(unitOfWork, authService),
     IHallService
     {
         private readonly ISeatService _seatService = seatService;
@@ -446,7 +447,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             if (rentEntity == null)
                 return HallRentError.NotFound;
 
-            var userResult = await _userService.GetCurrentUser();
+            var userResult = await _authService.GetCurrentUser();
             if (!userResult.IsSuccessful)
                 return userResult.Error;
 
@@ -483,7 +484,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
 
         private async Task<Error> ValidateBeforeUpdateHallForEvent(EventHallRequestDto? hallRequestDto, int eventId)
         {
-            var userResult = await _userService.GetCurrentUser();
+            var userResult = await _authService.GetCurrentUser();
             if (!userResult.IsSuccessful)
                 return userResult.Error;
 
@@ -570,7 +571,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
 
         protected sealed override async Task<Error> ValidateEntity(IRequestDto? requestDto, int? id = null)
         {
-            var userResult = await _userService.GetCurrentUser();
+            var userResult = await _authService.GetCurrentUser();
             if (!userResult.IsSuccessful)
                 return userResult.Error;
 

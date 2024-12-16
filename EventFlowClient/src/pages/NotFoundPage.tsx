@@ -3,8 +3,8 @@ import notFound1 from "../assets/notFound1.png";
 
 function NotFoundPage() {
   return (
-    <div className="flex flex-col justify-center items-center pt-14 gap-4 max-w-[1250px]">
-      <div className="flex flex-col justify-center items-center gap-6 w-full">
+    <div className="flex flex-col justify-center items-center pt-16 gap-8 ">
+      <div className="flex flex-col justify-center items-center gap-4 w-full">
         <h1 className="text-[#2F2F2F] text-[36px] font-semibold">Błąd 404: Strona nie istnieje</h1>
         <Link to="/">
           <button
@@ -18,7 +18,7 @@ function NotFoundPage() {
       <img
         src={notFound1}
         alt="Ilustracja błędu not found"
-        className="object-contain w-[600px] h-[520px]"
+        className="object-contain w-[620px] h-[580px]"
       />
     </div>
   );

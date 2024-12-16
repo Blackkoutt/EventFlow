@@ -4,6 +4,7 @@ using EventFlowAPI.Logic.DTO.RequestDto;
 using EventFlowAPI.Logic.DTO.ResponseDto;
 using EventFlowAPI.Logic.DTO.UpdateRequestDto;
 using EventFlowAPI.Logic.Errors;
+using EventFlowAPI.Logic.Identity.Services.Interfaces;
 using EventFlowAPI.Logic.Query;
 using EventFlowAPI.Logic.ResultObject;
 using EventFlowAPI.Logic.Services.CRUDServices.Interfaces;
@@ -12,14 +13,14 @@ using EventFlowAPI.Logic.UnitOfWork;
 
 namespace EventFlowAPI.Logic.Services.CRUDServices.Services
 {
-    public sealed class UserDataService(IUnitOfWork unitOfWork, IUserService userService) :
+    public sealed class UserDataService(IUnitOfWork unitOfWork, IAuthService authService) :
         GenericService<
             UserData,
             UserDataRequestDto,
             UpdateUserDataRequestDto,
             UserDataResponseDto,
             UserDataQuery
-        >(unitOfWork, userService),
+        >(unitOfWork, authService),
         IUserDataService
     {
         public override Task<Result<IEnumerable<UserDataResponseDto>>> GetAllAsync(UserDataQuery query)

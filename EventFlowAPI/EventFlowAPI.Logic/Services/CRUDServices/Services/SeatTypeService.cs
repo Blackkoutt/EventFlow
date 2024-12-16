@@ -12,17 +12,18 @@ using EventFlowAPI.Logic.DTO.UpdateRequestDto;
 using EventFlowAPI.Logic.DTO.Interfaces;
 using EventFlowAPI.Logic.Identity.Helpers;
 using EventFlowAPI.DB.Entities.Abstract;
+using EventFlowAPI.Logic.Identity.Services.Interfaces;
 
 namespace EventFlowAPI.Logic.Services.CRUDServices.Services
 {
-    public sealed class SeatTypeService(IUnitOfWork unitOfWork, IUserService userService) :
+    public sealed class SeatTypeService(IUnitOfWork unitOfWork, IAuthService authService) :
         GenericService<
             SeatType,
             SeatTypeRequestDto,
             UpdateSeatTypeRequestDto,
             SeatTypeResponseDto,
             SeatTypeQuery
-        >(unitOfWork, userService),
+        >(unitOfWork, authService),
         ISeatTypeService
     {
         public sealed override async Task<Result<IEnumerable<SeatTypeResponseDto>>> GetAllAsync(SeatTypeQuery query)
@@ -122,7 +123,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             if (isSameEntityExistInDb)
                 return Error.SuchEntityExistInDb;
 
-            var userResult = await _userService.GetCurrentUser();
+            var userResult = await _authService.GetCurrentUser();
             if (!userResult.IsSuccessful)
                 return userResult.Error;
 

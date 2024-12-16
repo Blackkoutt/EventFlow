@@ -8,7 +8,6 @@ const EventList = () => {
   const { data: events, get: getEvents } = useApi<EventEntity>(ApiEndpoint.Event);
 
   useEffect(() => {
-    // Events
     const eventStartDateQueryParams = {
       sortBy: "StartDate",
       sortDirection: "ASC",

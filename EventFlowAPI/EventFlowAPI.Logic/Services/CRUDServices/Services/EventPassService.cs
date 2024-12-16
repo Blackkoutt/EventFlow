@@ -17,13 +17,14 @@ using EventFlowAPI.Logic.Helpers.Enums;
 using EventFlowAPI.Logic.DTO.UpdateRequestDto;
 using EventFlowAPI.Logic.DTO.Interfaces;
 using System.ComponentModel.DataAnnotations;
+using EventFlowAPI.Logic.Identity.Services.Interfaces;
 
 namespace EventFlowAPI.Logic.Services.CRUDServices.Services
 {
     public sealed class EventPassService(
         IUnitOfWork unitOfWork,
         IFileService fileService,
-        IUserService userService,
+        IAuthService authService,
         IEmailSenderService emailSender
         ) :
         GenericService<
@@ -32,7 +33,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             UpdateEventPassRequestDto,
             EventPassResponseDto,
             EventPassQuery
-        >(unitOfWork, userService),
+        >(unitOfWork, authService),
         IEventPassService
     {
         private readonly IFileService _fileService = fileService;
@@ -40,7 +41,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
 
         public sealed override async Task<Result<IEnumerable<EventPassResponseDto>>> GetAllAsync(EventPassQuery query)
         {
-            var userResult = await _userService.GetCurrentUser();
+            var userResult = await _authService.GetCurrentUser();
             if (!userResult.IsSuccessful)
                 return Result<IEnumerable<EventPassResponseDto>>.Failure(userResult.Error);
 
@@ -75,7 +76,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             if (!eventPassResult.IsSuccessful)
                 return Result<EventPassResponseDto>.Failure(eventPassResult.Error);
 
-            var userResult = await _userService.GetCurrentUser();
+            var userResult = await _authService.GetCurrentUser();
             if (!userResult.IsSuccessful)
                 return Result<EventPassResponseDto>.Failure(userResult.Error);
 
@@ -96,7 +97,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             if (validationError != Error.None)
                 return Result<EventPassResponseDto>.Failure(validationError);
 
-            var userResult = await _userService.GetCurrentUser();
+            var userResult = await _authService.GetCurrentUser();
             if (!userResult.IsSuccessful)
                 return Result<EventPassResponseDto>.Failure(userResult.Error);
 
@@ -129,7 +130,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
 
             var pdfBitmap = pdfResult.Value;
 
-            var sendError = await _emailSender.SendInfo(eventPass, EmailType.Create, user.Email, attachmentData: pdfBitmap);
+            var sendError = await _emailSender.SendInfo(eventPass, EmailType.Create, user.EmailAddress, attachmentData: pdfBitmap);
             if (sendError != Error.None)
                 return Result<EventPassResponseDto>.Failure(sendError);
             //await _emailSender.SendEventPassPDFAsync(eventPassEntity, pdfBitmap);
@@ -157,7 +158,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             if (eventPass.IsDeleted)
                 return Result<EventPassResponseDto>.Failure(EventPassError.EventPassIsDeleted);
 
-            var userResult = await _userService.GetCurrentUser();
+            var userResult = await _authService.GetCurrentUser();
             if (!userResult.IsSuccessful)
                 return Result<EventPassResponseDto>.Failure(userResult.Error);
 
@@ -183,7 +184,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             if (!pdfResult.IsSuccessful)
                 return Result<EventPassResponseDto>.Failure(pdfResult.Error);
 
-            var sendError = await _emailSender.SendInfo(eventPass, EmailType.Update, user.Email, attachmentData: pdfResult.Value);
+            var sendError = await _emailSender.SendInfo(eventPass, EmailType.Update, user.EmailAddress, attachmentData: pdfResult.Value);
             if (sendError != Error.None)
                 return Result<EventPassResponseDto>.Failure(sendError);
             //await _emailSender.SendEventPassRenewPDFAsync(eventPass, pdfResult.Value);
@@ -243,7 +244,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
 
             await _unitOfWork.SaveChangesAsync();
 
-            var sendError = await _emailSender.SendInfo(eventPass, EmailType.Cancel, user.Email);
+            var sendError = await _emailSender.SendInfo(eventPass, EmailType.Cancel, user.EmailAddress);
             if (sendError != Error.None)
                 return Result<object>.Failure(sendError);
 
@@ -322,6 +323,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             {
                 var responseDto = entity.AsDto<EventPassResponseDto>();
                 responseDto.User = entity.User.AsDto<UserResponseDto>();
+                responseDto.User.EmailAddress = entity.User.Email!;
                 responseDto.User.UserData = null;
                 responseDto.PaymentType = entity.PaymentType.AsDto<PaymentTypeResponseDto>();
                 responseDto.PassType = entity.PassType.AsDto<EventPassTypeResponseDto>();
@@ -333,6 +335,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
         {
             var responseDto = entity.AsDto<EventPassResponseDto>();
             responseDto.User = entity.User.AsDto<UserResponseDto>();
+            responseDto.User.EmailAddress = entity.User.Email!;
             responseDto.User.UserData = null;
             responseDto.PaymentType = entity.PaymentType.AsDto<PaymentTypeResponseDto>();
             responseDto.PassType = entity.PassType.AsDto<EventPassTypeResponseDto>();
@@ -341,7 +344,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
 
         protected sealed override async Task<Result<bool>> IsSameEntityExistInDatabase(IRequestDto requestDto, int? id = null)
         {
-            var userResult = await _userService.GetCurrentUser();
+            var userResult = await _authService.GetCurrentUser();
             if (!userResult.IsSuccessful)
                 return Result<bool>.Failure(userResult.Error);
 

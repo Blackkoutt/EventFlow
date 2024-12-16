@@ -14,6 +14,7 @@ import {
 import { ExternalLoginRequest } from "../models/create_schemas/auth/ExternalLoginSchema";
 import { ExternalLoginProvider } from "../helpers/enums/ExternalLoginProviders";
 import { APIError } from "../models/error/APIError";
+import { useNavigate } from "react-router-dom";
 
 type AuthContextType = {
   authenticated?: boolean | null;
@@ -77,6 +78,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   }, []);
 
   useEffect(() => {
+    console.log(validatedUser[0]);
     if (validateUserError !== null) {
       setAuthenticated(false);
       setCurrentUser(null);
@@ -113,7 +115,6 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
   const performAuthentication = (token?: string) => {
     if (token !== undefined) {
-      setAuthenticated(true);
       const decodedToken = jwtDecode(token);
       console.log(decodedToken);
       const userDecodedToken = decodedToken as User;
@@ -121,6 +122,8 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       if (decodedToken.exp !== undefined) {
         tokenExpirationDate = new Date(decodedToken.exp * 1000);
       }
+      setJWTTokenCookie(token, tokenExpirationDate);
+      setAuthenticated(true);
       setCurrentUser({
         id: userDecodedToken.id,
         name: userDecodedToken.name,
@@ -130,7 +133,6 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         dateOfBirth: userDecodedToken.dateOfBirth,
         userRoles: userDecodedToken.userRoles,
       });
-      setJWTTokenCookie(token, tokenExpirationDate);
     }
   };
 

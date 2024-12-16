@@ -12,17 +12,18 @@ using EventFlowAPI.Logic.DTO.UpdateRequestDto;
 using EventFlowAPI.Logic.Services.CRUDServices.Services.BaseServices;
 using EventFlowAPI.Logic.DTO.Interfaces;
 using EventFlowAPI.Logic.Identity.Helpers;
+using EventFlowAPI.Logic.Identity.Services.Interfaces;
 
 namespace EventFlowAPI.Logic.Services.CRUDServices.Services
 {
-    public sealed class EventCategoryService(IUnitOfWork unitOfWork, IUserService userService) :
+    public sealed class EventCategoryService(IUnitOfWork unitOfWork, IAuthService authService) :
         GenericService<
             EventCategory,
             EventCategoryRequestDto,
             UpdateEventCategoryRequestDto,
             EventCategoryResponseDto,
             EventCategoryQuery
-        >(unitOfWork, userService),
+        >(unitOfWork, authService),
         IEventCategoryService
     {
         public sealed override async Task<Result<IEnumerable<EventCategoryResponseDto>>> GetAllAsync(EventCategoryQuery query)
@@ -65,7 +66,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             if (isSameEntityExistInDb)
                 return Error.SuchEntityExistInDb;
 
-            var userResult = await _userService.GetCurrentUser();
+            var userResult = await _authService.GetCurrentUser();
             if (!userResult.IsSuccessful)
                 return userResult.Error;
 

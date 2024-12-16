@@ -1,4 +1,7 @@
 ﻿using EventFlowAPI.DB.Entities;
+using EventFlowAPI.DB.Entities.Abstract;
+using EventFlowAPI.Logic.DTO.Interfaces;
+using EventFlowAPI.Logic.DTO.ResponseDto;
 using EventFlowAPI.Logic.Errors;
 using EventFlowAPI.Logic.Identity.DTO.RequestDto;
 using EventFlowAPI.Logic.Identity.DTO.ResponseDto;
@@ -25,8 +28,57 @@ namespace EventFlowAPI.Logic.Identity.Services.Services
         IUnitOfWork unitOfWork,
         IJWTGeneratorService jwtGeneratorService) : BaseAuthService(userManager, httpContextAccessor, configuration, unitOfWork, jwtGeneratorService), IAuthService
     {
-        private readonly IEmailSenderService _emailSender = emailSender; 
-        
+        private readonly IEmailSenderService _emailSender = emailSender;
+
+        public async Task<Result<User>> GetCurrentUserAsEntity()
+        {
+            var currentUserIdResult = GetCurrentUserId();
+            if (!currentUserIdResult.IsSuccessful)
+                return Result<User>.Failure(currentUserIdResult.Error);
+
+            var user = await GetOneAsync(currentUserIdResult.Value);
+            if (user is null)
+                return Result<User>.Failure(UserError.UserNotFound);
+
+            if (string.IsNullOrEmpty(user.Value.Email))
+                return Result<User>.Failure(UserError.UserEmailNotFound);
+
+            return Result<User>.Success(user.Value);
+        }
+
+        public async Task<Result<UserResponseDto>> GetCurrentUser()
+        {
+            var getUserResult = await GetCurrentUserAsEntity();
+            if (!getUserResult.IsSuccessful) 
+                return Result<UserResponseDto>.Failure(getUserResult.Error);
+
+            var responseDto = MapAsDto(getUserResult.Value);
+
+            return Result<UserResponseDto>.Success(responseDto);
+        }
+        private UserResponseDto MapAsDto(User entity)
+        {
+            var userDto = entity.AsDto<UserResponseDto>();
+            userDto.EmailAddress = entity.Email!;
+            userDto.UserData = entity.UserData?.AsDto<UserDataResponseDto>();
+            userDto.PhotoEndpoint = $"/Users/info/image";
+            userDto.UserRoles = entity.Roles.Select(r => r.Name).ToList();
+            return userDto;
+        }
+
+        private async Task<Result<User>> GetOneAsync(string? id)
+        {
+            if (id == null || id == string.Empty)
+                return Result<User>.Failure(Error.RouteParamOutOfRange);
+
+            var _userRepository = (IUserRepository)_unitOfWork.GetRepository<User>();
+            var record = await _userRepository.GetOneAsync(id);
+            if (record == null)
+                return Result<User>.Failure(Error.NotFound);
+
+            return Result<User>.Success(record);
+        }
+
         public async Task<Error> VerifyUser()
         {
             Log.Information("Veryfying1");

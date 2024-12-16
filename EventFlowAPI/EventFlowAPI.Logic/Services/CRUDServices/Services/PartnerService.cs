@@ -6,6 +6,7 @@ using EventFlowAPI.Logic.DTO.UpdateRequestDto;
 using EventFlowAPI.Logic.Errors;
 using EventFlowAPI.Logic.Extensions;
 using EventFlowAPI.Logic.Identity.Helpers;
+using EventFlowAPI.Logic.Identity.Services.Interfaces;
 using EventFlowAPI.Logic.Mapper.Extensions;
 using EventFlowAPI.Logic.Query;
 using EventFlowAPI.Logic.ResultObject;
@@ -18,7 +19,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
 {
     public sealed class PartnerService(
         IUnitOfWork unitOfWork,
-        IUserService userService,
+        IAuthService authService,
         IFileService fileService) :
         GenericService<
             Partner,
@@ -26,7 +27,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             UpdatePartnerRequestDto,
             PartnerResponseDto,
             PartnerQuery
-        >(unitOfWork, userService),
+        >(unitOfWork, authService),
         IPartnerService
     {
         private readonly IFileService _fileService = fileService;
@@ -114,7 +115,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             if (isSameEntityExistInDb)
                 return Error.SuchEntityExistInDb;
 
-            var userResult = await _userService.GetCurrentUser();
+            var userResult = await _authService.GetCurrentUser();
             if (!userResult.IsSuccessful)
                 return userResult.Error;
 

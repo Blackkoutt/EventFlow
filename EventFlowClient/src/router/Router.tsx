@@ -19,6 +19,9 @@ import Management from "../pages/Management";
 import { Roles } from "../helpers/enums/UserRoleEnum";
 import UserInfo from "../pages/Profile/UserInfo";
 import UserAdditionalInfo from "../pages/Profile/UserAdditionalInfo";
+import UserReservations from "../pages/Profile/UserReservations";
+import UserEventPasses from "../pages/Profile/UserEventPasses";
+import UserHallRents from "../pages/Profile/UserHallRents";
 
 export const router = createBrowserRouter([
   {
@@ -95,6 +98,30 @@ export const router = createBrowserRouter([
             element: (
               <ProtectedRoute>
                 <UserAdditionalInfo />
+              </ProtectedRoute>
+            ),
+          },
+          {
+            path: "/profile/reservations",
+            element: (
+              <ProtectedRoute>
+                <UserReservations />
+              </ProtectedRoute>
+            ),
+          },
+          {
+            path: "/profile/eventpasses",
+            element: (
+              <ProtectedRoute>
+                <UserEventPasses />
+              </ProtectedRoute>
+            ),
+          },
+          {
+            path: "/profile/hallrents",
+            element: (
+              <ProtectedRoute>
+                <UserHallRents />
               </ProtectedRoute>
             ),
           },

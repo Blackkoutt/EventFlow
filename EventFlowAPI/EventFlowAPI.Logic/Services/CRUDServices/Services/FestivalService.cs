@@ -6,6 +6,7 @@ using EventFlowAPI.Logic.DTO.UpdateRequestDto;
 using EventFlowAPI.Logic.Errors;
 using EventFlowAPI.Logic.Extensions;
 using EventFlowAPI.Logic.Identity.Helpers;
+using EventFlowAPI.Logic.Identity.Services.Interfaces;
 using EventFlowAPI.Logic.Mapper.Extensions;
 using EventFlowAPI.Logic.Query;
 using EventFlowAPI.Logic.ResultObject;
@@ -20,7 +21,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
     public sealed class FestivalService(
         IUnitOfWork unitOfWork,
         ITicketService ticketService,
-        IUserService userService,
+        IAuthService authService,
         IEventService eventService,
         IReservationService reservationService,
         IFileService fileService) :
@@ -30,7 +31,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             UpdateFestivalRequestDto,
             FestivalResponseDto,
             FestivalQuery
-        >(unitOfWork, userService),
+        >(unitOfWork, authService),
         IFestivalService
     {
         private readonly ITicketService _ticketService = ticketService;
@@ -360,7 +361,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
 
         protected sealed override async Task<Error> ValidateEntity(IRequestDto? requestDto, int? id = null)
         {
-            var userResult = await _userService.GetCurrentUser();
+            var userResult = await _authService.GetCurrentUser();
             if (!userResult.IsSuccessful)
                 return userResult.Error;
 

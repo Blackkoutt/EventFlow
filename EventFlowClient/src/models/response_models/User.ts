@@ -8,6 +8,7 @@ export type User = {
   emailAddress: string;
   isVerified: boolean;
   dateOfBirth: string;
+  photoEndpoint?: string;
   userData?: UserData;
   userRoles: string[];
 };

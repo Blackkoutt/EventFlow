@@ -46,14 +46,15 @@ const UserAccordion = () => {
               </div>
             </Link>
           ) : null}
-
-          <div
-            className="flex flex-row w-full justify-start items-center gap-4 pt-4 pb-4 pl-2 mb-2 cursor-pointer rounded-sm hover:bg-[#efdaff]"
-            onClick={handleLogout}
-          >
-            <FontAwesomeIcon icon={faRightFromBracket} fontSize={22} color="#7B2CBF" />
-            <p className="text-[17px]">Wyloguj się</p>
-          </div>
+          <Link to="/">
+            <div
+              className="flex flex-row w-full justify-start items-center gap-4 pt-4 pb-4 pl-2 mb-2 cursor-pointer rounded-sm hover:bg-[#efdaff]"
+              onClick={handleLogout}
+            >
+              <FontAwesomeIcon icon={faRightFromBracket} fontSize={22} color="#7B2CBF" />
+              <p className="text-[17px]">Wyloguj się</p>
+            </div>
+          </Link>
         </div>
       </div>
     </button>

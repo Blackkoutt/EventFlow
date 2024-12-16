@@ -14,12 +14,13 @@ using EventFlowAPI.Logic.Services.OtherServices.Interfaces;
 using EventFlowAPI.Logic.Helpers.Enums;
 using EventFlowAPI.Logic.DTO.UpdateRequestDto;
 using EventFlowAPI.Logic.DTO.Interfaces;
+using EventFlowAPI.Logic.Identity.Services.Interfaces;
 
 namespace EventFlowAPI.Logic.Services.CRUDServices.Services
 {
     public sealed class HallRentService(
         IUnitOfWork unitOfWork,
-        IUserService userService,
+        IAuthService authService,
         ICopyMakerService copyMaker,
         ICollisionCheckerService collisionChecker,
         IFileService fileService,
@@ -30,7 +31,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             UpdateHallRentRequestDto,
             HallRentResponseDto,
             HallRentQuery
-        >(unitOfWork, userService),
+        >(unitOfWork, authService),
         IHallRentService
     {
         private readonly ICopyMakerService _copyMaker = copyMaker;
@@ -40,7 +41,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
 
         public sealed override async Task<Result<IEnumerable<HallRentResponseDto>>> GetAllAsync(HallRentQuery query)
         {
-            var userResult = await _userService.GetCurrentUser();
+            var userResult = await _authService.GetCurrentUser();
             if (!userResult.IsSuccessful)
                 return Result<IEnumerable<HallRentResponseDto>>.Failure(userResult.Error);
 
@@ -76,7 +77,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             if (!hallRentResult.IsSuccessful)
                 return Result<HallRentResponseDto>.Failure(hallRentResult.Error);
 
-            var userResult = await _userService.GetCurrentUser();
+            var userResult = await _authService.GetCurrentUser();
             if (!userResult.IsSuccessful)
                 return Result<HallRentResponseDto>.Failure(userResult.Error);
 
@@ -98,7 +99,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
                 return Result<HallRentResponseDto>.Failure(validationError);
 
             // User
-            var userResult = await _userService.GetCurrentUser();
+            var userResult = await _authService.GetCurrentUser();
             if (!userResult.IsSuccessful)
                 return Result<HallRentResponseDto>.Failure(userResult.Error);
             var user = userResult.Value;
@@ -132,7 +133,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             var response = MapAsDto(hallRent);
 
             // Hall Rent Email
-            var sendError = await _emailSender.SendInfo(hallRent, EmailType.Create, user.Email, attachmentData: hallRentPDFFile);
+            var sendError = await _emailSender.SendInfo(hallRent, EmailType.Create, user.EmailAddress, attachmentData: hallRentPDFFile);
             if (sendError != Error.None)
                 return Result<HallRentResponseDto>.Failure(sendError);
            
@@ -157,7 +158,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             await _unitOfWork.SaveChangesAsync();
 
             // Send info about canceled hall Rent
-            var sendError = await _emailSender.SendInfo(hallRent, EmailType.Cancel, user.Email);
+            var sendError = await _emailSender.SendInfo(hallRent, EmailType.Cancel, user.EmailAddress);
             if (sendError != Error.None)
                 return Result<object>.Failure(sendError);
 
@@ -288,6 +289,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             {
                 var responseDto = entity.AsDto<HallRentResponseDto>();
                 responseDto.User = entity.User.AsDto<UserResponseDto>();
+                responseDto.User.EmailAddress = entity.User.Email!;
                 responseDto.User.UserData = null;
                 responseDto.PaymentType = entity.PaymentType.AsDto<PaymentTypeResponseDto>();
                 responseDto.Hall = entity.Hall.AsDto<HallResponseDto>();
@@ -306,6 +308,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
         {
             var responseDto = entity.AsDto<HallRentResponseDto>();
             responseDto.User = entity.User.AsDto<UserResponseDto>();
+            responseDto.User.EmailAddress = entity.User.Email!;
             responseDto.User.UserData = null;
             responseDto.PaymentType = entity.PaymentType.AsDto<PaymentTypeResponseDto>();
             responseDto.Hall = entity.Hall.AsDto<HallResponseDto>();
@@ -384,7 +387,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             if (additionalServices.Count() < additionalServicesIds.Count)
                 return AdditionalServicesError.ServiceNotFound;
 
-            var userResult = await _userService.GetCurrentUser();
+            var userResult = await _authService.GetCurrentUser();
             if (!userResult.IsSuccessful)
                 return userResult.Error;
             var user = userResult.Value;

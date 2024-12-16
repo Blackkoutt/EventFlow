@@ -116,13 +116,15 @@ function useApi<TEntity, TPostEntity = undefined, TPutEntity = undefined, TPatch
           default:
             throw new Error(`Unsupported HTTP method: ${httpMethod}`);
         }
-      } catch (catchedError) {
-        if (catchedError instanceof AxiosError) {
+      } catch (caughtError) {
+        if (caughtError instanceof AxiosError) {
+          const responseData = caughtError.response?.data || {};
+          console.log(caughtError);
           const apiError: APIError = {
-            code: catchedError.response?.data.Code || catchedError.response?.data.code,
-            title: catchedError.response?.data.Title || catchedError.response?.data.title,
-            type: catchedError.response?.data.Type || catchedError.response?.data.type,
-            details: catchedError.response?.data.Details || catchedError.response?.data.details,
+            code: responseData.Code || responseData.code,
+            title: responseData.Title || responseData.title,
+            type: responseData.Type || responseData.type,
+            details: responseData.Details || responseData.details,
           };
 
           console.log("API Error: ", apiError);

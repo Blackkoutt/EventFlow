@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace EventFlowAPI.DB.Entities
 {
-    public class User : IdentityUser, IEntity
+    public class User : IdentityUser, IEntity, IPhotoEntity, IUser
     {
 
         [MaxLength(40)]
@@ -15,7 +15,7 @@ namespace EventFlowAPI.DB.Entities
         public DateTime RegisteredDate { get; set; }
         public string Provider { get; set; } = "APP";
         public bool IsVerified { get; set; }
-
+        public string PhotoName { get; set; } = string.Empty;
         public DateTime DateOfBirth { get; set; }
         public UserData? UserData { get; set; }
 

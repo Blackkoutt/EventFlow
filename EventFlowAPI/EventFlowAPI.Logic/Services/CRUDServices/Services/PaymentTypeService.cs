@@ -13,12 +13,13 @@ using EventFlowAPI.Logic.DTO.Interfaces;
 using EventFlowAPI.Logic.Identity.Helpers;
 using EventFlowAPI.Logic.Services.OtherServices.Interfaces;
 using EventFlowAPI.Logic.Mapper.Extensions;
+using EventFlowAPI.Logic.Identity.Services.Interfaces;
 
 namespace EventFlowAPI.Logic.Services.CRUDServices.Services
 {
     public sealed class PaymentTypeService(
         IUnitOfWork unitOfWork,
-        IUserService userService,
+        IAuthService authService,
         IFileService fileService) :
         GenericService<
             PaymentType,
@@ -26,7 +27,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             UpdatePaymentTypeRequestDto,
             PaymentTypeResponseDto,
             PaymentTypeQuery
-        >(unitOfWork, userService),
+        >(unitOfWork, authService),
         IPaymentTypeService
     {
         private readonly IFileService _fileService = fileService;
@@ -117,7 +118,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             if (isSameEntityExistInDb)
                 return Error.SuchEntityExistInDb;
 
-            var userResult = await _userService.GetCurrentUser();
+            var userResult = await _authService.GetCurrentUser();
             if (!userResult.IsSuccessful)
                 return userResult.Error;
 

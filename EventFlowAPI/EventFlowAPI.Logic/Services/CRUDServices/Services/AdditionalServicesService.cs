@@ -6,6 +6,7 @@ using EventFlowAPI.Logic.DTO.UpdateRequestDto;
 using EventFlowAPI.Logic.Errors;
 using EventFlowAPI.Logic.Extensions;
 using EventFlowAPI.Logic.Identity.Helpers;
+using EventFlowAPI.Logic.Identity.Services.Interfaces;
 using EventFlowAPI.Logic.Query;
 using EventFlowAPI.Logic.ResultObject;
 using EventFlowAPI.Logic.Services.CRUDServices.Interfaces;
@@ -14,14 +15,14 @@ using EventFlowAPI.Logic.UnitOfWork;
 
 namespace EventFlowAPI.Logic.Services.CRUDServices.Services
 {
-    public sealed class AdditionalServicesService(IUnitOfWork unitOfWork, IUserService userService) :
+    public sealed class AdditionalServicesService(IUnitOfWork unitOfWork, IAuthService authService) :
         GenericService<
             AdditionalServices,
             AdditionalServicesRequestDto,
             UpdateAdditionalServicesRequestDto,
             AdditionalServicesResponseDto,
             AdditionalServicesQuery
-        >(unitOfWork, userService),
+        >(unitOfWork, authService),
         IAdditionalServicesService
     {
         public sealed override async Task<Result<IEnumerable<AdditionalServicesResponseDto>>> GetAllAsync(AdditionalServicesQuery query)
@@ -83,7 +84,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
                     return Error.SuchEntityExistInDb;
             } 
 
-            var userResult = await _userService.GetCurrentUser();
+            var userResult = await _authService.GetCurrentUser();
             if (!userResult.IsSuccessful)
                 return userResult.Error;
 

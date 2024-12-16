@@ -15,12 +15,13 @@ using EventFlowAPI.Logic.Services.CRUDServices.Services.BaseServices;
 using EventFlowAPI.DB.Entities.Abstract;
 using EventFlowAPI.Logic.Services.OtherServices.Interfaces;
 using Microsoft.VisualBasic;
+using EventFlowAPI.Logic.Identity.Services.Interfaces;
 
 namespace EventFlowAPI.Logic.Services.CRUDServices.Services
 {
     public sealed class HallTypeService(
         IUnitOfWork unitOfWork,
-        IUserService userService,
+        IAuthService authService,
         IFileService fileService) :
         GenericService<
             HallType,
@@ -28,7 +29,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             UpdateHallTypeRequestDto,
             HallTypeResponseDto,
             HallTypeQuery
-        >(unitOfWork, userService),
+        >(unitOfWork, authService),
         IHallTypeService
     {
         private readonly IFileService _fileService = fileService;
@@ -163,7 +164,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
 
         protected sealed override async Task<Error> ValidateEntity(IRequestDto? requestDto, int? id = null)
         {
-            var userResult = await _userService.GetCurrentUser();
+            var userResult = await _authService.GetCurrentUser();
             if (!userResult.IsSuccessful)
                 return userResult.Error;
 

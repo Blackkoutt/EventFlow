@@ -114,7 +114,7 @@ namespace EventFlowAPI.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> GetEventImage([FromRoute] int id)
         {
-            var result = await _fileService.GetEntityPhoto<Sponsor>(id);
+            var result = await _fileService.ValidateAndGetEntityPhoto<Sponsor>(id);
             if (!result.IsSuccessful)
             {
                 return result.Error.Details!.Code switch

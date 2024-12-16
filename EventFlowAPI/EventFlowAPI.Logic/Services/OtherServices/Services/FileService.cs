@@ -6,9 +6,9 @@ using EventFlowAPI.Logic.Extensions;
 using EventFlowAPI.Logic.Helpers;
 using EventFlowAPI.Logic.Helpers.Enums;
 using EventFlowAPI.Logic.Identity.Helpers;
+using EventFlowAPI.Logic.Identity.Services.Interfaces;
 using EventFlowAPI.Logic.Repositories.Interfaces;
 using EventFlowAPI.Logic.ResultObject;
-using EventFlowAPI.Logic.Services.CRUDServices.Interfaces;
 using EventFlowAPI.Logic.Services.OtherServices.Interfaces;
 using EventFlowAPI.Logic.UnitOfWork;
 using Microsoft.AspNetCore.Http;
@@ -19,7 +19,7 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
     public class FileService(
         IUnitOfWork unitOfWork,
         IBlobService blobService,
-        IUserService userService,
+        IAuthService authService,
         IPdfBuilderService pdfBuilderService,
         IJPGCreatorService jpgCreatorService, 
         IStatisticsService statisticsService
@@ -27,7 +27,7 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
     {
         private readonly IBlobService _blobService = blobService;
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
-        private readonly IUserService _userService = userService;   
+        private readonly IAuthService _authService = authService;   
         private readonly IPdfBuilderService _pdfBuilder = pdfBuilderService;
         private readonly IJPGCreatorService _jpgCreator = jpgCreatorService;
         private readonly IStatisticsService _statisticsService = statisticsService;
@@ -148,6 +148,7 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
                 Sponsor => Result<BlobContainer>.Success(BlobContainer.SponsorPhotos),
                 News => Result<BlobContainer>.Success(BlobContainer.NewsPhotos),
                 Partner => Result<BlobContainer>.Success(BlobContainer.PartnerPhotos),
+                User => Result<BlobContainer>.Success(BlobContainer.UserPhotos),
                 _ => Result<BlobContainer>.Failure(BlobError.NoPhotoContainerForGivenEntityType)
             };
         }
@@ -219,14 +220,8 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
             return Error.None;
         }
 
-        public async Task<Result<BlobResponseDto>> GetEntityPhoto<TEntity>(int id) where TEntity : class
+        public async Task<Result<BlobResponseDto>> GetEntityPhoto<TEntity>(TEntity entity) where TEntity : class
         {
-            var validationResult = await ValidateBeforeDownload<TEntity>(id, userAllowed: true, authorize: false);
-            if (!validationResult.IsSuccessful)
-                return Result<BlobResponseDto>.Failure(validationResult.Error);
-
-            var entity = validationResult.Value;
-
             var blobContainerResult = GetPhotoBlobContainer(entity);
             if (!blobContainerResult.IsSuccessful)
                 return Result<BlobResponseDto>.Failure(blobContainerResult.Error);
@@ -234,9 +229,9 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
             var blobContainer = blobContainerResult.Value;
 
             string fileName = string.Empty;
-            if(entity is IPhotoEntity photoEntity)
+            if (entity is IPhotoEntity photoEntity)
             {
-                fileName = photoEntity.PhotoName;   
+                fileName = photoEntity.PhotoName;
             }
             if (string.IsNullOrEmpty(fileName))
             {
@@ -251,11 +246,22 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
                 Container = blobContainer,
                 FileName = fileName
             };
-            var ticketPDFResult = await _blobService.DownloadAsync(blobRequest);
-            if (!ticketPDFResult.IsSuccessful)
-                return Result<BlobResponseDto>.Failure(ticketPDFResult.Error);
+            var blobDownloadResult = await _blobService.DownloadAsync(blobRequest);
+            if (!blobDownloadResult.IsSuccessful)
+                return Result<BlobResponseDto>.Failure(blobDownloadResult.Error);
 
-            return Result<BlobResponseDto>.Success(ticketPDFResult.Value);
+            return Result<BlobResponseDto>.Success(blobDownloadResult.Value);
+        }
+
+
+        public async Task<Result<BlobResponseDto>> ValidateAndGetEntityPhoto<TEntity>(int id) where TEntity : class
+        {
+            var validationResult = await ValidateBeforeDownload<TEntity>(id, userAllowed: true, authorize: false);
+            if (!validationResult.IsSuccessful)
+                return Result<BlobResponseDto>.Failure(validationResult.Error);
+            var entity = validationResult.Value;
+
+            return await GetEntityPhoto(entity);    
         }
 
 
@@ -516,7 +522,7 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
         private async Task<Error> ValidateUserPremissionToResource(string? userId, bool userAllowed = false, bool authorize = true)
         {
             if (!authorize) return Error.None;
-            var userResult = await _userService.GetCurrentUser();
+            var userResult = await _authService.GetCurrentUser();
             if (!userResult.IsSuccessful)
                 return userResult.Error;
 

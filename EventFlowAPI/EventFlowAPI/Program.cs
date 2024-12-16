@@ -1,12 +1,5 @@
-using EventFlowAPI.DB.Entities;
 using EventFlowAPI.Extensions;
-using EventFlowAPI.Logic.DTO.Interfaces;
-using EventFlowAPI.Logic.Helpers.Enums;
 using EventFlowAPI.Logic.Mapper.Profiles;
-using EventFlowAPI.Logic.Services.OtherServices.Interfaces;
-using EventFlowAPI.Logic.Services.OtherServices.Services;
-using EventFlowAPI.Logic.UnitOfWork;
-using EventFlowAPI.Middleware;
 using QuestPDF.Infrastructure;
 using Serilog;
 
@@ -31,6 +24,7 @@ builder.AddAuthentication(jwtSettingsSection: "JWTSettings",
                           googleAuthSection: "Authentication:Google",
                           facebookAuthSection: "Authentication:Facebook");
 
+// Logger
 Log.Logger = new LoggerConfiguration().MinimumLevel.Information().WriteTo.Console().CreateLogger();
 
 // UnitOfWork

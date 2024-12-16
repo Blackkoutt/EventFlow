@@ -1,56 +1,53 @@
 ﻿using EventFlowAPI.DB.Entities;
+using EventFlowAPI.DB.Entities.Abstract;
+using EventFlowAPI.Logic.DTO.Interfaces;
+using EventFlowAPI.Logic.DTO.RequestDto;
 using EventFlowAPI.Logic.DTO.ResponseDto;
 using EventFlowAPI.Logic.Errors;
+using EventFlowAPI.Logic.Helpers;
 using EventFlowAPI.Logic.Identity.Services.Interfaces;
 using EventFlowAPI.Logic.Mapper.Extensions;
-using EventFlowAPI.Logic.Repositories.Interfaces;
 using EventFlowAPI.Logic.ResultObject;
 using EventFlowAPI.Logic.Services.CRUDServices.Interfaces;
+using EventFlowAPI.Logic.Services.OtherServices.Interfaces;
 using EventFlowAPI.Logic.UnitOfWork;
 
 namespace EventFlowAPI.Logic.Services.CRUDServices.Services
 {
-    public sealed class UserService(IUnitOfWork unitOfWork, IAuthService authService) : IUserService
+    public class UserService(
+        IUnitOfWork unitOfWork,
+        IAuthService authService,
+        IFileService fileService) : IUserService
     {
         private readonly IAuthService _authService = authService;
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
-        public async Task<Result<UserResponseDto>> GetCurrentUser()
+        private readonly IFileService _fileService = fileService;   
+
+        public async Task<Result<BlobResponseDto>> GetUserPhoto()
         {
-            var currentUserIdResult = _authService.GetCurrentUserId();
-            if (!currentUserIdResult.IsSuccessful)
-                return Result<UserResponseDto>.Failure(currentUserIdResult.Error);
+            var userResult = await _authService.GetCurrentUserAsEntity();
+            if (!userResult.IsSuccessful)
+                return Result<BlobResponseDto>.Failure(userResult.Error);
+            var user = userResult.Value;
 
-            var user = await GetOneAsync(currentUserIdResult.Value);
-            if (user is null)
-                return Result<UserResponseDto>.Failure(UserError.UserNotFound);
-
-            if (string.IsNullOrEmpty(user.Value.Email))
-                return Result<UserResponseDto>.Failure(UserError.UserEmailNotFound);
-
-            return Result<UserResponseDto>.Success(user.Value);
-        }
-        private UserResponseDto MapAsDto(User entity)
-        {
-            var userDto = entity.AsDto<UserResponseDto>();
-            userDto.UserData = entity.UserData?.AsDto<UserDataResponseDto>();
-            userDto.UserRoles = entity.Roles.Select(r => r.Name).ToList();
-            return userDto;
+            return await _fileService.GetEntityPhoto(user);
         }
 
-        public async Task<Result<UserResponseDto>> GetOneAsync(string? id)
+        public async Task<Result<object>> SetUserInfo(UserDataRequestDto userDataRequestDto)
         {
-            if (id == null || id == string.Empty)
-                return Result<UserResponseDto>.Failure(Error.RouteParamOutOfRange);
+            var userResult = await _authService.GetCurrentUserAsEntity();
+            if (!userResult.IsSuccessful)
+                return Result<object>.Failure(userResult.Error);
+            var user = userResult.Value;
 
-            var _userRepository = (IUserRepository)_unitOfWork.GetRepository<User>();
-            var record = await _userRepository.GetOneAsync(id);
+            var userData = userDataRequestDto.AsEntity<UserData>();
+            user.UserData = userData;
 
-            if (record == null)
-                return Result<UserResponseDto>.Failure(Error.NotFound);
+            var photoPostError = await _fileService.PostPhoto(user, userDataRequestDto.UserPhoto, $"user_{user.Id}", isUpdate: false);
+            if (photoPostError != Error.None)
+                return Result<object>.Failure(photoPostError);
 
-            var response = MapAsDto(record);
-
-            return Result<UserResponseDto>.Success(response);
+            return Result<object>.Success();
         }
     }
 }

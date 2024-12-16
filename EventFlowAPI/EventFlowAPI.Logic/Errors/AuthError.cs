@@ -8,7 +8,7 @@ namespace EventFlowAPI.Logic.Errors
         public static readonly Error UserHaventIdClaim = new(new BadRequestResponse("User haven't ID claim."));
         public static readonly Error UserNotVerified = new(new BadRequestResponse("User is not verified."));
         public readonly Error ErrorsWhileCreatingUser = new(new BadRequestResponse(errors));
-        public static readonly Error InvalidEmailOrPassword = new(new UnauthorizedResponse("Invalid email or password."));
+        public static readonly Error InvalidEmailOrPassword = new(new UnauthorizedResponse("Nieprawidłowy login lub hasło."));
         public static readonly Error CanNotConfirmIdentity = new(new UnauthorizedResponse("Identity can't be confirmed."));
         public static readonly Error CanNotFoundUserInDB = new(new UnauthorizedResponse("Can't found user in database."));
         public static readonly Error GoogleTokenVerificationFailed = new(new UnauthorizedResponse("Google token verification failed."));

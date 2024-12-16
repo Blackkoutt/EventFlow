@@ -1,5 +1,6 @@
 ﻿using EventFlowAPI.DB.Entities;
 using EventFlowAPI.Logic.DTO.Statistics.RequestDto;
+using EventFlowAPI.Logic.Identity.Services.Interfaces;
 using EventFlowAPI.Logic.Services.CRUDServices.Interfaces;
 using EventFlowAPI.Logic.Services.OtherServices.Interfaces;
 using EventFlowAPI.Logic.Services.OtherServices.Interfaces.Configuration.HallConfiguration;
@@ -26,11 +27,11 @@ namespace EventFlowAPI.Extensions
             {
                 var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
                 var blobService = scope.ServiceProvider.GetRequiredService<IBlobService>();
-                var userService = scope.ServiceProvider.GetRequiredService<IUserService>();
+                var authService = scope.ServiceProvider.GetRequiredService<IAuthService>();
                 var pdfBuilder = scope.ServiceProvider.GetRequiredService<IPdfBuilderService>();
                 var jpgCreatorService = scope.ServiceProvider.GetRequiredService<IJPGCreatorService>();
                 var statisticsService = scope.ServiceProvider.GetRequiredService<IStatisticsService>();
-                var fileService = new FileService(unitOfWork, blobService, userService, pdfBuilder, jpgCreatorService, statisticsService);
+                var fileService = new FileService(unitOfWork, blobService, authService, pdfBuilder, jpgCreatorService, statisticsService);
                 var statisticsRequestDto = new StatisticsRequestDto
                 {
                     StartDate = new DateTime(2024, 09, 10),

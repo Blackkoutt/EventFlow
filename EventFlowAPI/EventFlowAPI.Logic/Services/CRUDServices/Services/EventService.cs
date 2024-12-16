@@ -17,13 +17,14 @@ using Microsoft.EntityFrameworkCore;
 using EventFlowAPI.Logic.DTO.UpdateRequestDto;
 using EventFlowAPI.Logic.DTO.Interfaces;
 using Microsoft.AspNetCore.Http;
+using EventFlowAPI.Logic.Identity.Services.Interfaces;
 
 namespace EventFlowAPI.Logic.Services.CRUDServices.Services
 {
     public sealed class EventService(
         IUnitOfWork unitOfWork,
         IReservationService reservationService,
-        IUserService userService,
+        IAuthService authService,
         IEmailSenderService emailSender,
         ICollisionCheckerService collisionChecker,
         ITicketService ticketService,
@@ -36,7 +37,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             UpdateEventRequestDto,
             EventResponseDto,
             EventQuery
-            >(unitOfWork, userService),
+            >(unitOfWork, authService),
         IEventService
     {
         private readonly IEmailSenderService _emailSender = emailSender;
@@ -437,7 +438,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
                     return Error.BadRequestType;
             }
 
-            var userResult = await _userService.GetCurrentUser();
+            var userResult = await _authService.GetCurrentUser();
             if (!userResult.IsSuccessful)
                 return userResult.Error;
 

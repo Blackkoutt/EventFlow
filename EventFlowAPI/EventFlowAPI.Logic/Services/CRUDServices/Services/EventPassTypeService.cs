@@ -12,17 +12,18 @@ using EventFlowAPI.Logic.DTO.UpdateRequestDto;
 using EventFlowAPI.Logic.DTO.Interfaces;
 using EventFlowAPI.Logic.Identity.Helpers;
 using EventFlowAPI.DB.Entities.Abstract;
+using EventFlowAPI.Logic.Identity.Services.Interfaces;
 
 namespace EventFlowAPI.Logic.Services.CRUDServices.Services
 {
-    public sealed class EventPassTypeService(IUnitOfWork unitOfWork, IUserService userService) :
+    public sealed class EventPassTypeService(IUnitOfWork unitOfWork, IAuthService authService) :
         GenericService<
             EventPassType,
             EventPassTypeRequestDto,
             UpdateEventPassTypeRequestDto,
             EventPassTypeResponseDto,
             EventPassTypeQuery
-        >(unitOfWork, userService),
+        >(unitOfWork, authService),
         IEventPassTypeService
     {
         public sealed override async Task<Result<IEnumerable<EventPassTypeResponseDto>>> GetAllAsync(EventPassTypeQuery query)
@@ -83,7 +84,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
                     return Error.SuchEntityExistInDb;
             }
 
-            var userResult = await _userService.GetCurrentUser();
+            var userResult = await _authService.GetCurrentUser();
             if (!userResult.IsSuccessful)
                 return userResult.Error;
 

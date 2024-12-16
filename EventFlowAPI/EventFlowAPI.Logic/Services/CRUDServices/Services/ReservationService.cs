@@ -10,6 +10,7 @@ using EventFlowAPI.Logic.Extensions;
 using EventFlowAPI.Logic.Helpers;
 using EventFlowAPI.Logic.Helpers.Enums;
 using EventFlowAPI.Logic.Identity.Helpers;
+using EventFlowAPI.Logic.Identity.Services.Interfaces;
 using EventFlowAPI.Logic.Mapper.Extensions;
 using EventFlowAPI.Logic.Query;
 using EventFlowAPI.Logic.Repositories.Interfaces;
@@ -24,7 +25,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
     public sealed class ReservationService(
         IUnitOfWork unitOfWork,
         ISeatService seatService,
-        IUserService userService,
+        IAuthService authService,
         IFileService fileService,
         IEmailSenderService emailSender
         ) :
@@ -34,7 +35,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             UpdateReservationRequestDto,
             ReservationResponseDto,
             ReservationQuery
-        >(unitOfWork, userService),
+        >(unitOfWork, authService),
         IReservationService
     {
         private readonly ISeatService _seatService = seatService;
@@ -44,7 +45,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
 
         public sealed override async Task<Result<IEnumerable<ReservationResponseDto>>> GetAllAsync(ReservationQuery query)
         {
-            var userResult = await _userService.GetCurrentUser();
+            var userResult = await _authService.GetCurrentUser();
             if (!userResult.IsSuccessful)
                 return Result<IEnumerable<ReservationResponseDto>>.Failure(userResult.Error);
 
@@ -81,7 +82,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             if(!reservationResult.IsSuccessful)
                 return Result<ReservationResponseDto>.Failure(reservationResult.Error);
 
-            var userResult = await _userService.GetCurrentUser();
+            var userResult = await _authService.GetCurrentUser();
             if (!userResult.IsSuccessful)
                 return Result<ReservationResponseDto>.Failure(userResult.Error);
 
@@ -103,7 +104,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
                 return Result<IEnumerable<ReservationResponseDto>>.Failure(validationError);
 
             // User
-            var userResult = await _userService.GetCurrentUser();
+            var userResult = await _authService.GetCurrentUser();
             if (!userResult.IsSuccessful)
                 return Result<IEnumerable<ReservationResponseDto>>.Failure(userResult.Error);
 
@@ -187,7 +188,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             //await _emailSender.SendInfoAboutCanceledReservation(reservation);
 
             // Send info about canceled reservations
-            var sendError = await _emailSender.SendInfo(reservation, EmailType.Cancel, user.Email);
+            var sendError = await _emailSender.SendInfo(reservation, EmailType.Cancel, user.EmailAddress);
             if (sendError != Error.None)
                 return Result<object>.Failure(sendError);
 
@@ -400,7 +401,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             //await _emailSender.SendTicketPDFAsync(reservationEntity, ticketPDFBitmap);
 
             // Send tickets via email
-            var sendError = await _emailSender.SendInfo(reservation, EmailType.Create, user.Email, attachmentData: ticketPDFBitmap);
+            var sendError = await _emailSender.SendInfo(reservation, EmailType.Create, user.EmailAddress, attachmentData: ticketPDFBitmap);
             if (sendError != Error.None)
                 return sendError;
 
@@ -669,7 +670,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             if (reservation.IsExpired)
                 return Result<(Reservation, UserResponseDto)>.Failure(ReservationError.ReservationIsExpired);
 
-            var userResult = await _userService.GetCurrentUser();
+            var userResult = await _authService.GetCurrentUser();
             if (!userResult.IsSuccessful)
                 return Result<(Reservation, UserResponseDto)>.Failure(userResult.Error);
 
@@ -721,7 +722,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             if (ticket is null)
                 return TicketError.TicketNotFound;
 
-            var userResult = await _userService.GetCurrentUser();
+            var userResult = await _authService.GetCurrentUser();
             if (!userResult.IsSuccessful)
                 return userResult.Error;
 
@@ -758,6 +759,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             {
                 var responseDto = entity.AsDto<ReservationResponseDto>();
                 responseDto.User = entity.User.AsDto<UserResponseDto>();
+                responseDto.User.EmailAddress = entity.User.Email!;
                 responseDto.User.UserData = null;
                 responseDto.PaymentType = entity.PaymentType.AsDto<PaymentTypeResponseDto>();
                 responseDto.Ticket = entity.Ticket.AsDto<TicketResponseDto>();
@@ -786,6 +788,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
         {
             var responseDto = entity.AsDto<ReservationResponseDto>();
             responseDto.User = entity.User.AsDto<UserResponseDto>();
+            responseDto.User.EmailAddress = entity.User.Email!;
             responseDto.User.UserData = null;
             responseDto.PaymentType = entity.PaymentType.AsDto<PaymentTypeResponseDto>();
             responseDto.Ticket = entity.Ticket.AsDto<TicketResponseDto>();

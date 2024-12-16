@@ -1,4 +1,6 @@
 ﻿using EventFlowAPI.Logic.DTO.Interfaces;
+using EventFlowAPI.Logic.DTO.Validators;
+using Microsoft.AspNetCore.Http;
 using System.ComponentModel.DataAnnotations;
 
 namespace EventFlowAPI.Logic.DTO.UpdateRequestDto
@@ -34,5 +36,8 @@ namespace EventFlowAPI.Logic.DTO.UpdateRequestDto
         [DataType(DataType.PhoneNumber)]
         [RegularExpression(@"^(\+?\d{1,4}[\s-]?)?(\(?\d{1,5}\)?[\s-]?)?[\d\s-]{5,15}$", ErrorMessage = "Numer telefonu jest nieprawidłowy.")]
         public string PhoneNumber { get; set; } = string.Empty;
+
+        [MaxFileSizeValidator(10)]
+        public IFormFile? UserPhoto { get; set; }
     }
 }

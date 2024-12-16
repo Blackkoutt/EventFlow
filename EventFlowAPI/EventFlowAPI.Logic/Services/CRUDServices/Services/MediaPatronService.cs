@@ -14,12 +14,13 @@ using EventFlowAPI.Logic.Identity.Helpers;
 using EventFlowAPI.Logic.Services.OtherServices.Interfaces;
 using EventFlowAPI.DB.Entities.Abstract;
 using EventFlowAPI.Logic.Mapper.Extensions;
+using EventFlowAPI.Logic.Identity.Services.Interfaces;
 
 namespace EventFlowAPI.Logic.Services.CRUDServices.Services
 {
     public sealed class MediaPatronService(
         IUnitOfWork unitOfWork,
-        IUserService userService,
+        IAuthService authService,
         IFileService fileService) :
         GenericService<
             MediaPatron,
@@ -27,7 +28,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             UpdateMediaPatronRequestDto,
             MediaPatronResponseDto,
             MediaPatronQuery
-        >(unitOfWork, userService),
+        >(unitOfWork, authService),
         IMediaPatronService
     {
         private readonly IFileService _fileService = fileService;
@@ -116,7 +117,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             if (isSameEntityExistInDb)
                 return Error.SuchEntityExistInDb;
 
-            var userResult = await _userService.GetCurrentUser();
+            var userResult = await _authService.GetCurrentUser();
             if (!userResult.IsSuccessful)
                 return userResult.Error;
 

@@ -11,19 +11,20 @@ using EventFlowAPI.Logic.UnitOfWork;
 using EventFlowAPI.Logic.DTO.UpdateRequestDto;
 using EventFlowAPI.Logic.DTO.Interfaces;
 using EventFlowAPI.Logic.Identity.Helpers;
+using EventFlowAPI.Logic.Identity.Services.Interfaces;
 
 namespace EventFlowAPI.Logic.Services.CRUDServices.Services
 {
     public sealed class EquipmentService(
         IUnitOfWork unitOfWork, 
-        IUserService userService) :
+        IAuthService authService) :
         GenericService<
             Equipment,
             EquipmentRequestDto,
             UpdateEquipmentRequestDto,
             EquipmentResponseDto,
             EquipmentQuery
-        >(unitOfWork, userService),
+        >(unitOfWork, authService),
         IEquipmentService
     {
         public sealed override async Task<Result<IEnumerable<EquipmentResponseDto>>> GetAllAsync(EquipmentQuery query)
@@ -53,7 +54,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
                     return Error.SuchEntityExistInDb;
             }
 
-            var userResult = await _userService.GetCurrentUser();
+            var userResult = await _authService.GetCurrentUser();
             if (!userResult.IsSuccessful)
                 return userResult.Error;
 

@@ -4,11 +4,11 @@ using EventFlowAPI.Logic.DTO.ResponseDto;
 using EventFlowAPI.Logic.Errors;
 using EventFlowAPI.Logic.Extensions;
 using EventFlowAPI.Logic.Identity.Helpers;
+using EventFlowAPI.Logic.Identity.Services.Interfaces;
 using EventFlowAPI.Logic.Mapper.Extensions;
 using EventFlowAPI.Logic.Query.Abstract;
 using EventFlowAPI.Logic.Repositories.Interfaces.BaseInterfaces;
 using EventFlowAPI.Logic.ResultObject;
-using EventFlowAPI.Logic.Services.CRUDServices.Interfaces;
 using EventFlowAPI.Logic.Services.CRUDServices.Interfaces.BaseInterfaces;
 using EventFlowAPI.Logic.UnitOfWork;
 
@@ -20,7 +20,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services.BaseServices
         TUpdateRequestDto,
         TResponseDto,
         TQuery>
-        (IUnitOfWork unitOfWork, IUserService userService) : IGenericService<
+        (IUnitOfWork unitOfWork, IAuthService authService) : IGenericService<
         TEntity,
         TRequestDto,
         TUpdateRequestDto,
@@ -34,7 +34,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services.BaseServices
     {
         //AutoMapperMappingException , RepositoryNotExist
         protected readonly IUnitOfWork _unitOfWork = unitOfWork;
-        protected readonly IUserService _userService = userService;
+        protected readonly IAuthService _authService = authService;
         protected readonly IGenericRepository<TEntity> _repository = unitOfWork.GetRepository<TEntity>();
 
 
@@ -145,7 +145,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services.BaseServices
             if (entity == null)
                 return Result<(TEntity Entity, UserResponseDto User)>.Failure(Error.NotFound);
 
-            var userResult = await _userService.GetCurrentUser();
+            var userResult = await _authService.GetCurrentUser();
             if (!userResult.IsSuccessful)
                 return Result<(TEntity Entity, UserResponseDto User)>.Failure(userResult.Error);
 

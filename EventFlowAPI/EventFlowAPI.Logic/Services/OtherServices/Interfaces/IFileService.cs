@@ -23,7 +23,8 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Interfaces
         Task<Error> DeleteFile<TEntity>(TEntity entity, FileType fileType, BlobContainer container);
         Task<Result<(byte[] PDFFile, string FileName)>> CreateHallRentPDF(HallRent hallRent, bool isUpdate = false);
         Task<Error> PostPhoto<TEntity>(TEntity entity, IFormFile? file, string fileName, bool isUpdate = false) where TEntity : class;
-        Task<Result<BlobResponseDto>> GetEntityPhoto<TEntity>(int id) where TEntity : class;
+        Task<Result<BlobResponseDto>> ValidateAndGetEntityPhoto<TEntity>(int id) where TEntity : class;
+        Task<Result<BlobResponseDto>> GetEntityPhoto<TEntity>(TEntity entity) where TEntity : class;
         Task<Error> DeletePhoto<TEntity>(TEntity entity) where TEntity : class;
     }
 }

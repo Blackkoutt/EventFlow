@@ -17,5 +17,6 @@
         SponsorPhotos,
         NewsPhotos,
         PartnerPhotos,
+        UserPhotos
     }
 }

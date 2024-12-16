@@ -113,7 +113,7 @@ namespace EventFlowAPI.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> GetMediaPatronImage([FromRoute] int id)
         {
-            var result = await _fileService.GetEntityPhoto<MediaPatron>(id);
+            var result = await _fileService.ValidateAndGetEntityPhoto<MediaPatron>(id);
             if (!result.IsSuccessful)
             {
                 return result.Error.Details!.Code switch

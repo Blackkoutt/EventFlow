@@ -1,13 +1,10 @@
-﻿using EventFlowAPI.DB.Entities;
-using EventFlowAPI.Logic.Errors;
+﻿using EventFlowAPI.Logic.Errors;
 using EventFlowAPI.Logic.Identity.DTO.RequestDto;
 using EventFlowAPI.Logic.Identity.Services.Interfaces;
-using EventFlowAPI.Logic.Services.CRUDServices.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Serilog;
 using System.Net;
-using System.Security.Claims;
 
 namespace EventFlowAPI.Controllers
 {
@@ -15,12 +12,10 @@ namespace EventFlowAPI.Controllers
     [ApiController]
     public class AuthController(
         IAuthService authService,
-        IUserService userService,
         IGoogleAuthService googleAuthService,
         IFacebookAuthService facebookAuthService) : ControllerBase
     {
         private readonly IAuthService _authService = authService;
-        private readonly IUserService _userService = userService;
         private readonly IGoogleAuthService _googleAuthService = googleAuthService;
         private readonly IFacebookAuthService _facebookAuthService = facebookAuthService;
 
@@ -29,7 +24,7 @@ namespace EventFlowAPI.Controllers
         [Authorize]
         public async Task<IActionResult> ActivateUser()
         {
-            Log.Information("\n\n\n\n\n\n\n\n\n\nHellolooo01");
+            Log.Information("Hellolooo01");
             var verifyError = await _authService.VerifyUser();
             return verifyError == Error.None ? Ok() : BadRequest(verifyError);
         }
@@ -156,18 +151,5 @@ namespace EventFlowAPI.Controllers
             }
             return Ok(result.Value);
         }
-
-        [HttpGet("info")]
-        [Authorize]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<IActionResult> Info()
-        {
-            var result = await _userService.GetCurrentUser();
-            return result.IsSuccessful ? Ok(result.Value) : BadRequest(result.Error.Details);
-        }
-
-
     }
 }

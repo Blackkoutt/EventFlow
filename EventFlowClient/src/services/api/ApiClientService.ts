@@ -85,8 +85,8 @@ async function Delete<TEntity>(endpoint: ApiEndpoint, id: number) {
   }
 }
 
-const GetPhotoEndpoint = (photoEndpoint: string): string => {
-  return `${baseUrl}${photoEndpoint}`;
+const GetPhotoEndpoint = (photoEndpoint?: string): string => {
+  return photoEndpoint ? `${baseUrl}${photoEndpoint}` : "";
 };
 
 const ApiMethod = {

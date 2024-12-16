@@ -12,8 +12,7 @@ namespace EventFlowAPI.Logic.Repositories.Repositories
         {
             var _table = _context.Users
                         .Include(u => u.UserData)
-                        .Include(u => u.Roles)
-                        .AsSplitQuery();
+                        .Include(u => u.Roles);
 
             return await (query != null ? query(_table).ToListAsync() : _table.ToListAsync());
         }
@@ -21,7 +20,6 @@ namespace EventFlowAPI.Logic.Repositories.Repositories
         public async Task<User?> GetOneAsync(string id)
         {
             return await _context.Users
-                        .AsSplitQuery()
                         .Include(u => u.UserData)
                         .Include(u => u.Roles)
                         .FirstOrDefaultAsync(e => e.Id == id);
