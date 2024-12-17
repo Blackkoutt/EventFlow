@@ -2,12 +2,12 @@ import { IconDefinition } from "@fortawesome/fontawesome-svg-core";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useEffect, useRef, useState } from "react";
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
-import { FieldError, useFormContext } from "react-hook-form";
+import { FieldError, FieldErrorsImpl, Merge, useFormContext } from "react-hook-form";
 
 export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   label: string;
   name: string;
-  error: FieldError | undefined;
+  error: FieldError | Merge<FieldError, FieldErrorsImpl<any>> | undefined;
   icon?: IconDefinition;
   iconwidth?: number;
   iconHeight?: number;
@@ -31,6 +31,8 @@ const Input = ({
   useEffect(() => {
     if (isFocused) setFocus(name);
   }, [isFocused]);
+
+  const errorMessage = error ? (error as FieldError)?.message : undefined;
 
   return (
     <div className="w-full">
@@ -81,7 +83,7 @@ const Input = ({
           />
         ) : null}
       </div>
-      {error && <div className="text-red-500">{error.message}</div>}
+      {errorMessage && <div className="text-red-500">{errorMessage}</div>}
     </div>
   );
 };

@@ -21,8 +21,8 @@ interface POSTRequestParams<TPostEntity> {
   body: TPostEntity;
 }
 interface PUTRequestParams<TPutEntity> {
-  id: number;
   body: TPutEntity;
+  id?: number;
 }
 interface PATCHRequestParams<TPatchEntity> {
   id?: number;
@@ -78,17 +78,14 @@ function useApi<TEntity, TPostEntity = undefined, TPutEntity = undefined, TPatch
             break;
 
           case HTTPMethod.PUT:
-            if (id === undefined) throw Error("PUT Error: id is undefined");
             if (typeof body === undefined || body === undefined)
               throw Error("PUT Error: body is undefined");
             const [putData, putCode] = await ApiClient.Put<TEntity, TPutEntity>(
               endpoint,
-              id as number,
-              body as TPutEntity
+              body as TPutEntity,
+              id
             );
-            /* setData((prev) =>
-              prev.map((item) => (item.id === id ? { ...item, ...putResponse } : item))
-            );*/
+            console.log("putcode", putCode);
             setStatusCode(putCode as number);
             break;
 
@@ -156,7 +153,7 @@ function useApi<TEntity, TPostEntity = undefined, TPutEntity = undefined, TPatch
   );
 
   const put = useCallback(
-    ({ id, body }: PUTRequestParams<TPutEntity>): Promise<void> =>
+    ({ body, id }: PUTRequestParams<TPutEntity>): Promise<void> =>
       request({ httpMethod: HTTPMethod.PUT, id, body }),
     [request]
   );

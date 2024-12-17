@@ -31,7 +31,7 @@ const LoginPage = () => {
   const methods = useForm<UserLoginRequest>({
     resolver: zodResolver(userLoginSchema),
   });
-  const { register, handleSubmit, formState, watch } = methods;
+  const { handleSubmit, formState, watch } = methods;
   const { errors, isSubmitting } = formState;
 
   useEffect(() => {

@@ -1,5 +1,6 @@
 ﻿using EventFlowAPI.DB.Entities;
 using EventFlowAPI.DB.Entities.Abstract;
+using EventFlowAPI.Logic.DTO.RequestDto;
 using EventFlowAPI.Logic.DTO.Statistics.RequestDto;
 using EventFlowAPI.Logic.Errors;
 using EventFlowAPI.Logic.Extensions;
@@ -12,6 +13,7 @@ using EventFlowAPI.Logic.ResultObject;
 using EventFlowAPI.Logic.Services.OtherServices.Interfaces;
 using EventFlowAPI.Logic.UnitOfWork;
 using Microsoft.AspNetCore.Http;
+using Serilog;
 using System.IO.Compression;
 
 namespace EventFlowAPI.Logic.Services.OtherServices.Services
@@ -179,9 +181,9 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
                 var blobContainerResult = GetPhotoBlobContainer(entity);
                 if (!blobContainerResult.IsSuccessful)
                     return blobContainerResult.Error;
-
                 var blobContainer = blobContainerResult.Value;
 
+                //Log.Information($"Hello1");
                 using (var memoryStream = new MemoryStream())
                 {
                     await file.CopyToAsync(memoryStream);
@@ -193,6 +195,7 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
                 }
 
                 photoEntity.PhotoName = fileName;
+               // Log.Information($"Hello {photoEntity.PhotoName}");
             }
             return Error.None;
         }

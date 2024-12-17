@@ -11,6 +11,7 @@ using EventFlowAPI.Logic.ResultObject;
 using EventFlowAPI.Logic.Services.CRUDServices.Interfaces;
 using EventFlowAPI.Logic.Services.OtherServices.Interfaces;
 using EventFlowAPI.Logic.UnitOfWork;
+using Serilog;
 
 namespace EventFlowAPI.Logic.Services.CRUDServices.Services
 {
@@ -43,9 +44,13 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             var userData = userDataRequestDto.AsEntity<UserData>();
             user.UserData = userData;
 
-            var photoPostError = await _fileService.PostPhoto(user, userDataRequestDto.UserPhoto, $"user_{user.Id}", isUpdate: false);
+            //Log.Information($"Hello {userDataRequestDto.UserPhoto}");
+            var photoPostError = await _fileService.PostPhoto(user, userDataRequestDto.UserPhoto, $"user_{user.Id}", isUpdate: true);
             if (photoPostError != Error.None)
                 return Result<object>.Failure(photoPostError);
+
+            _unitOfWork.GetRepository<User>().Update(user);
+            await _unitOfWork.SaveChangesAsync();
 
             return Result<object>.Success();
         }

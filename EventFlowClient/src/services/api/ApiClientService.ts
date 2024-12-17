@@ -27,7 +27,16 @@ async function Post<TEntity, TPostEntity>(endpoint: ApiEndpoint, body: TPostEnti
   try {
     const { url } = ApiUrlConfig[endpoint];
 
-    const response = await api.post<TEntity>(url, body);
+    let response;
+    if (body instanceof FormData) {
+      response = await api.post<TEntity>(url, body, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+    } else {
+      response = await api.post<TEntity>(url, body);
+    }
     const code = response.status;
     const data = response.data;
     return [data, code];
@@ -36,12 +45,23 @@ async function Post<TEntity, TPostEntity>(endpoint: ApiEndpoint, body: TPostEnti
   }
 }
 
-async function Put<TEntity, TPutEntity>(endpoint: ApiEndpoint, id: number, body: TPutEntity) {
+async function Put<TEntity, TPutEntity>(endpoint: ApiEndpoint, body: TPutEntity, id?: number) {
   try {
     const { url } = ApiUrlConfig[endpoint];
-    const fullUrl = `${url}/${id}`;
+    let fullUrl;
+    if (id !== undefined) fullUrl = `${url}/${id}`;
+    else fullUrl = `${url}`;
 
-    const response = await api.put<TEntity>(fullUrl, body);
+    let response;
+    if (body instanceof FormData) {
+      response = await api.put<TEntity>(fullUrl, body, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+    } else {
+      response = await api.put<TEntity>(fullUrl, body);
+    }
     const code = response.status;
     const data = response.data;
     return [data, code];
