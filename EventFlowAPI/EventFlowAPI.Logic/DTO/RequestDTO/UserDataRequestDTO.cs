@@ -8,7 +8,7 @@ namespace EventFlowAPI.Logic.DTO.RequestDto
     public class UserDataRequestDto : IRequestDto
     {
         [OptionalLengthValidator(2, 50, ErrorMessage = "Nazwa ulicy powinna zawierać od 2 do 50 znaków.")]
-        [RegularExpression(@"^[A-ZĄĆĘŁŃÓŚŹŻ0-9][A-Za-ząćęłńóśźż0-9 ]*$", ErrorMessage = "Nazwa ulicy powinna zawierać tylko litery lub cyfry oraz powinna znaczynać się od dużej litery lub cyfry.")]
+        [RegularExpression(@"^[A-ZĄĆĘŁŃÓŚŹŻ0-9][A-Za-ząćęłńóśźż0-9' \-]*$", ErrorMessage = "Nazwa ulicy powinna zaczynać się wielką literą lub cyfrą, a także zawierać tylko litery, cyfry, myślniki, apostrofy oraz spacje.")]
         public string? Street { get; set; } = string.Empty;
 
         [Range(1, 999, ErrorMessage = "Numer domu nie może być mniejszy niż 1 lub większa niż 999.")]
@@ -18,7 +18,7 @@ namespace EventFlowAPI.Logic.DTO.RequestDto
         public int? FlatNumber { get; set; }
 
         [OptionalLengthValidator(2, 50, ErrorMessage = "Nazwa miasta powinna zawierać od 2 do 50 znaków.")]
-        [RegularExpression(@"^[A-ZĄĆĘŁŃÓŚŹŻ][a-ząćęłńóśźż ]*$", ErrorMessage = "Nazwa miasta powinna zawierać tylko litery i zaczynać się wielką literą.")]
+        [RegularExpression(@"^[A-ZĄĆĘŁŃÓŚŹŻ][a-zA-Ząćęłńóśźżà-ÿÀ-ß' \-]*$", ErrorMessage = "Nazwa miasta powinna zawierać tylko litery, myślniki, apostrofy oraz zaczynać się wielką literą.")]
         public string? City { get; set; } = string.Empty;
 
         [OptionalLengthValidator(6, 6, ErrorMessage = "Kod pocztowy powinien zawierać 6 znaków.")]

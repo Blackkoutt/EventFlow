@@ -1,3 +1,6 @@
+import { IconDefinition } from "@fortawesome/fontawesome-svg-core";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+
 export enum ButtonStyle {
   Primary,
   Secondary,
@@ -9,14 +12,28 @@ interface ButtonProps {
   text: string;
   width: number;
   height: number;
+  style: ButtonStyle;
+  rounded?: string;
   fontSize?: number;
   isFontSemibold?: boolean;
-  style: ButtonStyle;
+  icon?: IconDefinition;
+  iconSize?: number;
   action: (event: React.MouseEvent<HTMLButtonElement>) => void;
 }
 
 const Button = (props: ButtonProps) => {
-  const { text, width, height, fontSize = 16, isFontSemibold = false, style, action } = props;
+  const {
+    text,
+    width,
+    rounded = "rounded-full",
+    height,
+    fontSize = 16,
+    isFontSemibold = false,
+    style,
+    action,
+    iconSize,
+    icon,
+  } = props;
 
   const buttonStyle = {
     width: `${width}px`,
@@ -50,10 +67,11 @@ const Button = (props: ButtonProps) => {
     <>
       <button
         onClick={action}
-        className={`rounded-full ${buttonClass} ${fontWeightClass} text-center py-0`}
+        className={`${rounded} flex flex-row justify-center items-center gap-3 ${buttonClass} ${fontWeightClass} text-center py-0`}
         style={buttonStyle}
       >
-        {text}
+        {icon && <FontAwesomeIcon icon={icon} style={{ fontSize: `${iconSize}px` }} />}
+        <div>{text}</div>
       </button>
     </>
   );

@@ -1,6 +1,4 @@
-import { forwardRef, useEffect, useRef, useState } from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faC, faCircleXmark, faUserGroup } from "@fortawesome/free-solid-svg-icons";
+import { forwardRef, useEffect, useState } from "react";
 import { User } from "../../models/response_models";
 import ApiClient from "../../services/api/ApiClientService";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
@@ -12,6 +10,7 @@ import { MaxFileSizeAndTypeValidator } from "../../models/validators/MaxFileSize
 import { ApiEndpoint } from "../../helpers/enums/ApiEndpointEnum";
 import useApi from "../../hooks/useApi";
 import { HTTPStatusCode } from "../../helpers/enums/HTTPStatusCode";
+import Dialog from "../common/Dialog";
 
 interface ChangePhotoDialogProps {
   user: User;
@@ -20,7 +19,6 @@ interface ChangePhotoDialogProps {
 
 const ChangePhotoDialog = forwardRef<HTMLDialogElement, ChangePhotoDialogProps>(
   ({ user, reloadComponent }: ChangePhotoDialogProps, ref) => {
-    const dialogRef = useRef<HTMLDialogElement | null>(null);
     const [photo, setPhoto] = useState(ApiClient.GetPhotoEndpoint(user.photoEndpoint));
 
     const { statusCode: statusCode, put: putInfo } = useApi<User, undefined, FormData>(
@@ -40,8 +38,23 @@ const ChangePhotoDialog = forwardRef<HTMLDialogElement, ChangePhotoDialogProps>(
         phoneNumber: user.userData?.phoneNumber ?? null,
       },
     });
-    const { handleSubmit, formState, watch } = methods;
+    const { handleSubmit, formState, watch, setValue } = methods;
     const { errors, isSubmitting } = formState;
+
+    useEffect(() => {
+      setValue("street", user.userData?.street ?? null);
+      setValue(
+        "houseNumber",
+        (user.userData?.houseNumber === 0 ? null : user.userData?.houseNumber) ?? null
+      );
+      setValue(
+        "flatNumber",
+        (user.userData?.flatNumber === 0 ? null : user.userData?.flatNumber) ?? null
+      );
+      setValue("city", user.userData?.city ?? null);
+      setValue("zipCode", user.userData?.zipCode ?? null);
+      setValue("phoneNumber", user.userData?.phoneNumber ?? null);
+    }, [user.userData]);
 
     const file = watch().userPhoto;
     const validator = MaxFileSizeAndTypeValidator(10, ["image/jpeg", "image/png"]);
@@ -57,6 +70,7 @@ const ChangePhotoDialog = forwardRef<HTMLDialogElement, ChangePhotoDialogProps>(
     }, [file]);
 
     const onSubmit: SubmitHandler<UserDataRequest> = async (data) => {
+      console.log(data);
       const formData = new FormData();
       formData.append("Street", data.street || "");
       formData.append("HouseNumber", data.houseNumber?.toString() || "");
@@ -80,26 +94,7 @@ const ChangePhotoDialog = forwardRef<HTMLDialogElement, ChangePhotoDialogProps>(
 
     return (
       photo && (
-        <dialog
-          ref={(node) => {
-            dialogRef.current = node;
-            if (typeof ref === "function") {
-              ref(node);
-            } else if (ref) {
-              ref.current = node;
-            }
-          }}
-          className="rounded-xl p-7 relative overflow-visible"
-        >
-          <FontAwesomeIcon
-            icon={faCircleXmark}
-            className="absolute -right-3 -top-3 hover:cursor-pointer hover:opacity-95 bg-white rounded-full"
-            style={{
-              width: "35px",
-              height: "35px",
-            }}
-            onClick={() => dialogRef.current?.close()}
-          />
+        <Dialog ref={ref}>
           <div className="flex flex-col justify-center items-center">
             <div className="bg-gray-200 rounded-lg flex flex-row justify-center items-end p-6 gap-6">
               <div className="flex flex-col justify-center items-center">
@@ -144,7 +139,7 @@ const ChangePhotoDialog = forwardRef<HTMLDialogElement, ChangePhotoDialogProps>(
               </form>
             </FormProvider>
           </div>
-        </dialog>
+        </Dialog>
       )
     );
   }

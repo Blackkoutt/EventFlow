@@ -1,6 +1,6 @@
 import { IconDefinition } from "@fortawesome/fontawesome-svg-core";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import React, { useEffect, useRef, useState } from "react";
+import React, { FormEvent, useEffect, useRef, useState } from "react";
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 import { FieldError, FieldErrorsImpl, Merge, useFormContext } from "react-hook-form";
 
@@ -8,8 +8,17 @@ export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> 
   label: string;
   name: string;
   error: FieldError | Merge<FieldError, FieldErrorsImpl<any>> | undefined;
+  isFirstLetterUpperCase?: boolean;
   icon?: IconDefinition;
   iconwidth?: number;
+  onInput?: (e: FormEvent<HTMLInputElement>) => void;
+  min?: number;
+  minLength?: number;
+  pattern?: string;
+  max?: number;
+  onlyInt?: boolean;
+  errorHeight?: number;
+  maxLength?: number;
   iconHeight?: number;
 }
 
@@ -17,20 +26,59 @@ const Input = ({
   label,
   icon,
   error,
+  isFirstLetterUpperCase = false,
   name,
+  min,
+  max,
+  pattern,
+  maxLength,
+  minLength,
+  onlyInt = false,
+  onInput,
   iconwidth = 24,
   iconHeight = 24,
+  errorHeight,
   onChange,
   type = "text",
   ...props
 }: InputProps) => {
   const [isFocused, setIsFocused] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-  const { register, getValues, setFocus } = useFormContext();
+  const { register, getValues, setFocus, setValue } = useFormContext();
 
   useEffect(() => {
     if (isFocused) setFocus(name);
   }, [isFocused]);
+
+  const capitalizeFirstLetter = (e: FormEvent<HTMLInputElement>) => {
+    const input = e.target as HTMLInputElement;
+    if (input.value && /^[a-z]/i.test(input.value)) {
+      input.value = input.value.charAt(0).toUpperCase() + input.value.slice(1);
+    }
+  };
+
+  const phoneNumberOnInput = (e: FormEvent<HTMLInputElement>) => {
+    const input = e.target as HTMLInputElement;
+    input.value = input.value.replace(/[^0-9\s\+\-\(\)]/g, "");
+  };
+
+  const zipCodeOnInput = (e: FormEvent<HTMLInputElement>) => {
+    const input = e.target as HTMLInputElement;
+    let inputValue = input.value.replace(/\D/g, "");
+    if (inputValue.length > 2) {
+      inputValue = inputValue.slice(0, 2) + "-" + inputValue.slice(2);
+    }
+    setValue(name, inputValue);
+  };
+
+  const numberOnlyIntOnInput = (e: FormEvent<HTMLInputElement>) => {
+    const input = e.target as HTMLInputElement;
+    let inputValue = input.value.replace(/\D/g, "");
+    if (inputValue.startsWith("0") && inputValue.length > 1) {
+      inputValue = inputValue.substring(1);
+    }
+    setValue(name, inputValue);
+  };
 
   const errorMessage = error ? (error as FieldError)?.message : undefined;
 
@@ -67,9 +115,40 @@ const Input = ({
             {...register(name)}
             name={name}
             id={name}
-            type={type === "password" && showPassword ? "text" : type}
+            min={min}
+            max={max}
+            maxLength={(() => {
+              switch (type) {
+                case "tel":
+                  return 15;
+                case "zipCode":
+                  return 6;
+                default:
+                  return maxLength;
+              }
+            })()}
+            minLength={minLength}
+            pattern={pattern}
+            type={(type === "password" && showPassword) || type === "zipCode" ? "text" : type}
             className="w-full text-[#2F2F2F] font-semibold bg-[#ECECEC]"
             style={{ outline: "none" }}
+            onInput={(e) => {
+              switch (type) {
+                case "zipCode":
+                  zipCodeOnInput(e);
+                  break;
+                case "tel":
+                  phoneNumberOnInput(e);
+                  break;
+                case "number":
+                  if (onlyInt) numberOnlyIntOnInput(e);
+                  break;
+                default:
+                  if (isFirstLetterUpperCase) capitalizeFirstLetter(e);
+                  else onInput ? onInput(e) : undefined;
+                  break;
+              }
+            }}
             {...props}
             onFocus={() => setIsFocused(true)}
             onBlur={() => setIsFocused(false)}
@@ -83,7 +162,9 @@ const Input = ({
           />
         ) : null}
       </div>
-      {errorMessage && <div className="text-red-500">{errorMessage}</div>}
+      <div style={{ height: errorHeight !== undefined ? `${errorHeight}px` : "auto" }}>
+        {errorMessage && <div className="text-red-500 text-[14.5px]">{errorMessage}</div>}
+      </div>
     </div>
   );
 };

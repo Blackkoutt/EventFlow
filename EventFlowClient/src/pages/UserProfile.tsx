@@ -10,28 +10,36 @@ import ChangePhotoDialog from "../components/profile/ChangePhotoDialog";
 
 const UserProfile = () => {
   const { data: info, get: getInfo } = useApi<User>(ApiEndpoint.UserInfo);
-  const dialog = useRef<HTMLDialogElement>(null);
+  const changePhotoDialog = useRef<HTMLDialogElement>(null);
   const [cacheBuster, setCacheBuster] = useState(Date.now());
 
   useEffect(() => {
     getInfo({ id: undefined, queryParams: undefined });
   }, []);
 
-  const showModal = () => {
-    dialog.current?.showModal();
-  };
-
-  const reloadComponent = () => {
-    dialog.current?.close();
+  const reloadPhotoComponent = () => {
+    changePhotoDialog.current?.close();
     getInfo({ id: undefined, queryParams: undefined });
     setCacheBuster(Date.now);
+  };
+
+  const reloadAdditionalInfoComponent = () => {
+    getInfo({ id: undefined, queryParams: undefined });
   };
 
   return info[0] ? (
     <div className="flex flex-row justify-start items-start gap-8 py-16">
       <div className="flex flex-col justify-center items-center gap-4">
-        <ProfilePhoto user={info[0]} onClick={() => showModal()} cacheBuster={cacheBuster} />
-        <ChangePhotoDialog user={info[0]} ref={dialog} reloadComponent={reloadComponent} />
+        <ProfilePhoto
+          user={info[0]}
+          onClick={() => changePhotoDialog.current?.showModal()}
+          cacheBuster={cacheBuster}
+        />
+        <ChangePhotoDialog
+          user={info[0]}
+          ref={changePhotoDialog}
+          reloadComponent={reloadPhotoComponent}
+        />
         <div className="flex flex-col justify-center items-center gap-4">
           <ProfileButton text="Informacje ogólne" path="/profile" />
           <ProfileButton text="Informacje dodatkowe" path="/profile/info" />
@@ -45,7 +53,9 @@ const UserProfile = () => {
         </div>
       </div>
       <div className="flex flex-col items-start justify-start rounded-lg bg-white shadow-xl p-3 min-w-[820px] min-h-[540px]">
-        <Outlet context={info[0]} />
+        <Outlet
+          context={{ user: info[0], reloadAdditonalInfoComponent: reloadAdditionalInfoComponent }}
+        />
       </div>
     </div>
   ) : (

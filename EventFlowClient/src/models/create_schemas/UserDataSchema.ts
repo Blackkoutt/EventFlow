@@ -4,51 +4,106 @@ import { MaxFileSizeAndTypeValidator } from "../validators/MaxFileSizeValidator"
 export const UserDataSchema = z.object({
   street: z
     .string()
-    .min(2, "Nazwa ulicy powinna zawierać od 2 do 50 znaków.")
-    .max(50, "Nazwa ulicy powinna zawierać od 2 do 50 znaków.")
-    .regex(
-      /^[A-ZĄĆĘŁŃÓŚŹŻ0-9][A-Za-ząćęłńóśźż0-9 ]*$/,
-      "Nazwa ulicy powinna zawierać tylko litery lub cyfry oraz powinna zaczynać się od dużej litery lub cyfry."
-    )
-    .nullish(),
+    .optional()
+    .nullable()
+    .transform((val) => (val === "" ? null : val))
+    .refine((val) => {
+      if (val !== undefined && val !== null) {
+        return val.length >= 2 && val.length <= 50;
+      }
+      return true;
+    }, "Ulica powinna zawierać od 2 do 50 znaków.")
+    .refine((val) => {
+      if (val !== undefined && val !== null) {
+        return /^[A-ZĄĆĘŁŃÓŚŹŻ0-9][A-Za-ząćęłńóśźż0-9' \-]*$/.test(val);
+      }
+      return true;
+    }, "Ulica powinna zawierać tylko litery lub cyfry."),
 
-  houseNumber: z
-    .number()
-    .min(1, "Numer domu nie może być mniejszy niż 1.")
-    .max(999, "Numer domu nie może być większy niż 999.")
-    .nullish(),
+  houseNumber: z.preprocess(
+    (value) => (value !== "" && value !== null ? Number(value) : 0),
+    z
+      .number()
+      .optional()
+      .nullable()
+      .transform((val) => (val === 0 ? null : val))
+      .refine((val) => {
+        if (val !== 0 && val !== null && val != undefined) {
+          return val >= 1 && val <= 999;
+        }
+        return true;
+      }, "Nr domu powienien być z zakresu (1-999).")
+  ),
 
-  flatNumber: z
-    .number()
-    .min(1, "Numer mieszkania nie może być mniejszy niż 1.")
-    .max(999, "Numer mieszkania nie może być większy niż 999.")
-    .nullish(),
+  flatNumber: z.preprocess(
+    (value) => (value !== "" && value !== null ? Number(value) : 0),
+    z
+      .number()
+      .optional()
+      .nullable()
+      .transform((val) => (val === 0 ? null : val))
+      .refine((val) => {
+        if (val !== 0 && val !== null && val != undefined) {
+          return val >= 1 && val <= 999;
+        }
+        return true;
+      }, "Nr mieszkania powienien być z zakresu (1-999).")
+  ),
 
   city: z
     .string()
-    .min(2, "Nazwa miasta powinna zawierać od 2 do 50 znaków.")
-    .max(50, "Nazwa miasta powinna zawierać od 2 do 50 znaków.")
-    .regex(
-      /^[A-ZĄĆĘŁŃÓŚŹŻ][a-ząćęłńóśźż ]*$/,
-      "Nazwa miasta powinna zawierać tylko litery i zaczynać się wielką literą."
-    )
-    .nullish(),
+    .optional()
+    .nullable()
+    .transform((val) => (val === "" ? null : val))
+    .refine((val) => {
+      if (val !== undefined && val !== null) {
+        return val.length >= 2 && val.length <= 50;
+      }
+      return true;
+    }, "Miasto powinno zawierać od 2 do 50 znaków.")
+    .refine((val) => {
+      if (val !== undefined && val !== null) {
+        return /^[A-ZĄĆĘŁŃÓŚŹŻ][a-zA-Ząćęłńóśźżà-ÿÀ-ß' \-]*$/.test(val);
+      }
+      return true;
+    }, "Miasto powinno zawierać tylko litery."),
 
   zipCode: z
     .string()
-    .length(6, "Kod pocztowy powinien zawierać 6 znaków.")
-    .regex(/^\d{2}-\d{3}$/, "Format kodu pocztowego to 'xx-xxx', gdzie x to liczby od 0 do 9.")
-    .nullish(),
+    .optional()
+    .nullable()
+    .transform((val) => (val === "" ? null : val))
+    .refine((val) => {
+      if (val !== undefined && val !== null) {
+        return val.length === 6;
+      }
+      return true;
+    }, "Kod pocztowy powinien zawierać 6 znaków.")
+    .refine((val) => {
+      if (val !== undefined && val !== null) {
+        return /^\d{2}-\d{3}$/.test(val);
+      }
+      return true;
+    }, "Format kodu pocztowego to '12-345'."),
 
   phoneNumber: z
     .string()
-    .min(5, "Numer telefonu powinien zawierać od 5 do 15 znaków.")
-    .max(15, "Numer telefonu powinien zawierać od 5 do 15 znaków.")
-    .regex(
-      /^(\+?\d{1,4}[\s-]?)?(\(?\d{1,5}\)?[\s-]?)?[\d\s-]{5,15}$/,
-      "Numer telefonu jest nieprawidłowy."
-    )
-    .nullish(),
+    .optional()
+    .nullable()
+    .transform((val) => (val === "" ? null : val))
+    .refine((val) => {
+      if (val !== undefined && val !== null) {
+        return val.length >= 5 && val.length <= 15;
+      }
+      return true;
+    }, "Nr telefonu powinien zawierać od 5 do 15 znaków.")
+    .refine((val) => {
+      if (val !== undefined && val !== null) {
+        return /^(\+?\d{1,4}[\s-]?)?(\(?\d{1,5}\)?[\s-]?)?[\d\s-]{5,15}$/.test(val);
+      }
+      return true;
+    }, "Nr telefonu jest nieprawidłowy."),
+
   userPhoto: MaxFileSizeAndTypeValidator(10, ["image/jpeg"]).nullish(),
 });
 
