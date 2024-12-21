@@ -13,7 +13,9 @@ const ProfileButton = ({ path, text }: ProfileButtonProps) => {
 
   return (
     <button
-      className={`w-full py-3 ${isActive(path) ? "bg-primaryPurple text-white" : ""}`}
+      className={`w-full rounded-lg text-base px-4 py-3 ${
+        isActive(path) ? "bg-primaryPurple text-white" : "bg-defaultButton"
+      }`}
       onClick={() => navigate(path)}
     >
       {text}

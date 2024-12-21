@@ -34,7 +34,7 @@ const Accordion = ({ header, content }: AccordionProps) => {
       <div className={`accordion-content ${contentClass}`}>
         <div>
           <div className="h-[1px] w-full bg-[#4C4C4C] my-4"></div>
-          <p>{content}</p>
+          <p className="text-textPrimary">{content}</p>
         </div>
       </div>
     </div>

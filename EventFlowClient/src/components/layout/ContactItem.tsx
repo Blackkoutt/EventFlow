@@ -14,7 +14,7 @@ const ContactItem = ({ icon, header, text }: ContactItemProps) => {
       </div>
       <div className="flex flex-col justify-start items-start gap-1">
         <p className="font-semibold text-black text-[17px]">{header}</p>
-        <p className="text-[15px]" dangerouslySetInnerHTML={{ __html: text }}></p>
+        <p className="text-[15px] text-textPrimary" dangerouslySetInnerHTML={{ __html: text }}></p>
       </div>
     </div>
   );

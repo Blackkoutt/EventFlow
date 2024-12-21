@@ -9,7 +9,6 @@ import ContactItem from "../components/layout/ContactItem";
 import { useAuth } from "../context/AuthContext";
 import { Slide, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import UserAccordion from "../components/UserAccordion";
 
 function AppLayout() {

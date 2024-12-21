@@ -28,7 +28,7 @@ const UserProfile = () => {
   };
 
   return info[0] ? (
-    <div className="flex flex-row justify-start items-start gap-8 py-16">
+    <div className="flex flex-row justify-center items-start gap-8 py-16 w-full px-5">
       <div className="flex flex-col justify-center items-center gap-4">
         <ProfilePhoto
           user={info[0]}
@@ -40,7 +40,7 @@ const UserProfile = () => {
           ref={changePhotoDialog}
           reloadComponent={reloadPhotoComponent}
         />
-        <div className="flex flex-col justify-center items-center gap-4">
+        <div className="flex flex-col justify-center items-center gap-4 min-w-[250px]">
           <ProfileButton text="Informacje ogólne" path="/profile" />
           <ProfileButton text="Informacje dodatkowe" path="/profile/info" />
           {!isUserInRole(info[0], Roles.Admin) && (
@@ -52,7 +52,7 @@ const UserProfile = () => {
           )}
         </div>
       </div>
-      <div className="flex flex-col items-start justify-start rounded-lg bg-white shadow-xl p-3 min-w-[820px] min-h-[540px]">
+      <div className="flex flex-col items-start justify-start rounded-lg bg-white shadow-xl p-3 w-full min-h-[620px]">
         <Outlet
           context={{ user: info[0], reloadAdditonalInfoComponent: reloadAdditionalInfoComponent }}
         />

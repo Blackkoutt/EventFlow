@@ -7,6 +7,7 @@ namespace EventFlowAPI.Logic.Helpers.Enums
     {
         Active,
         Canceled,
-        Expired
+        Expired,
+        Unknown
     }
 }

@@ -9,6 +9,7 @@ export type Reservation = IModel & {
   reservationDate: string;
   paymentDate: string;
   paymentAmount: string;
+  reservationStatus: string;
   user?: User;
   paymentType?: PaymentType;
   ticket?: Ticket;

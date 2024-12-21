@@ -1,4 +1,5 @@
 ﻿using EventFlowAPI.Logic.DTO.Abstract;
+using EventFlowAPI.Logic.Helpers.Enums;
 using System.Text.Json.Serialization;
 
 namespace EventFlowAPI.Logic.DTO.ResponseDto
@@ -10,6 +11,7 @@ namespace EventFlowAPI.Logic.DTO.ResponseDto
         public DateTime ReservationDate { get; set; }
         public DateTime PaymentDate { get; set; }
         public DateTime? DeleteDate { get; set; }
+        public Status ReservationStatus { get; set; }
         public decimal PaymentAmount { get; set; }
         public UserResponseDto? User { get; set; }
         public PaymentTypeResponseDto? PaymentType { get; set; }

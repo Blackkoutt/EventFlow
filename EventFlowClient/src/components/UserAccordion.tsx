@@ -34,7 +34,7 @@ const UserAccordion = () => {
           <Link to="/profile">
             <div className="flex flex-row w-full justify-start items-center gap-4 pt-3 pl-2 pb-4 mt-2 cursor-pointer rounded-sm hover:bg-[#efdaff] border-b-[1px] border-dashed border-primaryPurple">
               <FontAwesomeIcon icon={faUser} fontSize={22} color="#7B2CBF" />
-              <p className="text-[17px]">Profil</p>
+              <p className="text-[17px] text-textPrimary">Profil</p>
             </div>
           </Link>
 
@@ -42,7 +42,7 @@ const UserAccordion = () => {
             <Link to="/management">
               <div className="flex flex-row w-full justify-start items-center gap-4 py-4 pl-2 cursor-pointer border-b-[1px] border-dashed border-primaryPurple rounded-sm hover:bg-[#efdaff]">
                 <FontAwesomeIcon icon={faBriefcase} fontSize={22} color="#7B2CBF" />
-                <p className="text-[17px]">Zarządzaj</p>
+                <p className="text-[17px] text-textPrimary">Zarządzaj</p>
               </div>
             </Link>
           ) : null}
@@ -52,7 +52,7 @@ const UserAccordion = () => {
               onClick={handleLogout}
             >
               <FontAwesomeIcon icon={faRightFromBracket} fontSize={22} color="#7B2CBF" />
-              <p className="text-[17px]">Wyloguj się</p>
+              <p className="text-[17px] text-textPrimary">Wyloguj się</p>
             </div>
           </Link>
         </div>

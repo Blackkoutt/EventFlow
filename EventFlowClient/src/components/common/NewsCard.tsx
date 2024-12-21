@@ -40,8 +40,13 @@ const NewsCard = ({
           >
             {news.title}
           </h3>
-          <p style={{ fontSize: `${articleSize}px` }}>{news.shortDescription}</p>
-          <p className="text-[#987EFE] text-[14px] pt-1" style={{ fontSize: `${buttonSize}px` }}>
+          <p className="text-textPrimary" style={{ fontSize: `${articleSize}px` }}>
+            {news.shortDescription}
+          </p>
+          <p
+            className="text-[#987EFE] pb-2 text-[14px] pt-1"
+            style={{ fontSize: `${buttonSize}px` }}
+          >
             Czytaj dalej &rarr;
           </p>
         </article>

@@ -26,7 +26,7 @@ const FestivalCard = ({ festival }: FestivalCardProps) => {
               Festiwal Muzyki Hip-Hop
             </h3>
           </div>
-          <p className="text-2xl font-semibold text-[#4C4C4C] m-0 p-0">Program festiwalu:</p>
+          <p className="text-2xl font-semibold text-textPrimary m-0 p-0">Program festiwalu:</p>
           <div className="flex flex-col justify-center items-start">
             {festival.events.map((event) => {
               return (
@@ -34,7 +34,7 @@ const FestivalCard = ({ festival }: FestivalCardProps) => {
                   <p className="pb-2 text-[18px] font-semibold text-[#00BFC3] w-[170px]">
                     {DateFormatter.FormatDate(event.startDate, DateFormat.DateTime)}
                   </p>
-                  <p>
+                  <p className="text-textPrimary">
                     {event.category?.name}: {event.name}
                   </p>
                 </div>
@@ -44,7 +44,7 @@ const FestivalCard = ({ festival }: FestivalCardProps) => {
         </div>
         <div className="w-full h-[1px] bg-black"></div>
         <div className="flex flex-col justify-start items-start">
-          <p>{festival.shortDescription}</p>
+          <p className="text-textPrimary">{festival.shortDescription}</p>
           {/* link to festival id*/}
           <p className="text-[#987EFE] text-[14px] pt-1">Czytaj dalej &rarr;</p>
         </div>

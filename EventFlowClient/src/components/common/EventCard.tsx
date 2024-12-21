@@ -45,14 +45,16 @@ const EventCard = ({ event }: EventCardProps) => {
               icon={faLocationDot}
               style={{ color: `${event.category?.color}`, width: "21px", height: "21px" }}
             />
-            <p className="font-semibold text-[15px] text-center">Sala: nr {event.hall?.hallNr}</p>
+            <p className="font-semibold text-[15px] text-center text-textPrimary">
+              Sala: nr {event.hall?.hallNr}
+            </p>
           </div>
           <div className="flex flex-row justify-center items-center gap-3">
             <FontAwesomeIcon
               icon={faTicket}
               style={{ color: `${event.category?.color}`, width: "21px", height: "21px" }}
             />
-            <p className="font-semibold text-[15px] text-center">
+            <p className="font-semibold text-[15px] text-center text-textPrimary">
               Cena od: {Math.min(...event.tickets.map((ticket) => ticket.price))} zł
             </p>
           </div>
@@ -78,9 +80,9 @@ const EventCard = ({ event }: EventCardProps) => {
               {event.category?.name.toLocaleUpperCase()}
             </p>
           </div>
-          <h3 className="text-[22px] font-semibold text-[#4C4C4C]">{event.name}</h3>
+          <h3 className="text-[22px] font-semibold text-textPrimary">{event.name}</h3>
           <div className="flex flex-col justify-start items-start gap-2">
-            <p className="text-sm m-0 p-0">{event.shortDescription}</p>
+            <p className="text-sm m-0 p-0 text-textPrimary">{event.shortDescription}</p>
             {/* link to event id*/}
             <p className="text-[#987EFE] text-[14px] pt-1">Czytaj dalej &rarr;</p>
           </div>

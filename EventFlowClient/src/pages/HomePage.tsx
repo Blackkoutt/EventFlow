@@ -19,7 +19,7 @@ const HomePage = () => {
         <div className="flex flex-col justify-center items-start gap-7 max-w-lg lg:max-w-none">
           <article className="flex flex-col justify-start items-start gap-5 max-w-[1200px]">
             <h1>Witaj w EventFlow!</h1>
-            <p className="text-[16px] font-normal">
+            <p className="text-[16px] font-normal text-textPrimary">
               Zajmujemy się organizacją różnorodnych wydarzeń kulturalnych, takich jak pokazy
               teatralne, koncerty i festiwale. Nasze przestrzenie są dostępne na wynajem z opcją
               dodatkowych usług, co sprawia, że organizacja Twojego wydarzenia będzie prosta i

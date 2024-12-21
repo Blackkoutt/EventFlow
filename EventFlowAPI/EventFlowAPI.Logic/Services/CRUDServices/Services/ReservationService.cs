@@ -19,6 +19,7 @@ using EventFlowAPI.Logic.Services.CRUDServices.Interfaces;
 using EventFlowAPI.Logic.Services.CRUDServices.Services.BaseServices;
 using EventFlowAPI.Logic.Services.OtherServices.Interfaces;
 using EventFlowAPI.Logic.UnitOfWork;
+using System.Linq;
 
 namespace EventFlowAPI.Logic.Services.CRUDServices.Services
 {
@@ -751,7 +752,13 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             return Error.None;
         }
 
-       
+        private Status GetReservationStatus(Reservation reservation)
+        {
+            if (!reservation.IsDeleted && reservation.EndDate > DateTime.Now) return Status.Active;
+            else if (reservation.IsDeleted && !(reservation.EndDate > DateTime.Now)) return Status.Expired;
+            else if (reservation.IsDeleted) return Status.Canceled;
+            else return Status.Unknown;
+        }
 
         protected sealed override IEnumerable<ReservationResponseDto> MapAsDto(IEnumerable<Reservation> records)
         {
@@ -763,6 +770,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
                 responseDto.User.UserData = null;
                 responseDto.PaymentType = entity.PaymentType.AsDto<PaymentTypeResponseDto>();
                 responseDto.Ticket = entity.Ticket.AsDto<TicketResponseDto>();
+                responseDto.ReservationStatus = GetReservationStatus(entity);
                 responseDto.Ticket.Event!.Details = null;
                 responseDto.Ticket.Event.Tickets = [];
                 responseDto.Ticket.Event.Hall!.Seats = [];
