@@ -11,11 +11,13 @@ interface RequestParams<TPostEntity, TPutEntity, TPatchEntity> {
   id?: number;
   body?: TPostEntity | TPutEntity | TPatchEntity;
   queryParams?: Record<string, any>;
+  isBlob?: boolean;
 }
 
 interface GETRequestParams {
   id?: number;
   queryParams?: Record<string, any>;
+  isBlob?: boolean;
 }
 interface POSTRequestParams<TPostEntity> {
   body: TPostEntity;
@@ -46,13 +48,19 @@ function useApi<TEntity, TPostEntity = undefined, TPutEntity = undefined, TPatch
       id,
       body,
       queryParams,
+      isBlob = false,
     }: RequestParams<TPostEntity, TPutEntity, TPatchEntity>) => {
       setLoading(true);
       setError(null);
       try {
         switch (httpMethod) {
           case HTTPMethod.GET:
-            const [getData, getCode] = await ApiClient.Get<TEntity[]>(endpoint, queryParams);
+            const [getData, getCode] = await ApiClient.Get<TEntity[]>(
+              endpoint,
+              queryParams,
+              id,
+              isBlob
+            );
             let dataArray: TEntity[] = getData as TEntity[];
             if (!Array.isArray(dataArray)) dataArray = [getData as TEntity];
             setData(dataArray);
@@ -141,8 +149,8 @@ function useApi<TEntity, TPostEntity = undefined, TPutEntity = undefined, TPatch
   );
 
   const get = useCallback(
-    ({ id, queryParams }: GETRequestParams): Promise<void> =>
-      request({ httpMethod: HTTPMethod.GET, id, queryParams }),
+    ({ id, queryParams, isBlob }: GETRequestParams): Promise<void> =>
+      request({ httpMethod: HTTPMethod.GET, id, queryParams, isBlob }),
     [request]
   );
 

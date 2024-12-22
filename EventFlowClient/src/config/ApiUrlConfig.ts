@@ -2,88 +2,94 @@ import { ApiEndpoint } from "../helpers/enums/ApiEndpointEnum";
 
 export const ApiUrlConfig = {
   [ApiEndpoint.AdditionalServices]: {
-    url: "/additionalservices",
+    url: (id?: number) => `/additionalservices${id ? `/${id}` : ""}`,
   },
   [ApiEndpoint.AuthValidate]: {
-    url: "/auth/validate",
+    url: (id?: number) => "/auth/validate",
   },
   [ApiEndpoint.AuthRegister]: {
-    url: "/auth/register",
+    url: (id?: number) => "/auth/register",
   },
   [ApiEndpoint.AuthLogin]: {
-    url: "/auth/login",
+    url: (id?: number) => "/auth/login",
   },
   [ApiEndpoint.AuthActivate]: {
-    url: "/auth/activate",
+    url: (id?: number) => "/auth/activate",
   },
   [ApiEndpoint.AuthLoginGoogle]: {
-    url: "/auth/google-login",
+    url: (id?: number) => "/auth/google-login",
   },
   [ApiEndpoint.AuthLoginFacebook]: {
-    url: "/auth/facebook-login",
+    url: (id?: number) => "/auth/facebook-login",
   },
   [ApiEndpoint.Equipment]: {
-    url: "/equipments",
+    url: (id?: number) => `/equipments${id ? `/${id}` : ""}`,
   },
   [ApiEndpoint.EventCategory]: {
-    url: "/eventcategories",
+    url: (id?: number) => `/eventcategories${id ? `/${id}` : ""}`,
   },
   [ApiEndpoint.EventPass]: {
-    url: "/eventpasses",
+    url: (id?: number) => `/eventpasses${id ? `/${id}` : ""}`,
   },
   [ApiEndpoint.EventPassType]: {
-    url: "/eventpasstypes",
+    url: (id?: number) => `/eventpasstypes${id ? `/${id}` : ""}`,
   },
   [ApiEndpoint.Event]: {
-    url: "/events",
+    url: (id?: number) => `/events${id ? `/${id}` : ""}`,
   },
   [ApiEndpoint.FAQ]: {
-    url: "/faq",
+    url: (id?: number) => `/faq${id ? `/${id}` : ""}`,
   },
   [ApiEndpoint.Festival]: {
-    url: "/festivals",
+    url: (id?: number) => `/festivals${id ? `/${id}` : ""}`,
   },
   [ApiEndpoint.HallRent]: {
-    url: "/hallrents",
+    url: (id?: number) => `/hallrents${id ? `/${id}` : ""}`,
   },
   [ApiEndpoint.Hall]: {
-    url: "/halls",
+    url: (id?: number) => `/halls${id ? `/${id}` : ""}`,
   },
   [ApiEndpoint.HallType]: {
-    url: "/halltypes",
+    url: (id?: number) => `/halltypes${id ? `/${id}` : ""}`,
   },
   [ApiEndpoint.MediaPatron]: {
-    url: "/mediapatrons",
+    url: (id?: number) => `/mediapatrons${id ? `/${id}` : ""}`,
   },
   [ApiEndpoint.News]: {
-    url: "/news",
+    url: (id?: number) => `/news${id ? `/${id}` : ""}`,
   },
   [ApiEndpoint.Organizer]: {
-    url: "/organizers",
+    url: (id?: number) => `/organizers${id ? `/${id}` : ""}`,
   },
   [ApiEndpoint.Partner]: {
-    url: "/partners",
+    url: (id?: number) => `/partners${id ? `/${id}` : ""}`,
   },
   [ApiEndpoint.PaymentType]: {
-    url: "/paymenttypes",
+    url: (id?: number) => `/paymenttypes${id ? `/${id}` : ""}`,
   },
   [ApiEndpoint.Reservation]: {
-    url: "/reservations",
+    url: (id?: number) => `/reservations${id ? `/${id}` : ""}`,
+  },
+  [ApiEndpoint.ReservationZIPTickets]: {
+    url: (id?: number) => `/reservations/${id}/jpg-tickets`,
+  },
+  [ApiEndpoint.ReservationPDFTicket]: {
+    url: (id?: number) => `/reservations/${id}/pdf-ticket`,
   },
   [ApiEndpoint.SeatType]: {
-    url: "/seattypes",
+    url: (id?: number) => `/seattypes${id ? `/${id}` : ""}`,
   },
   [ApiEndpoint.Sponsor]: {
-    url: "/sponsors",
+    url: (id?: number) => `/sponsors${id ? `/${id}` : ""}`,
   },
   /*[ApiEndpoint.Statistics]: {
     url: "/statistics",
     mappingType: {} as Sponsor,
   },*/
   [ApiEndpoint.TicketType]: {
-    url: "/tickettypes",
+    url: (id?: number) => `/tickettypes${id ? `/${id}` : ""}`,
   },
   [ApiEndpoint.UserInfo]: {
-    url: "/users/info",
+    url: (id?: number) => "/users/info",
   },
 };

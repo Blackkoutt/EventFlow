@@ -5,6 +5,7 @@ export enum ButtonStyle {
   Primary,
   Secondary,
   Default,
+  DefaultGray,
   CTA,
 }
 
@@ -52,6 +53,9 @@ const Button = (props: ButtonProps) => {
       break;
     case ButtonStyle.Default:
       buttonClass = "bg-secondaryPurple text-white text-base";
+      break;
+    case ButtonStyle.DefaultGray:
+      buttonClass = "bg-[#f2f2f2] text-[#778b9d] text-base";
       break;
     case ButtonStyle.CTA:
       buttonClass = "bg-[#BA3BBB] text-white text-base";

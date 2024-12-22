@@ -22,6 +22,8 @@ export enum ApiEndpoint {
   Partner,
   PaymentType,
   Reservation,
+  ReservationZIPTickets,
+  ReservationPDFTicket,
   SeatType,
   Sponsor,
   UserInfo,

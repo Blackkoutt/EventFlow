@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useReducer, useRef, useState } from "react";
 import { ApiEndpoint } from "../../helpers/enums/ApiEndpointEnum";
 import useApi from "../../hooks/useApi";
 import { Reservation, Seat } from "../../models/response_models";
@@ -6,9 +6,57 @@ import { DataTable } from "primereact/datatable";
 import { Column, ColumnBodyOptions } from "primereact/column";
 import DateFormatter from "../../helpers/DateFormatter";
 import { DateFormat } from "../../helpers/enums/DateFormatEnum";
+import { Status } from "../../helpers/enums/Status";
+import { IconDefinition } from "@fortawesome/fontawesome-svg-core";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faBan,
+  faCircleCheck,
+  faCircleQuestion,
+  faClock,
+  faDownload,
+  faInfoCircle,
+  faTrash,
+} from "@fortawesome/free-solid-svg-icons";
+import TableActionButton from "../../components/buttons/TableActionButton";
+import RemoveReservationDialog from "../../components/profile/RemoveReservationDialog";
+import DetailsReservationDialog from "../../components/profile/DetailsReservationDialog";
+import DownloadReservationTicketDialog from "../../components/profile/DownloadReservationTicketDialog";
 
 const UserReservations = () => {
   const { data: reservations, get: getReservations } = useApi<Reservation>(ApiEndpoint.Reservation);
+  const removeReservationDialog = useRef<HTMLDialogElement>(null);
+  const detailsReservationDialog = useRef<HTMLDialogElement>(null);
+  const downloadReservationDialog = useRef<HTMLDialogElement>(null);
+
+  const [reservationToDelete, setReservationToDelete] = useState<Reservation | undefined>(
+    undefined
+  );
+  const [reservationToDetails, setReservationToDetails] = useState<Reservation | undefined>(
+    undefined
+  );
+  const [reservationToDownload, setReservationToDownload] = useState<Reservation | undefined>(
+    undefined
+  );
+
+  useEffect(() => {
+    if (reservationToDelete != undefined) {
+      removeReservationDialog.current?.showModal();
+    }
+  }, [reservationToDelete]);
+
+  useEffect(() => {
+    if (reservationToDetails != undefined) {
+      detailsReservationDialog.current?.showModal();
+    }
+  }, [reservationToDetails]);
+
+  useEffect(() => {
+    if (reservationToDownload != undefined) {
+      downloadReservationDialog.current?.showModal();
+    }
+  }, [reservationToDownload]);
+
   useEffect(() => {
     getReservations({ id: undefined, queryParams: undefined });
   }, []);
@@ -17,18 +65,108 @@ const UserReservations = () => {
     console.log(reservations);
   }, [reservations]);
 
+  const reloadReservationsAfterSuccessDialog = () => {
+    removeReservationDialog.current?.close();
+    setReservationToDelete(undefined);
+    getReservations({ id: undefined, queryParams: undefined });
+  };
+
   const actionsTemplate = (rowData: Reservation, options: ColumnBodyOptions) => {
     return (
-      <div className="flex flex-row justify-center items-center">
-        <button>Szczegóły</button>
-        <button>Pobierz bilet</button>
-        <button>Anuluj</button>
+      <div className="flex flex-row justify-center items-center gap-3">
+        <TableActionButton
+          icon={faInfoCircle}
+          buttonColor="#f97316"
+          text="Szczegóły"
+          onClick={() => {
+            setReservationToDetails(rowData);
+            detailsReservationDialog.current?.showModal();
+          }}
+        ></TableActionButton>
+        {rowData.reservationStatus !== Status.Canceled && (
+          <TableActionButton
+            icon={faDownload}
+            buttonColor="#0ea5e9"
+            text="Pobierz bilet"
+            width={150}
+            onClick={() => {
+              setReservationToDownload(rowData);
+              downloadReservationDialog.current?.showModal();
+            }}
+          ></TableActionButton>
+        )}
+        {rowData.reservationStatus === Status.Active && (
+          <TableActionButton
+            icon={faTrash}
+            buttonColor="#ef4444"
+            text="Anuluj"
+            onClick={() => {
+              setReservationToDelete(rowData);
+              removeReservationDialog.current?.showModal();
+            }}
+          ></TableActionButton>
+        )}
+      </div>
+    );
+  };
+
+  const statusBodyTemplate = (rowData: Reservation, options: ColumnBodyOptions) => {
+    const reservationStatus = rowData.reservationStatus;
+
+    let text: string = "";
+    let color: string = "";
+    let icon: IconDefinition = faCircleQuestion;
+    switch (reservationStatus) {
+      case Status.Active:
+        text = "Aktywna rezerwacja";
+        color = "#22c55e";
+        icon = faCircleCheck;
+        break;
+      case Status.Canceled:
+        text = "Anulowana rezerwacja";
+        color = "#ef4444";
+        icon = faBan;
+        break;
+      case Status.Expired:
+        text = "Zakończona rezerwacja";
+        color = "#06b6d4";
+        icon = faClock;
+        break;
+      case Status.Unknown:
+        text = "Nieznany status";
+        color = "#efefef";
+        icon = faCircleQuestion;
+        break;
+    }
+
+    return (
+      <div className="flex flex-col justify-center items-center hover: cursor-pointer">
+        <FontAwesomeIcon
+          icon={icon}
+          title={text}
+          style={{ color: color, fontSize: "22px" }}
+        ></FontAwesomeIcon>
       </div>
     );
   };
 
   return (
-    <div className="max-w-[950px] self-center">
+    <div className="max-w-[53vw] self-center">
+      <RemoveReservationDialog
+        ref={removeReservationDialog}
+        reservation={reservationToDelete}
+        onDialogClose={() => removeReservationDialog.current?.close()}
+        onDialogConfirm={reloadReservationsAfterSuccessDialog}
+      />
+
+      <DetailsReservationDialog ref={detailsReservationDialog} reservation={reservationToDetails} />
+
+      <DownloadReservationTicketDialog
+        ref={downloadReservationDialog}
+        reservation={reservationToDownload}
+        onDialogClose={() => downloadReservationDialog.current?.close()}
+      />
+
       <DataTable
         value={reservations}
         paginator
@@ -37,7 +175,6 @@ const UserReservations = () => {
         rowsPerPageOptions={[5, 10, 25, 50]}
         stripedRows
         showGridlines
-        tableStyle={{ minWidth: "50rem" }}
       >
         <Column field="id" sortable header="ID"></Column>
         <Column
@@ -47,24 +184,17 @@ const UserReservations = () => {
           body={(rowData) => DateFormatter.FormatDate(rowData.reservationDate, DateFormat.DateTime)}
         ></Column>
         <Column field="ticket.event.name" sortable header="Wydarzenie" />
-        <Column field="ticket.festival?.name" sortable header="Festiwal" />
+        <Column field="ticket.festival.name" sortable header="Festiwal" />
 
-        <Column field="ticket.event.hall.hallNr" sortable header="Nr sali" />
+        <Column field="ticket.event.hall.hallNr" header="Nr sali" />
         <Column
           field="seats"
-          sortable
           header="Nr Miejsc"
           body={(rowData) => rowData.seats.map((seat: Seat) => seat.seatNr).join(", ")}
         />
         <Column field="paymentAmount" sortable header="Koszt (zł)"></Column>
-        <Column field="reservationStatus" sortable header="Status"></Column>
+        <Column header="Status" body={statusBodyTemplate}></Column>
         <Column header="Akcja" body={actionsTemplate}></Column>
-        {/* <Column
-        sortable
-        field="paymentDate"
-        header="Data płatności"
-        body={(rowData) => DateFormatter.FormatDate(rowData.paymentDate, DateFormat.DateTime)}
-      ></Column> */}
       </DataTable>
     </div>
   );

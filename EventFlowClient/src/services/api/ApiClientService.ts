@@ -2,19 +2,36 @@ import { baseUrl } from "../../config/environment/Environment.ts";
 import axios, { AxiosInstance, AxiosResponse } from "axios";
 import { ApiUrlConfig } from "../../config/ApiUrlConfig.ts";
 import { ApiEndpoint } from "../../helpers/enums/ApiEndpointEnum.ts";
+import { number } from "zod";
 
 export const api: AxiosInstance = axios.create({
   baseURL: baseUrl,
   withCredentials: true,
 });
 
-async function Get<TEntity>(endpoint: ApiEndpoint, queryParams?: Record<string, any>) {
+async function Get<TEntity>(
+  endpoint: ApiEndpoint,
+  queryParams?: Record<string, any>,
+  id?: number,
+  isBlob: boolean = false
+) {
   try {
-    const { url } = ApiUrlConfig[endpoint];
+    const url = ApiUrlConfig[endpoint].url(id);
 
     const queryString = queryParams ? `?${new URLSearchParams(queryParams).toString()}` : "";
 
-    const response = await api.get<TEntity>(url + queryString, { withCredentials: true });
+    let response;
+    if (isBlob) {
+      response = await api.get<TEntity>(url + queryString, {
+        withCredentials: true,
+        responseType: "blob",
+      });
+    } else {
+      response = await api.get<TEntity>(url + queryString, {
+        withCredentials: true,
+      });
+    }
+
     const code = response.status;
     const data = response.data;
     return [data, code];
@@ -25,7 +42,7 @@ async function Get<TEntity>(endpoint: ApiEndpoint, queryParams?: Record<string, 
 
 async function Post<TEntity, TPostEntity>(endpoint: ApiEndpoint, body: TPostEntity) {
   try {
-    const { url } = ApiUrlConfig[endpoint];
+    const url = ApiUrlConfig[endpoint].url(undefined);
 
     let response;
     if (body instanceof FormData) {
@@ -47,20 +64,17 @@ async function Post<TEntity, TPostEntity>(endpoint: ApiEndpoint, body: TPostEnti
 
 async function Put<TEntity, TPutEntity>(endpoint: ApiEndpoint, body: TPutEntity, id?: number) {
   try {
-    const { url } = ApiUrlConfig[endpoint];
-    let fullUrl;
-    if (id !== undefined) fullUrl = `${url}/${id}`;
-    else fullUrl = `${url}`;
+    const url = ApiUrlConfig[endpoint].url(id);
 
     let response;
     if (body instanceof FormData) {
-      response = await api.put<TEntity>(fullUrl, body, {
+      response = await api.put<TEntity>(url, body, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
       });
     } else {
-      response = await api.put<TEntity>(fullUrl, body);
+      response = await api.put<TEntity>(url, body);
     }
     const code = response.status;
     const data = response.data;
@@ -76,12 +90,9 @@ async function Patch<TEntity, TPatchEntity>(
   id?: number
 ) {
   try {
-    const { url } = ApiUrlConfig[endpoint];
-    let fullUrl: string;
-    if (id !== undefined) fullUrl = `${url}/${id}`;
-    else fullUrl = `${url}`;
+    const url = ApiUrlConfig[endpoint].url(id);
 
-    const response = await api.patch<TEntity>(fullUrl, body);
+    const response = await api.patch<TEntity>(url, body);
 
     const code = response.status;
     const data = response.data;
@@ -93,10 +104,9 @@ async function Patch<TEntity, TPatchEntity>(
 
 async function Delete<TEntity>(endpoint: ApiEndpoint, id: number) {
   try {
-    const { url } = ApiUrlConfig[endpoint];
-    const fullUrl = `${url}/${id}`;
+    const url = ApiUrlConfig[endpoint].url(id);
 
-    const response = await api.delete<TEntity>(fullUrl);
+    const response = await api.delete<TEntity>(url);
     const code = response.status;
     const data = response.data;
     return [data, code];

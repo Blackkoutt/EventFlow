@@ -28,34 +28,36 @@ const UserProfile = () => {
   };
 
   return info[0] ? (
-    <div className="flex flex-row justify-center items-start gap-8 py-16 w-full px-5">
-      <div className="flex flex-col justify-center items-center gap-4">
-        <ProfilePhoto
-          user={info[0]}
-          onClick={() => changePhotoDialog.current?.showModal()}
-          cacheBuster={cacheBuster}
-        />
-        <ChangePhotoDialog
-          user={info[0]}
-          ref={changePhotoDialog}
-          reloadComponent={reloadPhotoComponent}
-        />
-        <div className="flex flex-col justify-center items-center gap-4 min-w-[250px]">
-          <ProfileButton text="Informacje ogólne" path="/profile" />
-          <ProfileButton text="Informacje dodatkowe" path="/profile/info" />
-          {!isUserInRole(info[0], Roles.Admin) && (
-            <>
-              <ProfileButton text="Moje rezerwacje" path="/profile/reservations" />
-              <ProfileButton text="Moje karnety" path="/profile/eventpasses" />
-              <ProfileButton text="Moje rezerwacje sal" path="/profile/hallrents" />
-            </>
-          )}
+    <div className="flex px-20 w-full">
+      <div className="flex flex-row justify-center items-start gap-8 py-16 w-full">
+        <div className="flex flex-col justify-center items-center gap-4 min-w-[210px]">
+          <ProfilePhoto
+            user={info[0]}
+            onClick={() => changePhotoDialog.current?.showModal()}
+            cacheBuster={cacheBuster}
+          />
+          <ChangePhotoDialog
+            user={info[0]}
+            ref={changePhotoDialog}
+            reloadComponent={reloadPhotoComponent}
+          />
+          <div className="flex flex-col justify-center items-center gap-4">
+            <ProfileButton text="Informacje ogólne" path="/profile" />
+            <ProfileButton text="Informacje dodatkowe" path="/profile/info" />
+            {!isUserInRole(info[0], Roles.Admin) && (
+              <>
+                <ProfileButton text="Moje rezerwacje" path="/profile/reservations" />
+                <ProfileButton text="Moje karnety" path="/profile/eventpasses" />
+                <ProfileButton text="Moje rezerwacje sal" path="/profile/hallrents" />
+              </>
+            )}
+          </div>
         </div>
-      </div>
-      <div className="flex flex-col items-start justify-start rounded-lg bg-white shadow-xl p-3 w-full min-h-[620px]">
-        <Outlet
-          context={{ user: info[0], reloadAdditonalInfoComponent: reloadAdditionalInfoComponent }}
-        />
+        <div className="flex flex-col items-start justify-start rounded-lg bg-white shadow-xl p-3 w-full min-h-[660px]">
+          <Outlet
+            context={{ user: info[0], reloadAdditonalInfoComponent: reloadAdditionalInfoComponent }}
+          />
+        </div>
       </div>
     </div>
   ) : (

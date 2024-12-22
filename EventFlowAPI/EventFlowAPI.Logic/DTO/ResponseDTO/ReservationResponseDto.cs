@@ -6,7 +6,6 @@ namespace EventFlowAPI.Logic.DTO.ResponseDto
 {
     public class ReservationResponseDto : BaseResponseDto
     {
-        [JsonIgnore]
         public Guid ReservationGuid { get; set; }
         public DateTime ReservationDate { get; set; }
         public DateTime PaymentDate { get; set; }

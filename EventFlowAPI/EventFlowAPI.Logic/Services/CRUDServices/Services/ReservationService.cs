@@ -177,7 +177,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             if (!validationResult.IsSuccessful)
                 return Result<object>.Failure(validationResult.Error);
 
-            var reservation = validationResult.Value.Reservation;
+            var reservation = validationResult.Value.Entity;
             var user = validationResult.Value.User;
 
             var deleteError = await SoftDeleteReservationAndFileTickets(reservation, deleteForFestival: true);
@@ -656,7 +656,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             return Error.None;
         }
 
-        private async Task<Result<(Reservation Reservation, UserResponseDto User)>> ValidateBeforeDelete(int id)
+        protected override async Task<Result<(Reservation Entity, UserResponseDto User)>> ValidateBeforeDelete(int id)
         {
             if (id < 0)
                 return Result<(Reservation, UserResponseDto)>.Failure(Error.RouteParamOutOfRange);
@@ -766,6 +766,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             {
                 var responseDto = entity.AsDto<ReservationResponseDto>();
                 responseDto.User = entity.User.AsDto<UserResponseDto>();
+                responseDto.ReservationGuid = entity.ReservationGuid;
                 responseDto.User.EmailAddress = entity.User.Email!;
                 responseDto.User.UserData = null;
                 responseDto.PaymentType = entity.PaymentType.AsDto<PaymentTypeResponseDto>();
@@ -798,6 +799,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             responseDto.User = entity.User.AsDto<UserResponseDto>();
             responseDto.User.EmailAddress = entity.User.Email!;
             responseDto.User.UserData = null;
+            responseDto.ReservationGuid = entity.ReservationGuid;
             responseDto.PaymentType = entity.PaymentType.AsDto<PaymentTypeResponseDto>();
             responseDto.Ticket = entity.Ticket.AsDto<TicketResponseDto>();
             responseDto.Ticket.Event!.Details = null;
