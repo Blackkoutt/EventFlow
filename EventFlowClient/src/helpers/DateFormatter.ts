@@ -7,7 +7,7 @@ const ParseDate = (input: string): Date | null => {
   return isNaN(parsedDate.getTime()) ? null : parsedDate;
 };
 
-const FormatDate = (date: string | undefined | null, dateFormat: DateFormat): string => {
+const FormatDate = (date: string | number | undefined | null, dateFormat: DateFormat): string => {
   if (date === undefined || date === null) return "";
   const dateObj = new Date(date);
   let formatter: Intl.DateTimeFormat;

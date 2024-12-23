@@ -4,4 +4,5 @@ export type EventPassType = IModel & {
   name: string;
   validityPeriodInMonths: number;
   price: number;
+  renewalDiscountPercentage: number;
 };

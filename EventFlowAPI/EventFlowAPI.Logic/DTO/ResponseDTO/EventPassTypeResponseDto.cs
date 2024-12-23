@@ -6,6 +6,7 @@ namespace EventFlowAPI.Logic.DTO.ResponseDto
     {
         public string Name { get; set; } = string.Empty;
         public int ValidityPeriodInMonths { get; set; }
+        public decimal RenewalDiscountPercentage { get; set; }
         public decimal Price { get; set; }
     }
 }

@@ -1,19 +1,13 @@
 import { forwardRef, useEffect, useState } from "react";
 import Dialog from "../../common/Dialog";
-import {
-  EventPass,
-  EventPassType,
-  PaymentType,
-  Reservation,
-  Seat,
-} from "../../../models/response_models";
+import { EventPass, EventPassType, PaymentType } from "../../../models/response_models";
 import DateFormatter from "../../../helpers/DateFormatter";
 import { DateFormat } from "../../../helpers/enums/DateFormatEnum";
 import Button, { ButtonStyle } from "../../buttons/Button";
 import useApi from "../../../hooks/useApi";
 import { ApiEndpoint } from "../../../helpers/enums/ApiEndpointEnum";
 import { HTTPStatusCode } from "../../../helpers/enums/HTTPStatusCode";
-import { faCheck, faInfoCircle, faWarning, faXmark } from "@fortawesome/free-solid-svg-icons";
+import { faCheck, faInfoCircle, faXmark } from "@fortawesome/free-solid-svg-icons";
 import LabelText from "../../common/LabelText";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { toast } from "react-toastify";
@@ -50,11 +44,31 @@ const RenewEventPassDialog = forwardRef<HTMLDialogElement, RenewEventPassDialogP
     const [actionPerformed, setActionPerformed] = useState(false);
     const [promisePending, setPromisePending] = useState(false);
 
+    const [selectedPassType, setSelectedPassType] = useState<EventPassType>();
+    const [selectedPaymentType, setSelectedPaymentType] = useState<PaymentType>();
+
     const methods = useForm<EventPassUpdateRequest>({
       resolver: zodResolver(EventPassUpdateSchema),
     });
     const { handleSubmit, formState, watch, setValue } = methods;
     const { errors, isSubmitting } = formState;
+
+    const passTypeId = watch().passTypeId;
+    const paymentTypeId = watch().paymentTypeId;
+
+    useEffect(() => {
+      const type = eventPassTypes.find((pt) => pt.id === passTypeId);
+      if (type) {
+        setSelectedPassType(type);
+      }
+    }, [passTypeId]);
+
+    useEffect(() => {
+      const type = paymentTypes.find((pt) => pt.id === paymentTypeId);
+      if (type) {
+        setSelectedPaymentType(type);
+      }
+    }, [paymentTypeId]);
 
     useEffect(() => {
       getEventPassTypes({ id: undefined, queryParams: undefined });
@@ -70,6 +84,7 @@ const RenewEventPassDialog = forwardRef<HTMLDialogElement, RenewEventPassDialogP
           } as SelectOption)
       );
       setPassTypesSelectOptions(selectOptions);
+      if (eventPassTypes.length > 0) setSelectedPassType(eventPassTypes[0]);
     }, [eventPassTypes]);
 
     useEffect(() => {
@@ -81,6 +96,7 @@ const RenewEventPassDialog = forwardRef<HTMLDialogElement, RenewEventPassDialogP
           } as SelectOption)
       );
       setPaymentTypesSelectOptions(selectOptions);
+      if (paymentTypes.length > 0) setSelectedPaymentType(paymentTypes[0]);
     }, [paymentTypes]);
 
     const onRenewEventPass = async () => {
@@ -96,6 +112,13 @@ const RenewEventPassDialog = forwardRef<HTMLDialogElement, RenewEventPassDialogP
       }
     };
 
+    const addMonthsToEndDate = (dateString: string, months: number | undefined): string => {
+      if (!dateString || months === undefined) return "";
+      const date = new Date(dateString);
+      date.setMonth(date.getMonth() + months);
+      return date.toISOString();
+    };
+
     const onSubmit: SubmitHandler<EventPassUpdateRequest> = async (data) => {
       console.log(data);
       setActionPerformed(true);
@@ -109,6 +132,16 @@ const RenewEventPassDialog = forwardRef<HTMLDialogElement, RenewEventPassDialogP
         setActionPerformed(false);
       }
     }, [actionPerformed]);
+
+    const calculatePrice = () => {
+      if (selectedPassType?.price && selectedPassType?.renewalDiscountPercentage) {
+        return (
+          selectedPassType.price -
+          (selectedPassType.price * selectedPassType.renewalDiscountPercentage) / 100
+        ).toFixed(2);
+      }
+      return "";
+    };
 
     return (
       <div>
@@ -166,21 +199,100 @@ const RenewEventPassDialog = forwardRef<HTMLDialogElement, RenewEventPassDialogP
                       className="flex flex-col justify-center items-center gap-3 w-full"
                       onSubmit={handleSubmit(onSubmit)}
                     >
-                      <div className="flex flex-row justify-center items-center w-full gap-10 px-3 my-1">
-                        <Select
-                          label="Typ karnetu"
-                          name="passTypeId"
-                          optionValues={passTypesSelectOptions}
-                          error={errors.passTypeId}
-                        />
-                        <Select
-                          label="Typ płatności"
-                          name="paymentTypeId"
-                          optionValues={paymentTypesSelectOptions}
-                          error={errors.paymentTypeId}
-                        />
+                      <div className="flex flex-col justify-center items-center gap-2 w-full">
+                        <p className="text-black font-semibold text-base text-center">
+                          Wybierz typ karnetu i typ płatności:
+                        </p>
+                        <div className="flex flex-row justify-center items-center w-full gap-10 px-3 my-1">
+                          <Select
+                            label="Typ karnetu"
+                            name="passTypeId"
+                            optionValues={passTypesSelectOptions}
+                            error={errors.passTypeId}
+                          />
+                          <Select
+                            label="Typ płatności"
+                            name="paymentTypeId"
+                            optionValues={paymentTypesSelectOptions}
+                            error={errors.paymentTypeId}
+                          />
+                        </div>
                       </div>
                       <div className="bg-[#4c4c4c] h-[1px] w-full"></div>
+                      <div className="flex flex-col justify-center items-center gap-2">
+                        <p className="text-textPrimary text-base text-center">
+                          Nowy karnet po przedłużeniu:
+                        </p>
+                        <div className="flex flex-row justify-center items-center gap-14">
+                          <div className="flex flex-col justify-start items-start gap-2 min-w-[300px]">
+                            <LabelText label="ID:" labelWidth={150} text={eventPass.id} gap={10} />
+                            <LabelText
+                              labelWidth={150}
+                              label="Data zakupu:"
+                              text={DateFormatter.FormatDate(eventPass.startDate, DateFormat.Date)}
+                              gap={10}
+                            />
+                            <LabelText
+                              labelWidth={150}
+                              label="Data przedłużenia:"
+                              text={DateFormatter.FormatDate(Date.now(), DateFormat.Date)}
+                              gap={10}
+                            />
+                            <LabelText
+                              labelWidth={150}
+                              label="Data zakończenia:"
+                              text={DateFormatter.FormatDate(
+                                addMonthsToEndDate(
+                                  eventPass.endDate,
+                                  selectedPassType?.validityPeriodInMonths
+                                ),
+                                DateFormat.Date
+                              )}
+                              gap={10}
+                            />
+                            <LabelText
+                              labelWidth={150}
+                              label="Typ płatności:"
+                              text={selectedPaymentType?.name}
+                              gap={10}
+                            />
+                          </div>
+                          <div className="flex flex-col justify-start items-start gap-2 min-w-[350px]">
+                            <LabelText
+                              label="Typ karnetu:"
+                              labelWidth={190}
+                              text={selectedPassType?.name}
+                              gap={10}
+                            />
+                            <LabelText
+                              labelWidth={190}
+                              label="Długość karnetu (msc):"
+                              text={selectedPassType?.validityPeriodInMonths}
+                              gap={10}
+                            />
+                            <LabelText
+                              labelWidth={190}
+                              label="Cena karnetu:"
+                              text={`${selectedPassType?.price} zł`}
+                              gap={10}
+                            />
+                            <LabelText
+                              labelWidth={190}
+                              label="Zniżka:"
+                              text={`${selectedPassType?.renewalDiscountPercentage} %`}
+                              gap={10}
+                            />
+                            <LabelText
+                              labelWidth={190}
+                              label="Całkowita cena:"
+                              text={`${calculatePrice()} zł`}
+                              gap={10}
+                            />
+                          </div>
+                        </div>
+                      </div>
+                      <div className="bg-[#4c4c4c] h-[1px] w-full"></div>
+
                       <div className="flex flex-col justify-center items-center gap-2">
                         <p className="text-[#0ea5e9]">
                           <span>
