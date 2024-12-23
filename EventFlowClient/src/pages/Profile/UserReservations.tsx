@@ -7,21 +7,12 @@ import { Column, ColumnBodyOptions } from "primereact/column";
 import DateFormatter from "../../helpers/DateFormatter";
 import { DateFormat } from "../../helpers/enums/DateFormatEnum";
 import { Status } from "../../helpers/enums/Status";
-import { IconDefinition } from "@fortawesome/fontawesome-svg-core";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faBan,
-  faCircleCheck,
-  faCircleQuestion,
-  faClock,
-  faDownload,
-  faInfoCircle,
-  faTrash,
-} from "@fortawesome/free-solid-svg-icons";
+import { faDownload, faInfoCircle, faTrash } from "@fortawesome/free-solid-svg-icons";
 import TableActionButton from "../../components/buttons/TableActionButton";
-import RemoveReservationDialog from "../../components/profile/RemoveReservationDialog";
-import DetailsReservationDialog from "../../components/profile/DetailsReservationDialog";
-import DownloadReservationTicketDialog from "../../components/profile/DownloadReservationTicketDialog";
+import RemoveReservationDialog from "../../components/profile/reservations/RemoveReservationDialog";
+import DetailsReservationDialog from "../../components/profile/reservations/DetailsReservationDialog";
+import DownloadReservationTicketDialog from "../../components/profile/reservations/DownloadReservationTicketDialog";
+import StatusBody from "../../components/tabledata/StatusBody";
 
 const UserReservations = () => {
   const { data: reservations, get: getReservations } = useApi<Reservation>(ApiEndpoint.Reservation);
@@ -110,46 +101,6 @@ const UserReservations = () => {
     );
   };
 
-  const statusBodyTemplate = (rowData: Reservation, options: ColumnBodyOptions) => {
-    const reservationStatus = rowData.reservationStatus;
-
-    let text: string = "";
-    let color: string = "";
-    let icon: IconDefinition = faCircleQuestion;
-    switch (reservationStatus) {
-      case Status.Active:
-        text = "Aktywna rezerwacja";
-        color = "#22c55e";
-        icon = faCircleCheck;
-        break;
-      case Status.Canceled:
-        text = "Anulowana rezerwacja";
-        color = "#ef4444";
-        icon = faBan;
-        break;
-      case Status.Expired:
-        text = "Zakończona rezerwacja";
-        color = "#06b6d4";
-        icon = faClock;
-        break;
-      case Status.Unknown:
-        text = "Nieznany status";
-        color = "#efefef";
-        icon = faCircleQuestion;
-        break;
-    }
-
-    return (
-      <div className="flex flex-col justify-center items-center hover: cursor-pointer">
-        <FontAwesomeIcon
-          icon={icon}
-          title={text}
-          style={{ color: color, fontSize: "22px" }}
-        ></FontAwesomeIcon>
-      </div>
-    );
-  };
-
   return (
     <div className="max-w-[53vw] self-center">
       <RemoveReservationDialog
@@ -193,7 +144,18 @@ const UserReservations = () => {
           body={(rowData) => rowData.seats.map((seat: Seat) => seat.seatNr).join(", ")}
         />
         <Column field="paymentAmount" sortable header="Koszt (zł)"></Column>
-        <Column header="Status" body={statusBodyTemplate}></Column>
+        <Column
+          header="Status"
+          body={(rowData) => (
+            <StatusBody
+              status={rowData.reservationStatus}
+              activeStatusText="Aktywna rezerwacja"
+              expiredStatusText="Zakończona rezerwacja"
+              canceledStatusText="Anulowana rezerwacja"
+              unknownStatusText="Nieznany status"
+            />
+          )}
+        ></Column>
         <Column header="Akcja" body={actionsTemplate}></Column>
       </DataTable>
     </div>

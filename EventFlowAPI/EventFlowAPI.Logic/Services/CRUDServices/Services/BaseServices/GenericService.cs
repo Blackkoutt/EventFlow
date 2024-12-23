@@ -1,8 +1,10 @@
-﻿using EventFlowAPI.DB.Entities.Abstract;
+﻿using EventFlowAPI.DB.Entities;
+using EventFlowAPI.DB.Entities.Abstract;
 using EventFlowAPI.Logic.DTO.Interfaces;
 using EventFlowAPI.Logic.DTO.ResponseDto;
 using EventFlowAPI.Logic.Errors;
 using EventFlowAPI.Logic.Extensions;
+using EventFlowAPI.Logic.Helpers.Enums;
 using EventFlowAPI.Logic.Identity.Helpers;
 using EventFlowAPI.Logic.Identity.Services.Interfaces;
 using EventFlowAPI.Logic.Mapper.Extensions;
@@ -186,6 +188,16 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services.BaseServices
                 return AuthError.UserDoesNotHaveSpecificRole;
         }
 
+        protected Status GetEntityStatus(TEntity entity)
+        {
+            if(entity is ISoftDeleteable deleteableEntity && entity is IDateableEntity dateableEntity)
+            {
+                if (!deleteableEntity.IsDeleted && dateableEntity.EndDate > DateTime.Now) return Status.Active;
+                else if (deleteableEntity.IsDeleted && !(dateableEntity.EndDate > DateTime.Now)) return Status.Expired;
+                else if (deleteableEntity.IsDeleted) return Status.Canceled;
+            }
+            return Status.Unknown;
+        }
 
         protected virtual IEnumerable<TResponseDto> MapAsDto(IEnumerable<TEntity> records) => records.Select(entity => entity.AsDto<TResponseDto>());
         protected virtual TResponseDto MapAsDto(TEntity entity) => entity.AsDto<TResponseDto>();

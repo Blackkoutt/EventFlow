@@ -324,6 +324,8 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
                 var responseDto = entity.AsDto<EventPassResponseDto>();
                 responseDto.User = entity.User.AsDto<UserResponseDto>();
                 responseDto.User.EmailAddress = entity.User.Email!;
+                responseDto.EventPassGuid = entity.EventPassGuid;
+                responseDto.EventPassStatus = GetEntityStatus(entity);
                 responseDto.User.UserData = null;
                 responseDto.PaymentType = entity.PaymentType.AsDto<PaymentTypeResponseDto>();
                 responseDto.PassType = entity.PassType.AsDto<EventPassTypeResponseDto>();
@@ -336,6 +338,8 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             var responseDto = entity.AsDto<EventPassResponseDto>();
             responseDto.User = entity.User.AsDto<UserResponseDto>();
             responseDto.User.EmailAddress = entity.User.Email!;
+            responseDto.EventPassStatus = GetEntityStatus(entity);
+            responseDto.EventPassGuid = entity.EventPassGuid;
             responseDto.User.UserData = null;
             responseDto.PaymentType = entity.PaymentType.AsDto<PaymentTypeResponseDto>();
             responseDto.PassType = entity.PassType.AsDto<EventPassTypeResponseDto>();

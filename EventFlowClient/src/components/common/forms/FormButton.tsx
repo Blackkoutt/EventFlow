@@ -1,19 +1,45 @@
+import { IconDefinition } from "@fortawesome/fontawesome-svg-core";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+
 interface FormButtonProps {
   isSubmitting: boolean;
   text: string;
   background?: string;
+  width?: number;
+  rounded?: number;
+  iconSize?: number;
+  height?: number;
+  icon?: IconDefinition;
   py?: number;
 }
 
-const FormButton = ({ isSubmitting, text, background = "#7B2CBF", py = 20 }: FormButtonProps) => {
+const FormButton = ({
+  isSubmitting,
+  text,
+  width,
+  rounded,
+  icon,
+  height,
+  iconSize,
+  background = "#7B2CBF",
+  py = 20,
+}: FormButtonProps) => {
   return (
     <button
       disabled={isSubmitting}
-      style={{ background: background, paddingTop: `${py}px`, paddingBottom: `${py}px` }}
-      className="rounded-md w-full text-white"
+      style={{
+        background: background,
+        borderRadius: `${rounded ? `${rounded}px` : "6px"}`,
+        width: `${width ? `${width}px` : "100%"}`,
+        paddingTop: `${py}px`,
+        height: `${height}px`,
+        paddingBottom: `${py}px`,
+      }}
+      className="text-white flex flex-row justify-center items-center gap-3"
       type="submit"
     >
-      {isSubmitting ? "Ładowanie..." : text}
+      {icon && <FontAwesomeIcon icon={icon} style={{ fontSize: `${iconSize}px` }} />}
+      <div> {isSubmitting ? "Ładowanie..." : text}</div>
     </button>
   );
 };

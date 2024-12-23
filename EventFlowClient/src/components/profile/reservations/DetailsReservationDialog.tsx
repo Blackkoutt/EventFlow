@@ -1,10 +1,10 @@
 import { forwardRef } from "react";
-import { EventEntity, Reservation, Seat } from "../../models/response_models";
-import Dialog from "../common/Dialog";
-import LabelText from "../common/LabelText";
-import DateFormatter from "../../helpers/DateFormatter";
-import { DateFormat } from "../../helpers/enums/DateFormatEnum";
-import { Status } from "../../helpers/enums/Status";
+import { Reservation, Seat } from "../../../models/response_models";
+import Dialog from "../../common/Dialog";
+import LabelText from "../../common/LabelText";
+import DateFormatter from "../../../helpers/DateFormatter";
+import { DateFormat } from "../../../helpers/enums/DateFormatEnum";
+import { getStatus } from "../../../helpers/GetStatus";
 
 interface DetailsReservationDialogProps {
   reservation?: Reservation;
@@ -12,32 +12,6 @@ interface DetailsReservationDialogProps {
 
 const DetailsReservationDialog = forwardRef<HTMLDialogElement, DetailsReservationDialogProps>(
   ({ reservation }: DetailsReservationDialogProps, ref) => {
-    const getStatus = (status: string): string => {
-      let text: string = "";
-      switch (status) {
-        case Status.Active:
-          text = "Aktywna";
-          break;
-        case Status.Canceled:
-          text = "Anulowana";
-          break;
-        case Status.Expired:
-          text = "Zakończona";
-          break;
-        case Status.Unknown:
-          text = "Nieznany status";
-          break;
-      }
-      return text;
-    };
-
-    const getEventDates = (event: EventEntity | undefined) => {
-      return `${DateFormatter.FormatDate(
-        event?.startDate,
-        DateFormat.DateTime
-      )} - ${DateFormatter.FormatDate(event?.endDate, DateFormat.DateTime)}`;
-    };
-
     return (
       <div>
         {reservation && (

@@ -8,7 +8,7 @@ namespace EventFlowAPI.DB.Entities
     {
         public Guid EventPassGuid { get; set; } 
         public DateTime StartDate { get; set; }
-        public DateTime? RenewalDate { get; set; }
+        public DateTime? RenewalDate { get; set; } = null;
         public DateTime EndDate { get; set; }
         public DateTime? PreviousEndDate { get; set; } = null;
         public DateTime? DeleteDate { get; set; }

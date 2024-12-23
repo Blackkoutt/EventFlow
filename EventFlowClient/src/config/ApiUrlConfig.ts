@@ -31,6 +31,12 @@ export const ApiUrlConfig = {
   [ApiEndpoint.EventPass]: {
     url: (id?: number) => `/eventpasses${id ? `/${id}` : ""}`,
   },
+  [ApiEndpoint.EventPassPDF]: {
+    url: (id?: number) => `/eventpasses/${id}/pdf`,
+  },
+  [ApiEndpoint.EventPassJPG]: {
+    url: (id?: number) => `/eventpasses/${id}/jpg`,
+  },
   [ApiEndpoint.EventPassType]: {
     url: (id?: number) => `/eventpasstypes${id ? `/${id}` : ""}`,
   },

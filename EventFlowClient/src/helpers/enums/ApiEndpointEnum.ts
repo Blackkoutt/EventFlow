@@ -10,6 +10,8 @@ export enum ApiEndpoint {
   EventCategory,
   Event,
   EventPass,
+  EventPassPDF,
+  EventPassJPG,
   EventPassType,
   FAQ,
   Festival,

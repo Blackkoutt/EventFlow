@@ -1,13 +1,13 @@
 import { forwardRef, useEffect, useState } from "react";
-import { Reservation } from "../../models/response_models";
-import Dialog from "../common/Dialog";
-import RadioButton from "../common/forms/RadioButton";
-import Button, { ButtonStyle } from "../buttons/Button";
+import { Reservation } from "../../../models/response_models";
+import Dialog from "../../common/Dialog";
+import RadioButton from "../../common/forms/RadioButton";
+import Button, { ButtonStyle } from "../../buttons/Button";
 import { faDownload, faXmark } from "@fortawesome/free-solid-svg-icons";
-import { DownloadFileType } from "../../helpers/enums/DownloadFileType";
-import useApi from "../../hooks/useApi";
-import { ApiEndpoint } from "../../helpers/enums/ApiEndpointEnum";
-import BlobService from "../../services/BlobService";
+import { DownloadFileType } from "../../../helpers/enums/DownloadFileType";
+import useApi from "../../../hooks/useApi";
+import { ApiEndpoint } from "../../../helpers/enums/ApiEndpointEnum";
+import BlobService from "../../../services/BlobService";
 
 interface DownloadReservationTicketDialogProps {
   reservation?: Reservation;
