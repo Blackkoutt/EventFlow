@@ -7,19 +7,19 @@ import Button, { ButtonStyle } from "../../buttons/Button";
 import useApi from "../../../hooks/useApi";
 import { ApiEndpoint } from "../../../helpers/enums/ApiEndpointEnum";
 import { HTTPStatusCode } from "../../../helpers/enums/HTTPStatusCode";
-import { faCheck, faWarning, faXmark } from "@fortawesome/free-solid-svg-icons";
+import { faCheck, faInfoCircle, faWarning, faXmark } from "@fortawesome/free-solid-svg-icons";
 import LabelText from "../../common/LabelText";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { toast } from "react-toastify";
 
-interface RemoveReservationDialogProps {
+interface CancelReservationDialogProps {
   reservation?: Reservation;
   onDialogConfirm: () => void;
   onDialogClose: () => void;
 }
 
-const RemoveReservationDialog = forwardRef<HTMLDialogElement, RemoveReservationDialogProps>(
-  ({ reservation, onDialogClose, onDialogConfirm }: RemoveReservationDialogProps, ref) => {
+const CancelReservationDialog = forwardRef<HTMLDialogElement, CancelReservationDialogProps>(
+  ({ reservation, onDialogClose, onDialogConfirm }: CancelReservationDialogProps, ref) => {
     const { del: cancelReservation, statusCode: statusCode } = useApi<Reservation>(
       ApiEndpoint.Reservation
     );
@@ -31,7 +31,7 @@ const RemoveReservationDialog = forwardRef<HTMLDialogElement, RemoveReservationD
         setPromisePending(true);
         await toast.promise(cancelReservation({ id: reservation.id }), {
           pending: "Wykonywanie żądania",
-          success: "Rezerwacja anulowana pomyślnie",
+          success: "Rezerwacja została anulowana pomyślnie",
           error: "Wystąpił błąd podczas anulowania rezerwacji",
         });
         setPromisePending(false);
@@ -154,8 +154,14 @@ const RemoveReservationDialog = forwardRef<HTMLDialogElement, RemoveReservationD
                     wszystkich rezerwacji dotyczących festiwalu {reservation.ticket.festival.name}.
                   </p>
                 )}
-                <p>
-                  Po anulowaniu rezerwacji otrzymasz wiadomość email z potwierdzeniem jej
+                <p className="text-[#0ea5e9]">
+                  <span>
+                    <FontAwesomeIcon
+                      icon={faInfoCircle}
+                      style={{ color: "#0ea5e9", fontSize: "16px" }}
+                    />
+                  </span>
+                  &nbsp; Po anulowaniu rezerwacji otrzymasz wiadomość email z potwierdzeniem jej
                   anulowania, a środki wysokości {reservation.paymentAmount} zł zostaną zwrócone na
                   twoje konto w przeciągu kilku następnych dni roboczych.
                 </p>
@@ -187,4 +193,4 @@ const RemoveReservationDialog = forwardRef<HTMLDialogElement, RemoveReservationD
     );
   }
 );
-export default RemoveReservationDialog;
+export default CancelReservationDialog;

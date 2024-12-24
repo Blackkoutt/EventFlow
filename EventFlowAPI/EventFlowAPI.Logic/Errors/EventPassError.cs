@@ -11,5 +11,6 @@ namespace EventFlowAPI.Logic.Errors
         public static readonly Error EventPassIsDeleted = new(new BadRequestResponse("Event pass is canceled."));
         public static readonly Error EventPassIsExpired = new(new BadRequestResponse("Event pass is expired."));
         public static readonly Error EventPassExpireBeforeEndOfEvent = new(new BadRequestResponse("Can not make reservation for event because event pass will expire before the event ends."));
+        public static readonly Error SessionError = new(new InternalServerErrorResponse("Błąd sesji użytkownika: Cannot found data for transaction and event pass."));
     }
 }

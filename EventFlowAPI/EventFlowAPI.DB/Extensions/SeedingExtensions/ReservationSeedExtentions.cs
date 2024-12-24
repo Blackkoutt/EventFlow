@@ -45,7 +45,7 @@ namespace EventFlowAPI.DB.Extensions.SeedingExtensions
                     TotalAdditionalPaymentAmount = 0m,
                     PaymentAmount = 34.99m,
                     UserId = "2",
-                    PaymentTypeId = 2,
+                    PaymentTypeId = 1,
                     TicketId = 2,
                     TicketPDFId = 2
                 },
@@ -62,7 +62,7 @@ namespace EventFlowAPI.DB.Extensions.SeedingExtensions
                     TotalAdditionalPaymentAmount = 7.5m,
                     PaymentAmount = 29.99m,
                     UserId = "3",
-                    PaymentTypeId = 3,
+                    PaymentTypeId = 1,
                     TicketId = 3,
                     TicketPDFId = 3
                 },
@@ -79,7 +79,7 @@ namespace EventFlowAPI.DB.Extensions.SeedingExtensions
                     TotalAdditionalPaymentAmount = 0m,
                     PaymentAmount = 19.99m,
                     UserId = "3",
-                    PaymentTypeId = 2,
+                    PaymentTypeId = 1,
                     TicketId = 4,
                     TicketPDFId = 4
                 },
@@ -96,7 +96,7 @@ namespace EventFlowAPI.DB.Extensions.SeedingExtensions
                     TotalAdditionalPaymentAmount = 2m,
                     PaymentAmount = 19.99m,
                     UserId = "2",
-                    PaymentTypeId = 2,
+                    PaymentTypeId = 1,
                     TicketId = 5,
                     TicketPDFId = 5
                 },
@@ -113,7 +113,7 @@ namespace EventFlowAPI.DB.Extensions.SeedingExtensions
                     TotalAdditionalPaymentAmount = 2m,
                     PaymentAmount = 19.99m,
                     UserId = "2",
-                    PaymentTypeId = 2,
+                    PaymentTypeId = 1,
                     TicketId = 6,
                     TicketPDFId = 5
                 },
@@ -130,7 +130,7 @@ namespace EventFlowAPI.DB.Extensions.SeedingExtensions
                     TotalAdditionalPaymentAmount = 0m,
                     PaymentAmount = 29.99m,
                     UserId = "2",
-                    PaymentTypeId = 2,
+                    PaymentTypeId = 1,
                     TicketId = 7,
                     TicketPDFId = 6
                 },
@@ -147,7 +147,7 @@ namespace EventFlowAPI.DB.Extensions.SeedingExtensions
                     TotalAdditionalPaymentAmount = 0m,
                     PaymentAmount = 29.99m,
                     UserId = "2",
-                    PaymentTypeId = 2,
+                    PaymentTypeId = 1,
                     TicketId = 8,
                     TicketPDFId = 6
                 }

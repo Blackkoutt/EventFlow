@@ -292,6 +292,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
                 responseDto.User.EmailAddress = entity.User.Email!;
                 responseDto.User.UserData = null;
                 responseDto.PaymentType = entity.PaymentType.AsDto<PaymentTypeResponseDto>();
+                responseDto.HallRentStatus = GetEntityStatus(entity);
                 responseDto.Hall = entity.Hall.AsDto<HallResponseDto>();
                 responseDto.Hall.Type = entity.Hall.Type.AsDto<HallTypeResponseDto>();
                 responseDto.Hall.Type.Equipments = [];
@@ -313,6 +314,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             responseDto.PaymentType = entity.PaymentType.AsDto<PaymentTypeResponseDto>();
             responseDto.Hall = entity.Hall.AsDto<HallResponseDto>();
             responseDto.Hall.Type = entity.Hall.Type.AsDto<HallTypeResponseDto>();
+            responseDto.HallRentStatus = GetEntityStatus(entity);
             responseDto.Hall.Type.Equipments = [];
             responseDto.Hall.Seats = [];
             responseDto.Hall.HallDetails = null;

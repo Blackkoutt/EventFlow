@@ -40,9 +40,9 @@ async function Get<TEntity>(
   }
 }
 
-async function Post<TEntity, TPostEntity>(endpoint: ApiEndpoint, body: TPostEntity) {
+async function Post<TEntity, TPostEntity>(endpoint: ApiEndpoint, body: TPostEntity, id?: number) {
   try {
-    const url = ApiUrlConfig[endpoint].url(undefined);
+    const url = ApiUrlConfig[endpoint].url(id);
 
     let response;
     if (body instanceof FormData) {

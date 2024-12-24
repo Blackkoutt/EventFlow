@@ -9,18 +9,19 @@ import { DateFormat } from "../../helpers/enums/DateFormatEnum";
 import { Status } from "../../helpers/enums/Status";
 import { faDownload, faInfoCircle, faTrash } from "@fortawesome/free-solid-svg-icons";
 import TableActionButton from "../../components/buttons/TableActionButton";
-import RemoveReservationDialog from "../../components/profile/reservations/RemoveReservationDialog";
+import RemoveReservationDialog from "../../components/profile/reservations/CancelReservationDialog";
 import DetailsReservationDialog from "../../components/profile/reservations/DetailsReservationDialog";
 import DownloadReservationTicketDialog from "../../components/profile/reservations/DownloadReservationTicketDialog";
 import StatusBody from "../../components/tabledata/StatusBody";
+import CancelReservationDialog from "../../components/profile/reservations/CancelReservationDialog";
 
 const UserReservations = () => {
   const { data: reservations, get: getReservations } = useApi<Reservation>(ApiEndpoint.Reservation);
-  const removeReservationDialog = useRef<HTMLDialogElement>(null);
+  const cancelReservationDialog = useRef<HTMLDialogElement>(null);
   const detailsReservationDialog = useRef<HTMLDialogElement>(null);
   const downloadReservationDialog = useRef<HTMLDialogElement>(null);
 
-  const [reservationToDelete, setReservationToDelete] = useState<Reservation | undefined>(
+  const [reservationToCancel, setReservationToCancel] = useState<Reservation | undefined>(
     undefined
   );
   const [reservationToDetails, setReservationToDetails] = useState<Reservation | undefined>(
@@ -31,10 +32,10 @@ const UserReservations = () => {
   );
 
   useEffect(() => {
-    if (reservationToDelete != undefined) {
-      removeReservationDialog.current?.showModal();
+    if (reservationToCancel != undefined) {
+      cancelReservationDialog.current?.showModal();
     }
-  }, [reservationToDelete]);
+  }, [reservationToCancel]);
 
   useEffect(() => {
     if (reservationToDetails != undefined) {
@@ -52,13 +53,9 @@ const UserReservations = () => {
     getReservations({ id: undefined, queryParams: undefined });
   }, []);
 
-  useEffect(() => {
-    console.log(reservations);
-  }, [reservations]);
-
   const reloadReservationsAfterSuccessDialog = () => {
-    removeReservationDialog.current?.close();
-    setReservationToDelete(undefined);
+    cancelReservationDialog.current?.close();
+    setReservationToCancel(undefined);
     getReservations({ id: undefined, queryParams: undefined });
   };
 
@@ -92,8 +89,8 @@ const UserReservations = () => {
             buttonColor="#ef4444"
             text="Anuluj"
             onClick={() => {
-              setReservationToDelete(rowData);
-              removeReservationDialog.current?.showModal();
+              setReservationToCancel(rowData);
+              cancelReservationDialog.current?.showModal();
             }}
           ></TableActionButton>
         )}
@@ -102,11 +99,11 @@ const UserReservations = () => {
   };
 
   return (
-    <div className="max-w-[53vw] self-center">
-      <RemoveReservationDialog
-        ref={removeReservationDialog}
-        reservation={reservationToDelete}
-        onDialogClose={() => removeReservationDialog.current?.close()}
+    <div className="max-w-[54vw] self-center">
+      <CancelReservationDialog
+        ref={cancelReservationDialog}
+        reservation={reservationToCancel}
+        onDialogClose={() => cancelReservationDialog.current?.close()}
         onDialogConfirm={reloadReservationsAfterSuccessDialog}
       />
 

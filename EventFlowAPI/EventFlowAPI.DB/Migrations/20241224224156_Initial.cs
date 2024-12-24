@@ -1068,11 +1068,11 @@ namespace EventFlowAPI.DB.Migrations
                 columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "DateOfBirth", "Email", "EmailConfirmed", "IsVerified", "LockoutEnabled", "LockoutEnd", "Name", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "PhotoName", "Provider", "RegisteredDate", "SecurityStamp", "Surname", "TwoFactorEnabled", "UserName" },
                 values: new object[,]
                 {
-                    { "1", 0, "7481e8e1-b73b-451a-abdd-d2eeec8e2340", new DateTime(2000, 4, 3, 0, 0, 0, 0, DateTimeKind.Unspecified), "admin@gmail.com", true, true, false, null, "Admin", "ADMIN@GMAIL.COM", "ADMIN@GMAIL.COM", "AQAAAAIAAYagAAAAEHRlMPNZC0Urpxc8CCQBlX3QZ3IeSa8xwlT0gMaUVZtAQInwUDm8970jsRKnrsEJ2A==", null, false, "admin.jpg", "APP", new DateTime(2024, 11, 25, 0, 0, 0, 0, DateTimeKind.Unspecified), "c9e16abd-3f79-44ce-b687-797799f85f40", "Admin", false, "admin@gmail.com" },
-                    { "2", 0, "5bc81c26-1e30-49c0-b8b7-f8a6f3d399b0", new DateTime(1985, 2, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "mateusz.strapczuk2@gmail.com", true, true, false, null, "Mateusz2", "MATEUSZ.STRAPCZUK2@GMAIL.COM", "MATEUSZ.STRAPCZUK2@GMAIL.COM", "AQAAAAIAAYagAAAAEBnbLHFsfu1dtAYSMB58XL1jYXFbaG27UCsMhaHoVGXy9rZ9BYcFhTPqcIGtlqyd6w==", null, false, "user2.jpg", "APP", new DateTime(2024, 11, 25, 0, 0, 0, 0, DateTimeKind.Unspecified), "0a910b57-ea11-4b3b-8b5d-d6d3d73b3cbb", "Strapczuk2", false, "mateusz.strapczuk2@gmail.com" },
-                    { "3", 0, "1daddf3b-3e2a-4ed9-abb1-a268c5605818", new DateTime(1979, 12, 11, 0, 0, 0, 0, DateTimeKind.Unspecified), "mateusz.strapczuk3@gmail.com", true, true, false, null, "Mateusz3", "MATEUSZ.STRAPCZUK3@GMAIL.COM", "MATEUSZ.STRAPCZUK3@GMAIL.COM", "AQAAAAIAAYagAAAAEDiJeiCY0Z1WDUxTCe7vekGCpDh5D8hAR/Su22Ya6u3CFdgzPL1JDUo5qQoP628fQw==", null, false, "user3.jpg", "APP", new DateTime(2024, 11, 25, 0, 0, 0, 0, DateTimeKind.Unspecified), "2622e586-7df9-4e73-8523-a349476defee", "Strapczuk3", false, "mateusz.strapczuk3@gmail.com" },
-                    { "4", 0, "95f15038-5e38-4b90-9b36-d07e759abcc9", new DateTime(1979, 12, 11, 0, 0, 0, 0, DateTimeKind.Unspecified), "mateusz.strapczuk4@gmail.com", true, true, false, null, "Mateusz4", "MATEUSZ.STRAPCZUK4@GMAIL.COM", "MATEUSZ.STRAPCZUK4@GMAIL.COM", "AQAAAAIAAYagAAAAEObq7draO/OkBTY+xhxZHZ9MAr9GcnIh8MiG30OJWgOuLsekwR2S9Sj7p0UIng+K6Q==", null, false, "user4.jpg", "APP", new DateTime(2024, 11, 25, 0, 0, 0, 0, DateTimeKind.Unspecified), "ad19cc68-d111-4c35-864e-555f206426c5", "Strapczuk4", false, "mateusz.strapczuk4@gmail.com" },
-                    { "5", 0, "0a2c5edc-8cfb-4e39-8cad-d4b381b51d27", new DateTime(1979, 12, 11, 0, 0, 0, 0, DateTimeKind.Unspecified), "mateusz.strapczuk1@gmail.com", true, true, false, null, "Mateusz", "MATEUSZ.STRAPCZUK1@GMAIL.COM", "MATEUSZ.STRAPCZUK1@GMAIL.COM", "AQAAAAIAAYagAAAAEN4fqMsf5CcTM5WYX/mSXTQqkEKVBdqFfHZ3KozUwJxDylqK0mwDGbvkoJuiNYtcWQ==", null, false, "user5.jpg", "APP", new DateTime(2024, 11, 25, 0, 0, 0, 0, DateTimeKind.Unspecified), "6aeb3af6-de82-4209-938c-8625a29dc6aa", "Strapczuk", false, "mateusz.strapczuk1@gmail.com" }
+                    { "1", 0, "e5007695-3033-40a8-a83e-8cc807021ac7", new DateTime(2000, 4, 3, 0, 0, 0, 0, DateTimeKind.Unspecified), "admin@gmail.com", true, true, false, null, "Admin", "ADMIN@GMAIL.COM", "ADMIN@GMAIL.COM", "AQAAAAIAAYagAAAAEL68tc0iHCRjCTvP2hnOVt4YxFuqzbEgY+NZ9Izn1y367KgC6qg4fgyB4qjuzEfY4A==", null, false, "admin.jpg", "APP", new DateTime(2024, 11, 25, 0, 0, 0, 0, DateTimeKind.Unspecified), "8d278a61-7ad9-41ce-9774-623dc9971ad6", "Admin", false, "admin@gmail.com" },
+                    { "2", 0, "56af4507-647d-4053-87a9-59f50db1a326", new DateTime(1985, 2, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "mateusz.strapczuk2@gmail.com", true, true, false, null, "Mateusz2", "MATEUSZ.STRAPCZUK2@GMAIL.COM", "MATEUSZ.STRAPCZUK2@GMAIL.COM", "AQAAAAIAAYagAAAAEJhAsI0ZwBp340ec02AGAgs7UVjclALaj9+7uNajpvm9MO23jO3OEHnwNHSXrz+xDw==", null, false, "user2.jpg", "APP", new DateTime(2024, 11, 25, 0, 0, 0, 0, DateTimeKind.Unspecified), "67208ac8-2e12-4013-b2ee-c46ddbdc6eda", "Strapczuk2", false, "mateusz.strapczuk2@gmail.com" },
+                    { "3", 0, "191ebd1d-da96-4b4f-a69f-e473b21d51c0", new DateTime(1979, 12, 11, 0, 0, 0, 0, DateTimeKind.Unspecified), "mateusz.strapczuk3@gmail.com", true, true, false, null, "Mateusz3", "MATEUSZ.STRAPCZUK3@GMAIL.COM", "MATEUSZ.STRAPCZUK3@GMAIL.COM", "AQAAAAIAAYagAAAAEG5NvyB+rOy8A4Ke2azM5/TBlvbBVvRP4WJA4ICQOl1gVaFynSgLxe6WOJtVq57aZA==", null, false, "user3.jpg", "APP", new DateTime(2024, 11, 25, 0, 0, 0, 0, DateTimeKind.Unspecified), "eca1c680-8fdf-4c90-b740-95a9862e7872", "Strapczuk3", false, "mateusz.strapczuk3@gmail.com" },
+                    { "4", 0, "e8d8446c-30a3-44bb-992f-895f4815f29e", new DateTime(1979, 12, 11, 0, 0, 0, 0, DateTimeKind.Unspecified), "mateusz.strapczuk4@gmail.com", true, true, false, null, "Mateusz4", "MATEUSZ.STRAPCZUK4@GMAIL.COM", "MATEUSZ.STRAPCZUK4@GMAIL.COM", "AQAAAAIAAYagAAAAEB8DHvtkDXnhpPJWVU32z3otQa8EykO5zR9RMc5uJTqLOzvJPG3MEE81YCAzgbAvJw==", null, false, "user4.jpg", "APP", new DateTime(2024, 11, 25, 0, 0, 0, 0, DateTimeKind.Unspecified), "196b3136-7323-4a02-bb3b-ca294602e4b4", "Strapczuk4", false, "mateusz.strapczuk4@gmail.com" },
+                    { "5", 0, "a8b29b82-6ae9-4d15-bf1d-89474a91fefb", new DateTime(1979, 12, 11, 0, 0, 0, 0, DateTimeKind.Unspecified), "mateusz.strapczuk1@gmail.com", true, true, false, null, "Mateusz", "MATEUSZ.STRAPCZUK1@GMAIL.COM", "MATEUSZ.STRAPCZUK1@GMAIL.COM", "AQAAAAIAAYagAAAAENuA7HIQYiLSFJsUdTVMZH9KkB/NXGFTMEg0qviH3Q5LEUiThz7liILsR+jgmN/0rw==", null, false, "user5.jpg", "APP", new DateTime(2024, 11, 25, 0, 0, 0, 0, DateTimeKind.Unspecified), "f56bb341-a37a-4b48-be4d-119a6047208e", "Strapczuk", false, "mateusz.strapczuk1@gmail.com" }
                 });
 
             migrationBuilder.InsertData(
@@ -1160,9 +1160,9 @@ namespace EventFlowAPI.DB.Migrations
                 columns: new[] { "Id", "DeleteDate", "IsDeleted", "IsUpdated", "MediaPatronGuid", "Name", "PhotoName", "UpdateDate" },
                 values: new object[,]
                 {
-                    { 1, null, false, false, new Guid("0577dcc1-ea63-4d01-8602-a41fb623d99f"), "Gazeta Nowoczesna", "", null },
-                    { 2, null, false, false, new Guid("486553fb-34f3-46b8-b042-b880509c9e2f"), "Nowy świat TV", "", null },
-                    { 3, null, false, false, new Guid("fb5050c3-590d-41ee-90dd-d5eeda7f620b"), "Tygodnik Nowiny", "", null }
+                    { 1, null, false, false, new Guid("99489123-b8f8-4a5f-b403-9ba844d4da7b"), "Gazeta Nowoczesna", "", null },
+                    { 2, null, false, false, new Guid("7979eb21-7961-4d55-a627-39a03e586581"), "Nowy świat TV", "", null },
+                    { 3, null, false, false, new Guid("977f04f3-7139-43a4-888d-6fa1a5eddc7a"), "Tygodnik Nowiny", "", null }
                 });
 
             migrationBuilder.InsertData(
@@ -1170,12 +1170,12 @@ namespace EventFlowAPI.DB.Migrations
                 columns: new[] { "Id", "LongDescription", "NewsGuid", "PhotoName", "PublicationDate", "ShortDescription", "Title" },
                 values: new object[,]
                 {
-                    { 1, "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut id nibh ornare, luctus velit ac, feugiat turpis. Vestibulum fermentum placerat mi nec scelerisque. Ut id nibh ornare, luctus velit ac, feugiat turpis. Vestibulum fermentum. Vestibulum fermentum placerat mi nec. Ut id nibh ornare, luctus velit ac, feugiat turpis.Vestibulum fermentum. Vestibulum fermentum.", new Guid("5b16b5a2-094d-49fb-b4cb-96805522a4e8"), "konkurs_artystyczny.png", new DateTime(2024, 11, 25, 0, 0, 0, 0, DateTimeKind.Unspecified), "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut id nibh ornare, luctus velit ac, feugiat turpis. Vestibulum fermentum placerat mi nec scelerisque. Ut id nibh ornare, luctus velit ac, feugiat turpis. Vestibulum fermentum. Vestibulum fermentum placerat mi nec. Ut id nibh ornare, luctus velit ac, feugiat turpis.Vestibulum fermentum. Vestibulum fermentum.", "Finał konkursu artystycznego" },
-                    { 2, "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut id nibh ornare, luctus...", new Guid("faa360c6-b730-4990-ba65-3ff232340011"), "koncert_lunar_vibes.png", new DateTime(2024, 11, 25, 0, 0, 0, 0, DateTimeKind.Unspecified), "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut id nibh ornare, luctus...", "Relacja z koncertu zespołu Lunar Vibes" },
-                    { 3, "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut id nibh ornare, luctus...", new Guid("daef5bcb-3681-4539-a8de-f79929116ea7"), "modernizacja sali.png", new DateTime(2024, 11, 25, 0, 0, 0, 0, DateTimeKind.Unspecified), "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut id nibh ornare, luctus...", "Modernizacja sali koncertowej" },
-                    { 4, "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut id nibh ornare, luctus...", new Guid("29910764-8476-4840-8f1b-15f1a7e8fdcb"), "znizka.png", new DateTime(2024, 11, 25, 0, 0, 0, 0, DateTimeKind.Unspecified), "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut id nibh ornare, luctus...", "Zniżka 20% na zakup karnetów" },
-                    { 5, "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut id nibh ornare, luctus...", new Guid("91b08804-baff-4334-bb08-c89d811ffcaf"), "noc_filmowa.png", new DateTime(2024, 11, 25, 0, 0, 0, 0, DateTimeKind.Unspecified), "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut id nibh ornare, luctus...", "Noc Filmowa z Klasykami Kina" },
-                    { 6, "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut id nibh ornare, luctus...", new Guid("ef0d6702-b20f-4bfe-9c48-17930ae8a90f"), "wernisaz.png", new DateTime(2024, 11, 25, 0, 0, 0, 0, DateTimeKind.Unspecified), "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut id nibh ornare, luctus...", "Wernisaż: Nowe inspiracje" }
+                    { 1, "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut id nibh ornare, luctus velit ac, feugiat turpis. Vestibulum fermentum placerat mi nec scelerisque. Ut id nibh ornare, luctus velit ac, feugiat turpis. Vestibulum fermentum. Vestibulum fermentum placerat mi nec. Ut id nibh ornare, luctus velit ac, feugiat turpis.Vestibulum fermentum. Vestibulum fermentum.", new Guid("a9f8d848-a091-4dbf-b5dd-00a74f519f44"), "konkurs_artystyczny.png", new DateTime(2024, 11, 25, 0, 0, 0, 0, DateTimeKind.Unspecified), "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut id nibh ornare, luctus velit ac, feugiat turpis. Vestibulum fermentum placerat mi nec scelerisque. Ut id nibh ornare, luctus velit ac, feugiat turpis. Vestibulum fermentum. Vestibulum fermentum placerat mi nec. Ut id nibh ornare, luctus velit ac, feugiat turpis.Vestibulum fermentum. Vestibulum fermentum.", "Finał konkursu artystycznego" },
+                    { 2, "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut id nibh ornare, luctus...", new Guid("886df0a0-0cbe-41d9-b8b6-7171504dbef2"), "koncert_lunar_vibes.png", new DateTime(2024, 11, 25, 0, 0, 0, 0, DateTimeKind.Unspecified), "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut id nibh ornare, luctus...", "Relacja z koncertu zespołu Lunar Vibes" },
+                    { 3, "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut id nibh ornare, luctus...", new Guid("af95dc53-3cc1-4010-9174-92100f78fa53"), "modernizacja sali.png", new DateTime(2024, 11, 25, 0, 0, 0, 0, DateTimeKind.Unspecified), "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut id nibh ornare, luctus...", "Modernizacja sali koncertowej" },
+                    { 4, "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut id nibh ornare, luctus...", new Guid("21151156-37dc-4cae-aa83-6756b531a3d7"), "znizka.png", new DateTime(2024, 11, 25, 0, 0, 0, 0, DateTimeKind.Unspecified), "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut id nibh ornare, luctus...", "Zniżka 20% na zakup karnetów" },
+                    { 5, "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut id nibh ornare, luctus...", new Guid("d298f5eb-38a9-4628-ba48-c0cad76a2c76"), "noc_filmowa.png", new DateTime(2024, 11, 25, 0, 0, 0, 0, DateTimeKind.Unspecified), "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut id nibh ornare, luctus...", "Noc Filmowa z Klasykami Kina" },
+                    { 6, "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut id nibh ornare, luctus...", new Guid("8007bd09-9e0e-4a97-91de-8f0c5f86cf99"), "wernisaz.png", new DateTime(2024, 11, 25, 0, 0, 0, 0, DateTimeKind.Unspecified), "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut id nibh ornare, luctus...", "Wernisaż: Nowe inspiracje" }
                 });
 
             migrationBuilder.InsertData(
@@ -1183,9 +1183,9 @@ namespace EventFlowAPI.DB.Migrations
                 columns: new[] { "Id", "DeleteDate", "IsDeleted", "IsUpdated", "Name", "OrganizerGuid", "PhotoName", "UpdateDate" },
                 values: new object[,]
                 {
-                    { 1, null, false, false, "EventFlow", new Guid("618d3517-e270-418a-a47f-de32f49e7070"), "", null },
-                    { 2, null, false, false, "Snowflake", new Guid("d888fdb4-16ad-4910-b687-fc607a94d839"), "", null },
-                    { 3, null, false, false, "Aura", new Guid("f5554240-67d9-46f5-9118-d456d32ec737"), "", null }
+                    { 1, null, false, false, "EventFlow", new Guid("f93b8879-d1ce-4b96-b6db-03e2851c2140"), "", null },
+                    { 2, null, false, false, "Snowflake", new Guid("0b566824-8a39-499e-b06b-6edabadafa83"), "", null },
+                    { 3, null, false, false, "Aura", new Guid("06d7bcb3-2806-4f7e-8453-4d0d881e1fab"), "", null }
                 });
 
             migrationBuilder.InsertData(
@@ -1193,11 +1193,11 @@ namespace EventFlowAPI.DB.Migrations
                 columns: new[] { "Id", "Name", "PartnerGuid", "PhotoName" },
                 values: new object[,]
                 {
-                    { 1, "Basel", new Guid("27ceceac-1524-4fb4-8bb9-7c3121ea0b5c"), "basel.png" },
-                    { 2, "Aura", new Guid("27511245-f9ae-4866-bde1-bfb0bf87e343"), "aura.png" },
-                    { 3, "Vision", new Guid("900cf3cc-0642-4caa-aa37-fc74effc0974"), "vision.png" },
-                    { 4, "Snowflake", new Guid("70356bf0-be95-46ab-abfc-20591b0a6a89"), "snowflake.png" },
-                    { 5, "Waveless", new Guid("0b66f190-c5d3-41e8-8900-d72c403be7c3"), "waveless.png" }
+                    { 1, "Basel", new Guid("4d1c3ab3-1404-44ce-a4f9-c58481cc20e2"), "basel.png" },
+                    { 2, "Aura", new Guid("5637c837-cb37-4aa3-b0bd-226009aba939"), "aura.png" },
+                    { 3, "Vision", new Guid("4d9d801e-5a02-4df1-a81d-60f4cec604a1"), "vision.png" },
+                    { 4, "Snowflake", new Guid("c4ee5f31-5160-4929-a3ad-a839aa253f7d"), "snowflake.png" },
+                    { 5, "Waveless", new Guid("381c1c43-963b-402f-9775-5006b12a3ded"), "waveless.png" }
                 });
 
             migrationBuilder.InsertData(
@@ -1205,11 +1205,8 @@ namespace EventFlowAPI.DB.Migrations
                 columns: new[] { "Id", "DeleteDate", "IsDeleted", "IsUpdated", "Name", "PaymentTypeGuid", "PhotoName", "UpdateDate" },
                 values: new object[,]
                 {
-                    { 1, null, false, false, "Karta kredytowa", new Guid("d053456b-c4bb-4304-a20e-4ed34d17bebb"), "", null },
-                    { 2, null, false, false, "Przelew", new Guid("d2fa1570-6c00-4ab6-824d-a4ea2e1452bf"), "", null },
-                    { 3, null, false, false, "BLIK", new Guid("73ebbc46-7488-42c5-9b14-0f5e5e8c458f"), "", null },
-                    { 4, null, false, false, "Zapłać później", new Guid("f3147d0e-5d50-4b14-b0ab-2ddba2fe1404"), "", null },
-                    { 5, null, false, false, "Karnet", new Guid("be1f5ac1-7cb2-462b-83c1-9ad7eb78243e"), "", null }
+                    { 1, null, false, false, "PayU", new Guid("3f891ecf-fb99-4cbd-aa93-2b8629a3681d"), "", null },
+                    { 2, null, false, false, "Karnet", new Guid("6b00c94d-5d7e-42cd-9d6a-16e8ea21bfdd"), "", null }
                 });
 
             migrationBuilder.InsertData(
@@ -1227,9 +1224,9 @@ namespace EventFlowAPI.DB.Migrations
                 columns: new[] { "Id", "DeleteDate", "IsDeleted", "IsUpdated", "Name", "PhotoName", "SponsorGuid", "UpdateDate" },
                 values: new object[,]
                 {
-                    { 1, null, false, false, "Basel", "", new Guid("76df7724-8575-41b0-8dd5-1fe059e40293"), null },
-                    { 2, null, false, false, "Vision", "", new Guid("bcc8ca2b-aa1a-4f50-86f7-ec444ad5b8f5"), null },
-                    { 3, null, false, false, "Waveless", "", new Guid("d1c2a423-8034-41d3-a289-d7fea168dae1"), null }
+                    { 1, null, false, false, "Basel", "", new Guid("6371e0fe-ff18-46d5-b171-9404c72a24a9"), null },
+                    { 2, null, false, false, "Vision", "", new Guid("0e3e8865-1061-4a2f-a4cf-96818a7bd19b"), null },
+                    { 3, null, false, false, "Waveless", "", new Guid("36dcc521-bae7-494b-86d3-a43d94807adf"), null }
                 });
 
             migrationBuilder.InsertData(
@@ -1288,7 +1285,7 @@ namespace EventFlowAPI.DB.Migrations
                 values: new object[,]
                 {
                     { 1, null, new DateTime(2025, 5, 25, 0, 0, 0, 0, DateTimeKind.Unspecified), new Guid("b00ca94a-e6b2-4d2e-b270-244b3e76048d"), "eventflow_karnet_b00ca94a-e6b2-4d2e-b270-244b3e76048d.jpg", "eventflow_karnet_b00ca94a-e6b2-4d2e-b270-244b3e76048d.pdf", false, false, 3, 499.99m, new DateTime(2024, 11, 25, 0, 0, 0, 0, DateTimeKind.Unspecified), 1, null, null, new DateTime(2024, 11, 25, 0, 0, 0, 0, DateTimeKind.Unspecified), 0m, 0m, null, "2" },
-                    { 2, null, new DateTime(2025, 11, 25, 0, 0, 0, 0, DateTimeKind.Unspecified), new Guid("766245b4-8c08-49dd-9480-2606aaa590be"), "eventflow_karnet_766245b4-8c08-49dd-9480-2606aaa590be.jpg", "eventflow_karnet_766245b4-8c08-49dd-9480-2606aaa590be.pdf", false, false, 4, 999.99m, new DateTime(2024, 11, 25, 0, 0, 0, 0, DateTimeKind.Unspecified), 2, null, null, new DateTime(2024, 11, 25, 0, 0, 0, 0, DateTimeKind.Unspecified), 0m, 0m, null, "3" },
+                    { 2, null, new DateTime(2025, 11, 25, 0, 0, 0, 0, DateTimeKind.Unspecified), new Guid("766245b4-8c08-49dd-9480-2606aaa590be"), "eventflow_karnet_766245b4-8c08-49dd-9480-2606aaa590be.jpg", "eventflow_karnet_766245b4-8c08-49dd-9480-2606aaa590be.pdf", false, false, 4, 999.99m, new DateTime(2024, 11, 25, 0, 0, 0, 0, DateTimeKind.Unspecified), 1, null, null, new DateTime(2024, 11, 25, 0, 0, 0, 0, DateTimeKind.Unspecified), 0m, 0m, null, "3" },
                     { 3, null, new DateTime(2025, 2, 25, 0, 0, 0, 0, DateTimeKind.Unspecified), new Guid("33610a0d-a1b7-4700-bffe-9e334b977e6a"), "eventflow_karnet_33610a0d-a1b7-4700-bffe-9e334b977e6a.jpg", "eventflow_karnet_33610a0d-a1b7-4700-bffe-9e334b977e6a.pdf", false, false, 2, 235.99m, new DateTime(2024, 11, 25, 0, 0, 0, 0, DateTimeKind.Unspecified), 1, null, null, new DateTime(2024, 11, 25, 0, 0, 0, 0, DateTimeKind.Unspecified), 0m, 0m, null, "4" }
                 });
 
@@ -1297,9 +1294,9 @@ namespace EventFlowAPI.DB.Migrations
                 columns: new[] { "Id", "AddDate", "DeleteDate", "Duration", "EndDate", "FestivalGuid", "IsDeleted", "IsUpdated", "Name", "PhotoName", "ShortDescription", "StartDate", "UpdateDate" },
                 values: new object[,]
                 {
-                    { 1, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, -2768400L, new DateTime(2025, 1, 26, 1, 0, 0, 0, DateTimeKind.Unspecified), new Guid("e5cdabb0-90a2-4b63-9564-e50993bc09ff"), false, false, "Festiwal muzyki hip-hop", "festival.png", "Festiwal muzyki hip-hop to nowy festiwal organizowany przez XYZ.", new DateTime(2024, 12, 26, 0, 0, 0, 0, DateTimeKind.Unspecified), null },
-                    { 2, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, -2772000L, new DateTime(2025, 1, 28, 2, 0, 0, 0, DateTimeKind.Unspecified), new Guid("5e6df8ae-8175-4dd8-adbd-0bc2ae75c51c"), false, false, "Festiwal filmowy", "", "Festiwal filmowy to festiwal na którym można obejrzeć filmy.", new DateTime(2024, 12, 27, 0, 0, 0, 0, DateTimeKind.Unspecified), null },
-                    { 3, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, -2689200L, new DateTime(2025, 1, 29, 3, 0, 0, 0, DateTimeKind.Unspecified), new Guid("11ff0760-5ca2-4ea0-90c6-b8c78286bd45"), false, false, "Festiwal sztuki abstrakcyjnej", "", "Festiwal sztuki abstrakcyjnej to festiwal na którym można zobaczyć sztukę.", new DateTime(2024, 12, 29, 0, 0, 0, 0, DateTimeKind.Unspecified), null }
+                    { 1, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, -2768400L, new DateTime(2025, 1, 26, 1, 0, 0, 0, DateTimeKind.Unspecified), new Guid("6d3a8af5-30c8-4cc2-9e73-24f5c989d495"), false, false, "Festiwal muzyki hip-hop", "festival.png", "Festiwal muzyki hip-hop to nowy festiwal organizowany przez XYZ.", new DateTime(2024, 12, 26, 0, 0, 0, 0, DateTimeKind.Unspecified), null },
+                    { 2, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, -2772000L, new DateTime(2025, 1, 28, 2, 0, 0, 0, DateTimeKind.Unspecified), new Guid("1734fad9-156b-4119-be9f-8ed06bedb8b0"), false, false, "Festiwal filmowy", "", "Festiwal filmowy to festiwal na którym można obejrzeć filmy.", new DateTime(2024, 12, 27, 0, 0, 0, 0, DateTimeKind.Unspecified), null },
+                    { 3, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, -2689200L, new DateTime(2025, 1, 29, 3, 0, 0, 0, DateTimeKind.Unspecified), new Guid("6b291628-8222-4b3c-97e3-3466d5a37943"), false, false, "Festiwal sztuki abstrakcyjnej", "", "Festiwal sztuki abstrakcyjnej to festiwal na którym można zobaczyć sztukę.", new DateTime(2024, 12, 29, 0, 0, 0, 0, DateTimeKind.Unspecified), null }
                 });
 
             migrationBuilder.InsertData(
@@ -1307,21 +1304,21 @@ namespace EventFlowAPI.DB.Migrations
                 columns: new[] { "Id", "DefaultId", "Floor", "HallNr", "HallTypeId", "HallViewFileName", "IsCopy", "IsUpdated", "IsVisible", "RentalPricePerHour", "UpdateDate" },
                 values: new object[,]
                 {
-                    { 1, 1, 2m, 1, 1, null, false, false, true, 120.99m, null },
-                    { 2, 2, 1m, 2, 2, null, false, false, true, 89.99m, null },
-                    { 3, 3, 2m, 3, 3, null, false, false, true, 179.99m, null },
-                    { 4, 4, 1m, 4, 4, null, false, false, true, 199.99m, null },
-                    { 5, 1, 2m, 1, 1, null, true, false, false, 120.99m, null },
-                    { 6, 2, 1m, 2, 2, null, true, false, false, 89.99m, null },
-                    { 7, 3, 2m, 3, 3, null, true, false, false, 179.99m, null },
-                    { 8, 4, 1m, 4, 4, null, true, false, false, 199.99m, null },
-                    { 9, 1, 2m, 1, 1, null, true, false, false, 120.99m, null },
-                    { 10, 2, 1m, 2, 2, null, true, false, false, 89.99m, null },
-                    { 11, 4, 1m, 4, 4, null, true, false, false, 199.99m, null },
-                    { 12, 1, 2m, 1, 1, null, true, false, false, 120.99m, null },
-                    { 13, 2, 1m, 2, 2, null, true, false, false, 89.99m, null },
-                    { 14, 3, 2m, 3, 3, null, true, false, false, 179.99m, null },
-                    { 15, 4, 1m, 4, 4, null, true, false, false, 199.99m, null }
+                    { 1, 1, 2m, 1, 1, "sala_5_5.pdf", false, false, true, 120.99m, null },
+                    { 2, 2, 1m, 2, 2, "sala_5_5.pdf", false, false, true, 89.99m, null },
+                    { 3, 3, 2m, 3, 3, "sala_5_5.pdf", false, false, true, 179.99m, null },
+                    { 4, 4, 1m, 4, 4, "sala_5_5.pdf", false, false, true, 199.99m, null },
+                    { 5, 1, 2m, 1, 1, "sala_5_5.pdf", true, false, false, 120.99m, null },
+                    { 6, 2, 1m, 2, 2, "sala_5_5.pdf", true, false, false, 89.99m, null },
+                    { 7, 3, 2m, 3, 3, "sala_5_5.pdf", true, false, false, 179.99m, null },
+                    { 8, 4, 1m, 4, 4, "sala_5_5.pdf", true, false, false, 199.99m, null },
+                    { 9, 1, 2m, 1, 1, "sala_5_5.pdf", true, false, false, 120.99m, null },
+                    { 10, 2, 1m, 2, 2, "sala_5_5.pdf", true, false, false, 89.99m, null },
+                    { 11, 4, 1m, 4, 4, "sala_5_5.pdf", true, false, false, 199.99m, null },
+                    { 12, 1, 2m, 1, 1, "sala_5_5.pdf", true, false, false, 120.99m, null },
+                    { 13, 2, 1m, 2, 2, "sala_5_5.pdf", true, false, false, 89.99m, null },
+                    { 14, 3, 2m, 3, 3, "sala_5_5.pdf", true, false, false, 179.99m, null },
+                    { 15, 4, 1m, 4, 4, "sala_5_5.pdf", true, false, false, 199.99m, null }
                 });
 
             migrationBuilder.InsertData(
@@ -1352,13 +1349,13 @@ namespace EventFlowAPI.DB.Migrations
                 columns: new[] { "Id", "AddDate", "CategoryId", "DeleteDate", "Duration", "EndDate", "EventGuid", "HallId", "IsDeleted", "IsUpdated", "Name", "PhotoName", "ShortDescription", "StartDate", "UpdateDate" },
                 values: new object[,]
                 {
-                    { 1, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1, null, -3600L, new DateTime(2024, 12, 26, 1, 0, 0, 0, DateTimeKind.Unspecified), new Guid("7faad234-b17a-45fb-a367-21c4522f09d4"), 6, false, false, "Koncert: Mystic Waves", "koncert_mystic_waves.png", "Któtki opis koncertu Mystic Waves.", new DateTime(2024, 12, 26, 0, 0, 0, 0, DateTimeKind.Unspecified), null },
-                    { 2, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 3, null, -10800L, new DateTime(2024, 12, 27, 3, 0, 0, 0, DateTimeKind.Unspecified), new Guid("18d46db4-c2c1-4b9d-b421-e81541aea561"), 7, false, false, "Cień Przeszłości", "cien_przeszlosci.png", "Krótki opis spektaklu pt. Cień Przeszłości.", new DateTime(2024, 12, 27, 0, 0, 0, 0, DateTimeKind.Unspecified), null },
-                    { 3, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2, null, -7200L, new DateTime(2024, 12, 28, 2, 0, 0, 0, DateTimeKind.Unspecified), new Guid("eca284ef-bad8-4922-9b3f-3ddf428916bb"), 5, false, false, "Królestwo planety małp", "krolestwo_planety_malp.png", "Nowy film Królestwo planety małp już w kinach!.", new DateTime(2024, 12, 28, 0, 0, 0, 0, DateTimeKind.Unspecified), null },
-                    { 4, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 4, null, -10800L, new DateTime(2024, 12, 29, 3, 0, 0, 0, DateTimeKind.Unspecified), new Guid("7f923e51-ef8b-4aeb-b511-005c8ed3541d"), 8, false, false, "Nowe inspiracje", "nowe_inspiracje.png", "Nowe inspiracje to nowoczesna wystawa sztuki.", new DateTime(2024, 12, 29, 0, 0, 0, 0, DateTimeKind.Unspecified), null },
-                    { 5, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1, null, -3600L, new DateTime(2025, 1, 26, 1, 0, 0, 0, DateTimeKind.Unspecified), new Guid("1ed1520a-c309-42d8-9462-0be74291a1dc"), 10, false, false, "Koncert: New Era", "", "Jedyna taka okazja na usłyszenie New Era na żywo.", new DateTime(2025, 1, 26, 0, 0, 0, 0, DateTimeKind.Unspecified), null },
-                    { 6, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2, null, -7200L, new DateTime(2025, 1, 28, 2, 0, 0, 0, DateTimeKind.Unspecified), new Guid("4710847f-32db-4f0a-a702-11914c2c24f1"), 9, false, false, "Gladiator", "", "Nowy film Gladiator już w kinach!.", new DateTime(2025, 1, 28, 0, 0, 0, 0, DateTimeKind.Unspecified), null },
-                    { 7, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 4, null, -10800L, new DateTime(2025, 1, 29, 3, 0, 0, 0, DateTimeKind.Unspecified), new Guid("e38ecec3-6411-4acb-a522-3b0ba63b1564"), 11, false, false, "Nowa sztuka", "", "Nowe sztuka to nowoczesna wystawa sztuki.", new DateTime(2025, 1, 29, 0, 0, 0, 0, DateTimeKind.Unspecified), null }
+                    { 1, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1, null, -3600L, new DateTime(2024, 12, 26, 1, 0, 0, 0, DateTimeKind.Unspecified), new Guid("95ddf410-c9c7-48a3-a6f7-7e90c2721d8d"), 6, false, false, "Koncert: Mystic Waves", "koncert_mystic_waves.png", "Któtki opis koncertu Mystic Waves.", new DateTime(2024, 12, 26, 0, 0, 0, 0, DateTimeKind.Unspecified), null },
+                    { 2, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 3, null, -10800L, new DateTime(2024, 12, 27, 3, 0, 0, 0, DateTimeKind.Unspecified), new Guid("39f0c1dc-6825-450d-83c3-f64e411ee54a"), 7, false, false, "Cień Przeszłości", "cien_przeszlosci.png", "Krótki opis spektaklu pt. Cień Przeszłości.", new DateTime(2024, 12, 27, 0, 0, 0, 0, DateTimeKind.Unspecified), null },
+                    { 3, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2, null, -7200L, new DateTime(2024, 12, 28, 2, 0, 0, 0, DateTimeKind.Unspecified), new Guid("1bba1b54-76fb-4c31-bc03-d5107d292ec2"), 5, false, false, "Królestwo planety małp", "krolestwo_planety_malp.png", "Nowy film Królestwo planety małp już w kinach!.", new DateTime(2024, 12, 28, 0, 0, 0, 0, DateTimeKind.Unspecified), null },
+                    { 4, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 4, null, -10800L, new DateTime(2024, 12, 29, 3, 0, 0, 0, DateTimeKind.Unspecified), new Guid("c5d14792-7422-435a-9a3b-df2157761167"), 8, false, false, "Nowe inspiracje", "nowe_inspiracje.png", "Nowe inspiracje to nowoczesna wystawa sztuki.", new DateTime(2024, 12, 29, 0, 0, 0, 0, DateTimeKind.Unspecified), null },
+                    { 5, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1, null, -3600L, new DateTime(2025, 1, 26, 1, 0, 0, 0, DateTimeKind.Unspecified), new Guid("af936f2c-7363-4165-acd2-5a96483bd445"), 10, false, false, "Koncert: New Era", "", "Jedyna taka okazja na usłyszenie New Era na żywo.", new DateTime(2025, 1, 26, 0, 0, 0, 0, DateTimeKind.Unspecified), null },
+                    { 6, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2, null, -7200L, new DateTime(2025, 1, 28, 2, 0, 0, 0, DateTimeKind.Unspecified), new Guid("577b3ec9-6040-4a22-9f12-8b198da92646"), 9, false, false, "Gladiator", "", "Nowy film Gladiator już w kinach!.", new DateTime(2025, 1, 28, 0, 0, 0, 0, DateTimeKind.Unspecified), null },
+                    { 7, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 4, null, -10800L, new DateTime(2025, 1, 29, 3, 0, 0, 0, DateTimeKind.Unspecified), new Guid("0135ff06-888b-4363-88fb-bb4fce13486a"), 11, false, false, "Nowa sztuka", "", "Nowe sztuka to nowoczesna wystawa sztuki.", new DateTime(2025, 1, 29, 0, 0, 0, 0, DateTimeKind.Unspecified), null }
                 });
 
             migrationBuilder.InsertData(
@@ -1427,10 +1424,10 @@ namespace EventFlowAPI.DB.Migrations
                 columns: new[] { "Id", "DeleteDate", "Duration", "EndDate", "HallId", "HallRentGuid", "HallRentPDFName", "IsDeleted", "IsUpdated", "PaymentAmount", "PaymentDate", "PaymentTypeId", "RentDate", "StartDate", "UpdateDate", "UserId" },
                 values: new object[,]
                 {
-                    { 1, null, 28800L, new DateTime(2024, 12, 26, 8, 0, 0, 0, DateTimeKind.Unspecified), 12, new Guid("0d7654ec-c1ea-4841-b4d8-9b3b934bbac0"), null, false, false, 899.99m, new DateTime(2024, 11, 25, 0, 0, 0, 0, DateTimeKind.Unspecified), 1, new DateTime(2024, 11, 25, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2024, 12, 26, 0, 0, 0, 0, DateTimeKind.Unspecified), null, "4" },
-                    { 2, null, 14400L, new DateTime(2024, 12, 27, 4, 0, 0, 0, DateTimeKind.Unspecified), 13, new Guid("7a3801cf-4009-4db3-b4ed-64428f336072"), null, false, false, 699.99m, new DateTime(2024, 11, 25, 0, 0, 0, 0, DateTimeKind.Unspecified), 2, new DateTime(2024, 11, 25, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2024, 12, 27, 0, 0, 0, 0, DateTimeKind.Unspecified), null, "3" },
-                    { 3, null, 7200L, new DateTime(2024, 12, 28, 2, 0, 0, 0, DateTimeKind.Unspecified), 14, new Guid("e2bd56f4-e7a0-42b4-819c-0ed15c6deaad"), null, false, false, 399.99m, new DateTime(2024, 11, 25, 0, 0, 0, 0, DateTimeKind.Unspecified), 3, new DateTime(2024, 11, 25, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2024, 12, 28, 0, 0, 0, 0, DateTimeKind.Unspecified), null, "3" },
-                    { 4, null, 3600L, new DateTime(2024, 12, 29, 1, 0, 0, 0, DateTimeKind.Unspecified), 15, new Guid("62f38bed-d95c-4512-9619-4cd67f52e786"), null, false, false, 150.99m, new DateTime(2024, 11, 25, 0, 0, 0, 0, DateTimeKind.Unspecified), 2, new DateTime(2024, 11, 25, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2024, 12, 29, 0, 0, 0, 0, DateTimeKind.Unspecified), null, "2" }
+                    { 1, null, 28800L, new DateTime(2024, 12, 26, 8, 0, 0, 0, DateTimeKind.Unspecified), 12, new Guid("8a7a0a87-baf7-4793-b4b4-81d5a3cf8704"), "wynajem_sali_f1f1e0e3-fd2b-4188-bcb0-ce1b924258d8.pdf", false, false, 899.99m, new DateTime(2024, 11, 25, 0, 0, 0, 0, DateTimeKind.Unspecified), 1, new DateTime(2024, 11, 25, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2024, 12, 26, 0, 0, 0, 0, DateTimeKind.Unspecified), null, "4" },
+                    { 2, null, 14400L, new DateTime(2024, 12, 27, 4, 0, 0, 0, DateTimeKind.Unspecified), 13, new Guid("38652902-a88e-4998-a4a7-cdf4b76b1532"), "wynajem_sali_f1f1e0e3-fd2b-4188-bcb0-ce1b924258d8.pdf", false, false, 699.99m, new DateTime(2024, 11, 25, 0, 0, 0, 0, DateTimeKind.Unspecified), 1, new DateTime(2024, 11, 25, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2024, 12, 27, 0, 0, 0, 0, DateTimeKind.Unspecified), null, "3" },
+                    { 3, null, 7200L, new DateTime(2024, 12, 28, 2, 0, 0, 0, DateTimeKind.Unspecified), 14, new Guid("8313eab6-74e2-448b-af9f-8d73df7db222"), "wynajem_sali_f1f1e0e3-fd2b-4188-bcb0-ce1b924258d8.pdf", false, false, 399.99m, new DateTime(2024, 11, 25, 0, 0, 0, 0, DateTimeKind.Unspecified), 1, new DateTime(2024, 11, 25, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2024, 12, 28, 0, 0, 0, 0, DateTimeKind.Unspecified), null, "3" },
+                    { 4, null, 3600L, new DateTime(2024, 12, 29, 1, 0, 0, 0, DateTimeKind.Unspecified), 15, new Guid("85631c1c-750b-48ae-9486-a6c43a1dd47b"), "wynajem_sali_f1f1e0e3-fd2b-4188-bcb0-ce1b924258d8.pdf", false, false, 150.99m, new DateTime(2024, 11, 25, 0, 0, 0, 0, DateTimeKind.Unspecified), 1, new DateTime(2024, 11, 25, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2024, 12, 29, 0, 0, 0, 0, DateTimeKind.Unspecified), null, "2" }
                 });
 
             migrationBuilder.InsertData(
@@ -1535,13 +1532,13 @@ namespace EventFlowAPI.DB.Migrations
                 values: new object[,]
                 {
                     { 1, null, new DateTime(2024, 12, 26, 1, 0, 0, 0, DateTimeKind.Unspecified), null, false, false, false, 24.99m, new DateTime(2024, 11, 25, 0, 0, 0, 0, DateTimeKind.Unspecified), 1, new DateTime(2024, 11, 25, 0, 0, 0, 0, DateTimeKind.Unspecified), new Guid("53538b58-f885-4f4a-b675-a4aa4063ccf3"), new DateTime(2024, 12, 26, 0, 0, 0, 0, DateTimeKind.Unspecified), 1, 1, 2.5m, 10m, 0m, null, "4" },
-                    { 2, null, new DateTime(2024, 12, 27, 3, 0, 0, 0, DateTimeKind.Unspecified), null, false, false, false, 34.99m, new DateTime(2024, 11, 25, 0, 0, 0, 0, DateTimeKind.Unspecified), 2, new DateTime(2024, 11, 25, 0, 0, 0, 0, DateTimeKind.Unspecified), new Guid("ed8b9230-223b-4609-8d13-aa6017edad09"), new DateTime(2024, 12, 27, 0, 0, 0, 0, DateTimeKind.Unspecified), 2, 2, 0m, 0m, 0m, null, "2" },
-                    { 3, null, new DateTime(2024, 12, 28, 2, 0, 0, 0, DateTimeKind.Unspecified), null, false, false, false, 29.99m, new DateTime(2024, 11, 25, 0, 0, 0, 0, DateTimeKind.Unspecified), 3, new DateTime(2024, 11, 25, 0, 0, 0, 0, DateTimeKind.Unspecified), new Guid("f9a076c4-3475-4a28-a60c-6e0e3c03731a"), new DateTime(2024, 12, 28, 0, 0, 0, 0, DateTimeKind.Unspecified), 3, 3, 7.5m, 25m, 0m, null, "3" },
-                    { 4, null, new DateTime(2024, 12, 29, 3, 0, 0, 0, DateTimeKind.Unspecified), null, false, false, false, 19.99m, new DateTime(2024, 11, 25, 0, 0, 0, 0, DateTimeKind.Unspecified), 2, new DateTime(2024, 11, 25, 0, 0, 0, 0, DateTimeKind.Unspecified), new Guid("de1d6773-f027-4888-996a-0296e5c52708"), new DateTime(2024, 12, 29, 0, 0, 0, 0, DateTimeKind.Unspecified), 4, 4, 0m, 0m, 0m, null, "3" },
-                    { 5, null, new DateTime(2024, 12, 26, 1, 0, 0, 0, DateTimeKind.Unspecified), null, false, true, false, 19.99m, new DateTime(2024, 11, 25, 0, 0, 0, 0, DateTimeKind.Unspecified), 2, new DateTime(2024, 11, 25, 0, 0, 0, 0, DateTimeKind.Unspecified), new Guid("0b74ec7b-933b-4163-afa5-e0997681dccd"), new DateTime(2024, 12, 26, 0, 0, 0, 0, DateTimeKind.Unspecified), 5, 5, 2m, 10m, 0m, null, "2" },
-                    { 6, null, new DateTime(2025, 1, 26, 1, 0, 0, 0, DateTimeKind.Unspecified), null, false, true, false, 19.99m, new DateTime(2024, 11, 25, 0, 0, 0, 0, DateTimeKind.Unspecified), 2, new DateTime(2024, 11, 25, 0, 0, 0, 0, DateTimeKind.Unspecified), new Guid("0b74ec7b-933b-4163-afa5-e0997681dccd"), new DateTime(2025, 1, 26, 0, 0, 0, 0, DateTimeKind.Unspecified), 6, 5, 2m, 10m, 0m, null, "2" },
-                    { 7, null, new DateTime(2024, 12, 27, 3, 0, 0, 0, DateTimeKind.Unspecified), null, false, true, false, 29.99m, new DateTime(2024, 11, 25, 0, 0, 0, 0, DateTimeKind.Unspecified), 2, new DateTime(2024, 11, 25, 0, 0, 0, 0, DateTimeKind.Unspecified), new Guid("806cade1-2685-43dc-8cfc-682fc4229db6"), new DateTime(2024, 12, 27, 0, 0, 0, 0, DateTimeKind.Unspecified), 7, 6, 0m, 0m, 0m, null, "2" },
-                    { 8, null, new DateTime(2025, 1, 28, 2, 0, 0, 0, DateTimeKind.Unspecified), null, false, true, false, 29.99m, new DateTime(2024, 11, 25, 0, 0, 0, 0, DateTimeKind.Unspecified), 2, new DateTime(2024, 11, 25, 0, 0, 0, 0, DateTimeKind.Unspecified), new Guid("806cade1-2685-43dc-8cfc-682fc4229db6"), new DateTime(2025, 1, 28, 0, 0, 0, 0, DateTimeKind.Unspecified), 8, 6, 0m, 0m, 0m, null, "2" }
+                    { 2, null, new DateTime(2024, 12, 27, 3, 0, 0, 0, DateTimeKind.Unspecified), null, false, false, false, 34.99m, new DateTime(2024, 11, 25, 0, 0, 0, 0, DateTimeKind.Unspecified), 1, new DateTime(2024, 11, 25, 0, 0, 0, 0, DateTimeKind.Unspecified), new Guid("ed8b9230-223b-4609-8d13-aa6017edad09"), new DateTime(2024, 12, 27, 0, 0, 0, 0, DateTimeKind.Unspecified), 2, 2, 0m, 0m, 0m, null, "2" },
+                    { 3, null, new DateTime(2024, 12, 28, 2, 0, 0, 0, DateTimeKind.Unspecified), null, false, false, false, 29.99m, new DateTime(2024, 11, 25, 0, 0, 0, 0, DateTimeKind.Unspecified), 1, new DateTime(2024, 11, 25, 0, 0, 0, 0, DateTimeKind.Unspecified), new Guid("f9a076c4-3475-4a28-a60c-6e0e3c03731a"), new DateTime(2024, 12, 28, 0, 0, 0, 0, DateTimeKind.Unspecified), 3, 3, 7.5m, 25m, 0m, null, "3" },
+                    { 4, null, new DateTime(2024, 12, 29, 3, 0, 0, 0, DateTimeKind.Unspecified), null, false, false, false, 19.99m, new DateTime(2024, 11, 25, 0, 0, 0, 0, DateTimeKind.Unspecified), 1, new DateTime(2024, 11, 25, 0, 0, 0, 0, DateTimeKind.Unspecified), new Guid("de1d6773-f027-4888-996a-0296e5c52708"), new DateTime(2024, 12, 29, 0, 0, 0, 0, DateTimeKind.Unspecified), 4, 4, 0m, 0m, 0m, null, "3" },
+                    { 5, null, new DateTime(2024, 12, 26, 1, 0, 0, 0, DateTimeKind.Unspecified), null, false, true, false, 19.99m, new DateTime(2024, 11, 25, 0, 0, 0, 0, DateTimeKind.Unspecified), 1, new DateTime(2024, 11, 25, 0, 0, 0, 0, DateTimeKind.Unspecified), new Guid("0b74ec7b-933b-4163-afa5-e0997681dccd"), new DateTime(2024, 12, 26, 0, 0, 0, 0, DateTimeKind.Unspecified), 5, 5, 2m, 10m, 0m, null, "2" },
+                    { 6, null, new DateTime(2025, 1, 26, 1, 0, 0, 0, DateTimeKind.Unspecified), null, false, true, false, 19.99m, new DateTime(2024, 11, 25, 0, 0, 0, 0, DateTimeKind.Unspecified), 1, new DateTime(2024, 11, 25, 0, 0, 0, 0, DateTimeKind.Unspecified), new Guid("0b74ec7b-933b-4163-afa5-e0997681dccd"), new DateTime(2025, 1, 26, 0, 0, 0, 0, DateTimeKind.Unspecified), 6, 5, 2m, 10m, 0m, null, "2" },
+                    { 7, null, new DateTime(2024, 12, 27, 3, 0, 0, 0, DateTimeKind.Unspecified), null, false, true, false, 29.99m, new DateTime(2024, 11, 25, 0, 0, 0, 0, DateTimeKind.Unspecified), 1, new DateTime(2024, 11, 25, 0, 0, 0, 0, DateTimeKind.Unspecified), new Guid("806cade1-2685-43dc-8cfc-682fc4229db6"), new DateTime(2024, 12, 27, 0, 0, 0, 0, DateTimeKind.Unspecified), 7, 6, 0m, 0m, 0m, null, "2" },
+                    { 8, null, new DateTime(2025, 1, 28, 2, 0, 0, 0, DateTimeKind.Unspecified), null, false, true, false, 29.99m, new DateTime(2024, 11, 25, 0, 0, 0, 0, DateTimeKind.Unspecified), 1, new DateTime(2024, 11, 25, 0, 0, 0, 0, DateTimeKind.Unspecified), new Guid("806cade1-2685-43dc-8cfc-682fc4229db6"), new DateTime(2025, 1, 28, 0, 0, 0, 0, DateTimeKind.Unspecified), 8, 6, 0m, 0m, 0m, null, "2" }
                 });
 
             migrationBuilder.InsertData(

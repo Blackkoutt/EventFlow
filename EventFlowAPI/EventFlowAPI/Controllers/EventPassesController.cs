@@ -112,14 +112,39 @@ namespace EventFlowAPI.Controllers
 
 
         [Authorize]
-        [HttpPut("{id:int}")]
+        [HttpPost("{id:int}/create-renew-transaction")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        public async Task<IActionResult> RenewEventPass([FromRoute] int id, [FromBody] UpdateEventPassRequestDto eventPassReqestDto)
+        public async Task<IActionResult> CreateRenewPassTransaction([FromRoute] int id, [FromBody] UpdateEventPassRequestDto eventPassReqestDto)
         {
-            var result = await _eventPassService.UpdateAsync(id, eventPassReqestDto);
+            var result = await _eventPassService.CreateRenewEventPassPayment(id , eventPassReqestDto);
+            if (!result.IsSuccessful)
+            {
+                return result.Error.Details!.Code switch
+                {
+                    HttpStatusCode.BadRequest => BadRequest(result.Error.Details),
+                    HttpStatusCode.Unauthorized => Unauthorized(result.Error.Details),
+                    HttpStatusCode.Forbidden => StatusCode((int)HttpStatusCode.Forbidden, result.Error.Details),
+                    _ => StatusCode((int)HttpStatusCode.InternalServerError, result.Error.Details)
+                };
+            }
+            return Ok(result.Value);
+        }
+
+
+        [Authorize]
+        //[HttpPut("{id:int}")]
+        [HttpPut]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> RenewEventPass(/*[FromRoute] int id, [FromBody] UpdateEventPassRequestDto eventPassReqestDto*/)
+        {
+            var result = await _eventPassService.RenewEventPass();//.UpdateAsync(id, eventPassReqestDto);
             if (!result.IsSuccessful)
             {
                 return result.Error.Details!.Code switch

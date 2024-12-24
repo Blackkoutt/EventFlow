@@ -21,6 +21,7 @@ interface GETRequestParams {
 }
 interface POSTRequestParams<TPostEntity> {
   body: TPostEntity;
+  id?: number;
 }
 interface PUTRequestParams<TPutEntity> {
   body: TPutEntity;
@@ -72,7 +73,8 @@ function useApi<TEntity, TPostEntity = undefined, TPutEntity = undefined, TPatch
               throw Error("POST Error: body is undefined");
             const [postData, postCode] = await ApiClient.Post<TEntity, TPostEntity>(
               endpoint,
-              body as TPostEntity
+              body as TPostEntity,
+              id
             );
             /* setData((prev) => {
               if (Array.isArray(prev)) {
@@ -86,8 +88,8 @@ function useApi<TEntity, TPostEntity = undefined, TPutEntity = undefined, TPatch
             break;
 
           case HTTPMethod.PUT:
-            if (typeof body === undefined || body === undefined)
-              throw Error("PUT Error: body is undefined");
+            // if (typeof body === undefined || body === undefined)
+            //   throw Error("PUT Error: body is undefined");
             const [putData, putCode] = await ApiClient.Put<TEntity, TPutEntity>(
               endpoint,
               body as TPutEntity,
@@ -155,8 +157,8 @@ function useApi<TEntity, TPostEntity = undefined, TPutEntity = undefined, TPatch
   );
 
   const post = useCallback(
-    ({ body }: POSTRequestParams<TPostEntity>): Promise<void> =>
-      request({ httpMethod: HTTPMethod.POST, body }),
+    ({ body, id }: POSTRequestParams<TPostEntity>): Promise<void> =>
+      request({ httpMethod: HTTPMethod.POST, id, body }),
     [request]
   );
 

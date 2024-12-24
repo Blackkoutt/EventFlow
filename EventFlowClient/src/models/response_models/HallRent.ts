@@ -9,7 +9,9 @@ export type HallRent = IModel & {
   endDate: string;
   paymentDate: string;
   deleteDate?: string;
+  hallRentGuid: string;
   paymentAmount: number;
+  hallRentStatus: string;
   paymentType?: PaymentType;
   hall?: Hall;
   user?: User;

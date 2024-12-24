@@ -46,7 +46,7 @@ namespace EventFlowAPI.DB.Extensions.SeedingExtensions
                     EventPassJPGName = $"eventflow_karnet_{epGuid2}.jpg",
                     EventPassPDFName = $"eventflow_karnet_{epGuid2}.pdf",
                     UserId = "3",
-                    PaymentTypeId = 2
+                    PaymentTypeId = 1
                 },
                 new EventPass
                 {

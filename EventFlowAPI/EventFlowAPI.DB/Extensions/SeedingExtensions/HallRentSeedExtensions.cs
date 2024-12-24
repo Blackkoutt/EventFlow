@@ -22,6 +22,7 @@ namespace EventFlowAPI.DB.Extensions.SeedingExtensions
                     DurationTimeSpan = today.AddMonths(1).AddDays(1).AddHours(8) - today.AddMonths(1).AddDays(1),
                     RentDate = today,
                     PaymentDate = today,
+                    HallRentPDFName = "wynajem_sali_f1f1e0e3-fd2b-4188-bcb0-ce1b924258d8.pdf",
                     PaymentAmount = 899.99m,
                     PaymentTypeId = 1,
                     HallId = 12,
@@ -35,9 +36,10 @@ namespace EventFlowAPI.DB.Extensions.SeedingExtensions
                     EndDate = today.AddMonths(1).AddDays(2).AddHours(4),
                     DurationTimeSpan = today.AddMonths(1).AddDays(2).AddHours(4) - today.AddMonths(1).AddDays(2),
                     RentDate = today,
+                    HallRentPDFName = "wynajem_sali_f1f1e0e3-fd2b-4188-bcb0-ce1b924258d8.pdf",
                     PaymentDate = today,
                     PaymentAmount = 699.99m,
-                    PaymentTypeId = 2,
+                    PaymentTypeId = 1,
                     HallId = 13,
                     UserId = "3"
                 },
@@ -49,9 +51,10 @@ namespace EventFlowAPI.DB.Extensions.SeedingExtensions
                     EndDate = today.AddMonths(1).AddDays(3).AddHours(2),
                     DurationTimeSpan = today.AddMonths(1).AddDays(3).AddHours(2) - today.AddMonths(1).AddDays(3),
                     RentDate = today,
+                    HallRentPDFName = "wynajem_sali_f1f1e0e3-fd2b-4188-bcb0-ce1b924258d8.pdf",
                     PaymentDate = today,
                     PaymentAmount = 399.99m,
-                    PaymentTypeId = 3,
+                    PaymentTypeId = 1,
                     HallId = 14,
                     UserId = "3"
                 },
@@ -63,9 +66,10 @@ namespace EventFlowAPI.DB.Extensions.SeedingExtensions
                     EndDate = today.AddMonths(1).AddDays(4).AddHours(1),
                     DurationTimeSpan = today.AddMonths(1).AddDays(4).AddHours(1) - today.AddMonths(1).AddDays(4),
                     RentDate = today,
+                    HallRentPDFName = "wynajem_sali_f1f1e0e3-fd2b-4188-bcb0-ce1b924258d8.pdf",
                     PaymentDate = today,
                     PaymentAmount = 150.99m,
-                    PaymentTypeId = 2,
+                    PaymentTypeId = 1,
                     HallId = 15,
                     UserId = "2"
                 }

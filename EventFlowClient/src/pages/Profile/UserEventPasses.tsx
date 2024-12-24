@@ -13,13 +13,17 @@ import StatusBody from "../../components/tabledata/StatusBody";
 import DetailsEventPassDialog from "../../components/profile/eventpasses/DetailsEventPassDialog";
 import DownloadEventPassDialog from "../../components/profile/eventpasses/DownloadEventPassDialog";
 import RenewEventPassDialog from "../../components/profile/eventpasses/RenewEventPassDialog";
+import { toast } from "react-toastify";
 
 const UserEventPasses = () => {
   const { data: eventPasses, get: getEventPasses } = useApi<EventPass>(ApiEndpoint.EventPass);
+  const { put: renewEventPass } = useApi<EventPass>(ApiEndpoint.EventPass);
 
   const detailsEventPassDialog = useRef<HTMLDialogElement>(null);
   const downloadEventPassDialog = useRef<HTMLDialogElement>(null);
   const renewEventPassDialog = useRef<HTMLDialogElement>(null);
+  const hasRenewedRef = useRef(false);
+  const hasRenewedErrorRef = useRef(false);
 
   const [eventPassToDetails, setEventPassToDetails] = useState<EventPass | undefined>(undefined);
   const [eventPassToDownload, setEventPassToDownload] = useState<EventPass | undefined>(undefined);
@@ -44,7 +48,36 @@ const UserEventPasses = () => {
   }, [eventPassToRenew]);
 
   useEffect(() => {
-    getEventPasses({ id: undefined, queryParams: undefined });
+    const getPassesAndRenew = async () => {
+      await getEventPasses({ id: undefined, queryParams: undefined });
+      const queryParams = new URLSearchParams(window.location.search);
+      console.log("Error", queryParams.has("error"));
+      console.log("Renew", queryParams.has("renew"));
+      if (queryParams.has("error") && !hasRenewedErrorRef.current) {
+        hasRenewedErrorRef.current = true;
+        toast.error("Transakcja została anulowana");
+        const url = new URL(window.location.toString());
+        url.searchParams.delete("error");
+        url.searchParams.delete("renew");
+        window.history.replaceState({}, "", url.toString());
+      } else if (
+        queryParams.has("renew") &&
+        !hasRenewedRef.current &&
+        !hasRenewedErrorRef.current
+      ) {
+        hasRenewedRef.current = true;
+        await toast.promise(renewEventPass({ id: undefined, body: undefined }), {
+          pending: "Wysyłanie żądania przedłużenia karnetu",
+          success: "Karnet został przedlużony pomyślnie",
+          error: "Wystąpił błąd podczas przedłużania karnetu",
+        });
+        await getEventPasses({ id: undefined, queryParams: undefined });
+        const url = new URL(window.location.toString());
+        url.searchParams.delete("renew");
+        window.history.replaceState({}, "", url.toString());
+      }
+    };
+    getPassesAndRenew();
   }, []);
 
   useEffect(() => {
@@ -98,7 +131,7 @@ const UserEventPasses = () => {
   };
 
   return (
-    <div className="max-w-[53vw] self-center">
+    <div className="max-w-[54vw] self-center">
       <DetailsEventPassDialog ref={detailsEventPassDialog} eventPass={eventPassToDetails} />
 
       <RenewEventPassDialog
@@ -157,13 +190,6 @@ const UserEventPasses = () => {
             />
           )}
         />
-        {/* <Column
-          field="paymentDate"
-          sortable
-          header="Data płatności"
-          body={(rowData) => DateFormatter.FormatDate(rowData.paymentDate, DateFormat.Date)}
-        /> */}
-        {/* <Column field="paymentType.name" sortable header="Typ płatności" /> */}
         <Column header="Akcja" body={actionsTemplate} />
       </DataTable>
     </div>

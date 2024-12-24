@@ -7,8 +7,5 @@ namespace EventFlowAPI.Logic.DTO.UpdateRequestDto
     {
         [Required(ErrorMessage = "Należy podać typ karnetu.")]
         public int PassTypeId { get; set; }
-
-        [Required(ErrorMessage = "Należy podać typ płatności.")]
-        public int PaymentTypeId { get; set; }
     }
 }

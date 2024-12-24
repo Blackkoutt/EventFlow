@@ -31,6 +31,9 @@ export const ApiUrlConfig = {
   [ApiEndpoint.EventPass]: {
     url: (id?: number) => `/eventpasses${id ? `/${id}` : ""}`,
   },
+  [ApiEndpoint.EventPassCreateRenewTransaction]: {
+    url: (id?: number) => `/eventpasses/${id}/create-renew-transaction`,
+  },
   [ApiEndpoint.EventPassPDF]: {
     url: (id?: number) => `/eventpasses/${id}/pdf`,
   },
@@ -51,6 +54,12 @@ export const ApiUrlConfig = {
   },
   [ApiEndpoint.HallRent]: {
     url: (id?: number) => `/hallrents${id ? `/${id}` : ""}`,
+  },
+  [ApiEndpoint.HallRentHallView]: {
+    url: (id?: number) => `/hallrents/${id}/pdf-hallview`,
+  },
+  [ApiEndpoint.HallRentPDFInovice]: {
+    url: (id?: number) => `/hallrents/${id}/pdf-invoice`,
   },
   [ApiEndpoint.Hall]: {
     url: (id?: number) => `/halls${id ? `/${id}` : ""}`,

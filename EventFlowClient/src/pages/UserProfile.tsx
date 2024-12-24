@@ -28,7 +28,7 @@ const UserProfile = () => {
   };
 
   return info[0] ? (
-    <div className="flex px-20 w-full">
+    <div className="flex px-14 w-full">
       <div className="flex flex-row justify-center items-start gap-8 py-16 w-full">
         <div className="flex flex-col justify-center items-center gap-4 min-w-[210px]">
           <ProfilePhoto

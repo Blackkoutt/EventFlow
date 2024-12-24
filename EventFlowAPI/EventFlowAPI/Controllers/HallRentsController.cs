@@ -233,7 +233,7 @@ namespace EventFlowAPI.Controllers
         }
 
 
-        [Authorize(Roles = nameof(Roles.Admin))]
+        [Authorize]
         [HttpDelete("{id:int}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
