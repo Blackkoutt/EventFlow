@@ -86,7 +86,7 @@ const UserEventPasses = () => {
 
   const actionsTemplate = (rowData: EventPass, options: ColumnBodyOptions) => {
     return (
-      <div className="flex flex-row justify-center items-center gap-3">
+      <div className="flex flex-row justify-start items-start gap-3">
         {rowData.eventPassStatus === Status.Active && (
           <TableActionButton
             icon={faClock}

@@ -61,7 +61,7 @@ const UserReservations = () => {
 
   const actionsTemplate = (rowData: Reservation, options: ColumnBodyOptions) => {
     return (
-      <div className="flex flex-row justify-center items-center gap-3">
+      <div className="flex flex-row justify-start items-start gap-3">
         <TableActionButton
           icon={faInfoCircle}
           buttonColor="#f97316"

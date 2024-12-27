@@ -18,6 +18,7 @@ import {
 import DownloadHallRentDialog from "../../components/profile/hallrents/DownloadHallRentDialog";
 import DetailsHallRentDialog from "../../components/profile/hallrents/DetailsHallRentDialog";
 import CancelHallRentDialog from "../../components/profile/hallrents/CancelHallRentDialog";
+import ModifyHallDialog from "../../components/profile/hallrents/ModifyHallDialog";
 
 const UserHallRents = () => {
   const { data: hallRents, get: getHallRents } = useApi<HallRent>(ApiEndpoint.HallRent);
@@ -25,36 +26,45 @@ const UserHallRents = () => {
   const downloadHallRentDialog = useRef<HTMLDialogElement>(null);
   const detailsHallRentDialog = useRef<HTMLDialogElement>(null);
   const cancelHallRentDialog = useRef<HTMLDialogElement>(null);
+  const modifyHallDialog = useRef<HTMLDialogElement>(null);
 
   const [hallRentToDownload, setHallRentToDownload] = useState<HallRent | undefined>(undefined);
   const [hallRentToDetails, setHallRentToDetails] = useState<HallRent | undefined>(undefined);
   const [hallRentToCancel, setHallRentToCancel] = useState<HallRent | undefined>(undefined);
+  const [hallRentToModifyHall, setHallRentToModifyHall] = useState<HallRent | undefined>(undefined);
 
   useEffect(() => {
     getHallRents({ id: undefined, queryParams: undefined });
   }, []);
 
   useEffect(() => {
-    if (hallRentToDownload != undefined) {
+    if (hallRentToDownload !== undefined) {
       downloadHallRentDialog.current?.showModal();
     }
   }, [hallRentToDownload]);
 
   useEffect(() => {
-    if (hallRentToCancel != undefined) {
+    if (hallRentToCancel !== undefined) {
       cancelHallRentDialog.current?.showModal();
     }
   }, [hallRentToCancel]);
 
   useEffect(() => {
-    if (hallRentToDetails != undefined) {
+    if (hallRentToDetails !== undefined) {
       detailsHallRentDialog.current?.showModal();
     }
   }, [hallRentToDetails]);
 
+  useEffect(() => {
+    console.log(hallRentToModifyHall);
+    if (hallRentToModifyHall !== undefined) {
+      modifyHallDialog.current?.showModal();
+    }
+  }, [hallRentToModifyHall]);
+
   const actionsTemplate = (rowData: HallRent, options: ColumnBodyOptions) => {
     return (
-      <div className="flex flex-row justify-center items-center gap-3">
+      <div className="flex flex-row justify-start items-start gap-3">
         {rowData.hallRentStatus === Status.Active && (
           <TableActionButton
             icon={faPenToSquare}
@@ -62,8 +72,8 @@ const UserHallRents = () => {
             text="Modyfikuj salę"
             width={160}
             onClick={() => {
-              // setEventPassToRenew(rowData);
-              // renewEventPassDialog.current?.showModal();
+              setHallRentToModifyHall(rowData);
+              modifyHallDialog.current?.showModal();
             }}
           />
         )}
@@ -117,6 +127,12 @@ const UserHallRents = () => {
         hallRent={hallRentToDownload}
         onDialogClose={() => downloadHallRentDialog.current?.close()}
       />
+
+      <ModifyHallDialog
+        ref={modifyHallDialog}
+        hallId={hallRentToModifyHall?.hall?.id}
+        onDialogClose={() => modifyHallDialog.current?.close()}
+      ></ModifyHallDialog>
 
       <CancelHallRentDialog
         ref={cancelHallRentDialog}
