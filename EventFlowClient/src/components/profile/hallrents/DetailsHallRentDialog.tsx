@@ -24,7 +24,8 @@ const DetailsHallRentDialog = forwardRef<HTMLDialogElement, DetailsHallRentDialo
 
     useEffect(() => {
       getHallWithDetails({ id: hallRent?.hall?.id, queryParams: undefined });
-    }, []);
+    }, [hallRent]);
+    //console.log(hallWidthDetails);
 
     return (
       <div>

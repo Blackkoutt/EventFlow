@@ -24,6 +24,9 @@ async function Get<TEntity>(
     if (isBlob) {
       response = await api.get<TEntity>(url + queryString, {
         withCredentials: true,
+      });
+      response = await api.get<TEntity>(url + queryString, {
+        withCredentials: true,
         responseType: "blob",
       });
     } else {
@@ -31,7 +34,6 @@ async function Get<TEntity>(
         withCredentials: true,
       });
     }
-
     const code = response.status;
     const data = response.data;
     return [data, code];

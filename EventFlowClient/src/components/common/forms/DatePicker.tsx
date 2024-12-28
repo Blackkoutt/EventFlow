@@ -8,10 +8,11 @@ export interface DatePickerProps extends React.InputHTMLAttributes<HTMLInputElem
   label: string;
   name: string;
   error: FieldError | undefined;
+  errorHeight?: number;
 }
 
 const DatePicker = React.forwardRef<HTMLInputElement, DatePickerProps>(
-  ({ label, name, error, type = "text", ...props }, ref) => {
+  ({ label, name, error, errorHeight, type = "text", ...props }, ref) => {
     const [isOpen, setIsOpen] = useState(false);
     const [selectedDate, setSelectedDate] = useState<Date | null>(null);
     const [currentMonth, setCurrentMonth] = useState(new Date());
@@ -171,7 +172,9 @@ const DatePicker = React.forwardRef<HTMLInputElement, DatePickerProps>(
             )}
           </div>
         </div>
-        {error && <div className="text-red-500">{error.message}</div>}
+        <div style={{ height: errorHeight !== undefined ? `${errorHeight}px` : "auto" }}>
+          {error && <div className="text-red-500 text-[14.5px]">{error.message}</div>}
+        </div>
       </div>
     );
   }

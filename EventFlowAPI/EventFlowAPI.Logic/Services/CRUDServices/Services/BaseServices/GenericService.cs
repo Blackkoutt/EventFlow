@@ -193,7 +193,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services.BaseServices
             if(entity is ISoftDeleteable deleteableEntity && entity is IDateableEntity dateableEntity)
             {
                 if (!deleteableEntity.IsDeleted && dateableEntity.EndDate > DateTime.Now) return Status.Active;
-                else if (deleteableEntity.IsDeleted && !(dateableEntity.EndDate > DateTime.Now)) return Status.Expired;
+                else if (!deleteableEntity.IsDeleted && dateableEntity.EndDate < DateTime.Now) return Status.Expired;
                 else if (deleteableEntity.IsDeleted) return Status.Canceled;
             }
             return Status.Unknown;

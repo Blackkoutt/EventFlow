@@ -4,33 +4,38 @@ import { faCircleXmark } from "@fortawesome/free-solid-svg-icons";
 
 interface DialogProps {
   children?: React.ReactNode;
+  minHeight?: number;
+  maxHeight?: number;
 }
 
-const Dialog = forwardRef<HTMLDialogElement, DialogProps>(({ children }: DialogProps, ref) => {
-  const dialogRef = useRef<HTMLDialogElement | null>(null);
-  return (
-    <dialog
-      ref={(node) => {
-        dialogRef.current = node;
-        if (typeof ref === "function") {
-          ref(node);
-        } else if (ref) {
-          ref.current = node;
-        }
-      }}
-      className="rounded-xl p-7 relative overflow-visible"
-    >
-      <FontAwesomeIcon
-        icon={faCircleXmark}
-        className="absolute -right-3 -top-3 hover:cursor-pointer hover:opacity-95 bg-white rounded-full"
-        style={{
-          width: "35px",
-          height: "35px",
+const Dialog = forwardRef<HTMLDialogElement, DialogProps>(
+  ({ children, minHeight, maxHeight }: DialogProps, ref) => {
+    const dialogRef = useRef<HTMLDialogElement | null>(null);
+    return (
+      <dialog
+        ref={(node) => {
+          dialogRef.current = node;
+          if (typeof ref === "function") {
+            ref(node);
+          } else if (ref) {
+            ref.current = node;
+          }
         }}
-        onClick={() => dialogRef.current?.close()}
-      />
-      {children}
-    </dialog>
-  );
-});
+        style={{ minHeight: minHeight, maxHeight: maxHeight }}
+        className="rounded-xl p-7 relative overflow-visible mt-5"
+      >
+        <FontAwesomeIcon
+          icon={faCircleXmark}
+          className="absolute -right-3 -top-3 hover:cursor-pointer hover:opacity-95 bg-white rounded-full"
+          style={{
+            width: "35px",
+            height: "35px",
+          }}
+          onClick={() => dialogRef.current?.close()}
+        />
+        {children}
+      </dialog>
+    );
+  }
+);
 export default Dialog;

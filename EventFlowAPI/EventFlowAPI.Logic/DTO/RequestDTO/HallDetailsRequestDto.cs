@@ -23,10 +23,10 @@ namespace EventFlowAPI.Logic.DTO.RequestDto
         public float? StageWidth { get; set; }
 
         // calculated in frontend based on active seats
-        [Required(ErrorMessage = "Ilość rzędów miejsc w sali jest wymagana.")]
+        /*[Required(ErrorMessage = "Ilość rzędów miejsc w sali jest wymagana.")]
         [Range(1, 20, ErrorMessage = "Ilość rzędów miejsc w sali nie może być mniejsza niż 1 lub większa niż 20.")]
         [HallRowsValidator]
-        public int NumberOfSeatsRows { get; set; }
+        public int NumberOfSeatsRows { get; set; }*/
 
         // calculated in frontend based on legnth and width
         [Required(ErrorMessage = "Ilość rzędów miejsc w sali jest wymagana.")]
@@ -34,10 +34,10 @@ namespace EventFlowAPI.Logic.DTO.RequestDto
         public int MaxNumberOfSeatsRows { get; set; }
 
         // calculated in frontend based on active seats
-        [Required(ErrorMessage = "Ilość kolumn miejsc w sali jest wymagana.")]
+        /*[Required(ErrorMessage = "Ilość kolumn miejsc w sali jest wymagana.")]
         [Range(1, 20, ErrorMessage = "Ilość kolumn miejsc w sali nie może być mniejsza niż 1 lub większa niż 20.")]
         [HallColumnsValidator]
-        public int NumberOfSeatsColumns { get; set; }
+        public int NumberOfSeatsColumns { get; set; }*/
 
         // calculated in frontend based on legnth and width
         [Required(ErrorMessage = "Ilość kolumn miejsc w sali jest wymagana.")]

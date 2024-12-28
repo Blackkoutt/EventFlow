@@ -34,7 +34,7 @@ const StatusBody = ({
       break;
     case Status.Expired:
       text = expiredStatusText;
-      color = "#06b6d4";
+      color = "#f97316";
       icon = faClock;
       break;
     case Status.Unknown:

@@ -55,6 +55,9 @@ export const ApiUrlConfig = {
   [ApiEndpoint.HallRent]: {
     url: (id?: number) => `/hallrents${id ? `/${id}` : ""}`,
   },
+  [ApiEndpoint.HallRentUpdateHall]: {
+    url: (id?: number) => `/hallrents/${id}/hall`,
+  },
   [ApiEndpoint.HallRentHallView]: {
     url: (id?: number) => `/hallrents/${id}/pdf-hallview`,
   },

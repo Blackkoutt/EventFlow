@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace EventFlowAPI.Logic.DTO.Validators
 {
-    public class HallColumnsValidator : HallAbstractValidator
+    /*public class HallColumnsValidator : HallAbstractValidator
     {
         protected sealed override ValidationResult? ValidationRule(HallDetailsRequestDto hallObj)
         {
@@ -14,5 +14,5 @@ namespace EventFlowAPI.Logic.DTO.Validators
             }
             return ValidationResult.Success;
         }
-    }
+    }*/
 }

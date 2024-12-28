@@ -6,6 +6,7 @@ interface LabelTextProps {
   textWidth?: number;
   gap?: number;
   text?: string | number;
+  isTextLeft?: boolean;
 }
 
 const LabelText = ({
@@ -15,6 +16,7 @@ const LabelText = ({
   labelWidth,
   textWidth,
   gap = 16,
+  isTextLeft = false,
   text,
 }: LabelTextProps) => {
   return (
@@ -28,7 +30,9 @@ const LabelText = ({
           fontSize: `${fontSize}px`,
           width: labelWidth !== undefined ? `${labelWidth}px` : undefined,
         }}
-        className="font-bold text-end text-textPrimary hover:cursor-default"
+        className={`font-bold ${
+          isTextLeft ? "text-left" : "text-end"
+        } text-textPrimary hover:cursor-default`}
       >
         {label}
       </p>
@@ -36,7 +40,7 @@ const LabelText = ({
         style={{ fontSize: `${fontSize}px`, width: `${textWidth}px` }}
         className="text-textPrimary hover:cursor-default"
       >
-        {text !== undefined ? text : "Brak danych"}
+        {text != undefined || text != null ? text : "Brak danych"}
       </p>
     </div>
   );

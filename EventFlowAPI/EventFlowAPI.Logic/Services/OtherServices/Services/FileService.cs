@@ -303,12 +303,15 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
             else
                 fileName = string.Format(fileNameTemplate, hall.Id);
 
+            hall.HallViewFileName = fileName;
+
             var pdfBlobResult = await _blobService.CreateBlob(
                                        fileName: fileName,
                                        blobContainer: BlobContainer.HallViewsPDF,
                                        contentType: ContentType.PDF,
                                        data: hallViewPDFBitmap,
                                        isUpdate: isUpdate);
+
             if (!pdfBlobResult.IsSuccessful)
                 return Result<string>.Failure(pdfBlobResult.Error);
 

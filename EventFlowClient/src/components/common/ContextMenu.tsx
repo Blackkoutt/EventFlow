@@ -6,7 +6,7 @@ interface ContextMenuProps {
     action: (selectedSeatNr?: number) => void;
   }[];
   position: {
-    elementNr: number;
+    x: number;
     y: number;
   };
   selectedSeatNr?: number;
@@ -32,25 +32,23 @@ const ContextMenu: React.FC<ContextMenuProps> = ({ items, position, selectedSeat
   return (
     <div
       ref={menuRef}
+      className="absolute bg-white"
       style={{
-        position: "absolute",
         top: position.y,
-        left: `calc(70px + ${(position.elementNr - 1) % 10} * 52px)`,
-        backgroundColor: "white",
+        left: position.x,
         border: "1px solid #ccc",
         boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.2)",
         zIndex: 1000,
       }}
     >
-      <ul style={{ margin: 0, padding: 0, listStyleType: "none" }}>
+      <ul className="m-0 p-0 list-none">
         {items.map((item, index) => (
           <li
             key={index}
             style={{
-              padding: "8px 12px",
-              cursor: "pointer",
               borderBottom: index !== items.length - 1 ? "1px solid #eee" : "none",
             }}
+            className="px-3 py-2 rounded-md hover:cursor-pointer hover:bg-primaryPurple hover:text-white"
             onClick={() => {
               console.log("here");
               item.action(selectedSeatNr);

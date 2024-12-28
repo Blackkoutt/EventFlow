@@ -11,6 +11,8 @@ import { faCheck, faInfoCircle, faWarning, faXmark } from "@fortawesome/free-sol
 import LabelText from "../../common/LabelText";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { toast } from "react-toastify";
+import { MessageType } from "../../../helpers/enums/MessageTypeEnum";
+import MessageText from "../../common/MessageText";
 
 interface CancelHallRentDialogProps {
   hallRent?: HallRent;
@@ -126,17 +128,12 @@ const CancelHallRentDialog = forwardRef<HTMLDialogElement, CancelHallRentDialogP
                 </div>
               </div>
               <div className="flex flex-col justify-center items-center gap-2">
-                <p className="text-[#0ea5e9]">
-                  <span>
-                    <FontAwesomeIcon
-                      icon={faInfoCircle}
-                      style={{ color: "#0ea5e9", fontSize: "16px" }}
-                    />
-                  </span>
-                  &nbsp; Po anulowaniu rezerwacji sali otrzymasz wiadomość email z potwierdzeniem
-                  jej anulowania, a środki wysokości {hallRent.paymentAmount} zł zostaną zwrócone na
-                  twoje konto w przeciągu kilku następnych dni roboczych.
-                </p>
+                <MessageText
+                  messageType={MessageType.Info}
+                  text={`Po anulowaniu rezerwacji sali otrzymasz wiadomość email z potwierdzeniem
+                  jej anulowania, a środki wysokości ${hallRent.paymentAmount} zł zostaną zwrócone na
+                  twoje konto w przeciągu kilku następnych dni roboczych.`}
+                />
               </div>
               <div className="flex flex-row justify-center items-center gap-2">
                 <Button

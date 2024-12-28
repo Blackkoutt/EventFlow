@@ -7,7 +7,7 @@ export const userRegisterSchema = z
       .string()
       .min(2, { message: "Imię powinno zawierać od 2 do 40 znaków." })
       .max(40, { message: "Imię powinno zawierać od 2 do 40 znaków." })
-      .regex(/^[A-ZĄĆĘŁŃÓŚŹŻ][a-ząćęłńóśźż]*$/, {
+      .regex(/^[A-ZÀ-Ź][a-zà-ÿąćęłńóśźż]*([ '-][A-ZÀ-Ź]?[a-zà-ÿąćęłńóśźż]*)*$/, {
         message: "Imię powinno zawierać tylko litery i zaczynać się wielką literą.",
       }),
 
@@ -15,7 +15,7 @@ export const userRegisterSchema = z
       .string()
       .min(2, { message: "Nazwisko powinno zawierać od 2 do 40 znaków." })
       .max(40, { message: "Nazwisko powinno zawierać od 2 do 40 znaków." })
-      .regex(/^[A-ZĄĆĘŁŃÓŚŹŻ][a-ząćęłńóśźż]*$/, {
+      .regex(/^[A-ZÀ-Ź][a-zà-ÿąćęłńóśźż]*([ '-][A-ZÀ-Źa-zà-ÿąćęłńóśźż]*)*$/, {
         message: "Nazwisko powinno zawierać tylko litery i zaczynać się wielką literą.",
       }),
 

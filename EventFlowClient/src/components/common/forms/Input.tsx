@@ -62,6 +62,23 @@ const Input = ({
     input.value = input.value.replace(/[^0-9\s\+\-\(\)]/g, "");
   };
 
+  const validateEmail = (e: FormEvent<HTMLInputElement>) => {
+    const input = e.target as HTMLInputElement;
+
+    // remove all not allowed chars
+    input.value = input.value.replace(/[^a-zA-Z0-9à-ÿÀ-ßąćęłńóśźżĄĆĘŁŃÓŚŹŻ._@-]/g, "");
+
+    // remove " " "." "'" "-" from start
+    input.value = input.value.replace(/^[ .'-]+/, "");
+
+    // remove repetition of values ( '..', '--', '@@')
+    input.value = input.value.replace(/([. '-@])\1+/g, "$1");
+
+    // only one @
+    const atCount = (input.value.match(/@/g) || []).length;
+    if (atCount > 1) input.value = input.value.replace(/@([^@]*)$/, "");
+  };
+
   const zipCodeOnInput = (e: FormEvent<HTMLInputElement>) => {
     const input = e.target as HTMLInputElement;
     let inputValue = input.value.replace(/\D/g, "");
@@ -139,6 +156,9 @@ const Input = ({
                   break;
                 case "tel":
                   phoneNumberOnInput(e);
+                  break;
+                case "email":
+                  validateEmail(e);
                   break;
                 case "number":
                   if (onlyInt) numberOnlyIntOnInput(e);

@@ -120,15 +120,17 @@ const LoginPage = () => {
           </div>
           <FormProvider {...methods}>
             <form
-              className="flex flex-col justify-center items-center gap-6 w-full"
+              className="flex flex-col justify-center items-center gap-2 w-full"
               onSubmit={handleSubmit(onSubmit)}
             >
               <Input
                 icon={faEnvelope}
                 label="Email"
-                type="text"
+                type="email"
+                maxLength={255}
                 name="email"
                 error={errors.email}
+                errorHeight={15}
               />
 
               <Input
@@ -137,9 +139,10 @@ const LoginPage = () => {
                 type="password"
                 name="password"
                 error={errors.password}
+                errorHeight={15}
               />
 
-              <div className="flex flex-row justify-between items-center w-full">
+              <div className="flex flex-row justify-between items-center w-full pb-4">
                 <Checkbox
                   color="#7B2CBF"
                   textColor="#2F2F2F"
@@ -152,7 +155,7 @@ const LoginPage = () => {
               </div>
               <FormButton isSubmitting={isSubmitting} text="Zaloguj się" />
               {/* {errors.root && <div className="text-red-500">{errors.email.message}</div>} */}
-              <div className="flex flex-row justify-center items-center gap-1">
+              <div className="flex flex-row justify-center items-center gap-1 pt-4">
                 <p className="text-base text-[#2f2f2f]">Nie masz jeszcze konta? </p>
                 <Link to="/sign-up" className="text-[#6358DC] text-base">
                   Zarejestruj się

@@ -297,17 +297,15 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
             for (int gridRow = 1; gridRow <= hall.HallDetails!.MaxNumberOfSeatsRows; gridRow++)
             {
                 _hallSeatsConfig.SetSeatCursorXDefault();
-                if (seatsInHall.Any(s => s.Key.GridRow == gridRow))
+                DrawSeatRowNumber(canvas);
+                /*if (seatsInHall.Any(s => s.Key.GridRow == gridRow))
                 {
-                    DrawSeatRowNumber(canvas);
-                }
+
+                }*/
 
                 for (int gridCol = 1; gridCol <= hall.HallDetails.MaxNumberOfSeatsColumns; gridCol++)
                 {
-                    if (gridRow == 1 && seatsInHall.Any(s => s.Key.GridColumn == gridCol))
-                    {
-                        DrawSeatColNumber(canvas);
-                    }
+                    if (gridRow == 1) DrawSeatColNumber(canvas);
 
                     var seat = seatsInHall.FirstOrDefault(s => s.Key.GridRow == gridRow && s.Key.GridColumn == gridCol).Value;
 

@@ -26,17 +26,17 @@ namespace EventFlowAPI.DB.Entities
             Column(TypeName = "NUMERIC(4,2)")]
         public float? StageWidth { get; set; }
 
-        [Range(0, 99),
+       /* [Range(0, 99),
          Column(TypeName = "NUMERIC(2)")]
-        public int NumberOfSeatsRows { get; set; }
+        public int NumberOfSeatsRows { get; set; }*/
 
         [Range(0, 99),
          Column(TypeName = "NUMERIC(2)")]
         public int MaxNumberOfSeatsRows { get; set; }
 
-        [Range(0, 99),
+      /*  [Range(0, 99),
          Column(TypeName = "NUMERIC(2)")]
-        public int NumberOfSeatsColumns { get; set; }
+        public int NumberOfSeatsColumns { get; set; }*/
 
         [Range(0, 99),
          Column(TypeName = "NUMERIC(2)")]

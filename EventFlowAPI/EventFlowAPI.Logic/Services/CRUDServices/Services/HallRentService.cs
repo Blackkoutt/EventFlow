@@ -198,14 +198,20 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
                 var hallViewFileNameResult = await _fileService.CreateHallViewPDF(hallRent.Hall, hallRent, null, isUpdate: true);
                 if (!hallViewFileNameResult.IsSuccessful)
                     return hallViewFileNameResult.Error;
+                var hallViewFileName = hallViewFileNameResult.Value;
 
                 var hallRentFileNameResult = await _fileService.CreateHallRentPDF(hallRent, isUpdate: true);
                 if (!hallRentFileNameResult.IsSuccessful)
                     return hallRentFileNameResult.Error;
                 var hallRentPDFFile = hallRentFileNameResult.Value.PDFFile;
 
+                hallRent.Hall.HallViewFileName = hallViewFileName;
+                hallRent.HallRentPDFName = hallRentFileNameResult.Value.FileName;
+                _unitOfWork.GetRepository<HallRent>().Update(hallRent);
+
                 userUpdatedRentPDFs.Add((hallRent, hallRentPDFFile));
             }
+            await _unitOfWork.SaveChangesAsync();
 
             await _emailSender.SendUpdatedHallRentsAsync(userUpdatedRentPDFs, oldHall);
 

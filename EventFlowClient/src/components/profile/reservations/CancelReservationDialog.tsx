@@ -11,6 +11,8 @@ import { faCheck, faInfoCircle, faWarning, faXmark } from "@fortawesome/free-sol
 import LabelText from "../../common/LabelText";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { toast } from "react-toastify";
+import MessageText from "../../common/MessageText";
+import { MessageType } from "../../../helpers/enums/MessageTypeEnum";
 
 interface CancelReservationDialogProps {
   reservation?: Reservation;
@@ -146,25 +148,19 @@ const CancelReservationDialog = forwardRef<HTMLDialogElement, CancelReservationD
               </div>
               <div className="flex flex-col justify-center items-center gap-2">
                 {reservation.ticket?.festival && (
-                  <p className="text-red-500 font-semibold">
-                    <span>
-                      <FontAwesomeIcon icon={faWarning}></FontAwesomeIcon>
-                    </span>
-                    &nbsp; Anulowanie tej rezerwacji jest równoznaczne z anulowaniem także
-                    wszystkich rezerwacji dotyczących festiwalu {reservation.ticket.festival.name}.
-                  </p>
+                  <MessageText
+                    messageType={MessageType.Error}
+                    isSemibold={true}
+                    text={`Anulowanie tej rezerwacji jest równoznaczne z anulowaniem także
+                    wszystkich rezerwacji dotyczących festiwalu ${reservation.ticket.festival.name}.`}
+                  />
                 )}
-                <p className="text-[#0ea5e9]">
-                  <span>
-                    <FontAwesomeIcon
-                      icon={faInfoCircle}
-                      style={{ color: "#0ea5e9", fontSize: "16px" }}
-                    />
-                  </span>
-                  &nbsp; Po anulowaniu rezerwacji otrzymasz wiadomość email z potwierdzeniem jej
-                  anulowania, a środki wysokości {reservation.paymentAmount} zł zostaną zwrócone na
-                  twoje konto w przeciągu kilku następnych dni roboczych.
-                </p>
+                <MessageText
+                  messageType={MessageType.Info}
+                  text={`Po anulowaniu rezerwacji otrzymasz wiadomość email z potwierdzeniem jej
+                  anulowania, a środki wysokości ${reservation.paymentAmount} zł zostaną zwrócone na
+                  twoje konto w przeciągu kilku następnych dni roboczych.`}
+                />
               </div>
               <div className="flex flex-row justify-center items-center gap-2">
                 <Button

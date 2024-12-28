@@ -49,6 +49,12 @@ const ChangeAdditionalInfoDialog = forwardRef<HTMLDialogElement, ChangeAdditiona
 
       input.value = input.value.replace(/[^a-zA-Zà-ÿÀ-ßąćęłńóśźżĄĆĘŁŃÓŚŹŻ' -]/g, "");
 
+      // remove on start
+      input.value = input.value.replace(/^[ '’-]+/, "");
+
+      // remove repetitions
+      input.value = input.value.replace(/([ '’-])\1+/g, "$1");
+
       if (input.value && /^[a-zà-ÿÀ-ßąćęłńóśźżĄĆĘŁŃÓŚŹŻ]/i.test(input.value)) {
         input.value = input.value.charAt(0).toUpperCase() + input.value.slice(1);
       }
@@ -58,6 +64,13 @@ const ChangeAdditionalInfoDialog = forwardRef<HTMLDialogElement, ChangeAdditiona
       const input = e.target as HTMLInputElement;
 
       input.value = input.value.replace(/[^A-Za-ząćęłńóśźżĄĆĘŁŃÓŚŹŻ0-9' -]/g, "");
+
+      // remove on start
+      input.value = input.value.replace(/^[ '’-]+/, "");
+
+      // remove repetitions
+      input.value = input.value.replace(/([ '’-])\1+/g, "$1");
+
       if (input.value && /^[a-z0-9]/i.test(input.value)) {
         input.value = input.value.charAt(0).toUpperCase() + input.value.slice(1);
       }

@@ -10,9 +10,9 @@ namespace EventFlowAPI.Logic.DTO.ResponseDto
         public float? StageLength { get; set; }
         public float? StageWidth { get; set; }
         public decimal? StageArea { get; set; }
-        public int NumberOfSeatsRows { get; set; }
+      //  public int NumberOfSeatsRows { get; set; }
         public int MaxNumberOfSeatsRows { get; set; }
-        public int NumberOfSeatsColumns { get; set; }
+       // public int NumberOfSeatsColumns { get; set; }
         public int MaxNumberOfSeatsColumns { get; set; }
         public int NumberOfSeats { get; set; }
         public int MaxNumberOfSeats { get; set; }

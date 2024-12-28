@@ -16,7 +16,7 @@ import FormButton from "../components/common/forms/FormButton";
 import { ExternalLoginProvider } from "../helpers/enums/ExternalLoginProviders";
 import useApi from "../hooks/useApi";
 import { ApiEndpoint } from "../helpers/enums/ApiEndpointEnum";
-import { useEffect } from "react";
+import { FormEvent, useEffect } from "react";
 import { HTTPStatusCode } from "../helpers/enums/HTTPStatusCode";
 
 const RegisterPage = () => {
@@ -45,6 +45,21 @@ const RegisterPage = () => {
     await registerUser({ body: data });
   };
 
+  const validateNameOrSurname = (e: FormEvent<HTMLInputElement>) => {
+    const input = e.target as HTMLInputElement;
+
+    input.value = input.value.replace(/[^a-zA-Zà-ÿÀ-ßąćęłńóśźżĄĆĘŁŃÓŚŹŻ' -]/g, "");
+
+    // remove on start
+    input.value = input.value.replace(/^[ '’-]+/, "");
+    // remove repetitions
+    input.value = input.value.replace(/([ '’-])\1+/g, "$1");
+
+    if (input.value && /^[a-zà-ÿÀ-ßąćęłńóśźżĄĆĘŁŃÓŚŹŻ' -]/i.test(input.value)) {
+      input.value = input.value.charAt(0).toUpperCase() + input.value.slice(1);
+    }
+  };
+
   return (
     <div className="flex flex-row justify-center items-start gap-20 py-16 w-full">
       <div className="flex flex-col justify-center items-start translate-y-[100px]">
@@ -63,24 +78,38 @@ const RegisterPage = () => {
         <div className="flex flex-col justify-center items-center gap-6 w-full">
           <FormProvider {...methods}>
             <form
-              className="flex flex-col justify-center items-center gap-6 w-full"
+              className="flex flex-col justify-center items-center gap-[10px] w-full"
               onSubmit={handleSubmit(onSubmit)}
             >
-              <Input icon={faUserCircle} label="Imię" type="text" name="name" error={errors.name} />
+              <Input
+                icon={faUserCircle}
+                label="Imię"
+                onInput={validateNameOrSurname}
+                maxLength={40}
+                type="text"
+                name="name"
+                error={errors.name}
+                errorHeight={15}
+              />
               <Input
                 icon={faUserCircle}
                 label="Nazwisko"
+                onInput={validateNameOrSurname}
                 type="text"
+                maxLength={40}
                 name="surname"
                 error={errors.surname}
+                errorHeight={15}
               />
 
               <Input
                 icon={faEnvelope}
                 label="Email"
                 type="email"
+                maxLength={255}
                 name="email"
                 error={errors.email}
+                errorHeight={15}
               />
 
               <DatePicker
@@ -88,6 +117,7 @@ const RegisterPage = () => {
                 label="Data urodzenia"
                 name="dateOfBirth"
                 error={errors.dateOfBirth}
+                errorHeight={15}
               />
 
               <Input
@@ -96,6 +126,7 @@ const RegisterPage = () => {
                 type="password"
                 name="password"
                 error={errors.password}
+                errorHeight={15}
               />
 
               <Input
@@ -104,6 +135,7 @@ const RegisterPage = () => {
                 type="password"
                 name="confirmPassword"
                 error={errors.confirmPassword}
+                errorHeight={15}
               />
               <FormButton isSubmitting={isSubmitting} text="Zarejestruj się" />
             </form>

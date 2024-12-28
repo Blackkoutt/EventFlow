@@ -21,6 +21,8 @@ const UserReservations = () => {
   const detailsReservationDialog = useRef<HTMLDialogElement>(null);
   const downloadReservationDialog = useRef<HTMLDialogElement>(null);
 
+  console.log(reservations);
+
   const [reservationToCancel, setReservationToCancel] = useState<Reservation | undefined>(
     undefined
   );

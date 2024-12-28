@@ -21,6 +21,8 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod";
 import FormButton from "../../common/forms/FormButton";
 import { PayUPaymentResponse } from "../../../models/response_models/PayUPaymentResponse";
+import MessageText from "../../common/MessageText";
+import { MessageType } from "../../../helpers/enums/MessageTypeEnum";
 
 interface RenewEventPassDialogProps {
   eventPass?: EventPass;
@@ -271,16 +273,11 @@ const RenewEventPassDialog = forwardRef<HTMLDialogElement, RenewEventPassDialogP
                       <div className="bg-[#4c4c4c] h-[1px] w-full"></div>
 
                       <div className="flex flex-col justify-center items-center gap-2">
-                        <p className="text-[#0ea5e9]">
-                          <span>
-                            <FontAwesomeIcon
-                              icon={faInfoCircle}
-                              style={{ color: "#0ea5e9", fontSize: "16px" }}
-                            />
-                          </span>
-                          &nbsp; Po przedłużeniu karnetu otrzymasz wiadomość email z karnetem w
-                          formie pliku PDF wraz z potwierdzeniem płatności.
-                        </p>
+                        <MessageText
+                          messageType={MessageType.Info}
+                          text={`Po przedłużeniu karnetu otrzymasz wiadomość email z karnetem w
+                          formie pliku PDF wraz z potwierdzeniem płatności.`}
+                        />
                       </div>
                       <div className="flex flex-row justify-center items-center gap-2">
                         <Button

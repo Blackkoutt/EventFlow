@@ -17,6 +17,7 @@ export enum ApiEndpoint {
   FAQ,
   Festival,
   HallRent,
+  HallRentUpdateHall,
   HallRentHallView,
   HallRentPDFInovice,
   Hall,
