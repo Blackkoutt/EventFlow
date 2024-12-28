@@ -1,5 +1,4 @@
 import { Outlet } from "react-router-dom";
-import ProfileButton from "../components/buttons/ProfileButton";
 import { isUserInRole, User } from "../models/response_models";
 import { ApiEndpoint } from "../helpers/enums/ApiEndpointEnum";
 import useApi from "../hooks/useApi";
@@ -7,6 +6,7 @@ import { useEffect, useRef, useState } from "react";
 import { Roles } from "../helpers/enums/UserRoleEnum";
 import ProfilePhoto from "../components/profile/ProfilePhoto";
 import ChangePhotoDialog from "../components/profile/ChangePhotoDialog";
+import TabButton from "../components/buttons/TabButton";
 
 const UserProfile = () => {
   const { data: info, get: getInfo } = useApi<User>(ApiEndpoint.UserInfo);
@@ -42,13 +42,13 @@ const UserProfile = () => {
             reloadComponent={reloadPhotoComponent}
           />
           <div className="flex flex-col justify-center items-center gap-4">
-            <ProfileButton text="Informacje ogólne" path="/profile" />
-            <ProfileButton text="Informacje dodatkowe" path="/profile/info" />
+            <TabButton text="Informacje ogólne" path="/profile" />
+            <TabButton text="Informacje dodatkowe" path="/profile/info" />
             {!isUserInRole(info[0], Roles.Admin) && (
               <>
-                <ProfileButton text="Moje rezerwacje" path="/profile/reservations" />
-                <ProfileButton text="Moje karnety" path="/profile/eventpasses" />
-                <ProfileButton text="Moje rezerwacje sal" path="/profile/hallrents" />
+                <TabButton text="Moje rezerwacje" path="/profile/reservations" />
+                <TabButton text="Moje karnety" path="/profile/eventpasses" />
+                <TabButton text="Moje rezerwacje sal" path="/profile/hallrents" />
               </>
             )}
           </div>

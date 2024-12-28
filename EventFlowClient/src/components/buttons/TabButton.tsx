@@ -1,11 +1,12 @@
 import { useLocation, useNavigate } from "react-router-dom";
 
-interface ProfileButtonProps {
+interface TabButtonProps {
   path: string;
   text: string;
+  width?: number;
 }
 
-const ProfileButton = ({ path, text }: ProfileButtonProps) => {
+const TabButton = ({ path, text, width }: TabButtonProps) => {
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -16,10 +17,11 @@ const ProfileButton = ({ path, text }: ProfileButtonProps) => {
       className={`w-full rounded-lg text-base px-4 py-3 ${
         isActive(path) ? "bg-primaryPurple text-white" : "bg-defaultButton"
       }`}
+      style={{ width: width }}
       onClick={() => navigate(path)}
     >
       {text}
     </button>
   );
 };
-export default ProfileButton;
+export default TabButton;

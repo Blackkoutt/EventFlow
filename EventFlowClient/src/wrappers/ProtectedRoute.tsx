@@ -14,7 +14,17 @@ const ProtectedRoute = ({ allowedRoles, children }: ProtectedRouteProps) => {
   }
   if (
     currentUser === null ||
-    (allowedRoles && !currentUser.userRoles.some((role) => allowedRoles.includes(role)))
+    (allowedRoles &&
+      Array.isArray(currentUser.userRoles) &&
+      !currentUser.userRoles.some((role) => allowedRoles.includes(role)))
+  ) {
+    return <AccessDenied />;
+  }
+  if (
+    currentUser === null ||
+    (allowedRoles &&
+      !Array.isArray(currentUser.userRoles) &&
+      !allowedRoles.includes(currentUser.userRoles))
   ) {
     return <AccessDenied />;
   }

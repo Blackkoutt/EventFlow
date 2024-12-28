@@ -22,6 +22,28 @@ import UserAdditionalInfo from "../pages/Profile/UserAdditionalInfo";
 import UserReservations from "../pages/Profile/UserReservations";
 import UserEventPasses from "../pages/Profile/UserEventPasses";
 import UserHallRents from "../pages/Profile/UserHallRents";
+import HomeManagement from "../pages/Management/HomeManagement";
+import AdditionalServicesManagement from "../pages/Management/AdditionalServicesManagement";
+import HallEquipmentsManagement from "../pages/Management/HallEquipmentsManagement";
+import EventCategoriesManagement from "../pages/Management/EventCategoriesManagement";
+import EventPassesManagement from "../pages/Management/EventPassesManagement";
+import EventPassTypesManagement from "../pages/Management/EventPassTypesManagement";
+import FestivalsManagement from "../pages/Management/FestivalsManagement";
+import FaqManagement from "../pages/Management/FaqManagement";
+import HallRentsManagement from "../pages/Management/HallRentsManagement";
+import HallsManagement from "../pages/Management/HallsManagement";
+import HallTypesManagement from "../pages/Management/HallTypesManagement";
+import MediaPatronsManagement from "../pages/Management/MediaPatronsManagement";
+import NewsManagement from "../pages/Management/NewsManagement";
+import OrganizatorsManagement from "../pages/Management/OrganizatorsManagement";
+import PartnersManagement from "../pages/Management/PartnersManagement";
+import PaymentTypesManagement from "../pages/Management/PaymentTypesManagement";
+import ReservationsManagement from "../pages/Management/ReservationsManagement";
+import SeatTypesManagement from "../pages/Management/SeatTypesManagement";
+import SponsorsManagement from "../pages/Management/SponsorsManagement";
+import StatsManagement from "../pages/Management/StatsManagement";
+import TicketTypesManagement from "../pages/Management/TicketTypesManagement";
+import UsersManagement from "../pages/Management/UsersManagement";
 
 export const router = createBrowserRouter([
   {
@@ -134,6 +156,192 @@ export const router = createBrowserRouter([
             <Management />
           </ProtectedRoute>
         ),
+        children: [
+          {
+            path: "/management",
+            element: (
+              <ProtectedRoute allowedRoles={[Roles.Admin]}>
+                <HomeManagement />
+              </ProtectedRoute>
+            ),
+          },
+          {
+            path: "/management/additional-services",
+            element: (
+              <ProtectedRoute allowedRoles={[Roles.Admin]}>
+                <AdditionalServicesManagement />
+              </ProtectedRoute>
+            ),
+          },
+          {
+            path: "/management/hall-equipments",
+            element: (
+              <ProtectedRoute allowedRoles={[Roles.Admin]}>
+                <HallEquipmentsManagement />
+              </ProtectedRoute>
+            ),
+          },
+          {
+            path: "/management/event-categories",
+            element: (
+              <ProtectedRoute allowedRoles={[Roles.Admin]}>
+                <EventCategoriesManagement />
+              </ProtectedRoute>
+            ),
+          },
+          {
+            path: "/management/event-passes",
+            element: (
+              <ProtectedRoute allowedRoles={[Roles.Admin]}>
+                <EventPassesManagement />
+              </ProtectedRoute>
+            ),
+          },
+          {
+            path: "/management/event-pass-types",
+            element: (
+              <ProtectedRoute allowedRoles={[Roles.Admin]}>
+                <EventPassTypesManagement />
+              </ProtectedRoute>
+            ),
+          },
+          {
+            path: "/management/events",
+            element: (
+              <ProtectedRoute allowedRoles={[Roles.Admin]}>
+                <EventPassesManagement />
+              </ProtectedRoute>
+            ),
+          },
+          {
+            path: "/management/festivals",
+            element: (
+              <ProtectedRoute allowedRoles={[Roles.Admin]}>
+                <FestivalsManagement />
+              </ProtectedRoute>
+            ),
+          },
+          {
+            path: "/management/faq",
+            element: (
+              <ProtectedRoute allowedRoles={[Roles.Admin]}>
+                <FaqManagement />
+              </ProtectedRoute>
+            ),
+          },
+          {
+            path: "/management/hall-rents",
+            element: (
+              <ProtectedRoute allowedRoles={[Roles.Admin]}>
+                <HallRentsManagement />
+              </ProtectedRoute>
+            ),
+          },
+          {
+            path: "/management/halls",
+            element: (
+              <ProtectedRoute allowedRoles={[Roles.Admin]}>
+                <HallsManagement />
+              </ProtectedRoute>
+            ),
+          },
+          {
+            path: "/management/hall-types",
+            element: (
+              <ProtectedRoute allowedRoles={[Roles.Admin]}>
+                <HallTypesManagement />
+              </ProtectedRoute>
+            ),
+          },
+          {
+            path: "/management/media-patrons",
+            element: (
+              <ProtectedRoute allowedRoles={[Roles.Admin]}>
+                <MediaPatronsManagement />
+              </ProtectedRoute>
+            ),
+          },
+          {
+            path: "/management/news",
+            element: (
+              <ProtectedRoute allowedRoles={[Roles.Admin]}>
+                <NewsManagement />
+              </ProtectedRoute>
+            ),
+          },
+          {
+            path: "/management/organizators",
+            element: (
+              <ProtectedRoute allowedRoles={[Roles.Admin]}>
+                <OrganizatorsManagement />
+              </ProtectedRoute>
+            ),
+          },
+          {
+            path: "/management/partners",
+            element: (
+              <ProtectedRoute allowedRoles={[Roles.Admin]}>
+                <PartnersManagement />
+              </ProtectedRoute>
+            ),
+          },
+          {
+            path: "/management/payment-types",
+            element: (
+              <ProtectedRoute allowedRoles={[Roles.Admin]}>
+                <PaymentTypesManagement />
+              </ProtectedRoute>
+            ),
+          },
+          {
+            path: "/management/reservations",
+            element: (
+              <ProtectedRoute allowedRoles={[Roles.Admin]}>
+                <ReservationsManagement />
+              </ProtectedRoute>
+            ),
+          },
+          {
+            path: "/management/seat-types",
+            element: (
+              <ProtectedRoute allowedRoles={[Roles.Admin]}>
+                <SeatTypesManagement />
+              </ProtectedRoute>
+            ),
+          },
+          {
+            path: "/management/sponsors",
+            element: (
+              <ProtectedRoute allowedRoles={[Roles.Admin]}>
+                <SponsorsManagement />
+              </ProtectedRoute>
+            ),
+          },
+          {
+            path: "/management/stats",
+            element: (
+              <ProtectedRoute allowedRoles={[Roles.Admin]}>
+                <StatsManagement />
+              </ProtectedRoute>
+            ),
+          },
+          {
+            path: "/management/ticket-types",
+            element: (
+              <ProtectedRoute allowedRoles={[Roles.Admin]}>
+                <TicketTypesManagement />
+              </ProtectedRoute>
+            ),
+          },
+          {
+            path: "/management/users",
+            element: (
+              <ProtectedRoute allowedRoles={[Roles.Admin]}>
+                <UsersManagement />
+              </ProtectedRoute>
+            ),
+          },
+        ],
       },
     ],
   },
