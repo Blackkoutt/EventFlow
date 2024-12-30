@@ -3,9 +3,10 @@ import { AdditionalServices } from "../../models/response_models";
 import { ApiEndpoint } from "../../helpers/enums/ApiEndpointEnum";
 import useApi from "../../hooks/useApi";
 import { useEffect } from "react";
-import { Column, ColumnBodyOptions } from "primereact/column";
-import TableActionButton from "../../components/buttons/TableActionButton";
-import { faInfoCircle, faPenToSquare, faTrash } from "@fortawesome/free-solid-svg-icons";
+import { Column } from "primereact/column";
+import ActionsTemplate from "../../components/tabledata/ActionTemplate";
+import HeaderTemplate from "../../components/tabledata/HeaderTemplate";
+import { useTable } from "../../hooks/useTable";
 
 const AdditionalServicesManagement = () => {
   const { data: additionalServices, get: getAdditionalServices } = useApi<AdditionalServices>(
@@ -19,58 +20,86 @@ const AdditionalServicesManagement = () => {
     console.log(additionalServices);
   }, [additionalServices]);
 
-  const actionsTemplate = (rowData: AdditionalServices, options: ColumnBodyOptions) => {
-    return (
-      <div className="flex flex-row justify-start items-start gap-3">
-        <TableActionButton
-          icon={faPenToSquare}
-          buttonColor="#22c55e"
-          text="Modyfikuj"
-          width={130}
-          onClick={() => {
-            // setHallRentToModifyHall(rowData);
-            // modifyHallDialog.current?.showModal();
-          }}
+  const cols = [
+    {
+      field: "id",
+      header: "ID",
+      sortable: true,
+      body: (rowData: AdditionalServices) => rowData.id,
+    },
+    {
+      field: "name",
+      header: "Nazwa",
+      sortable: true,
+      body: (rowData: AdditionalServices) => rowData.name,
+    },
+    {
+      field: "price",
+      header: "Cena (zł)",
+      sortable: true,
+      body: (rowData: AdditionalServices) => rowData.price,
+    },
+    {
+      header: "Akcja",
+      sortable: false,
+      body: (rowData: AdditionalServices) => (
+        <ActionsTemplate
+          rowData={rowData}
+          onModify={onModify}
+          onDetails={onDetails}
+          onDelete={onDelete}
         />
-        <TableActionButton
-          icon={faInfoCircle}
-          buttonColor="#f97316"
-          text="Szczegóły"
-          onClick={() => {
-            // setHallRentToDetails(rowData);
-            // detailsHallRentDialog.current?.showModal();
-          }}
-        />
-        <TableActionButton
-          icon={faTrash}
-          buttonColor="#ef4444"
-          text="Usuń"
-          width={90}
-          onClick={() => {
-            // setHallRentToCancel(rowData);
-            // cancelHallRentDialog.current?.showModal();
-          }}
-        />
-      </div>
-    );
+      ),
+    },
+  ];
+
+  const { dt, menuElements } = useTable<AdditionalServices[]>(
+    additionalServices,
+    cols,
+    "dodatkowe_usługi"
+  );
+
+  const onModify = (rowData: AdditionalServices) => {
+    console.log("Modify", rowData);
+  };
+  const onDetails = (rowData: AdditionalServices) => {
+    console.log("Details", rowData);
+  };
+  const onDelete = (rowData: AdditionalServices) => {
+    console.log("Delete", rowData);
+  };
+  const onCreate = () => {
+    console.log("Create");
   };
 
   return (
     <div className="max-w-[64vw] self-center">
-      <h2 className="text-center py-6">Dodatkowe usługi</h2>
       <DataTable
+        ref={dt}
         value={additionalServices}
         paginator
         removableSort
+        header={
+          <HeaderTemplate
+            headerText="Dodatkowe usługi"
+            onCreate={onCreate}
+            menuElements={menuElements}
+          />
+        }
         rows={5}
         rowsPerPageOptions={[5, 10, 25, 50]}
         stripedRows
         showGridlines
       >
-        <Column field="id" sortable header="ID" />
-        <Column field="name" sortable header="Nazwa" />
-        <Column field="price" sortable header="Cena (zł)" />
-        <Column header="Akcja" body={actionsTemplate} />
+        {cols.map((col, index) => (
+          <Column
+            key={index}
+            field={col.field}
+            header={col.header}
+            body={(rowData) => col.body(rowData)}
+            sortable={col.sortable}
+          />
+        ))}
       </DataTable>
     </div>
   );

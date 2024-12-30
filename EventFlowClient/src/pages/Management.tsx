@@ -81,7 +81,7 @@ const Management = () => {
           itemTemplate={productTemplate}
         />
       </div>
-      <div className="flex mb-12 flex-col items-start justify-start rounded-lg border-gray-100 border-[2px] bg-white shadow-xl p-3 w-full min-h-[660px]">
+      <div className="flex mb-12 flex-col items-center justify-center rounded-lg border-gray-100 border-[2px] bg-white shadow-xl p-3 w-full min-h-[660px]">
         <Outlet />
       </div>
     </div>
