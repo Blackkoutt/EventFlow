@@ -7,6 +7,7 @@ import { Column } from "primereact/column";
 import ActionsTemplate from "../../components/tabledata/ActionTemplate";
 import HeaderTemplate from "../../components/tabledata/HeaderTemplate";
 import { useTable } from "../../hooks/useTable";
+import DetailsAdditionalServiceDialog from "../../components/management/additionalservices/DetailsAdditionalServiceDialog";
 
 const AdditionalServicesManagement = () => {
   const { data: additionalServices, get: getAdditionalServices } = useApi<AdditionalServices>(
@@ -53,7 +54,19 @@ const AdditionalServicesManagement = () => {
     },
   ];
 
-  const { dt, menuElements } = useTable<AdditionalServices[]>(
+  const {
+    dt,
+    deleteDialog,
+    detailsDialog,
+    modifyDialog,
+    itemToDelete,
+    itemToDetails,
+    itemToModify,
+    setItemToDelete,
+    setItemToDetails,
+    setItemToModify,
+    menuElements,
+  } = useTable<AdditionalServices[], AdditionalServices>(
     additionalServices,
     cols,
     "dodatkowe_usługi"
@@ -62,9 +75,12 @@ const AdditionalServicesManagement = () => {
   const onModify = (rowData: AdditionalServices) => {
     console.log("Modify", rowData);
   };
+
   const onDetails = (rowData: AdditionalServices) => {
-    console.log("Details", rowData);
+    setItemToDetails(rowData);
+    detailsDialog.current?.showModal();
   };
+
   const onDelete = (rowData: AdditionalServices) => {
     console.log("Delete", rowData);
   };
@@ -74,6 +90,8 @@ const AdditionalServicesManagement = () => {
 
   return (
     <div className="max-w-[64vw] self-center">
+      <DetailsAdditionalServiceDialog ref={detailsDialog} additionalService={itemToDetails} />
+
       <DataTable
         ref={dt}
         value={additionalServices}

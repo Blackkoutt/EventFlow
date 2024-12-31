@@ -263,7 +263,7 @@ const ModifyHallDialog = forwardRef<HTMLDialogElement, ModifyHallDialogProps>(
     return (
       <div>
         {hallId !== undefined && (
-          <Dialog ref={ref} minHeight={600} maxHeight={1200}>
+          <Dialog ref={ref} minHeight={600} maxHeight={1200} marginTop={20}>
             <div className="flex flex-row justify-center items-start gap-3">
               <div className="flex flex-col justify-center items-center px-5 pb-2 gap-6">
                 <div className="flex flex-col justify-center items-center gap-2">

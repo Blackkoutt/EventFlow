@@ -5,7 +5,7 @@ interface LabelTextProps {
   labelWidth?: number;
   textWidth?: number;
   gap?: number;
-  text?: string | number;
+  text?: string | number | null;
   isTextLeft?: boolean;
 }
 
