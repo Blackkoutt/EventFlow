@@ -1,6 +1,6 @@
 import { forwardRef, useEffect, useState } from "react";
 import Dialog from "../../common/Dialog";
-import { Equipment } from "../../../models/response_models";
+import { EventPassType } from "../../../models/response_models";
 import Button, { ButtonStyle } from "../../buttons/Button";
 import useApi from "../../../hooks/useApi";
 import { ApiEndpoint } from "../../../helpers/enums/ApiEndpointEnum";
@@ -9,36 +9,38 @@ import { faCheck, faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import FormButton from "../../common/forms/FormButton";
-import Input from "../../common/forms/Input";
 import { toast } from "react-toastify";
-import { EquipmentRequest, EquipmentSchema } from "../../../models/create_schemas/EquipmentSchema";
+import {
+  EventPassTypeRequest,
+  EventPassTypeSchema,
+} from "../../../models/create_schemas/EventPassTypeSchema";
 
-interface CreateEquipmentDialog {
+interface CreateEventPassTypeDialogProps {
   maxWidth?: number;
   onDialogSuccess: () => void;
   onDialogClose: () => void;
 }
 
-const CreateEquipmentDialog = forwardRef<HTMLDialogElement, CreateEquipmentDialog>(
-  ({ maxWidth, onDialogClose, onDialogSuccess }: CreateEquipmentDialog, ref) => {
-    const { statusCode: statusCode, post: postItem } = useApi<Equipment, EquipmentRequest>(
-      ApiEndpoint.Equipment
+const CreateEventPassTypeDialog = forwardRef<HTMLDialogElement, CreateEventPassTypeDialogProps>(
+  ({ maxWidth, onDialogClose, onDialogSuccess }: CreateEventPassTypeDialogProps, ref) => {
+    const { statusCode: statusCode, post: postItem } = useApi<EventPassType, EventPassTypeRequest>(
+      ApiEndpoint.EventPass
     );
 
     const [actionPerformed, setActionPerformed] = useState(false);
 
-    const methods = useForm<EquipmentRequest>({
-      resolver: zodResolver(EquipmentSchema),
+    const methods = useForm<EventPassType>({
+      resolver: zodResolver(EventPassTypeSchema),
     });
     const { handleSubmit, formState } = methods;
     const { errors, isSubmitting } = formState;
 
-    const onSubmit: SubmitHandler<EquipmentRequest> = async (data) => {
+    const onSubmit: SubmitHandler<EventPassType> = async (data) => {
       console.log(data);
       await toast.promise(postItem({ body: data }), {
         pending: "Wykonywanie żądania",
-        success: "Wyposażenie sali zostało pomyślnie utworzone",
-        error: "Wystąpił błąd podczas tworzenia wyposażenia sali",
+        success: "Typ karnetu został pomyślnie utworzony",
+        error: "Wystąpił błąd podczas tworzenia typu karnetu",
       });
       setActionPerformed(true);
     };
@@ -55,7 +57,7 @@ const CreateEquipmentDialog = forwardRef<HTMLDialogElement, CreateEquipmentDialo
     return (
       <Dialog ref={ref} maxWidth={maxWidth} onClose={onDialogClose}>
         <div className="flex flex-col justify-center items-center pt-2 pb-1">
-          <h3 className="text-center font-semibold text-[24px]">Tworzenie wyposażenia sali</h3>
+          <h3 className="text-center font-semibold text-[24px]">Tworzenie typu karnetu</h3>
         </div>
         <FormProvider {...methods}>
           <form
@@ -63,23 +65,32 @@ const CreateEquipmentDialog = forwardRef<HTMLDialogElement, CreateEquipmentDialo
             onSubmit={handleSubmit(onSubmit)}
           >
             <div className="flex flex-col justify-center items-center gap-3 w-full">
-              <Input
-                label="Nazwa"
-                type="text"
-                name="name"
-                maxLength={40}
-                error={errors.name}
-                isFirstLetterUpperCase={true}
-                errorHeight={20}
-              />
-              <Input
-                label="Opis"
-                type="text"
-                name="description"
-                maxLength={200}
-                error={errors.description}
-                errorHeight={20}
-              />
+              {/* <Input
+              label="Nazwa"
+              type="text"
+              name="name"
+              maxLength={40}
+              error={errors.name}
+              isFirstLetterUpperCase={true}
+              errorHeight={20}
+            />
+            <Input
+              label="Cena (zł)"
+              type="number"
+              name="price"
+              min={1}
+              max={9999}
+              error={errors.price}
+              errorHeight={20}
+            />
+            <Input
+              label="Opis"
+              type="text"
+              name="description"
+              maxLength={200}
+              error={errors.description}
+              errorHeight={20}
+            /> */}
             </div>
             <div className="flex flex-row justify-center items-center gap-2">
               <Button
@@ -107,4 +118,4 @@ const CreateEquipmentDialog = forwardRef<HTMLDialogElement, CreateEquipmentDialo
     );
   }
 );
-export default CreateEquipmentDialog;
+export default CreateEventPassTypeDialog;

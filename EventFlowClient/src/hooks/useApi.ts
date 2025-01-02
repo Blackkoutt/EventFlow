@@ -142,6 +142,7 @@ function useApi<TEntity, TPostEntity = undefined, TPutEntity = undefined, TPatch
               toast.error(error);
             });
           }
+          //throw caughtError;
         }
       } finally {
         setLoading(false);

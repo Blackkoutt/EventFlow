@@ -51,6 +51,21 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
         }
 
 
+        public sealed override async Task<Result<EventCategoryResponseDto>> UpdateAsync(int id, UpdateEventCategoryRequestDto? requestDto)
+        {
+            var error = await ValidateEntity(requestDto, id);
+            if (error != Error.None)
+                return Result<EventCategoryResponseDto>.Failure(error);
+
+            var oldEntity = await _repository.GetOneAsync(id);
+            if (oldEntity == null)
+                return Result<EventCategoryResponseDto>.Failure(Error.NotFound);
+
+            await UpdateEntity(oldEntity, requestDto!, isSoftUpdate: oldEntity.Events.Any());
+
+            return Result<EventCategoryResponseDto>.Success();
+        }
+
         protected sealed override async Task<Error> ValidateEntity(IRequestDto? requestDto, int? id = null)
         {
             if (id != null && id < 0)

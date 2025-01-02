@@ -10,6 +10,7 @@ export interface SelectProps extends React.SelectHTMLAttributes<HTMLSelectElemen
   errorHeight?: number;
   isIcons?: boolean;
   maxHeight?: number;
+  isEdit?: boolean;
   optionValues: SelectOption[];
   error: FieldError | Merge<FieldError, FieldErrorsImpl<any>> | undefined;
 }
@@ -30,12 +31,19 @@ const Select = ({
   const [selectedValue, setSelectedValue] = useState("");
   const [isOpen, setIsOpen] = useState(false);
 
+  console.log(getValues(name) === "");
+
   useEffect(() => {
     if (optionValues.length > 0) {
-      setValue(name, optionValues[0].value);
-      setSelectedValue(optionValues[0].option);
+      if (getValues(name) === "") {
+        setValue(name, optionValues[0].value);
+        setSelectedValue(optionValues[0].option);
+      } else {
+        setSelectedValue(getValues(name));
+      }
     }
   }, []);
+
   useEffect(() => {
     if (isFocused) setFocus(name);
   }, [isFocused]);
@@ -86,11 +94,20 @@ const Select = ({
             }`}
             icon={faChevronUp}
           />
-          <div className="translate-x-[2px]">{selectedValue}</div>
+          <div className="translate-x-[2px]">
+            {isIcons ? (
+              <div className="flex flex-row justify-start items-start gap-2 mt-[2px]">
+                <i className={selectedValue}></i>
+                <p>{selectedValue}</p>
+              </div>
+            ) : (
+              selectedValue
+            )}
+          </div>
         </div>
         {isOpen && (
           <div
-            className="select-items overflow-y-scroll grid grid-cols-7 gap-2 absolute left-0 right-0 top-full mt-1 bg-[#efefef] text-black rounded-lg shadow-lg z-10"
+            className="select-items overflow-y-scroll grid grid-cols-5 gap-2 absolute left-0 right-0 top-full mt-1 bg-[#efefef] text-black rounded-lg shadow-lg z-10"
             style={{ maxHeight: maxHeight }}
             onClick={(e) => e.stopPropagation()}
           >

@@ -80,7 +80,7 @@ const CreateEventCategoryDialog = forwardRef<HTMLDialogElement, CreateEventCateg
             className="flex flex-col justify-center items-center gap-3 w-full mt-4"
             onSubmit={handleSubmit(onSubmit)}
           >
-            <div className="flex flex-col justify-center items-center gap-2 w-full">
+            <div className="flex flex-col justify-center items-center gap-2 w-full px-8">
               <Input
                 label="Nazwa"
                 type="text"
@@ -98,7 +98,6 @@ const CreateEventCategoryDialog = forwardRef<HTMLDialogElement, CreateEventCateg
                 error={errors.icon}
                 errorHeight={15}
               />
-              {/* <Input label="Ikona" type="text" name="icon" error={errors.icon} errorHeight={15} /> */}
               <Input
                 label="Kolor"
                 type="color"

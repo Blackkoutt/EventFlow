@@ -40,6 +40,7 @@ const ModifyEventCategoryDialog = forwardRef<HTMLDialogElement, ModifyEventCateg
 
     const [actionPerformed, setActionPerformed] = useState(false);
 
+    console.log(item);
     const methods = useForm<EventCategoryUpdateRequest>({
       resolver: zodResolver(EventCategoryUpdateSchema),
       defaultValues: {
@@ -109,7 +110,7 @@ const ModifyEventCategoryDialog = forwardRef<HTMLDialogElement, ModifyEventCateg
               className="flex flex-col justify-center items-center gap-3 w-full mt-4"
               onSubmit={handleSubmit(onSubmit)}
             >
-              <div className="flex flex-col justify-center items-center gap-3">
+              <div className="flex flex-col justify-center items-center gap-3 w-full px-10">
                 <Input
                   label="Nazwa"
                   type="text"

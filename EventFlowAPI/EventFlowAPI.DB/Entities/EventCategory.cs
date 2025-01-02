@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace EventFlowAPI.DB.Entities
 {
-    public class EventCategory : BaseEntity, INameableEntity, ISoftDeleteable, IUpdateableEntity
+    public class EventCategory : BaseEntity, INameableEntity, ISoftDeleteable, IUpdateableEntity, ISoftUpdateable
     {
 
         [MaxLength(30)]
@@ -15,5 +15,6 @@ namespace EventFlowAPI.DB.Entities
         public bool IsUpdated { get; set; } = false;
         public DateTime? UpdateDate { get; set; }
         public ICollection<Event> Events { get; set; } = [];
+        public bool IsSoftUpdated { get; set; } = false;
     }
 }
