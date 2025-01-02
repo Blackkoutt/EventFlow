@@ -107,6 +107,7 @@ const Input = ({
             flex flex-row justify-start items-center gap-3 ${
               isFocused ? "outline outline-primaryPurple outline-2" : "outline-none"
             }`}
+        style={{ cursor: type === "color" ? "pointer" : "text" }}
         tabIndex={1}
         onFocus={() => setIsFocused(true)}
       >
@@ -147,8 +148,10 @@ const Input = ({
             minLength={minLength}
             pattern={pattern}
             type={(type === "password" && showPassword) || type === "zipCode" ? "text" : type}
-            className="w-full text-[#2F2F2F] font-semibold bg-[#ECECEC]"
-            style={{ outline: "none" }}
+            className={`w-full text-[#2F2F2F] font-semibold bg-[#ECECEC] ${
+              type === "color" ? "h-[30px]" : ""
+            }`}
+            style={{ outline: "none", cursor: type === "color" ? "pointer" : "text" }}
             onInput={(e) => {
               switch (type) {
                 case "zipCode":

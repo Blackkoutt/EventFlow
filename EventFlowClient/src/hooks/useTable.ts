@@ -1,9 +1,10 @@
 import { useState, useEffect, useRef, useMemo } from "react";
-import { DataTable, DataTableValueArray } from "primereact/datatable";
+import { DataTable, DataTableFilterMeta, DataTableValueArray } from "primereact/datatable";
 import { ExportColumns } from "../helpers/FileExporters";
 import FileExporter from "../helpers/FileExporters";
 import { ButtonWithMenuElement } from "../components/buttons/ButtonWithMenu";
 import { faFile, faFileExcel, faFilePdf } from "@fortawesome/free-solid-svg-icons";
+import { FilterMatchMode } from "primereact/api";
 
 export const useTable = <TData extends DataTableValueArray, TEntity>(
   data: TData,
@@ -19,6 +20,11 @@ export const useTable = <TData extends DataTableValueArray, TEntity>(
   const [itemToDelete, setItemToDelete] = useState<TEntity | undefined>(undefined);
   const [itemToDetails, setItemToDetails] = useState<TEntity | undefined>(undefined);
   const [itemToModify, setItemToModify] = useState<TEntity | undefined>(undefined);
+
+  const [filters, setFilters] = useState<DataTableFilterMeta>({
+    global: { value: null, matchMode: FilterMatchMode.CONTAINS },
+  });
+  const [globalFilterValue, setGlobalFilterValue] = useState<string>("");
 
   useEffect(() => {
     if (itemToDelete != undefined) {
@@ -49,6 +55,17 @@ export const useTable = <TData extends DataTableValueArray, TEntity>(
     );
   }, []);
 
+  const onGlobalFilterChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    let _filters = { ...filters };
+
+    // @ts-ignore
+    _filters["global"].value = value;
+
+    setFilters(_filters);
+    setGlobalFilterValue(value);
+  };
+
   const menuElements: ButtonWithMenuElement[] = [
     {
       icon: faFile,
@@ -70,6 +87,45 @@ export const useTable = <TData extends DataTableValueArray, TEntity>(
     },
   ];
 
+  const onDialogClose = () => {
+    deleteDialog.current?.close();
+    modifyDialog.current?.close();
+    detailsDialog.current?.close();
+    createDialog.current?.close();
+    setItemToDelete(undefined);
+    setItemToDetails(undefined);
+    setItemToModify(undefined);
+  };
+
+  const onDelete = (rowData: TEntity) => {
+    setItemToDelete(rowData);
+    deleteDialog.current?.showModal();
+  };
+
+  const onModify = (rowData: TEntity) => {
+    setItemToModify(rowData);
+    modifyDialog.current?.showModal();
+  };
+
+  const onDetails = (rowData: TEntity) => {
+    setItemToDetails(rowData);
+    detailsDialog.current?.showModal();
+  };
+
+  const onCreate = () => {
+    createDialog.current?.showModal();
+  };
+
+  const closeDialogsAndSetValuesToDefault = () => {
+    deleteDialog.current?.close();
+    modifyDialog.current?.close();
+    detailsDialog.current?.close();
+    createDialog.current?.close();
+    setItemToDelete(undefined);
+    setItemToModify(undefined);
+    setItemToDetails(undefined);
+  };
+
   return {
     dt,
     deleteDialog,
@@ -79,9 +135,18 @@ export const useTable = <TData extends DataTableValueArray, TEntity>(
     itemToDelete,
     itemToDetails,
     itemToModify,
-    setItemToDelete,
-    setItemToDetails,
-    setItemToModify,
+    // setItemToDelete,
+    // setItemToDetails,
+    // setItemToModify,
+    filters,
+    globalFilterValue,
+    onGlobalFilterChange,
     menuElements,
+    onDialogClose,
+    onDelete,
+    onModify,
+    onCreate,
+    onDetails,
+    closeDialogsAndSetValuesToDefault,
   };
 };

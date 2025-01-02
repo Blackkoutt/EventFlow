@@ -1,98 +1,159 @@
 import { DataTable } from "primereact/datatable";
-import { AdditionalServices, Equipment, EventCategory } from "../../models/response_models";
+import { AdditionalServices, EventCategory } from "../../models/response_models";
 import { ApiEndpoint } from "../../helpers/enums/ApiEndpointEnum";
 import useApi from "../../hooks/useApi";
 import { useEffect } from "react";
-import { Column, ColumnBodyOptions } from "primereact/column";
-import TableActionButton from "../../components/buttons/TableActionButton";
-import { faInfoCircle, faPenToSquare, faTrash } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Column } from "primereact/column";
+import ActionsTemplate from "../../components/tabledata/ActionTemplate";
+import HeaderTemplate from "../../components/tabledata/HeaderTemplate";
+import { useTable } from "../../hooks/useTable";
+import DetailsAdditionalServiceDialog from "../../components/management/additionalservices/DetailsAdditionalServiceDialog";
+import DeleteAdditionalServiceDialog from "../../components/management/additionalservices/DeleteAdditionalServiceDialog";
+import ModifyAdditonalServiceDialog from "../../components/management/additionalservices/ModifyAdditionalServiceDialog";
+import CreateAdditonalServiceDialog from "../../components/management/additionalservices/CreateAdditionalServiceDialog";
+import CreateEventCategoryDialog from "../../components/management/eventcategories/CreateEventCategoryDialog";
+import DeleteEventCategoryDialog from "../../components/management/eventcategories/DeleteEventCategoryDialog";
+import ModifyEventCategoryDialog from "../../components/management/eventcategories/ModifyCategoryDialog";
 
 const EventCategoriesManagement = () => {
-  const { data: eventCategories, get: getEventCategories } = useApi<EventCategory>(
-    ApiEndpoint.EventCategory
-  );
+  const { data: items, get: getItems } = useApi<EventCategory>(ApiEndpoint.EventCategory);
 
   useEffect(() => {
-    getEventCategories({ id: undefined, queryParams: undefined });
+    getItems({ id: undefined, queryParams: undefined });
   }, []);
-  useEffect(() => {
-    console.log(eventCategories);
-  }, [eventCategories]);
 
-  const actionsTemplate = (rowData: EventCategory, options: ColumnBodyOptions) => {
-    return (
-      <div className="flex flex-row justify-start items-start gap-3">
-        <TableActionButton
-          icon={faPenToSquare}
-          buttonColor="#22c55e"
-          text="Modyfikuj"
-          width={130}
-          onClick={() => {
-            // setHallRentToModifyHall(rowData);
-            // modifyHallDialog.current?.showModal();
-          }}
+  useEffect(() => {
+    console.log(items);
+  }, [items]);
+
+  const cols = [
+    {
+      field: "id",
+      header: "ID",
+      sortable: true,
+      body: (rowData: EventCategory) => rowData.id,
+    },
+    {
+      field: "name",
+      header: "Nazwa",
+      sortable: true,
+      body: (rowData: EventCategory) => rowData.name,
+    },
+    {
+      field: "icon",
+      header: "Ikona",
+      sortable: false,
+      body: (rowData: EventCategory) => (
+        <i className={`${rowData.icon} text-[20px] hover:cursor-pointer`} title={rowData.icon}></i>
+      ),
+    },
+    {
+      field: "color",
+      header: "Kolor",
+      sortable: false,
+      body: (rowData: EventCategory) => (
+        <div
+          className="w-[25px] h-[25px] hover:cursor-pointer"
+          style={{ backgroundColor: rowData.color }}
+          title={rowData.color}
+        ></div>
+      ),
+    },
+    {
+      header: "Akcja",
+      sortable: false,
+      body: (rowData: EventCategory) => (
+        <ActionsTemplate
+          includeDetails={false}
+          rowData={rowData}
+          onModify={onModify}
+          onDelete={onDelete}
         />
-        <TableActionButton
-          icon={faInfoCircle}
-          buttonColor="#f97316"
-          text="Szczegóły"
-          onClick={() => {
-            // setHallRentToDetails(rowData);
-            // detailsHallRentDialog.current?.showModal();
-          }}
-        />
-        <TableActionButton
-          icon={faTrash}
-          buttonColor="#ef4444"
-          text="Usuń"
-          width={90}
-          onClick={() => {
-            // setHallRentToCancel(rowData);
-            // cancelHallRentDialog.current?.showModal();
-          }}
-        />
-      </div>
-    );
+      ),
+    },
+  ];
+
+  const {
+    dt,
+    deleteDialog,
+    createDialog,
+    detailsDialog,
+    modifyDialog,
+    itemToDelete,
+    itemToDetails,
+    itemToModify,
+    filters,
+    globalFilterValue,
+    onGlobalFilterChange,
+    menuElements,
+    onDialogClose,
+    onDelete,
+    onModify,
+    onCreate,
+    closeDialogsAndSetValuesToDefault,
+  } = useTable<EventCategory[], EventCategory>(items, cols, "kategorie_wydarzen");
+
+  const reloadItemsAfterSuccessDialog = () => {
+    closeDialogsAndSetValuesToDefault();
+    getItems({ id: undefined, queryParams: undefined });
   };
 
   return (
     <div className="max-w-[64vw] self-center">
-      <h2 className="text-center py-6">Kategorie wydarzeń</h2>
+      <CreateEventCategoryDialog
+        ref={createDialog}
+        onDialogClose={onDialogClose}
+        onDialogSuccess={reloadItemsAfterSuccessDialog}
+      />
+
+      <DeleteEventCategoryDialog
+        ref={deleteDialog}
+        maxWidth={550}
+        item={itemToDelete}
+        onDialogClose={onDialogClose}
+        onDialogSuccess={reloadItemsAfterSuccessDialog}
+      />
+
+      <ModifyEventCategoryDialog
+        ref={modifyDialog}
+        item={itemToModify}
+        onDialogClose={onDialogClose}
+        onDialogSuccess={reloadItemsAfterSuccessDialog}
+      />
+
       <DataTable
-        value={eventCategories}
+        ref={dt}
+        value={items}
         paginator
         removableSort
+        filters={filters}
+        filterDisplay="row"
+        globalFilterFields={["name"]}
+        emptyMessage="Brak kategorii wydarzeń"
+        header={
+          <HeaderTemplate
+            headerText="Kategorie wydarzeń"
+            onCreate={onCreate}
+            menuElements={menuElements}
+            globalFilterValue={globalFilterValue}
+            onGlobalFilterChange={(e) => onGlobalFilterChange(e)}
+          />
+        }
         rows={5}
+        style={{ minWidth: "62vw" }}
         rowsPerPageOptions={[5, 10, 25, 50]}
         stripedRows
         showGridlines
       >
-        <Column field="id" sortable header="ID" />
-        <Column field="name" sortable header="Nazwa" />
-        <Column
-          field="icon"
-          className="text-center"
-          header="Ikona"
-          body={(rowData) => (
-            <i
-              className={`${rowData.icon} text-[20px] hover:cursor-pointer`}
-              title={rowData.icon}
-            ></i>
-          )}
-        />
-        <Column
-          field="color"
-          header="Kolor"
-          body={(rowData) => (
-            <div
-              className="w-[25px] h-[25px] hover:cursor-pointer"
-              style={{ backgroundColor: rowData.color }}
-              title={rowData.color}
-            ></div>
-          )}
-        />
-        <Column header="Akcja" body={actionsTemplate} />
+        {cols.map((col, index) => (
+          <Column
+            key={index}
+            field={col.field}
+            header={col.header}
+            body={(rowData) => col.body(rowData)}
+            sortable={col.sortable}
+          />
+        ))}
       </DataTable>
     </div>
   );

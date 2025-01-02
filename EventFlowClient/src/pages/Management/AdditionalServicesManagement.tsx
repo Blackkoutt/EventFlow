@@ -11,19 +11,17 @@ import DetailsAdditionalServiceDialog from "../../components/management/addition
 import DeleteAdditionalServiceDialog from "../../components/management/additionalservices/DeleteAdditionalServiceDialog";
 import ModifyAdditonalServiceDialog from "../../components/management/additionalservices/ModifyAdditionalServiceDialog";
 import CreateAdditonalServiceDialog from "../../components/management/additionalservices/CreateAdditionalServiceDialog";
-import { create } from "domain";
 
 const AdditionalServicesManagement = () => {
-  const { data: additionalServices, get: getAdditionalServices } = useApi<AdditionalServices>(
-    ApiEndpoint.AdditionalServices
-  );
+  const { data: items, get: getItems } = useApi<AdditionalServices>(ApiEndpoint.AdditionalServices);
 
   useEffect(() => {
-    getAdditionalServices({ id: undefined, queryParams: undefined });
+    getItems({ id: undefined, queryParams: undefined });
   }, []);
+
   useEffect(() => {
-    console.log(additionalServices);
-  }, [additionalServices]);
+    console.log(items);
+  }, [items]);
 
   const cols = [
     {
@@ -67,53 +65,21 @@ const AdditionalServicesManagement = () => {
     itemToDelete,
     itemToDetails,
     itemToModify,
-    setItemToDelete,
-    setItemToDetails,
-    setItemToModify,
+    filters,
+    globalFilterValue,
+    onGlobalFilterChange,
     menuElements,
-  } = useTable<AdditionalServices[], AdditionalServices>(
-    additionalServices,
-    cols,
-    "dodatkowe_usługi"
-  );
+    onDialogClose,
+    onDelete,
+    onModify,
+    onCreate,
+    onDetails,
+    closeDialogsAndSetValuesToDefault,
+  } = useTable<AdditionalServices[], AdditionalServices>(items, cols, "dodatkowe_usługi");
 
   const reloadItemsAfterSuccessDialog = () => {
-    deleteDialog.current?.close();
-    modifyDialog.current?.close();
-    createDialog.current?.close();
-    setItemToDelete(undefined);
-    setItemToModify(undefined);
-    setItemToDetails(undefined);
-    getAdditionalServices({ id: undefined, queryParams: undefined });
-  };
-
-  const onModify = (rowData: AdditionalServices) => {
-    setItemToModify(rowData);
-    modifyDialog.current?.showModal();
-  };
-
-  const onDetails = (rowData: AdditionalServices) => {
-    setItemToDetails(rowData);
-    detailsDialog.current?.showModal();
-  };
-
-  const onDelete = (rowData: AdditionalServices) => {
-    setItemToDelete(rowData);
-    deleteDialog.current?.showModal();
-  };
-
-  const onCreate = () => {
-    createDialog.current?.showModal();
-  };
-
-  const onDialogClose = () => {
-    deleteDialog.current?.close();
-    modifyDialog.current?.close();
-    detailsDialog.current?.close();
-    createDialog.current?.close();
-    setItemToDelete(undefined);
-    setItemToDetails(undefined);
-    setItemToModify(undefined);
+    closeDialogsAndSetValuesToDefault();
+    getItems({ id: undefined, queryParams: undefined });
   };
 
   return (
@@ -147,18 +113,24 @@ const AdditionalServicesManagement = () => {
 
       <DataTable
         ref={dt}
-        value={additionalServices}
+        value={items}
         paginator
         removableSort
+        filters={filters}
+        filterDisplay="row"
+        globalFilterFields={["name", "price"]}
+        emptyMessage="Brak dodatkowych usług"
         header={
           <HeaderTemplate
             headerText="Dodatkowe usługi"
             onCreate={onCreate}
             menuElements={menuElements}
+            globalFilterValue={globalFilterValue}
+            onGlobalFilterChange={(e) => onGlobalFilterChange(e)}
           />
         }
         rows={5}
-        style={{ minWidth: 1000 }}
+        style={{ minWidth: "62vw" }}
         rowsPerPageOptions={[5, 10, 25, 50]}
         stripedRows
         showGridlines

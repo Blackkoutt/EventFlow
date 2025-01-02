@@ -1,6 +1,6 @@
 import { forwardRef, useEffect, useState } from "react";
 import Dialog from "../../common/Dialog";
-import { AdditionalServices } from "../../../models/response_models";
+import { AdditionalServices, EventCategory } from "../../../models/response_models";
 import Button, { ButtonStyle } from "../../buttons/Button";
 import useApi from "../../../hooks/useApi";
 import { ApiEndpoint } from "../../../helpers/enums/ApiEndpointEnum";
@@ -11,23 +11,20 @@ import { toast } from "react-toastify";
 import MessageText from "../../common/MessageText";
 import { MessageType } from "../../../helpers/enums/MessageTypeEnum";
 
-interface DeleteAdditionalServiceDialogProps {
-  item?: AdditionalServices;
+interface DeleteEventCategoryDialogProps {
+  item?: EventCategory;
   maxWidth?: number;
   onDialogSuccess: () => void;
   onDialogClose: () => void;
 }
 
-const DeleteAdditionalServiceDialog = forwardRef<
-  HTMLDialogElement,
-  DeleteAdditionalServiceDialogProps
->(
+const DeleteEventCategoryDialog = forwardRef<HTMLDialogElement, DeleteEventCategoryDialogProps>(
   (
-    { item, maxWidth = 750, onDialogClose, onDialogSuccess }: DeleteAdditionalServiceDialogProps,
+    { item, maxWidth = 750, onDialogClose, onDialogSuccess }: DeleteEventCategoryDialogProps,
     ref
   ) => {
-    const { del: deleteItem, statusCode: statusCode } = useApi<AdditionalServices>(
-      ApiEndpoint.AdditionalServices
+    const { del: deleteItem, statusCode: statusCode } = useApi<EventCategory>(
+      ApiEndpoint.EventCategory
     );
     const [actionPerformed, setActionPerformed] = useState(false);
     const [promisePending, setPromisePending] = useState(false);
@@ -37,8 +34,8 @@ const DeleteAdditionalServiceDialog = forwardRef<
         setPromisePending(true);
         await toast.promise(deleteItem({ id: item.id }), {
           pending: "Wykonywanie żądania",
-          success: "Dodatkowa usługa została pomyślnie usunięta",
-          error: "Wystąpił błąd podczas usuwania dodatkowej usługi",
+          success: "Kategoria wydarzenia została pomyślnie usunięta",
+          error: "Wystąpił błąd podczas usuwania kategorii wydarzenia",
         });
         setPromisePending(false);
         setActionPerformed(true);
@@ -60,21 +57,19 @@ const DeleteAdditionalServiceDialog = forwardRef<
           <Dialog ref={ref} maxWidth={maxWidth} onClose={onDialogClose}>
             <article className="flex flex-col justify-center items-center gap-5">
               <div className="flex flex-col justify-center items-center gap-2">
-                <h2>Usunięcie dodatkowej usługi</h2>{" "}
+                <h2>Usunięcie kategorii wydarzenia</h2>{" "}
                 <p className="text-textPrimary text-base text-center">
-                  Czy na pewno chcesz usunąć tę dodatkową usługę ?
+                  Czy na pewno chcesz usunąć tę kategorię ?
                 </p>
               </div>
               <div className="flex flex-col justify-center items-center gap-2">
                 <LabelText labelWidth={60} label="ID:" text={item.id} gap={10} />
                 <LabelText labelWidth={60} label="Nazwa:" text={item.name} gap={10} />
-                <LabelText labelWidth={60} label="Cena:" text={`${item.price} zł`} gap={10} />
-                <LabelText labelWidth={60} label="Opis:" text={item.description} gap={10} />
               </div>
               <div className="flex flex-col justify-center items-center gap-2">
                 <MessageText
                   messageType={MessageType.Info}
-                  text={`Usunięcie dodatkowej usługi sprawi, że użytkownicy nie będą mogli jej już wybierać przy rezerwacji sali. Pamiętaj, że usługa może wciąż występować w aktywnych i przeszłych rezerwacjach.`}
+                  text={`Usunięcie kategorii wydarzenia sprawi, że nie będzie można już jej wybrać przy tworzeniu nowego wydarzenia. Pamiętaj, że ta kategoria może wciąż występować w aktywnych i przeszłych wydarzeniach.`}
                 />
               </div>
               <div className="flex flex-row justify-center items-center gap-2">
@@ -104,4 +99,4 @@ const DeleteAdditionalServiceDialog = forwardRef<
     );
   }
 );
-export default DeleteAdditionalServiceDialog;
+export default DeleteEventCategoryDialog;

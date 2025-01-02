@@ -12,6 +12,7 @@ const DetailsAdditionalServiceDialog = forwardRef<
   HTMLDialogElement,
   DetailsAdditonalServiceDialogProps
 >(({ item, onDialogClose }: DetailsAdditonalServiceDialogProps, ref) => {
+  console.log(item);
   return (
     <div>
       {item && (
@@ -25,7 +26,7 @@ const DetailsAdditionalServiceDialog = forwardRef<
             </div>
             <div className="flex flex-col justify-center items-center gap-2">
               <LabelText labelWidth={60} label="ID:" text={item.id} gap={10} />
-              <LabelText labelWidth={60} label="Nazwa:" title={item.name} gap={10} />
+              <LabelText labelWidth={60} label="Nazwa:" text={item.name} gap={10} />
               <LabelText labelWidth={60} label="Cena:" text={`${item.price} zł`} gap={10} />
               <LabelText labelWidth={60} label="Opis:" text={item.description} gap={10} />
             </div>
