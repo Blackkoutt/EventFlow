@@ -1,5 +1,7 @@
 ﻿using EventFlowAPI.Logic.Helpers;
 using EventFlowAPI.Logic.Response;
+using Serilog;
+using System.Security.Claims;
 using System.Text.Json;
 
 namespace EventFlowAPI.Middleware
@@ -15,6 +17,22 @@ namespace EventFlowAPI.Middleware
             if (context.Response.ContentType == null &&
                 context.Response.StatusCode == StatusCodes.Status403Forbidden)
             {
+                // Pobierz role użytkownika z kontekstu
+                var userRoles = context.User?.Claims
+                    .Where(claim => claim.Type == "userRoles")
+                    .Select(claim => claim.Value)
+                    .ToList();
+
+                // Zapisz role użytkownika w logu
+                if (userRoles != null && userRoles.Any())
+                {
+                    Log.Information("User roles: {Roles}", string.Join(", ", userRoles));
+                }
+                else
+                {
+                    Log.Information("User has no roles or is not authenticated.");
+                }
+
                 context.Response.ContentType = ContentType.JSON;
                 var customResponse = new ForbiddenResponse("Can not acces resource because of insufficient permissions.");
 

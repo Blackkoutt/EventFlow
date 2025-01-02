@@ -1,21 +1,20 @@
 import { forwardRef, useEffect, useState } from "react";
 import Dialog from "../../common/Dialog";
-import { AdditionalServices, Reservation, Seat } from "../../../models/response_models";
-import DateFormatter from "../../../helpers/DateFormatter";
-import { DateFormat } from "../../../helpers/enums/DateFormatEnum";
+import { AdditionalServices } from "../../../models/response_models";
 import Button, { ButtonStyle } from "../../buttons/Button";
 import useApi from "../../../hooks/useApi";
 import { ApiEndpoint } from "../../../helpers/enums/ApiEndpointEnum";
 import { HTTPStatusCode } from "../../../helpers/enums/HTTPStatusCode";
-import { faCheck, faInfoCircle, faWarning, faXmark } from "@fortawesome/free-solid-svg-icons";
+import { faCheck, faXmark } from "@fortawesome/free-solid-svg-icons";
 import LabelText from "../../common/LabelText";
 import { toast } from "react-toastify";
 import MessageText from "../../common/MessageText";
 import { MessageType } from "../../../helpers/enums/MessageTypeEnum";
 
 interface DeleteAdditionalServiceDialogProps {
-  additionalService?: AdditionalServices;
-  onDialogConfirm: () => void;
+  item?: AdditionalServices;
+  maxWidth?: number;
+  onDialogSuccess: () => void;
   onDialogClose: () => void;
 }
 
@@ -24,22 +23,22 @@ const DeleteAdditionalServiceDialog = forwardRef<
   DeleteAdditionalServiceDialogProps
 >(
   (
-    { additionalService, onDialogClose, onDialogConfirm }: DeleteAdditionalServiceDialogProps,
+    { item, maxWidth = 750, onDialogClose, onDialogSuccess }: DeleteAdditionalServiceDialogProps,
     ref
   ) => {
-    const { del: deleteService, statusCode: statusCode } = useApi<AdditionalServices>(
+    const { del: deleteItem, statusCode: statusCode } = useApi<AdditionalServices>(
       ApiEndpoint.AdditionalServices
     );
     const [actionPerformed, setActionPerformed] = useState(false);
     const [promisePending, setPromisePending] = useState(false);
 
     const onDelete = async () => {
-      if (additionalService !== undefined) {
+      if (item !== undefined) {
         setPromisePending(true);
-        await toast.promise(deleteService({ id: additionalService.id }), {
+        await toast.promise(deleteItem({ id: item.id }), {
           pending: "Wykonywanie żądania",
-          success: "Rezerwacja została anulowana pomyślnie",
-          error: "Wystąpił błąd podczas anulowania rezerwacji",
+          success: "Dodatkowa usługa została pomyślnie usunięta",
+          error: "Wystąpił błąd podczas usuwania dodatkowej usługi",
         });
         setPromisePending(false);
         setActionPerformed(true);
@@ -49,7 +48,7 @@ const DeleteAdditionalServiceDialog = forwardRef<
     useEffect(() => {
       if (actionPerformed) {
         if (statusCode == HTTPStatusCode.NoContent) {
-          onDialogConfirm();
+          onDialogSuccess();
         }
         setActionPerformed(false);
       }
@@ -57,9 +56,9 @@ const DeleteAdditionalServiceDialog = forwardRef<
 
     return (
       <div>
-        {additionalService && (
-          <Dialog ref={ref}>
-            <article className="flex flex-col justify-center items-center gap-5 max-w-[750px]">
+        {item && (
+          <Dialog ref={ref} maxWidth={maxWidth} onClose={onDialogClose}>
+            <article className="flex flex-col justify-center items-center gap-5">
               <div className="flex flex-col justify-center items-center gap-2">
                 <h2>Usunięcie dodatkowej usługi</h2>{" "}
                 <p className="text-textPrimary text-base text-center">
@@ -67,20 +66,10 @@ const DeleteAdditionalServiceDialog = forwardRef<
                 </p>
               </div>
               <div className="flex flex-col justify-center items-center gap-2">
-                <LabelText labelWidth={60} label="ID:" text={additionalService.id} gap={10} />
-                <LabelText labelWidth={60} label="Nazwa:" title={additionalService.name} gap={10} />
-                <LabelText
-                  labelWidth={60}
-                  label="Cena:"
-                  text={`${additionalService.price} zł`}
-                  gap={10}
-                />
-                <LabelText
-                  labelWidth={60}
-                  label="Opis:"
-                  text={additionalService.description}
-                  gap={10}
-                />
+                <LabelText labelWidth={60} label="ID:" text={item.id} gap={10} />
+                <LabelText labelWidth={60} label="Nazwa:" title={item.name} gap={10} />
+                <LabelText labelWidth={60} label="Cena:" text={`${item.price} zł`} gap={10} />
+                <LabelText labelWidth={60} label="Opis:" text={item.description} gap={10} />
               </div>
               <div className="flex flex-col justify-center items-center gap-2">
                 <MessageText

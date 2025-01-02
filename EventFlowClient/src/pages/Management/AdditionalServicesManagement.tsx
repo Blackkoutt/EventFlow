@@ -8,6 +8,10 @@ import ActionsTemplate from "../../components/tabledata/ActionTemplate";
 import HeaderTemplate from "../../components/tabledata/HeaderTemplate";
 import { useTable } from "../../hooks/useTable";
 import DetailsAdditionalServiceDialog from "../../components/management/additionalservices/DetailsAdditionalServiceDialog";
+import DeleteAdditionalServiceDialog from "../../components/management/additionalservices/DeleteAdditionalServiceDialog";
+import ModifyAdditonalServiceDialog from "../../components/management/additionalservices/ModifyAdditionalServiceDialog";
+import CreateAdditonalServiceDialog from "../../components/management/additionalservices/CreateAdditionalServiceDialog";
+import { create } from "domain";
 
 const AdditionalServicesManagement = () => {
   const { data: additionalServices, get: getAdditionalServices } = useApi<AdditionalServices>(
@@ -57,6 +61,7 @@ const AdditionalServicesManagement = () => {
   const {
     dt,
     deleteDialog,
+    createDialog,
     detailsDialog,
     modifyDialog,
     itemToDelete,
@@ -72,8 +77,19 @@ const AdditionalServicesManagement = () => {
     "dodatkowe_usługi"
   );
 
+  const reloadItemsAfterSuccessDialog = () => {
+    deleteDialog.current?.close();
+    modifyDialog.current?.close();
+    createDialog.current?.close();
+    setItemToDelete(undefined);
+    setItemToModify(undefined);
+    setItemToDetails(undefined);
+    getAdditionalServices({ id: undefined, queryParams: undefined });
+  };
+
   const onModify = (rowData: AdditionalServices) => {
-    console.log("Modify", rowData);
+    setItemToModify(rowData);
+    modifyDialog.current?.showModal();
   };
 
   const onDetails = (rowData: AdditionalServices) => {
@@ -82,15 +98,52 @@ const AdditionalServicesManagement = () => {
   };
 
   const onDelete = (rowData: AdditionalServices) => {
-    console.log("Delete", rowData);
+    setItemToDelete(rowData);
+    deleteDialog.current?.showModal();
   };
+
   const onCreate = () => {
-    console.log("Create");
+    createDialog.current?.showModal();
+  };
+
+  const onDialogClose = () => {
+    deleteDialog.current?.close();
+    modifyDialog.current?.close();
+    detailsDialog.current?.close();
+    createDialog.current?.close();
+    setItemToDelete(undefined);
+    setItemToDetails(undefined);
+    setItemToModify(undefined);
   };
 
   return (
     <div className="max-w-[64vw] self-center">
-      <DetailsAdditionalServiceDialog ref={detailsDialog} additionalService={itemToDetails} />
+      <CreateAdditonalServiceDialog
+        ref={createDialog}
+        onDialogClose={onDialogClose}
+        onDialogSuccess={reloadItemsAfterSuccessDialog}
+      />
+
+      <DeleteAdditionalServiceDialog
+        ref={deleteDialog}
+        maxWidth={550}
+        item={itemToDelete}
+        onDialogClose={onDialogClose}
+        onDialogSuccess={reloadItemsAfterSuccessDialog}
+      />
+
+      <ModifyAdditonalServiceDialog
+        ref={modifyDialog}
+        item={itemToModify}
+        onDialogClose={onDialogClose}
+        onDialogSuccess={reloadItemsAfterSuccessDialog}
+      />
+
+      <DetailsAdditionalServiceDialog
+        ref={detailsDialog}
+        item={itemToDetails}
+        onDialogClose={onDialogClose}
+      />
 
       <DataTable
         ref={dt}
@@ -105,6 +158,7 @@ const AdditionalServicesManagement = () => {
           />
         }
         rows={5}
+        style={{ minWidth: 1000 }}
         rowsPerPageOptions={[5, 10, 25, 50]}
         stripedRows
         showGridlines

@@ -85,7 +85,8 @@ namespace EventFlowAPI.Extensions
                 ValidIssuer = jwtSettingsSection["validIssuer"],
                 ValidAudience = jwtSettingsSection["validAudience"],
                 IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8
-                    .GetBytes(jwtSettingsSection.GetSection("securityKey").Value!))
+                    .GetBytes(jwtSettingsSection.GetSection("securityKey").Value!)),
+                RoleClaimType = "userRoles"
             };
         }
         private static PasswordOptions GetIdentityPasswordOptions()

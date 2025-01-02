@@ -14,6 +14,7 @@ export const useTable = <TData extends DataTableValueArray, TEntity>(
   const deleteDialog = useRef<HTMLDialogElement>(null);
   const detailsDialog = useRef<HTMLDialogElement>(null);
   const modifyDialog = useRef<HTMLDialogElement>(null);
+  const createDialog = useRef<HTMLDialogElement>(null);
 
   const [itemToDelete, setItemToDelete] = useState<TEntity | undefined>(undefined);
   const [itemToDetails, setItemToDetails] = useState<TEntity | undefined>(undefined);
@@ -72,6 +73,7 @@ export const useTable = <TData extends DataTableValueArray, TEntity>(
   return {
     dt,
     deleteDialog,
+    createDialog,
     detailsDialog,
     modifyDialog,
     itemToDelete,

@@ -21,7 +21,7 @@ const ActionsTemplate = ({
   onDelete,
 }: ActionsTemplateProps) => {
   return (
-    <div className="flex flex-row justify-start items-start gap-3">
+    <div className="flex flex-row justify-center items-start gap-3">
       {includeModify && (
         <TableActionButton
           icon={faPenToSquare}

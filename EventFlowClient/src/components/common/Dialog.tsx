@@ -4,13 +4,15 @@ import { faCircleXmark } from "@fortawesome/free-solid-svg-icons";
 
 interface DialogProps {
   children?: React.ReactNode;
+  onClose?: () => void;
+  maxWidth?: number;
   minHeight?: number;
   maxHeight?: number;
   marginTop?: number;
 }
 
 const Dialog = forwardRef<HTMLDialogElement, DialogProps>(
-  ({ children, minHeight, maxHeight, marginTop }: DialogProps, ref) => {
+  ({ children, minHeight, maxHeight, maxWidth, marginTop, onClose }: DialogProps, ref) => {
     const dialogRef = useRef<HTMLDialogElement | null>(null);
     return (
       <dialog
@@ -22,7 +24,12 @@ const Dialog = forwardRef<HTMLDialogElement, DialogProps>(
             ref.current = node;
           }
         }}
-        style={{ minHeight: minHeight, maxHeight: maxHeight, marginTop: marginTop }}
+        style={{
+          minHeight: minHeight,
+          maxHeight: maxHeight,
+          marginTop: marginTop,
+          maxWidth: maxWidth,
+        }}
         className="rounded-xl p-7 relative overflow-visible"
       >
         <FontAwesomeIcon
@@ -32,7 +39,10 @@ const Dialog = forwardRef<HTMLDialogElement, DialogProps>(
             width: "35px",
             height: "35px",
           }}
-          onClick={() => dialogRef.current?.close()}
+          onClick={() => {
+            dialogRef.current?.close();
+            onClose?.();
+          }}
         />
         {children}
       </dialog>
