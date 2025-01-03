@@ -29,8 +29,8 @@ namespace EventFlowAPI.Logic.DTO.UpdateRequestDto
         public List<int> SponsorIds { get; set; } = [];
         public FestivalDetailsRequestDto? Details { get; set; } = default!;
 
-       /* [MaxFileSizeValidator(10)]
-        public IFormFile? FestivalPhoto { get; set; }*/
+        [MaxFileSizeValidator(10)]
+        public IFormFile? FestivalPhoto { get; set; }
 
         public ICollection<Event_FestivalTicketRequestDto> FestivalTickets { get; set; } = [];
     }

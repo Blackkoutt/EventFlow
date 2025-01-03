@@ -1,4 +1,5 @@
 ﻿using EventFlowAPI.Logic.Errors;
+using EventFlowAPI.Logic.Helpers.Enums;
 using EventFlowAPI.Logic.Helpers.PayU;
 using EventFlowAPI.Logic.ResultObject;
 using EventFlowAPI.Logic.Services.OtherServices.Interfaces;
@@ -13,8 +14,57 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
     public class PaymentService(IConfiguration configuration, IHttpContextAccessor httpContextAccessor) : IPaymentService
     {
         private readonly IConfiguration _configuration = configuration;
-        private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor; 
-        
+        private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
+
+
+        public async Task<Result<object>> CheckTransactionStatus()
+        {
+            var transactionId = _httpContextAccessor.HttpContext!.Session.GetString("TransactionId");
+            if (transactionId == null)
+                return Result<object>.Failure(EventPassError.SessionError);
+            else
+                _httpContextAccessor.HttpContext!.Session.Remove("TransactionId");
+
+            const int maxRetries = 5;
+            const int delayBetweenRetries = 1000;
+
+            string transactionStatus = string.Empty;
+
+            for (int attempt = 1; attempt <= maxRetries; attempt++)
+            {
+                var transactionStatusResult = await GetTransactionStatus(transactionId);
+                if (!transactionStatusResult.IsSuccessful)
+                    return Result<object>.Failure(transactionStatusResult.Error);
+
+                transactionStatus = transactionStatusResult.Value.Status;
+                Log.Information($"Attempt {attempt}: {transactionStatus} \n\n\n\n\n");
+
+                if (transactionStatus == PayUTransactionStatus.PENDING.ToString())
+                {
+                    if (attempt < maxRetries)
+                    {
+                        Log.Information("Transaction status is pending. Retrying...");
+                        await Task.Delay(delayBetweenRetries);
+                    }
+                    else
+                    {
+                        return Result<object>.Failure(PaymentError.TransactionIsPendingTooLong);
+                    }
+                }
+                else
+                {
+                    break;
+                }
+
+            }
+
+            if (transactionStatus != PayUTransactionStatus.COMPLETED.ToString())
+                return Result<object>.Failure(PaymentError.TransactionIsNotCompleted);
+
+            return Result<object>.Success();
+        }
+
+
         public async Task<Result<PayUTransactionStatusDto>> GetTransactionStatus(string transactionId)
         {
             if (string.IsNullOrEmpty(transactionId))

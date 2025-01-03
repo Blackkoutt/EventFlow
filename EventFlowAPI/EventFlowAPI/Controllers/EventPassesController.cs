@@ -73,9 +73,10 @@ namespace EventFlowAPI.Controllers
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<IActionResult> CreateEventPass([FromBody] EventPassRequestDto eventPassReqestDto)
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        public async Task<IActionResult> CreateEventPass()
         {
-            var result = await _eventPassService.BuyEventPass(eventPassReqestDto);
+            var result = await _eventPassService.BuyEventPass();
             if (!result.IsSuccessful)
             {
                 return result.Error.Details!.Code switch
@@ -97,6 +98,28 @@ namespace EventFlowAPI.Controllers
         public async Task<IActionResult> CancelEventPass([FromRoute] int id)
         {
             var result = await _eventPassService.DeleteAsync(id);
+            if (!result.IsSuccessful)
+            {
+                return result.Error.Details!.Code switch
+                {
+                    HttpStatusCode.BadRequest => BadRequest(result.Error.Details),
+                    HttpStatusCode.Unauthorized => Unauthorized(result.Error.Details),
+                    HttpStatusCode.Forbidden => StatusCode((int)HttpStatusCode.Forbidden, result.Error.Details),
+                    _ => StatusCode((int)HttpStatusCode.InternalServerError, result.Error.Details)
+                };
+            }
+            return Ok(result.Value);
+        }
+
+        [Authorize]
+        [HttpPost("create-buy-transaction")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        public async Task<IActionResult> CreateBuyPassTransaction([FromBody] EventPassRequestDto eventPassReqestDto)
+        {
+            var result = await _eventPassService.CreateBuyEventPassPayment(eventPassReqestDto);
             if (!result.IsSuccessful)
             {
                 return result.Error.Details!.Code switch

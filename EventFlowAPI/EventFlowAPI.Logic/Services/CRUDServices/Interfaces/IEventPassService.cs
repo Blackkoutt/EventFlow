@@ -18,7 +18,8 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Interfaces
             EventPassQuery
         >
     {
-        Task<Result<EventPassResponseDto>> BuyEventPass(EventPassRequestDto? requestDto);
+        Task<Result<EventPassResponseDto>> BuyEventPass();
+        Task<Result<PayUCreatePaymentResponseDto>> CreateBuyEventPassPayment(EventPassRequestDto? requestDto);
         Task<Result<PayUCreatePaymentResponseDto>> CreateRenewEventPassPayment(int id, UpdateEventPassRequestDto? requestDto);
         Task<Result<EventPassResponseDto>> RenewEventPass();
     }

@@ -7,5 +7,6 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Interfaces
     {
         Task<Result<PayUCreatePaymentResponseDto>> CreatePayment(PayURequestPaymentDto requestDto);
         Task<Result<PayUTransactionStatusDto>> GetTransactionStatus(string transactionId);
+        Task<Result<object>> CheckTransactionStatus();
     }
 }

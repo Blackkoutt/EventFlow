@@ -25,7 +25,9 @@ export const AdditionalServiceSchema = z.object({
   ),
 
   description: z
-    .string({ invalid_type_error: "Niepoprawny typ wartości" })
+    .string()
+    .optional()
+    .nullable()
     .transform((val) => (val === "" ? null : val))
     .refine((val) => {
       if (val !== undefined && val !== null) {

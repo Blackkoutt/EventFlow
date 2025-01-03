@@ -34,6 +34,9 @@ export const ApiUrlConfig = {
   [ApiEndpoint.EventPassCreateRenewTransaction]: {
     url: (id?: number) => `/eventpasses/${id}/create-renew-transaction`,
   },
+  [ApiEndpoint.EventPassCreateBuyTransaction]: {
+    url: (id?: number) => `/eventpasses/create-buy-transaction`,
+  },
   [ApiEndpoint.EventPassPDF]: {
     url: (id?: number) => `/eventpasses/${id}/pdf`,
   },

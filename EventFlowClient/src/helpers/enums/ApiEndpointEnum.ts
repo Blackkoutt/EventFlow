@@ -11,6 +11,7 @@ export enum ApiEndpoint {
   Event,
   EventPass,
   EventPassCreateRenewTransaction,
+  EventPassCreateBuyTransaction,
   EventPassPDF,
   EventPassJPG,
   EventPassType,

@@ -146,7 +146,7 @@ namespace EventFlowAPI.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        public async Task<IActionResult> UpdateFestival([FromRoute] int id, [FromBody] UpdateFestivalRequestDto festivalReqestDto)
+        public async Task<IActionResult> UpdateFestival([FromRoute] int id, [FromForm] UpdateFestivalRequestDto festivalReqestDto)
         {
             var result = await _festivalService.UpdateAsync(id, festivalReqestDto);
             if (!result.IsSuccessful)
