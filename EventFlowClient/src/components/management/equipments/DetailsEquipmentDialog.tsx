@@ -5,15 +5,25 @@ import LabelText from "../../common/LabelText";
 
 interface DetailsEquipmentDialogProps {
   item?: Equipment;
+  maxWidth?: number;
+  minWidth?: number;
+  paddingX?: number;
   onDialogClose: () => void;
 }
 
 const DetailsEquipmentDialog = forwardRef<HTMLDialogElement, DetailsEquipmentDialogProps>(
-  ({ item, onDialogClose }: DetailsEquipmentDialogProps, ref) => {
+  ({ item, maxWidth, minWidth, onDialogClose, paddingX }: DetailsEquipmentDialogProps, ref) => {
     return (
       <div>
         {item && (
-          <Dialog ref={ref} onClose={onDialogClose}>
+          <Dialog
+            ref={ref}
+            maxWidth={maxWidth}
+            paddingLeft={paddingX}
+            paddingRight={paddingX}
+            minWidth={minWidth}
+            onClose={onDialogClose}
+          >
             <article className="flex flex-col justify-center items-center px-5 pb-2 gap-5 max-w-[750px]">
               <div className="flex flex-col justify-center items-center gap-2">
                 <h2>Szczegóły wyposażenia sali</h2>

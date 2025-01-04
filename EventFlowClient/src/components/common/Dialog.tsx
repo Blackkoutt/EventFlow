@@ -6,13 +6,29 @@ interface DialogProps {
   children?: React.ReactNode;
   onClose?: () => void;
   maxWidth?: number;
+  paddingLeft?: number;
+  paddingRight?: number;
+  minWidth?: number;
   minHeight?: number;
   maxHeight?: number;
   marginTop?: number;
 }
 
 const Dialog = forwardRef<HTMLDialogElement, DialogProps>(
-  ({ children, minHeight, maxHeight, maxWidth, marginTop, onClose }: DialogProps, ref) => {
+  (
+    {
+      children,
+      minHeight,
+      minWidth,
+      paddingLeft = 28,
+      paddingRight = 28,
+      maxHeight,
+      maxWidth,
+      marginTop,
+      onClose,
+    }: DialogProps,
+    ref
+  ) => {
     const dialogRef = useRef<HTMLDialogElement | null>(null);
     return (
       <dialog
@@ -27,10 +43,13 @@ const Dialog = forwardRef<HTMLDialogElement, DialogProps>(
         style={{
           minHeight: minHeight,
           maxHeight: maxHeight,
+          minWidth: minWidth,
+          paddingLeft: paddingLeft,
+          paddingRight: paddingRight,
           marginTop: marginTop,
           maxWidth: maxWidth,
         }}
-        className="rounded-xl p-7 relative overflow-visible"
+        className="rounded-xl py-7 relative overflow-visible"
       >
         <FontAwesomeIcon
           icon={faCircleXmark}

@@ -21,16 +21,23 @@ const UserAccordion = () => {
   return (
     <button
       className="flex flex-row justify-center rounded-2xl items-center gap-4 px-6 py-4 relative bg-primaryPurple text-white"
-      onClick={() => setTrigger(!trigger)}
+      onFocus={() => {
+        setTrigger(true);
+      }}
       style={{ outline: "none" }}
       onBlur={() => setTrigger(false)}
     >
       <p className="text-[17px] text-white">Witaj, {currentUser?.name}!</p>
       <FontAwesomeIcon icon={faUser} fontSize={30} />
       <div
+        tabIndex={1}
+        onClick={(e) => {
+          e.stopPropagation;
+          setTrigger(false);
+        }}
         className={`accordion-content absolute w-full top-[100%] left-0 mt-2 shadow-xl flex flex-col bg-white px-1 rounded-lg ${contentClass}`}
       >
-        <div className="flex flex-col px-2">
+        <div className="flex flex-col px-2 z-[999]">
           <Link to="/profile">
             <div className="flex flex-row w-full justify-start items-center gap-4 pt-3 pl-2 pb-4 mt-2 cursor-pointer rounded-sm hover:bg-[#efdaff] border-b-[1px] border-dashed border-primaryPurple">
               <FontAwesomeIcon icon={faUser} fontSize={22} color="#7B2CBF" />

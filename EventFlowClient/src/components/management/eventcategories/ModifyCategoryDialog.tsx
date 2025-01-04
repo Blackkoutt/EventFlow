@@ -26,12 +26,24 @@ import { SelectOption } from "../../../helpers/SelectOptions";
 interface ModifyEventCategoryDialogProps {
   item?: EventCategory;
   maxWidth?: number;
+  minWidth?: number;
+  paddingX?: number;
   onDialogSuccess: () => void;
   onDialogClose: () => void;
 }
 
 const ModifyEventCategoryDialog = forwardRef<HTMLDialogElement, ModifyEventCategoryDialogProps>(
-  ({ item, maxWidth, onDialogClose, onDialogSuccess }: ModifyEventCategoryDialogProps, ref) => {
+  (
+    {
+      item,
+      maxWidth,
+      minWidth,
+      onDialogClose,
+      paddingX,
+      onDialogSuccess,
+    }: ModifyEventCategoryDialogProps,
+    ref
+  ) => {
     const { statusCode: statusCode, put: putItem } = useApi<
       EventCategory,
       undefined,
@@ -96,7 +108,14 @@ const ModifyEventCategoryDialog = forwardRef<HTMLDialogElement, ModifyEventCateg
 
     return (
       item && (
-        <Dialog ref={ref} maxWidth={maxWidth} onClose={onDialogClose}>
+        <Dialog
+          ref={ref}
+          maxWidth={maxWidth}
+          paddingLeft={paddingX}
+          paddingRight={paddingX}
+          minWidth={minWidth}
+          onClose={onDialogClose}
+        >
           <div className="flex flex-col justify-center items-center gap-2 pt-2 pb-1">
             <h3 className="text-center font-semibold text-[24px]">
               Modyfikacja kategorii wydarzenia

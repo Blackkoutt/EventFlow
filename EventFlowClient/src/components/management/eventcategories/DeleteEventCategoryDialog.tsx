@@ -14,13 +14,22 @@ import { MessageType } from "../../../helpers/enums/MessageTypeEnum";
 interface DeleteEventCategoryDialogProps {
   item?: EventCategory;
   maxWidth?: number;
+  minWidth?: number;
+  paddingX?: number;
   onDialogSuccess: () => void;
   onDialogClose: () => void;
 }
 
 const DeleteEventCategoryDialog = forwardRef<HTMLDialogElement, DeleteEventCategoryDialogProps>(
   (
-    { item, maxWidth = 750, onDialogClose, onDialogSuccess }: DeleteEventCategoryDialogProps,
+    {
+      item,
+      maxWidth = 750,
+      minWidth,
+      onDialogClose,
+      paddingX,
+      onDialogSuccess,
+    }: DeleteEventCategoryDialogProps,
     ref
   ) => {
     const { del: deleteItem, statusCode: statusCode } = useApi<EventCategory>(
@@ -54,7 +63,14 @@ const DeleteEventCategoryDialog = forwardRef<HTMLDialogElement, DeleteEventCateg
     return (
       <div>
         {item && (
-          <Dialog ref={ref} maxWidth={maxWidth} onClose={onDialogClose}>
+          <Dialog
+            ref={ref}
+            maxWidth={maxWidth}
+            paddingLeft={paddingX}
+            paddingRight={paddingX}
+            minWidth={minWidth}
+            onClose={onDialogClose}
+          >
             <article className="flex flex-col justify-center items-center gap-5">
               <div className="flex flex-col justify-center items-center gap-2">
                 <h2>Usunięcie kategorii wydarzenia</h2>{" "}

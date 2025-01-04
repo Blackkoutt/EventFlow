@@ -26,13 +26,23 @@ namespace EventFlowAPI.Controllers
         }
 
 
+        [HttpGet("{id:int}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> GetFAQsById([FromRoute] int id)
+        {
+            var result = await _faqService.GetOneAsync(id);
+            return result.IsSuccessful ? Ok(result.Value) : BadRequest(result.Error.Details);
+        }
+
+
         [Authorize(Roles = nameof(Roles.Admin))]
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        public async Task<IActionResult> CreatePartner([FromForm] FAQRequestDto faqReqestDto)
+        public async Task<IActionResult> CreateFAQ([FromBody] FAQRequestDto faqReqestDto)
         {
             var result = await _faqService.AddAsync(faqReqestDto);
             if (!result.IsSuccessful)
@@ -45,7 +55,7 @@ namespace EventFlowAPI.Controllers
                     _ => StatusCode((int)HttpStatusCode.InternalServerError, result.Error.Details)
                 };
             }
-            return Created();
+            return CreatedAtAction(nameof(GetFAQsById), new { id = result.Value.Id }, result.Value);
         }
 
 
@@ -56,7 +66,7 @@ namespace EventFlowAPI.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        public async Task<IActionResult> UpdateFAQ([FromRoute] int id, [FromForm] UpdateFAQRequestDto faqReqestDto)
+        public async Task<IActionResult> UpdateFAQ([FromRoute] int id, [FromBody] UpdateFAQRequestDto faqReqestDto)
         {
             var result = await _faqService.UpdateAsync(id, faqReqestDto);
             if (!result.IsSuccessful)

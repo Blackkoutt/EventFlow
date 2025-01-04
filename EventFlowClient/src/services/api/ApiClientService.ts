@@ -47,6 +47,7 @@ async function Post<TEntity, TPostEntity>(endpoint: ApiEndpoint, body: TPostEnti
     const url = ApiUrlConfig[endpoint].url(id);
 
     let response;
+    console.log(body);
     if (body instanceof FormData) {
       response = await api.post<TEntity>(url, body, {
         headers: {

@@ -11,6 +11,9 @@ import DetailsEquipmentDialog from "../../components/management/equipments/Detai
 import CreateEquipmentDialog from "../../components/management/equipments/CreateEquipmentDialog";
 import DeleteEquipmentDialog from "../../components/management/equipments/DeleteEquipmentDialog";
 import ModifyEquipmentDialog from "../../components/management/equipments/ModifyEquipmentDialog";
+import CreateEventPassTypeDialog from "../../components/management/eventpasstypes/CreateEventPassTypeDialog";
+import DeleteEventPassTypeDialog from "../../components/management/eventpasstypes/DeleteEventPassTypeDialog";
+import ModifyEventPassTypeDialog from "../../components/management/eventpasstypes/ModifyEventPassTypeDialog";
 
 const EventPassTypesManagement = () => {
   const { data: items, get: getItems } = useApi<EventPassType>(ApiEndpoint.EventPassType);
@@ -38,7 +41,7 @@ const EventPassTypesManagement = () => {
     },
     {
       field: "validityPeriodInMonths",
-      header: "Ilość miesięcy",
+      header: "Długość karnetu (mies)",
       sortable: true,
       body: (rowData: EventPassType) => rowData.validityPeriodInMonths,
     },
@@ -72,10 +75,8 @@ const EventPassTypesManagement = () => {
     dt,
     deleteDialog,
     createDialog,
-    detailsDialog,
     modifyDialog,
     itemToDelete,
-    itemToDetails,
     itemToModify,
     filters,
     globalFilterValue,
@@ -85,7 +86,6 @@ const EventPassTypesManagement = () => {
     onDelete,
     onModify,
     onCreate,
-    onDetails,
     closeDialogsAndSetValuesToDefault,
   } = useTable<EventPassType[], EventPassType>(items, cols, "typy_karnetów");
 
@@ -96,19 +96,15 @@ const EventPassTypesManagement = () => {
 
   return (
     <div className="max-w-[64vw] self-center">
-      {/* <CreateEquipmentDialog
+      <CreateEventPassTypeDialog
+        minWidth={400}
         ref={createDialog}
         onDialogClose={onDialogClose}
+        paddingX={32}
         onDialogSuccess={reloadItemsAfterSuccessDialog}
       />
 
-      <DetailsEquipmentDialog
-        ref={detailsDialog}
-        item={itemToDetails}
-        onDialogClose={onDialogClose}
-      />
-
-      <DeleteEquipmentDialog
+      <DeleteEventPassTypeDialog
         ref={deleteDialog}
         maxWidth={550}
         item={itemToDelete}
@@ -116,12 +112,12 @@ const EventPassTypesManagement = () => {
         onDialogSuccess={reloadItemsAfterSuccessDialog}
       />
 
-      <ModifyEquipmentDialog
+      <ModifyEventPassTypeDialog
         ref={modifyDialog}
         item={itemToModify}
         onDialogClose={onDialogClose}
         onDialogSuccess={reloadItemsAfterSuccessDialog}
-      /> */}
+      />
 
       <DataTable
         ref={dt}
@@ -130,7 +126,12 @@ const EventPassTypesManagement = () => {
         removableSort
         filters={filters}
         filterDisplay="row"
-        globalFilterFields={["name"]}
+        globalFilterFields={[
+          "name",
+          "validityPeriodInMonths",
+          "renewalDiscountPercentage",
+          "price",
+        ]}
         emptyMessage="Brak typów karnetów"
         header={
           <HeaderTemplate

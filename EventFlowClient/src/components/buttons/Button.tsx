@@ -13,6 +13,7 @@ interface ButtonProps {
   text: string;
   width: number;
   height: number;
+  type?: "button" | "submit" | "reset";
   style: ButtonStyle;
   rounded?: string;
   fontSize?: number;
@@ -26,6 +27,7 @@ const Button = (props: ButtonProps) => {
   const {
     text,
     width,
+    type = "button",
     rounded = "rounded-full",
     height,
     fontSize = 16,
@@ -71,6 +73,7 @@ const Button = (props: ButtonProps) => {
     <>
       <button
         onClick={action}
+        type={type}
         className={`${rounded} flex flex-row justify-center items-center gap-3 ${buttonClass} ${fontWeightClass} text-center py-0`}
         style={buttonStyle}
       >

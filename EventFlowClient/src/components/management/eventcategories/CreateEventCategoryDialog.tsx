@@ -22,12 +22,23 @@ import { SelectOption } from "../../../helpers/SelectOptions";
 
 interface CreateEventCategoryDialogProps {
   maxWidth?: number;
+  minWidth?: number;
+  paddingX?: number;
   onDialogSuccess: () => void;
   onDialogClose: () => void;
 }
 
 const CreateEventCategoryDialog = forwardRef<HTMLDialogElement, CreateEventCategoryDialogProps>(
-  ({ maxWidth, onDialogClose, onDialogSuccess }: CreateEventCategoryDialogProps, ref) => {
+  (
+    {
+      maxWidth,
+      minWidth,
+      onDialogClose,
+      paddingX,
+      onDialogSuccess,
+    }: CreateEventCategoryDialogProps,
+    ref
+  ) => {
     const { statusCode: statusCode, post: postItem } = useApi<EventCategory, EventCategoryRequest>(
       ApiEndpoint.EventCategory
     );
@@ -48,7 +59,7 @@ const CreateEventCategoryDialog = forwardRef<HTMLDialogElement, CreateEventCateg
     const methods = useForm<EventCategoryRequest>({
       resolver: zodResolver(EventCategorySchema),
     });
-    const { handleSubmit, formState } = methods;
+    const { handleSubmit, formState, reset } = methods;
     const { errors, isSubmitting } = formState;
 
     const onSubmit: SubmitHandler<EventCategoryRequest> = async (data) => {
@@ -65,13 +76,21 @@ const CreateEventCategoryDialog = forwardRef<HTMLDialogElement, CreateEventCateg
       if (actionPerformed) {
         if (statusCode == HTTPStatusCode.Created) {
           onDialogSuccess();
+          reset();
         }
         setActionPerformed(false);
       }
     }, [actionPerformed]);
 
     return (
-      <Dialog ref={ref} maxWidth={maxWidth} onClose={onDialogClose}>
+      <Dialog
+        ref={ref}
+        maxWidth={maxWidth}
+        paddingLeft={paddingX}
+        paddingRight={paddingX}
+        minWidth={minWidth}
+        onClose={onDialogClose}
+      >
         <div className="flex flex-col justify-center items-center pt-2 pb-1">
           <h3 className="text-center font-semibold text-[24px]">Tworzenie kategorii wydarzenia</h3>
         </div>
@@ -114,7 +133,10 @@ const CreateEventCategoryDialog = forwardRef<HTMLDialogElement, CreateEventCateg
                 icon={faXmark}
                 iconSize={18}
                 style={ButtonStyle.DefaultGray}
-                action={onDialogClose}
+                action={() => {
+                  onDialogClose();
+                  reset();
+                }}
               ></Button>
               <FormButton
                 text="Zatwierdź"

@@ -9,9 +9,13 @@ namespace EventFlowAPI.Logic.DTO.RequestDto
         [Length(2, 40, ErrorMessage = "Nazwa powinna zawierać od 2 do 40 znaków.")]     
         public string Name { get; set; } = string.Empty;
 
-        [Required(ErrorMessage = "Długość")]
+        [Required(ErrorMessage = "Długość karnetu jest wymagana")]
         [Range(1, 60, ErrorMessage = "Okres ważności karnetu powinien wynosić od 1 do 60 miesięcy.")]
         public int ValidityPeriodInMonths { get; set; }
+
+        [Required(ErrorMessage = "Procent zniżki jest wymagany")]
+        [Range(0, 100, ErrorMessage = "Procent zniżki wynosi od 0 do 100 %")]
+        public decimal RenewalDiscountPercentage { get; set; }
 
         [Required(ErrorMessage = "Cena karnetu jest wymagana.")]
         [DataType(DataType.Currency)]

@@ -14,6 +14,8 @@ import { MessageType } from "../../../helpers/enums/MessageTypeEnum";
 interface DeleteAdditionalServiceDialogProps {
   item?: AdditionalServices;
   maxWidth?: number;
+  minWidth?: number;
+  paddingX?: number;
   onDialogSuccess: () => void;
   onDialogClose: () => void;
 }
@@ -23,7 +25,14 @@ const DeleteAdditionalServiceDialog = forwardRef<
   DeleteAdditionalServiceDialogProps
 >(
   (
-    { item, maxWidth = 750, onDialogClose, onDialogSuccess }: DeleteAdditionalServiceDialogProps,
+    {
+      item,
+      maxWidth = 750,
+      minWidth,
+      onDialogClose,
+      paddingX,
+      onDialogSuccess,
+    }: DeleteAdditionalServiceDialogProps,
     ref
   ) => {
     const { del: deleteItem, statusCode: statusCode } = useApi<AdditionalServices>(
@@ -57,7 +66,14 @@ const DeleteAdditionalServiceDialog = forwardRef<
     return (
       <div>
         {item && (
-          <Dialog ref={ref} maxWidth={maxWidth} onClose={onDialogClose}>
+          <Dialog
+            ref={ref}
+            maxWidth={maxWidth}
+            paddingLeft={paddingX}
+            paddingRight={paddingX}
+            minWidth={minWidth}
+            onClose={onDialogClose}
+          >
             <article className="flex flex-col justify-center items-center gap-5">
               <div className="flex flex-col justify-center items-center gap-2">
                 <h2>Usunięcie dodatkowej usługi</h2>{" "}

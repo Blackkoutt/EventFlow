@@ -345,13 +345,13 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             switch (requestDto)
             {
                 case HallRentRequestDto hallRentRequestDto:
-                    paymentTypeId = hallRentRequestDto.PaymentTypeId;
+                    paymentTypeId = 1;
                     hallId = hallRentRequestDto.HallId;
                     additionalServicesIds = hallRentRequestDto.AdditionalServicesIds;
                     startDate = hallRentRequestDto.StartDate;
                     break;
                 case UpdateHallRentRequestDto updateHallRentRequestDto:
-                    paymentTypeId = updateHallRentRequestDto.PaymentTypeId;
+                    paymentTypeId = 1;
                     hallId = updateHallRentRequestDto.HallId;
                     additionalServicesIds = updateHallRentRequestDto.AdditionalServicesIds;
                     endDate = updateHallRentRequestDto.EndDate;

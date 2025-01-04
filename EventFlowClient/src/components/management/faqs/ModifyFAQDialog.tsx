@@ -1,6 +1,6 @@
 import { forwardRef, useEffect, useState } from "react";
 import Dialog from "../../common/Dialog";
-import { AdditionalServices, Equipment } from "../../../models/response_models";
+import { EventPassType, FAQ } from "../../../models/response_models";
 import Button, { ButtonStyle } from "../../buttons/Button";
 import useApi from "../../../hooks/useApi";
 import { ApiEndpoint } from "../../../helpers/enums/ApiEndpointEnum";
@@ -9,19 +9,16 @@ import { faCheck, faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import FormButton from "../../common/forms/FormButton";
-import {
-  AdditionalServiceUpdateRequest,
-  AdditionalServiceUpdateSchema,
-} from "../../../models/update_schemas/AdditionalServicesUpdateSchema";
 import Input from "../../common/forms/Input";
 import { toast } from "react-toastify";
 import {
-  EquipmentUpdateRequest,
-  EquipmentUpdateSchema,
-} from "../../../models/update_schemas/EquipmentUpdateSchema";
+  EventPassTypeUpdateRequest,
+  EventPassTypeUpdateSchema,
+} from "../../../models/update_schemas/EventPassTypeUpdateSchema";
+import { FAQUpdateRequest, FAQUpdateSchema } from "../../../models/update_schemas/FAQUpdateSchema";
 
-interface ModifyEquipmentDialogProps {
-  item?: Equipment;
+interface ModifyFAQDialogProps {
+  item?: FAQ;
   maxWidth?: number;
   minWidth?: number;
   paddingX?: number;
@@ -29,30 +26,23 @@ interface ModifyEquipmentDialogProps {
   onDialogClose: () => void;
 }
 
-const ModifyEquipmentDialog = forwardRef<HTMLDialogElement, ModifyEquipmentDialogProps>(
+const ModifyFAQDialog = forwardRef<HTMLDialogElement, ModifyFAQDialogProps>(
   (
-    {
-      item,
-      maxWidth,
-      minWidth,
-      onDialogClose,
-      paddingX,
-      onDialogSuccess,
-    }: ModifyEquipmentDialogProps,
+    { item, maxWidth, minWidth, onDialogClose, paddingX, onDialogSuccess }: ModifyFAQDialogProps,
     ref
   ) => {
-    const { statusCode: statusCode, put: putItem } = useApi<
-      Equipment,
-      undefined,
-      EquipmentUpdateRequest
-    >(ApiEndpoint.Equipment);
+    const { statusCode: statusCode, put: putItem } = useApi<FAQ, undefined, FAQUpdateRequest>(
+      ApiEndpoint.FAQ
+    );
 
     const [actionPerformed, setActionPerformed] = useState(false);
 
-    const methods = useForm<EquipmentUpdateRequest>({
-      resolver: zodResolver(EquipmentUpdateSchema),
+    console.log(item);
+    const methods = useForm<FAQUpdateRequest>({
+      resolver: zodResolver(FAQUpdateSchema),
       defaultValues: {
-        description: item?.description ?? null,
+        question: item?.question,
+        answer: item?.answer,
       },
     });
     const { handleSubmit, formState, reset } = methods;
@@ -61,19 +51,20 @@ const ModifyEquipmentDialog = forwardRef<HTMLDialogElement, ModifyEquipmentDialo
     useEffect(() => {
       if (item) {
         reset({
-          description: item.description ?? null,
+          question: item?.question,
+          answer: item?.answer,
         });
       }
     }, [item, reset]);
 
     //console.log(item);
 
-    const onSubmit: SubmitHandler<EquipmentUpdateRequest> = async (data) => {
+    const onSubmit: SubmitHandler<FAQUpdateRequest> = async (data) => {
       console.log(data);
       await toast.promise(putItem({ id: item?.id, body: data }), {
         pending: "Wykonywanie żądania",
-        success: "Wyposażenie sali zostało pomyślnie zmodyfikowane",
-        error: "Wystąpił błąd podczas modyfikacji wyposażenia sali",
+        success: "Pozycja FAQ została pomyślnie zmodyfikowana",
+        error: "Wystąpił błąd podczas modyfikacji pozycji FAQ",
       });
       setActionPerformed(true);
     };
@@ -98,24 +89,32 @@ const ModifyEquipmentDialog = forwardRef<HTMLDialogElement, ModifyEquipmentDialo
           onClose={onDialogClose}
         >
           <div className="flex flex-col justify-center items-center gap-2 pt-2 pb-1">
-            <h3 className="text-center font-semibold text-[24px]">Modyfikacja wyposażenia sali</h3>
-            <p className="text-textPrimary text-base text-center">
-              ID: {item.id}, Nazwa: {item.name}
-            </p>
+            <h3 className="text-center font-semibold text-[24px]">Modyfikacja pozycji FAQ</h3>
+            <p className="text-textPrimary text-base text-center">ID: {item.id}</p>
           </div>
           <FormProvider {...methods}>
             <form
               className="flex flex-col justify-center items-center gap-3 w-full mt-4"
               onSubmit={handleSubmit(onSubmit)}
             >
-              <div className="flex flex-col justify-center items-center gap-3">
+              <div className="flex flex-col justify-center items-center gap-2 w-full">
                 <Input
-                  label="Opis"
+                  label="Pytanie"
                   type="text"
-                  name="description"
-                  maxLength={200}
-                  error={errors.description}
-                  errorHeight={20}
+                  name="question"
+                  maxLength={100}
+                  error={errors.question}
+                  isFirstLetterUpperCase={true}
+                  errorHeight={15}
+                />
+                <Input
+                  label="Odpowiedź"
+                  type="text"
+                  name="answer"
+                  maxLength={1000}
+                  error={errors.answer}
+                  isFirstLetterUpperCase={true}
+                  errorHeight={15}
                 />
               </div>
               <div className="flex flex-row justify-center items-center gap-2">
@@ -145,4 +144,4 @@ const ModifyEquipmentDialog = forwardRef<HTMLDialogElement, ModifyEquipmentDialo
     );
   }
 );
-export default ModifyEquipmentDialog;
+export default ModifyFAQDialog;

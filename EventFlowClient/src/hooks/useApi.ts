@@ -76,6 +76,8 @@ function useApi<TEntity, TPostEntity = undefined, TPutEntity = undefined, TPatch
               body as TPostEntity,
               id
             );
+
+            console.log(postCode);
             /* setData((prev) => {
               if (Array.isArray(prev)) {
                 return [...prev, postData as TEntity];

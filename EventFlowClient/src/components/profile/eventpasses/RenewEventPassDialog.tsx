@@ -297,15 +297,6 @@ const RenewEventPassDialog = forwardRef<HTMLDialogElement, RenewEventPassDialogP
                           height={45}
                           rounded={999}
                         />
-                        {/* <Button
-                          text={promisePending ? "Ładowanie..." : "Przedłuż karnet"}
-                          width={175}
-                          height={45}
-                          icon={faCheck}
-                          iconSize={18}
-                          style={ButtonStyle.Primary}
-                          action={onRenewEventPass}
-                        ></Button> */}
                       </div>
                     </form>
                   </FormProvider>

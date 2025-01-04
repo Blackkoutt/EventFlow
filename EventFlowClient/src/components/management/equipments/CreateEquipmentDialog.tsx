@@ -15,12 +15,17 @@ import { EquipmentRequest, EquipmentSchema } from "../../../models/create_schema
 
 interface CreateEquipmentDialog {
   maxWidth?: number;
+  minWidth?: number;
+  paddingX?: number;
   onDialogSuccess: () => void;
   onDialogClose: () => void;
 }
 
 const CreateEquipmentDialog = forwardRef<HTMLDialogElement, CreateEquipmentDialog>(
-  ({ maxWidth, onDialogClose, onDialogSuccess }: CreateEquipmentDialog, ref) => {
+  (
+    { maxWidth, minWidth, onDialogClose, paddingX, onDialogSuccess }: CreateEquipmentDialog,
+    ref
+  ) => {
     const { statusCode: statusCode, post: postItem } = useApi<Equipment, EquipmentRequest>(
       ApiEndpoint.Equipment
     );
@@ -30,7 +35,7 @@ const CreateEquipmentDialog = forwardRef<HTMLDialogElement, CreateEquipmentDialo
     const methods = useForm<EquipmentRequest>({
       resolver: zodResolver(EquipmentSchema),
     });
-    const { handleSubmit, formState } = methods;
+    const { handleSubmit, formState, reset } = methods;
     const { errors, isSubmitting } = formState;
 
     const onSubmit: SubmitHandler<EquipmentRequest> = async (data) => {
@@ -47,13 +52,21 @@ const CreateEquipmentDialog = forwardRef<HTMLDialogElement, CreateEquipmentDialo
       if (actionPerformed) {
         if (statusCode == HTTPStatusCode.Created) {
           onDialogSuccess();
+          reset();
         }
         setActionPerformed(false);
       }
     }, [actionPerformed]);
 
     return (
-      <Dialog ref={ref} maxWidth={maxWidth} onClose={onDialogClose}>
+      <Dialog
+        ref={ref}
+        maxWidth={maxWidth}
+        paddingLeft={paddingX}
+        paddingRight={paddingX}
+        minWidth={minWidth}
+        onClose={onDialogClose}
+      >
         <div className="flex flex-col justify-center items-center pt-2 pb-1">
           <h3 className="text-center font-semibold text-[24px]">Tworzenie wyposażenia sali</h3>
         </div>
@@ -89,7 +102,10 @@ const CreateEquipmentDialog = forwardRef<HTMLDialogElement, CreateEquipmentDialo
                 icon={faXmark}
                 iconSize={18}
                 style={ButtonStyle.DefaultGray}
-                action={onDialogClose}
+                action={() => {
+                  onDialogClose();
+                  reset();
+                }}
               ></Button>
               <FormButton
                 text="Zatwierdź"

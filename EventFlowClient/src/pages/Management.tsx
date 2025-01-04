@@ -77,11 +77,12 @@ const Management = () => {
           showIndicators={false}
           numScroll={1}
           numVisible={5}
+          style={{ zIndex: 10 }}
           responsiveOptions={responsiveOptions}
           itemTemplate={productTemplate}
         />
       </div>
-      <div className="flex mb-12 pt-11 flex-col items-center justify-start rounded-lg border-gray-100 border-[2px] bg-white shadow-xl p-3 w-full min-h-[660px]">
+      <div className="flex mb-12 py-11 flex-col items-center justify-start rounded-lg border-gray-100 border-[2px] bg-white shadow-xl p-3 w-full min-h-[660px]">
         <Outlet />
       </div>
     </div>

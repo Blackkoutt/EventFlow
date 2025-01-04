@@ -1,6 +1,6 @@
 import { forwardRef, useEffect, useState } from "react";
 import Dialog from "../../common/Dialog";
-import { AdditionalServices, Equipment } from "../../../models/response_models";
+import { FAQ } from "../../../models/response_models";
 import Button, { ButtonStyle } from "../../buttons/Button";
 import useApi from "../../../hooks/useApi";
 import { ApiEndpoint } from "../../../helpers/enums/ApiEndpointEnum";
@@ -8,11 +8,9 @@ import { HTTPStatusCode } from "../../../helpers/enums/HTTPStatusCode";
 import { faCheck, faXmark } from "@fortawesome/free-solid-svg-icons";
 import LabelText from "../../common/LabelText";
 import { toast } from "react-toastify";
-import MessageText from "../../common/MessageText";
-import { MessageType } from "../../../helpers/enums/MessageTypeEnum";
 
-interface DeleteEquipmentDialogProps {
-  item?: Equipment;
+interface DeleteFAQDialogProps {
+  item?: FAQ;
   maxWidth?: number;
   minWidth?: number;
   paddingX?: number;
@@ -20,7 +18,7 @@ interface DeleteEquipmentDialogProps {
   onDialogClose: () => void;
 }
 
-const DeleteEquipmentDialog = forwardRef<HTMLDialogElement, DeleteEquipmentDialogProps>(
+const DeleteFAQDialog = forwardRef<HTMLDialogElement, DeleteFAQDialogProps>(
   (
     {
       item,
@@ -29,10 +27,10 @@ const DeleteEquipmentDialog = forwardRef<HTMLDialogElement, DeleteEquipmentDialo
       onDialogClose,
       paddingX,
       onDialogSuccess,
-    }: DeleteEquipmentDialogProps,
+    }: DeleteFAQDialogProps,
     ref
   ) => {
-    const { del: deleteItem, statusCode: statusCode } = useApi<Equipment>(ApiEndpoint.Equipment);
+    const { del: deleteItem, statusCode: statusCode } = useApi<FAQ>(ApiEndpoint.FAQ);
     const [actionPerformed, setActionPerformed] = useState(false);
     const [promisePending, setPromisePending] = useState(false);
 
@@ -41,8 +39,8 @@ const DeleteEquipmentDialog = forwardRef<HTMLDialogElement, DeleteEquipmentDialo
         setPromisePending(true);
         await toast.promise(deleteItem({ id: item.id }), {
           pending: "Wykonywanie żądania",
-          success: "Wyposażenie sali zostało pomyślnie usunięta",
-          error: "Wystąpił błąd podczas usuwania wyposażenia sali",
+          success: "Pozycja FAQ została pomyślnie usunięta",
+          error: "Wystąpił błąd podczas usuwania pozycji FAQ",
         });
         setPromisePending(false);
         setActionPerformed(true);
@@ -71,21 +69,15 @@ const DeleteEquipmentDialog = forwardRef<HTMLDialogElement, DeleteEquipmentDialo
           >
             <article className="flex flex-col justify-center items-center gap-5">
               <div className="flex flex-col justify-center items-center gap-2">
-                <h2>Usunięcie wyposażenia sali</h2>{" "}
+                <h2>Usunięcie pozycji FAQ</h2>{" "}
                 <p className="text-textPrimary text-base text-center">
-                  Czy na pewno chcesz usunąć te wyposażenie ?
+                  Czy na pewno chcesz usunąć tę pozycję FAQ ?
                 </p>
               </div>
               <div className="flex flex-col justify-center items-center gap-2">
-                <LabelText labelWidth={60} label="ID:" text={item.id} gap={10} />
-                <LabelText labelWidth={60} label="Nazwa:" text={item.name} gap={10} />
-                <LabelText labelWidth={60} label="Opis:" text={item.description} gap={10} />
-              </div>
-              <div className="flex flex-col justify-center items-center gap-2">
-                <MessageText
-                  messageType={MessageType.Info}
-                  text={`Usunięcie wyposażenia sprawi, że nie będzie ono dostępne dla przyszłych rezerwacji sal. Pamiętaj, że te wyposażenie może jednak wciąż występować w aktywnych i przeszłych rezerwacjach.`}
-                />
+                <LabelText labelWidth={90} label="ID:" text={item.id} gap={10} />
+                <LabelText labelWidth={90} label="Pytanie:" text={item.question} gap={10} />
+                <LabelText labelWidth={90} label="Odpowiedź:" text={item.answer} gap={10} />
               </div>
               <div className="flex flex-row justify-center items-center gap-2">
                 <Button
@@ -114,4 +106,4 @@ const DeleteEquipmentDialog = forwardRef<HTMLDialogElement, DeleteEquipmentDialo
     );
   }
 );
-export default DeleteEquipmentDialog;
+export default DeleteFAQDialog;

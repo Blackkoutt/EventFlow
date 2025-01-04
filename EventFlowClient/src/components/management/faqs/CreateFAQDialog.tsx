@@ -1,6 +1,6 @@
 import { forwardRef, useEffect, useState } from "react";
 import Dialog from "../../common/Dialog";
-import { EventPassType } from "../../../models/response_models";
+import { FAQ } from "../../../models/response_models";
 import Button, { ButtonStyle } from "../../buttons/Button";
 import useApi from "../../../hooks/useApi";
 import { ApiEndpoint } from "../../../helpers/enums/ApiEndpointEnum";
@@ -10,13 +10,10 @@ import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import FormButton from "../../common/forms/FormButton";
 import { toast } from "react-toastify";
-import {
-  EventPassTypeRequest,
-  EventPassTypeSchema,
-} from "../../../models/create_schemas/EventPassTypeSchema";
 import Input from "../../common/forms/Input";
+import { FAQRequest, FAQSchema } from "../../../models/create_schemas/FAQSchema";
 
-interface CreateEventPassTypeDialogProps {
+interface CreateFAQDialogProps {
   maxWidth?: number;
   minWidth?: number;
   paddingX?: number;
@@ -24,45 +21,35 @@ interface CreateEventPassTypeDialogProps {
   onDialogClose: () => void;
 }
 
-const CreateEventPassTypeDialog = forwardRef<HTMLDialogElement, CreateEventPassTypeDialogProps>(
-  (
-    {
-      maxWidth,
-      minWidth,
-      onDialogClose,
-      paddingX,
-      onDialogSuccess,
-    }: CreateEventPassTypeDialogProps,
-    ref
-  ) => {
-    const { statusCode: statusCode, post: postItem } = useApi<EventPassType, EventPassTypeRequest>(
-      ApiEndpoint.EventPassType
-    );
+const CreateFAQDialog = forwardRef<HTMLDialogElement, CreateFAQDialogProps>(
+  ({ maxWidth, minWidth, onDialogClose, paddingX, onDialogSuccess }: CreateFAQDialogProps, ref) => {
+    const { statusCode: statusCode, post: postItem } = useApi<FAQ, FAQRequest>(ApiEndpoint.FAQ);
 
     const [actionPerformed, setActionPerformed] = useState(false);
 
-    const methods = useForm<EventPassTypeRequest>({
-      resolver: zodResolver(EventPassTypeSchema),
+    const methods = useForm<FAQRequest>({
+      resolver: zodResolver(FAQSchema),
     });
 
     const { handleSubmit, formState, reset } = methods;
     const { errors, isSubmitting } = formState;
 
-    const onSubmit: SubmitHandler<EventPassTypeRequest> = async (data) => {
+    const onSubmit: SubmitHandler<FAQRequest> = async (data) => {
       console.log(data);
       await toast.promise(postItem({ body: data }), {
         pending: "Wykonywanie żądania",
-        success: "Typ karnetu został pomyślnie utworzony",
-        error: "Wystąpił błąd podczas tworzenia typu karnetu",
+        success: "Pozycja FAQ została pomyślnie utworzona",
+        error: "Wystąpił błąd podczas tworzenia pozycji FAQ",
       });
       setActionPerformed(true);
     };
 
     useEffect(() => {
       if (actionPerformed) {
+        console.log(statusCode);
         if (statusCode == HTTPStatusCode.Created) {
-          onDialogSuccess();
           reset();
+          onDialogSuccess();
         }
         setActionPerformed(false);
       }
@@ -75,10 +62,13 @@ const CreateEventPassTypeDialog = forwardRef<HTMLDialogElement, CreateEventPassT
         paddingLeft={paddingX}
         paddingRight={paddingX}
         minWidth={minWidth}
-        onClose={onDialogClose}
+        onClose={() => {
+          onDialogClose();
+          reset();
+        }}
       >
         <div className="flex flex-col justify-center items-center pt-2 pb-1">
-          <h3 className="text-center font-semibold text-[24px]">Tworzenie typu karnetu</h3>
+          <h3 className="text-center font-semibold text-[24px]">Tworzenie pozycji FAQ</h3>
         </div>
         <FormProvider {...methods}>
           <form
@@ -87,39 +77,21 @@ const CreateEventPassTypeDialog = forwardRef<HTMLDialogElement, CreateEventPassT
           >
             <div className="flex flex-col justify-center items-center gap-2 w-full">
               <Input
-                label="Nazwa"
+                label="Pytanie"
                 type="text"
-                name="name"
-                maxLength={40}
-                error={errors.name}
+                name="question"
+                maxLength={100}
+                error={errors.question}
                 isFirstLetterUpperCase={true}
                 errorHeight={15}
               />
               <Input
-                label="Długość karnetu (mies)"
-                type="number"
-                name="validityPeriodInMonths"
-                min={1}
-                max={60}
-                error={errors.validityPeriodInMonths}
-                errorHeight={15}
-              />
-              <Input
-                label="Procent zniżki przy przedłużeniu  (%)"
-                type="number"
-                name="renewalDiscountPercentage"
-                min={0}
-                max={100}
-                error={errors.renewalDiscountPercentage}
-                errorHeight={15}
-              />
-              <Input
-                label="Cena (zł)"
-                type="number"
-                name="price"
-                min={1}
-                max={10000}
-                error={errors.price}
+                label="Odpowiedź"
+                type="text"
+                name="answer"
+                maxLength={1000}
+                error={errors.answer}
+                isFirstLetterUpperCase={true}
                 errorHeight={15}
               />
             </div>
@@ -152,4 +124,4 @@ const CreateEventPassTypeDialog = forwardRef<HTMLDialogElement, CreateEventPassT
     );
   }
 );
-export default CreateEventPassTypeDialog;
+export default CreateFAQDialog;
