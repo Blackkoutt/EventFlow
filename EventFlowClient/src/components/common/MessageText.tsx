@@ -34,7 +34,7 @@ const MessageText = ({
         setIcon(faInfoCircle);
         break;
     }
-  }, []);
+  }, [messageType]);
 
   return (
     <p style={{ color: textColor, fontWeight: `${isSemibold ? 600 : 400}`, maxWidth: maxWidth }}>

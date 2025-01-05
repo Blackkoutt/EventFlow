@@ -19,6 +19,7 @@ export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> 
   onlyInt?: boolean;
   errorHeight?: number;
   maxLength?: number;
+  step?: number;
   iconHeight?: number;
 }
 
@@ -30,6 +31,7 @@ const Input = ({
   name,
   min,
   max,
+  step = 1,
   pattern,
   maxLength,
   minLength,
@@ -135,6 +137,7 @@ const Input = ({
             id={name}
             min={min}
             max={max}
+            step={step}
             maxLength={(() => {
               switch (type) {
                 case "tel":

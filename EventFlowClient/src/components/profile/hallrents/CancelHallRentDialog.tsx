@@ -1,15 +1,14 @@
 import { forwardRef, useEffect, useState } from "react";
 import Dialog from "../../common/Dialog";
-import { Hall, HallRent, Reservation, Seat } from "../../../models/response_models";
+import { Hall, HallRent } from "../../../models/response_models";
 import DateFormatter from "../../../helpers/DateFormatter";
 import { DateFormat } from "../../../helpers/enums/DateFormatEnum";
 import Button, { ButtonStyle } from "../../buttons/Button";
 import useApi from "../../../hooks/useApi";
 import { ApiEndpoint } from "../../../helpers/enums/ApiEndpointEnum";
 import { HTTPStatusCode } from "../../../helpers/enums/HTTPStatusCode";
-import { faCheck, faInfoCircle, faWarning, faXmark } from "@fortawesome/free-solid-svg-icons";
+import { faCheck, faXmark } from "@fortawesome/free-solid-svg-icons";
 import LabelText from "../../common/LabelText";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { toast } from "react-toastify";
 import { MessageType } from "../../../helpers/enums/MessageTypeEnum";
 import MessageText from "../../common/MessageText";

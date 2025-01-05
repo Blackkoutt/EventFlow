@@ -70,6 +70,9 @@ export const ApiUrlConfig = {
   [ApiEndpoint.Hall]: {
     url: (id?: number | string) => `/halls${id ? `/${id}` : ""}`,
   },
+  [ApiEndpoint.HallView]: {
+    url: (id?: number | string) => `/halls/${id}/pdf-hallview`,
+  },
   [ApiEndpoint.HallType]: {
     url: (id?: number | string) => `/halltypes${id ? `/${id}` : ""}`,
   },

@@ -47,8 +47,6 @@ const RenewEventPassDialog = forwardRef<HTMLDialogElement, RenewEventPassDialogP
     );
 
     const [passTypesSelectOptions, setPassTypesSelectOptions] = useState<SelectOption[]>([]);
-    //const [actionPerformed, setActionPerformed] = useState(false);
-    //const [promisePending, setPromisePending] = useState(false);
 
     const [selectedPassType, setSelectedPassType] = useState<EventPassType>();
 

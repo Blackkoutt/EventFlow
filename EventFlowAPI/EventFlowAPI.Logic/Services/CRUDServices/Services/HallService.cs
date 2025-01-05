@@ -100,10 +100,10 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             if (!hallEntity.IsVisible)
                 return Result<HallResponseDto>.Failure(Error.NotFound);
 
-            if (hallEntity.HallNr != requestDto!.HallNr ||
+            if (hallEntity.HallNr != requestDto!.HallNr /*||
                 hallEntity.Floor != requestDto!.Floor ||
                 hallEntity.HallDetails!.TotalLength != requestDto!.HallDetails!.TotalLength ||
-                hallEntity.HallDetails!.TotalWidth != requestDto!.HallDetails!.TotalWidth)
+                hallEntity.HallDetails!.TotalWidth != requestDto!.HallDetails!.TotalWidth*/)
             {
                 await UpdateHallCopies(hallEntity, requestDto);
             }
@@ -120,8 +120,8 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             };
 
             var newHallEntity = (Hall)MapToEntity(requestDto, hallEntity);
-            decimal area = requestDto!.HallDetails.TotalLength * requestDto!.HallDetails.TotalWidth;
-            newHallEntity.HallDetails!.TotalArea = Math.Round(area, 2);
+            //decimal area = requestDto!.HallDetails.TotalLength * requestDto!.HallDetails.TotalWidth;
+            //newHallEntity.HallDetails!.TotalArea = Math.Round(area, 2);
 
             // HallView Update
             var hallViewFileNameResult = await _fileService.CreateHallViewPDF(newHallEntity, null, null, isUpdate: true);
@@ -140,9 +140,9 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             }
 
             // Update Hall Rents in hall
-            if (hallEntity.HallNr != requestDto!.HallNr ||
+            if (hallEntity.HallNr != requestDto!.HallNr /*||
                 hallEntity.HallDetails!.TotalLength != requestDto!.HallDetails!.TotalLength ||
-                hallEntity.HallDetails!.TotalWidth != requestDto!.HallDetails!.TotalWidth)
+                hallEntity.HallDetails!.TotalWidth != requestDto!.HallDetails!.TotalWidth*/)
             {
                 var updateHallRentError = await UpdateHallRentsInCauseOfHallUpdate(hallEntity, oldHallEntity);
                 if (updateHallRentError != Error.None)
@@ -265,11 +265,11 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             foreach (var hall in hallCopies)
             {
                 hall.HallNr = requestDto!.HallNr;
-                hall.Floor = requestDto!.Floor;
-                hall.HallDetails!.TotalLength = requestDto!.HallDetails.TotalLength;
-                hall.HallDetails!.TotalWidth = requestDto!.HallDetails.TotalWidth;
-                decimal copyHallArea = requestDto!.HallDetails.TotalLength * requestDto!.HallDetails.TotalWidth;
-                hall.HallDetails!.TotalArea = Math.Round(copyHallArea, 2);
+                //hall.Floor = requestDto!.Floor;
+                //hall.HallDetails!.TotalLength = requestDto!.HallDetails.TotalLength;
+                //hall.HallDetails!.TotalWidth = requestDto!.HallDetails.TotalWidth;
+               // decimal copyHallArea = requestDto!.HallDetails.TotalLength * requestDto!.HallDetails.TotalWidth;
+                //hall.HallDetails!.TotalArea = Math.Round(copyHallArea, 2);
 
                 _repository.Update(hall);
             }
@@ -546,20 +546,20 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             return Error.None;
         }
 
-        private static Error IsValidSeatsRowAndColumn(ICollection<SeatRequestDto> seatsFromRequest, IHallDetailsRequestDto hallDetails)
+        private static Error IsValidSeatsRowAndColumn(ICollection<SeatRequestDto> seatsFromRequest, IHallDetailsRequestDto? hallDetails)
         {
             foreach (var seat in seatsFromRequest)
             {
                 /*if (seat.Column > hallDetails.NumberOfSeatsColumns)
                     return SeatError.SeatColumnOutOfRange;*/
 
-                if (seat.GridColumn > hallDetails.MaxNumberOfSeatsColumns)
+                if (hallDetails != null && seat.GridColumn > hallDetails.MaxNumberOfSeatsColumns)
                     return SeatError.SeatGridColumnOutOfRange;
 
                 /*if (seat.Row > hallDetails.NumberOfSeatsRows)
                     return SeatError.SeatRowOutOfRange;*/
 
-                if (seat.GridRow > hallDetails.MaxNumberOfSeatsRows)
+                if (hallDetails != null && seat.GridRow > hallDetails.MaxNumberOfSeatsRows)
                     return SeatError.SeatGridRowOutOfRange;
 
                 var isSeatWithRowOrColumnExists = seatsFromRequest.Any(s =>
@@ -605,7 +605,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
 
             int hallTypeId;
             ICollection<SeatRequestDto> seats = [];
-            HallDetailsRequestDto details;
+            HallDetailsRequestDto? details;
             switch (requestDto)
             {
                 case HallRequestDto hallRequestDto:
@@ -616,7 +616,8 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
                 case UpdateHallRequestDto updateHallRequestDto:
                     hallTypeId = updateHallRequestDto.HallTypeId;
                     seats = updateHallRequestDto.Seats;
-                    details = updateHallRequestDto.HallDetails;
+                    details = null;
+                    //details = updateHallRequestDto.HallDetails;
                     break;
                 default:
                     return Error.BadRequestType;
@@ -673,6 +674,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
                 responseDto.HallDetails = null;
                 responseDto.Type = entity.Type.AsDto<HallTypeResponseDto>();
                 responseDto.Type.Equipments = [];
+                responseDto.SeatsCount = entity.Seats.Count;
                 responseDto.Seats = [];
                 return responseDto;
             });
@@ -690,7 +692,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
                 var equipmentDto = eq.AsDto<EquipmentResponseDto>();
                 return equipmentDto;
             }).ToList();
-
+            responseDto.SeatsCount = entity.Seats.Count;
             responseDto.Seats = entity.Seats.Select(seat =>
             {
                 var seatDto = seat.AsDto<SeatResponseDto>();
@@ -712,7 +714,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
                     seats = hallRequestDto.Seats.ToList();
                     break;
                 case UpdateHallRequestDto updateHallRequestDto:
-                    hallDetails = updateHallRequestDto.HallDetails;
+                    //hallDetails = updateHallRequestDto.HallDetails;
                     seats = updateHallRequestDto.Seats.ToList();
                     break;
             }
@@ -779,12 +781,12 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
         protected sealed override IEntity MapToEntity(UpdateHallRequestDto requestDto, Hall oldEntity)
         {
             var hallEntity = (Hall)requestDto.MapTo(oldEntity);
-            hallEntity.HallDetails = (HallDetails)requestDto.HallDetails.MapTo(oldEntity.HallDetails!);
+           /* hallEntity.HallDetails = (HallDetails)requestDto.HallDetails.MapTo(oldEntity.HallDetails!);
 
             hallEntity.HallDetails!.NumberOfSeats = hallEntity.Seats.Count;
             hallEntity.HallDetails!.MaxNumberOfSeats = hallEntity.HallDetails!.MaxNumberOfSeatsRows * hallEntity.HallDetails!.MaxNumberOfSeatsColumns;
             var area = requestDto!.HallDetails.TotalLength * requestDto!.HallDetails.TotalWidth;
-            hallEntity.HallDetails!.TotalArea = Math.Round(area, 2);
+            hallEntity.HallDetails!.TotalArea = Math.Round(area, 2);*/
 
             hallEntity.Seats = MapSeats(oldEntity.Seats, requestDto.Seats);
 

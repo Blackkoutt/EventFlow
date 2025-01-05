@@ -11,6 +11,7 @@ export interface SelectProps extends React.SelectHTMLAttributes<HTMLSelectElemen
   isIcons?: boolean;
   maxHeight?: number;
   isEdit?: boolean;
+  selectedOption?: SelectOption;
   optionValues: SelectOption[];
   error: FieldError | Merge<FieldError, FieldErrorsImpl<any>> | undefined;
 }
@@ -20,6 +21,7 @@ const Select = ({
   error,
   isIcons = false,
   name,
+  selectedOption,
   errorHeight,
   maxHeight = 250,
   optionValues,
@@ -28,18 +30,23 @@ const Select = ({
   const [isFocused, setIsFocused] = useState(false);
   const { register, getValues, setFocus, setValue } = useFormContext();
 
-  const [selectedValue, setSelectedValue] = useState("");
+  const [selectedValue, setSelectedValue] = useState<SelectOption>();
   const [isOpen, setIsOpen] = useState(false);
 
   console.log(getValues(name) === "");
 
   useEffect(() => {
+    if (selectedOption) {
+      setValue(name, selectedOption.value);
+      setSelectedValue(selectedOption);
+    }
+  }, [selectedOption]);
+
+  useEffect(() => {
     if (optionValues.length > 0) {
       if (getValues(name) === "") {
         setValue(name, optionValues[0].value);
-        setSelectedValue(optionValues[0].option);
-      } else {
-        setSelectedValue(getValues(name));
+        setSelectedValue(optionValues[0]);
       }
     }
   }, []);
@@ -48,11 +55,12 @@ const Select = ({
     if (isFocused) setFocus(name);
   }, [isFocused]);
 
-  const handleSelect = (value: number | string, option: string) => {
-    setValue(name, value);
-    setSelectedValue(option);
+  const handleSelect = (selectOption: SelectOption) => {
+    setValue(name, selectOption.value);
+    setSelectedValue(selectOption);
     setIsOpen(false);
   };
+
   const errorMessage = error ? (error as FieldError)?.message : undefined;
 
   return (
@@ -97,17 +105,17 @@ const Select = ({
           <div className="translate-x-[2px]">
             {isIcons ? (
               <div className="flex flex-row justify-start items-start gap-2 mt-[2px]">
-                <i className={selectedValue}></i>
-                <p>{selectedValue}</p>
+                <i className={selectedValue?.value.toString()}></i>
+                <p>{selectedValue?.option}</p>
               </div>
             ) : (
-              selectedValue
+              selectedValue?.option
             )}
           </div>
         </div>
         {isOpen && (
           <div
-            className="select-items overflow-y-scroll grid grid-cols-5 gap-2 absolute left-0 right-0 top-full mt-1 bg-[#efefef] text-black rounded-lg shadow-lg z-10"
+            className="select-items overflow-y-scroll flex flex-col gap-2 absolute left-0 right-0 top-full mt-1 bg-[#efefef] text-black rounded-lg shadow-lg z-10"
             style={{ maxHeight: maxHeight }}
             onClick={(e) => e.stopPropagation()}
           >
@@ -116,13 +124,13 @@ const Select = ({
                 <i
                   key={optionValue.value}
                   className={`${optionValue.value} p-3 text-[18px] rounded-lg cursor-pointer hover:bg-primaryPurple hover:text-white select-none`}
-                  onClick={() => handleSelect(optionValue.value, optionValue.option)}
+                  onClick={() => handleSelect(optionValue)}
                 ></i>
               ) : (
                 <div
                   key={optionValue.value}
                   className="p-3 rounded-lg cursor-pointer hover:bg-primaryPurple hover:text-white select-none"
-                  onClick={() => handleSelect(optionValue.value, optionValue.option)}
+                  onClick={() => handleSelect(optionValue)}
                 >
                   {optionValue.option}
                 </div>

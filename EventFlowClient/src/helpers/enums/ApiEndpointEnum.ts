@@ -22,6 +22,7 @@ export enum ApiEndpoint {
   HallRentHallView,
   HallRentPDFInovice,
   Hall,
+  HallView,
   HallType,
   MediaPatron,
   News,

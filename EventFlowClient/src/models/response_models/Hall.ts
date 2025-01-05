@@ -7,6 +7,7 @@ export type Hall = IModel & {
   hallNr: number;
   rentalPricePerHour: number;
   floor: number;
+  seatsCount: number;
   hallDetails?: HallDetails;
   type?: HallType;
   seats: Seat[];

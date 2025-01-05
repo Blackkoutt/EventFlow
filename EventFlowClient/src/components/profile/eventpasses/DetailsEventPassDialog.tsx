@@ -8,15 +8,16 @@ import { getStatus } from "../../../helpers/GetStatus";
 
 interface DetailsEventPassDialogProps {
   eventPass?: EventPass;
+  isAdminDetails?: boolean;
 }
 
 const DetailsEventPassDialog = forwardRef<HTMLDialogElement, DetailsEventPassDialogProps>(
-  ({ eventPass }: DetailsEventPassDialogProps, ref) => {
+  ({ eventPass, isAdminDetails = false }: DetailsEventPassDialogProps, ref) => {
     return (
       <div>
         {eventPass && (
           <Dialog ref={ref}>
-            <article className="flex flex-col justify-center items-center px-5 pb-2 gap-5 max-w-[750px]">
+            <article className="flex flex-col justify-center items-center px-5 pb-2 gap-5">
               <div className="flex flex-col justify-center items-center gap-2">
                 <h2>Szczegóły karnetu</h2>
                 <p className="text-textPrimary text-base text-center">
@@ -37,6 +38,22 @@ const DetailsEventPassDialog = forwardRef<HTMLDialogElement, DetailsEventPassDia
                     }
                     gap={10}
                   />
+                  {isAdminDetails && (
+                    <>
+                      <LabelText
+                        label="Użytkownik:"
+                        labelWidth={150}
+                        text={`${eventPass.user?.name} ${eventPass.user?.surname}`}
+                        gap={10}
+                      />
+                      <LabelText
+                        label="E-mail:"
+                        labelWidth={150}
+                        text={eventPass.user?.emailAddress}
+                        gap={10}
+                      />
+                    </>
+                  )}
                   <LabelText
                     labelWidth={150}
                     label="Status:"

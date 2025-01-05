@@ -1,11 +1,5 @@
 import { forwardRef, useEffect } from "react";
-import {
-  AdditionalServices,
-  EventPass,
-  Hall,
-  HallRent,
-  Seat,
-} from "../../../models/response_models";
+import { AdditionalServices, Hall, HallRent } from "../../../models/response_models";
 import Dialog from "../../common/Dialog";
 import LabelText from "../../common/LabelText";
 import DateFormatter from "../../../helpers/DateFormatter";
@@ -16,10 +10,11 @@ import useApi from "../../../hooks/useApi";
 
 interface DetailsHallRentDialogProps {
   hallRent?: HallRent;
+  isAdminDetails?: boolean;
 }
 
 const DetailsHallRentDialog = forwardRef<HTMLDialogElement, DetailsHallRentDialogProps>(
-  ({ hallRent }: DetailsHallRentDialogProps, ref) => {
+  ({ hallRent, isAdminDetails = false }: DetailsHallRentDialogProps, ref) => {
     const { data: hallWidthDetails, get: getHallWithDetails } = useApi<Hall>(ApiEndpoint.Hall);
 
     useEffect(() => {
@@ -31,7 +26,7 @@ const DetailsHallRentDialog = forwardRef<HTMLDialogElement, DetailsHallRentDialo
       <div>
         {hallRent && hallWidthDetails.length !== 0 && (
           <Dialog ref={ref}>
-            <article className="flex flex-col justify-center items-center px-5 pb-2 gap-5 max-w-[750px]">
+            <article className="flex flex-col justify-center items-center px-5 pb-2 gap-5">
               <div className="flex flex-col justify-center items-center gap-2">
                 <h2>Szczegóły rezerwacji sali</h2>
                 <p className="text-textPrimary text-base text-center">
@@ -53,6 +48,22 @@ const DetailsHallRentDialog = forwardRef<HTMLDialogElement, DetailsHallRentDialo
                       }
                       gap={10}
                     />
+                    {isAdminDetails && (
+                      <>
+                        <LabelText
+                          label="Użytkownik:"
+                          labelWidth={150}
+                          text={`${hallRent.user?.name} ${hallRent.user?.surname}`}
+                          gap={10}
+                        />
+                        <LabelText
+                          label="E-mail:"
+                          labelWidth={150}
+                          text={hallRent.user?.emailAddress}
+                          gap={10}
+                        />
+                      </>
+                    )}
                     <LabelText
                       labelWidth={150}
                       label="Status:"

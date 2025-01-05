@@ -49,8 +49,8 @@ const ActionsTemplate = ({
         <TableActionButton
           icon={faDownload}
           buttonColor="#0ea5e9"
-          text="Pobierz bilet"
-          width={140}
+          text="Pobierz"
+          width={110}
           onClick={() => {
             onDownload?.(rowData);
           }}

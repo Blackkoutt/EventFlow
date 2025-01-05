@@ -150,7 +150,13 @@ const ReservationsManagement = () => {
         removableSort
         filters={filters}
         filterDisplay="row"
-        globalFilterFields={["name"]}
+        globalFilterFields={[
+          "reservationDate",
+          "user.name",
+          "ticket.festival.name",
+          "ticket.event.name",
+          "paymentAmount",
+        ]}
         emptyMessage="Brak rezerwacji"
         header={
           <HeaderTemplate

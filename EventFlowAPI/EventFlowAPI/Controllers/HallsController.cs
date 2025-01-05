@@ -46,7 +46,7 @@ namespace EventFlowAPI.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        public async Task<IActionResult> GetPdfHallViewByHallRentId([FromRoute] int id)
+        public async Task<IActionResult> GetPdfHallViewByHallId([FromRoute] int id)
         {
             var result = await _fileService.GetFile<Hall>(id, FileType.PDF, BlobContainer.HallViewsPDF);
             if (!result.IsSuccessful)

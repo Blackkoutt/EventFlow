@@ -136,7 +136,7 @@ const UserHallRents = () => {
         hallRentId={hallRentToModifyHall?.id}
         onDialogClose={() => modifyHallDialog.current?.close()}
         onDialogConfirm={reloadHallRentsAfterSuccessDialog}
-      ></ModifyHallDialog>
+      />
 
       <CancelHallRentDialog
         ref={cancelHallRentDialog}
