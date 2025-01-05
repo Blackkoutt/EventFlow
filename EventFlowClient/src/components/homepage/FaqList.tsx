@@ -5,17 +5,23 @@ import { FAQ } from "../../models/response_models";
 import Button, { ButtonStyle } from "../buttons/Button";
 import Accordion from "../common/Accordion";
 
-const FaqList = () => {
+interface FaqListProps {
+  faqCountToDisplay?: number;
+}
+
+const FaqList = ({ faqCountToDisplay }: FaqListProps) => {
   const { data: faqs, get: getFAQs } = useApi<FAQ>(ApiEndpoint.FAQ);
 
   useEffect(() => {
     getFAQs({ id: undefined, queryParams: undefined });
   }, []);
 
+  const displayedFaqs = faqCountToDisplay ? faqs?.slice(0, faqCountToDisplay) : faqs;
+
   return (
     <>
       <div className="flex flex-col px-48 gap-4">
-        {faqs?.map((faq) =>
+        {displayedFaqs?.map((faq) =>
           faq ? <Accordion key={faq.id} header={faq.question} content={faq.answer} /> : null
         )}
       </div>

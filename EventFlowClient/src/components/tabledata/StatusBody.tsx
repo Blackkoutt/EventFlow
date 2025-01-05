@@ -45,11 +45,7 @@ const StatusBody = ({
   }
   return (
     <div className="flex flex-col justify-center items-center hover: cursor-pointer">
-      <FontAwesomeIcon
-        icon={icon}
-        title={text}
-        style={{ color: color, fontSize: "22px" }}
-      ></FontAwesomeIcon>
+      <FontAwesomeIcon icon={icon} title={text} style={{ color: color, fontSize: "22px" }} />
     </div>
   );
 };

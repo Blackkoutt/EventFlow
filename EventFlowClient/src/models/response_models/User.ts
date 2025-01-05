@@ -8,7 +8,12 @@ export type User = {
   emailAddress: string;
   isVerified: boolean;
   dateOfBirth: string;
+  registeredDate: string;
   photoEndpoint?: string;
+  provider: string;
+  allReservationsCount: number;
+  allHallRentsCount: number;
+  isActiveEventPass: boolean;
   userData?: UserData;
   userRoles: string[];
 };

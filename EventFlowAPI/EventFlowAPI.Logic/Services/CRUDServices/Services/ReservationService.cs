@@ -19,6 +19,7 @@ using EventFlowAPI.Logic.Services.CRUDServices.Interfaces;
 using EventFlowAPI.Logic.Services.CRUDServices.Services.BaseServices;
 using EventFlowAPI.Logic.Services.OtherServices.Interfaces;
 using EventFlowAPI.Logic.UnitOfWork;
+using Serilog;
 using System.Linq;
 
 namespace EventFlowAPI.Logic.Services.CRUDServices.Services
@@ -178,6 +179,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
                 return Result<object>.Failure(validationResult.Error);
 
             var reservation = validationResult.Value.Entity;
+            
             var user = validationResult.Value.User;
 
             var deleteError = await SoftDeleteReservationAndFileTickets(reservation, deleteForFestival: true);
@@ -189,7 +191,8 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             //await _emailSender.SendInfoAboutCanceledReservation(reservation);
 
             // Send info about canceled reservations
-            var sendError = await _emailSender.SendInfo(reservation, EmailType.Cancel, user.EmailAddress);
+            Log.Information($"{user.EmailAddress}");
+            var sendError = await _emailSender.SendInfo(reservation, EmailType.Cancel, reservation.User.Email!);
             if (sendError != Error.None)
                 return Result<object>.Failure(sendError);
 

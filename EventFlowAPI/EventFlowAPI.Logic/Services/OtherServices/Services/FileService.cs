@@ -267,6 +267,15 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
             return await GetEntityPhoto(entity);    
         }
 
+        public async Task<Result<BlobResponseDto>> GetUserPhoto(string id)
+        {
+            var entity = await ((IUserRepository)_unitOfWork.GetRepository<User>()).GetOneAsync(id);
+            if(entity == null)
+                return Result<BlobResponseDto>.Failure(Error.NotFound);
+
+            return await GetEntityPhoto(entity);
+        }
+
 
         public async Task<Result<(byte[] PDFFile, string FileName)>> CreateHallRentPDF(HallRent hallRent, bool isUpdate = false)
         {

@@ -1,5 +1,5 @@
 import { DataTable } from "primereact/datatable";
-import { Equipment, EventPassType, FAQ } from "../../models/response_models";
+import { FAQ } from "../../models/response_models";
 import { ApiEndpoint } from "../../helpers/enums/ApiEndpointEnum";
 import useApi from "../../hooks/useApi";
 import { useEffect } from "react";
@@ -44,7 +44,7 @@ const FAQManagement = () => {
     {
       header: "Akcja",
       sortable: false,
-      body: (rowData: Equipment) => (
+      body: (rowData: FAQ) => (
         <ActionsTemplate
           includeDetails={false}
           rowData={rowData}
@@ -100,6 +100,7 @@ const FAQManagement = () => {
       <ModifyFAQDialog
         ref={modifyDialog}
         item={itemToModify}
+        minWidth={400}
         onDialogClose={onDialogClose}
         onDialogSuccess={reloadItemsAfterSuccessDialog}
       />

@@ -16,12 +16,21 @@ import { MessageType } from "../../../helpers/enums/MessageTypeEnum";
 
 interface CancelReservationDialogProps {
   reservation?: Reservation;
+  isAdminCancel?: boolean;
   onDialogConfirm: () => void;
   onDialogClose: () => void;
 }
 
 const CancelReservationDialog = forwardRef<HTMLDialogElement, CancelReservationDialogProps>(
-  ({ reservation, onDialogClose, onDialogConfirm }: CancelReservationDialogProps, ref) => {
+  (
+    {
+      reservation,
+      isAdminCancel = false,
+      onDialogClose,
+      onDialogConfirm,
+    }: CancelReservationDialogProps,
+    ref
+  ) => {
     const { del: cancelReservation, statusCode: statusCode } = useApi<Reservation>(
       ApiEndpoint.Reservation
     );
@@ -63,12 +72,23 @@ const CancelReservationDialog = forwardRef<HTMLDialogElement, CancelReservationD
               </div>
               <div className="flex flex-row justify-center items-center gap-14">
                 <div className="flex flex-col justify-start items-start gap-2">
-                  <LabelText
-                    label="ID:"
-                    labelWidth={140}
-                    text={reservation.id}
-                    gap={10}
-                  ></LabelText>
+                  <LabelText label="ID:" labelWidth={140} text={reservation.id} gap={10} />
+                  {isAdminCancel && (
+                    <>
+                      <LabelText
+                        label="Użytkownik:"
+                        labelWidth={140}
+                        text={`${reservation.user?.name} ${reservation.user?.surname}`}
+                        gap={10}
+                      />
+                      <LabelText
+                        label="E-mail:"
+                        labelWidth={140}
+                        text={reservation.user?.emailAddress}
+                        gap={10}
+                      />
+                    </>
+                  )}
                   <LabelText
                     labelWidth={140}
                     label="Data rezerwacji:"
@@ -77,31 +97,31 @@ const CancelReservationDialog = forwardRef<HTMLDialogElement, CancelReservationD
                       DateFormat.DateTime
                     )}
                     gap={10}
-                  ></LabelText>
+                  />
                   <LabelText
                     labelWidth={140}
                     label="Data płatności:"
                     text={DateFormatter.FormatDate(reservation.paymentDate, DateFormat.DateTime)}
                     gap={10}
-                  ></LabelText>
+                  />
                   <LabelText
                     label="Typ płatności:"
                     labelWidth={140}
                     text={reservation.paymentType?.name}
                     gap={10}
-                  ></LabelText>
+                  />
                   <LabelText
                     label="Cena biletu:"
                     labelWidth={140}
                     text={`${reservation.ticket?.price} zł`}
                     gap={10}
-                  ></LabelText>
+                  />
                   <LabelText
                     label="Kwota całkowita:"
                     labelWidth={140}
                     text={`${reservation.paymentAmount} zł`}
                     gap={10}
-                  ></LabelText>
+                  />
                 </div>
                 <div className="flex flex-col justify-start items-start gap-2">
                   <LabelText
@@ -113,13 +133,13 @@ const CancelReservationDialog = forwardRef<HTMLDialogElement, CancelReservationD
                         : "-"
                     }
                     gap={10}
-                  ></LabelText>
+                  />
                   <LabelText
                     label="Kategoria:"
                     labelWidth={100}
                     text={reservation.ticket?.event?.category?.name}
                     gap={10}
-                  ></LabelText>
+                  />
                   <LabelText
                     label="Wydarzenie:"
                     labelWidth={100}
@@ -155,12 +175,22 @@ const CancelReservationDialog = forwardRef<HTMLDialogElement, CancelReservationD
                     wszystkich rezerwacji dotyczących festiwalu ${reservation.ticket.festival.name}.`}
                   />
                 )}
-                <MessageText
-                  messageType={MessageType.Info}
-                  text={`Po anulowaniu rezerwacji otrzymasz wiadomość email z potwierdzeniem jej
+                {!isAdminCancel && (
+                  <MessageText
+                    messageType={MessageType.Info}
+                    text={`Po anulowaniu rezerwacji otrzymasz wiadomość email z potwierdzeniem jej
                   anulowania, a środki wysokości ${reservation.paymentAmount} zł zostaną zwrócone na
                   twoje konto w przeciągu kilku następnych dni roboczych.`}
-                />
+                  />
+                )}
+                {isAdminCancel && (
+                  <MessageText
+                    messageType={MessageType.Info}
+                    text={`Po anulowaniu rezerwacji użytkownik ${reservation.user?.name} ${reservation.user?.surname} otrzyma wiadomość email z potwierdzeniem jej
+                      anulowania, a środki wysokości ${reservation.paymentAmount} zł zostaną zwrócone na jego
+                      konto w przeciągu kilku następnych dni roboczych.`}
+                  />
+                )}
               </div>
               <div className="flex flex-row justify-center items-center gap-2">
                 <Button

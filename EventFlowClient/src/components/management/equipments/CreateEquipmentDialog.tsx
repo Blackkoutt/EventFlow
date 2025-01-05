@@ -12,6 +12,7 @@ import FormButton from "../../common/forms/FormButton";
 import Input from "../../common/forms/Input";
 import { toast } from "react-toastify";
 import { EquipmentRequest, EquipmentSchema } from "../../../models/create_schemas/EquipmentSchema";
+import TextArea from "../../common/forms/TextArea";
 
 interface CreateEquipmentDialog {
   maxWidth?: number;
@@ -75,7 +76,7 @@ const CreateEquipmentDialog = forwardRef<HTMLDialogElement, CreateEquipmentDialo
             className="flex flex-col justify-center items-center gap-3 w-full mt-4"
             onSubmit={handleSubmit(onSubmit)}
           >
-            <div className="flex flex-col justify-center items-center gap-3 w-full">
+            <div className="flex flex-col justify-center items-center gap-2 w-full">
               <Input
                 label="Nazwa"
                 type="text"
@@ -83,15 +84,15 @@ const CreateEquipmentDialog = forwardRef<HTMLDialogElement, CreateEquipmentDialo
                 maxLength={40}
                 error={errors.name}
                 isFirstLetterUpperCase={true}
-                errorHeight={20}
+                errorHeight={15}
               />
-              <Input
+              <TextArea
                 label="Opis"
-                type="text"
                 name="description"
                 maxLength={200}
                 error={errors.description}
-                errorHeight={20}
+                isFirstLetterUpperCase={true}
+                errorHeight={15}
               />
             </div>
             <div className="flex flex-row justify-center items-center gap-2">

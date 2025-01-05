@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { MaxFileSizeAndTypeValidator } from "../validators/MaxFileSizeValidator";
+import { MaxFileSizeAndTypeValidatorNotRequired } from "../validators/MaxFileSizeValidatorNotRequired";
 
 export const HallTypeUpdateSchema = z.object({
   name: z
@@ -29,7 +30,7 @@ export const HallTypeUpdateSchema = z.object({
     })
   ),
 
-  hallTypePhoto: MaxFileSizeAndTypeValidator(10, ["image/jpeg"]).nullish(),
+  hallTypePhoto: MaxFileSizeAndTypeValidatorNotRequired(10, ["image/jpeg"]).nullish(),
 });
 
 export type HallTypeUpdateRequest = z.infer<typeof HallTypeUpdateSchema>;

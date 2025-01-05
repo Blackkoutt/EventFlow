@@ -16,6 +16,7 @@ import {
   EventPassTypeUpdateSchema,
 } from "../../../models/update_schemas/EventPassTypeUpdateSchema";
 import { FAQUpdateRequest, FAQUpdateSchema } from "../../../models/update_schemas/FAQUpdateSchema";
+import TextArea from "../../common/forms/TextArea";
 
 interface ModifyFAQDialogProps {
   item?: FAQ;
@@ -98,18 +99,16 @@ const ModifyFAQDialog = forwardRef<HTMLDialogElement, ModifyFAQDialogProps>(
               onSubmit={handleSubmit(onSubmit)}
             >
               <div className="flex flex-col justify-center items-center gap-2 w-full">
-                <Input
+                <TextArea
                   label="Pytanie"
-                  type="text"
                   name="question"
                   maxLength={100}
                   error={errors.question}
                   isFirstLetterUpperCase={true}
                   errorHeight={15}
                 />
-                <Input
+                <TextArea
                   label="Odpowiedź"
-                  type="text"
                   name="answer"
                   maxLength={1000}
                   error={errors.answer}

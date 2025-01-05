@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { MaxFileSizeAndTypeValidator } from "../validators/MaxFileSizeValidator";
+import { MaxFileSizeAndTypeValidatorNotRequired } from "../validators/MaxFileSizeValidatorNotRequired";
 
 export const SponsorUpdateSchema = z.object({
   name: z
@@ -10,7 +10,7 @@ export const SponsorUpdateSchema = z.object({
     .min(2, "Nazwa powinna zawierać przynajmniej 2 znaki.")
     .max(50, "Nazwa powinna zawierać maksymalnie 50 znaków."),
 
-  sponsorPhoto: MaxFileSizeAndTypeValidator(10, ["image/jpeg"]).nullish(),
+  sponsorPhoto: MaxFileSizeAndTypeValidatorNotRequired(10, ["image/jpeg"]).nullish(),
 });
 
 export type SponsorUpdateRequest = z.infer<typeof SponsorUpdateSchema>;

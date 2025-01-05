@@ -6,6 +6,7 @@ using EventFlowAPI.Logic.Helpers.Enums;
 using EventFlowAPI.Logic.Services.OtherServices.Interfaces;
 using EventFlowAPI.Logic.Templates;
 using Microsoft.Extensions.Configuration;
+using Serilog;
 using System.Net;
 using System.Net.Mail;
 
@@ -116,7 +117,7 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
                     }
                 };
             }
-
+            Log.Information("Sending");
             await SendEmailAsync(emailDto);
 
             return Error.None;
@@ -328,6 +329,11 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
         public Task SendEmailAsync(EmailDto emailDto)
         {
             var client = GetSmtpClient();
+
+
+            Log.Information($"Title: {emailDto.Subject}");
+            Log.Information($"To: {emailDto.Email}");
+           // Log.Information($"Body: {emailDto.Body}");
 
             var mailMessage = new MailMessage(
                 from: _configuration.GetSection("SmtpClient")["Email"]!,

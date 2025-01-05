@@ -12,6 +12,7 @@ import FormButton from "../../common/forms/FormButton";
 import { toast } from "react-toastify";
 import Input from "../../common/forms/Input";
 import { FAQRequest, FAQSchema } from "../../../models/create_schemas/FAQSchema";
+import TextArea from "../../common/forms/TextArea";
 
 interface CreateFAQDialogProps {
   maxWidth?: number;
@@ -76,18 +77,16 @@ const CreateFAQDialog = forwardRef<HTMLDialogElement, CreateFAQDialogProps>(
             onSubmit={handleSubmit(onSubmit)}
           >
             <div className="flex flex-col justify-center items-center gap-2 w-full">
-              <Input
+              <TextArea
                 label="Pytanie"
-                type="text"
                 name="question"
                 maxLength={100}
                 error={errors.question}
                 isFirstLetterUpperCase={true}
                 errorHeight={15}
               />
-              <Input
+              <TextArea
                 label="Odpowiedź"
-                type="text"
                 name="answer"
                 maxLength={1000}
                 error={errors.answer}

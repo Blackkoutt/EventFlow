@@ -16,10 +16,12 @@ export const useTable = <TData extends DataTableValueArray, TEntity>(
   const detailsDialog = useRef<HTMLDialogElement>(null);
   const modifyDialog = useRef<HTMLDialogElement>(null);
   const createDialog = useRef<HTMLDialogElement>(null);
+  const downloadDialog = useRef<HTMLDialogElement>(null);
 
   const [itemToDelete, setItemToDelete] = useState<TEntity | undefined>(undefined);
   const [itemToDetails, setItemToDetails] = useState<TEntity | undefined>(undefined);
   const [itemToModify, setItemToModify] = useState<TEntity | undefined>(undefined);
+  const [itemToDownload, setItemToDownload] = useState<TEntity | undefined>(undefined);
 
   const [filters, setFilters] = useState<DataTableFilterMeta>({
     global: { value: null, matchMode: FilterMatchMode.CONTAINS },
@@ -44,6 +46,12 @@ export const useTable = <TData extends DataTableValueArray, TEntity>(
     }
   }, [itemToModify]);
 
+  useEffect(() => {
+    if (itemToDownload != undefined) {
+      downloadDialog.current?.showModal();
+    }
+  }, [itemToDownload]);
+
   const [exportColumns, setExportColumns] = useState<ExportColumns[]>([]);
 
   useEffect(() => {
@@ -51,6 +59,7 @@ export const useTable = <TData extends DataTableValueArray, TEntity>(
       columns.map((col) => ({
         title: col.header,
         dataKey: col.field,
+        body: col.body,
       }))
     );
   }, []);
@@ -92,9 +101,11 @@ export const useTable = <TData extends DataTableValueArray, TEntity>(
     modifyDialog.current?.close();
     detailsDialog.current?.close();
     createDialog.current?.close();
+    downloadDialog.current?.close();
     setItemToDelete(undefined);
     setItemToDetails(undefined);
     setItemToModify(undefined);
+    setItemToDownload(undefined);
   };
 
   const onDelete = (rowData: TEntity) => {
@@ -112,6 +123,11 @@ export const useTable = <TData extends DataTableValueArray, TEntity>(
     detailsDialog.current?.showModal();
   };
 
+  const onDownload = (rowData: TEntity) => {
+    setItemToDownload(rowData);
+    downloadDialog.current?.showModal();
+  };
+
   const onCreate = () => {
     createDialog.current?.showModal();
   };
@@ -121,9 +137,11 @@ export const useTable = <TData extends DataTableValueArray, TEntity>(
     modifyDialog.current?.close();
     detailsDialog.current?.close();
     createDialog.current?.close();
+    downloadDialog.current?.close();
     setItemToDelete(undefined);
     setItemToModify(undefined);
     setItemToDetails(undefined);
+    setItemToDownload(undefined);
   };
 
   return {
@@ -132,12 +150,11 @@ export const useTable = <TData extends DataTableValueArray, TEntity>(
     createDialog,
     detailsDialog,
     modifyDialog,
+    downloadDialog,
     itemToDelete,
     itemToDetails,
     itemToModify,
-    // setItemToDelete,
-    // setItemToDetails,
-    // setItemToModify,
+    itemToDownload,
     filters,
     globalFilterValue,
     onGlobalFilterChange,
@@ -147,6 +164,7 @@ export const useTable = <TData extends DataTableValueArray, TEntity>(
     onModify,
     onCreate,
     onDetails,
+    onDownload,
     closeDialogsAndSetValuesToDefault,
   };
 };

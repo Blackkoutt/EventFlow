@@ -425,7 +425,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
 
             await _unitOfWork.SaveChangesAsync();
 
-            var sendError = await _emailSender.SendInfo(eventPass, EmailType.Cancel, user.EmailAddress);
+            var sendError = await _emailSender.SendInfo(eventPass, EmailType.Cancel, eventPass.User.Email!);
             if (sendError != Error.None)
                 return Result<object>.Failure(sendError);
 

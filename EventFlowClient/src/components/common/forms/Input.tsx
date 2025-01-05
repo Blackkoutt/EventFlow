@@ -121,7 +121,7 @@ const Input = ({
           <label
             htmlFor={name}
             className={`absolute transition-all text-[#2F2F2F] duration-300 cursor-text ${
-              isFocused || getValues(name)
+              isFocused || getValues(name) || type == "file" || type == "color"
                 ? "-translate-y-4 text-[12px] text-black"
                 : "-translate-y-[10px] text-lg"
             }`}
@@ -148,7 +148,7 @@ const Input = ({
             minLength={minLength}
             pattern={pattern}
             type={(type === "password" && showPassword) || type === "zipCode" ? "text" : type}
-            className={`w-full text-[#2F2F2F] font-semibold bg-[#ECECEC] ${
+            className={`w-full inputRef text-[#2F2F2F] font-semibold bg-[#ECECEC] ${
               type === "color" ? "h-[30px]" : ""
             }`}
             style={{ outline: "none", cursor: type === "color" ? "pointer" : "text" }}

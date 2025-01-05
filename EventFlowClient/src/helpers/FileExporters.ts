@@ -9,6 +9,7 @@ import "../assets/fonts/calibri-normal";
 export interface ExportColumns {
   title: string;
   dataKey: string | undefined;
+  body: (rowData: any) => void;
 }
 
 export const ExportAsCSV = <TEntity extends DataTableValueArray>(dt: DataTable<TEntity> | null) => {
@@ -19,7 +20,12 @@ export const ExportAsPdf = (columns: ExportColumns[], data: any[], fileName: str
   const doc = new jsPDF();
 
   const head = [columns.map((col) => col.title)];
-  const body = data.map((row) => columns.map((col) => row[col.dataKey || ""]));
+  const body = data.map((row) =>
+    columns.map((col) => {
+      const result = col.body(row);
+      return typeof result === "string" || typeof result === "number" ? result : "";
+    })
+  );
 
   doc.setFont("calibri");
 

@@ -1,6 +1,10 @@
-﻿using EventFlowAPI.Logic.DTO.RequestDto;
+﻿using EventFlowAPI.DB.Entities;
+using EventFlowAPI.Logic.DTO.RequestDto;
 using EventFlowAPI.Logic.Identity.Services.Interfaces;
+using EventFlowAPI.Logic.Query;
 using EventFlowAPI.Logic.Services.CRUDServices.Interfaces;
+using EventFlowAPI.Logic.Services.CRUDServices.Services;
+using EventFlowAPI.Logic.Services.OtherServices.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
@@ -11,10 +15,31 @@ namespace EventFlowAPI.Controllers
     [ApiController]
     public class UsersController(
         IUserService userService,
-        IAuthService authService) : ControllerBase
+        IAuthService authService,
+        IFileService fileService) : ControllerBase
     {
-        private IAuthService _authService = authService;  
-        private IUserService _userService = userService;
+        private readonly IAuthService _authService = authService;  
+        private readonly IUserService _userService = userService;
+        private readonly IFileService _fileService = fileService;
+
+        [HttpGet]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> GetUsers([FromQuery] UserDataQuery query)
+        {
+            var result = await _userService.GetAllAsync(query);
+            return result.IsSuccessful ? Ok(result.Value) : BadRequest(result.Error.Details);
+        }
+
+        [HttpGet("{id}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> GetUserById([FromRoute] string id)
+        {
+            var result = await _userService.GetOneAsync(id);
+            return result.IsSuccessful ? Ok(result.Value) : BadRequest(result.Error.Details);
+        }
+
 
         [HttpGet("info")]
         [Authorize]
@@ -53,6 +78,23 @@ namespace EventFlowAPI.Controllers
                     HttpStatusCode.BadRequest => BadRequest(result.Error.Details),
                     HttpStatusCode.Unauthorized => Unauthorized(result.Error.Details),
                     HttpStatusCode.Forbidden => StatusCode((int)HttpStatusCode.Forbidden, result.Error.Details),
+                    _ => StatusCode((int)HttpStatusCode.InternalServerError, result.Error.Details)
+                };
+            }
+            return File(result.Value.Data, result.Value.ContentType, result.Value.FileName);
+        }
+
+        [HttpGet("{id}/image")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> GetUserImageById([FromRoute] string id)
+        {
+            var result = await _fileService.GetUserPhoto(id);
+            if (!result.IsSuccessful)
+            {
+                return result.Error.Details!.Code switch
+                {
+                    HttpStatusCode.BadRequest => BadRequest(result.Error.Details),
                     _ => StatusCode((int)HttpStatusCode.InternalServerError, result.Error.Details)
                 };
             }

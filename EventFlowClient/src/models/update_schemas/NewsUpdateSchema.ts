@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { MaxFileSizeAndTypeValidator } from "../validators/MaxFileSizeValidator";
+import { MaxFileSizeAndTypeValidatorNotRequired } from "../validators/MaxFileSizeValidatorNotRequired";
 
 export const NewsUpdateSchema = z.object({
   title: z
@@ -26,7 +26,7 @@ export const NewsUpdateSchema = z.object({
     .min(2, "Długi opis powinien zawierać zawierać przynajmniej 2 znaki.")
     .max(2000, "Długi opis powinien zawierać maksymalnie 300 znaków."),
 
-  newsPhoto: MaxFileSizeAndTypeValidator(10, ["image/jpeg"]).nullish(),
+  newsPhoto: MaxFileSizeAndTypeValidatorNotRequired(10, ["image/jpeg"]).nullish(),
 });
 
 export type NewsUpdateRequest = z.infer<typeof NewsUpdateSchema>;

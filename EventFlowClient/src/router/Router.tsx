@@ -35,7 +35,7 @@ import HallsManagement from "../pages/Management/HallsManagement";
 import HallTypesManagement from "../pages/Management/HallTypesManagement";
 import MediaPatronsManagement from "../pages/Management/MediaPatronsManagement";
 import NewsManagement from "../pages/Management/NewsManagement";
-import OrganizatorsManagement from "../pages/Management/OrganizatorsManagement";
+import OrganizatorsManagement from "../pages/Management/OrganizersManagement";
 import PartnersManagement from "../pages/Management/PartnersManagement";
 import PaymentTypesManagement from "../pages/Management/PaymentTypesManagement";
 import ReservationsManagement from "../pages/Management/ReservationsManagement";
@@ -44,6 +44,7 @@ import SponsorsManagement from "../pages/Management/SponsorsManagement";
 import StatsManagement from "../pages/Management/StatsManagement";
 import TicketTypesManagement from "../pages/Management/TicketTypesManagement";
 import UsersManagement from "../pages/Management/UsersManagement";
+import OrganizersManagement from "../pages/Management/OrganizersManagement";
 
 export const router = createBrowserRouter([
   {
@@ -270,10 +271,10 @@ export const router = createBrowserRouter([
             ),
           },
           {
-            path: "/management/organizators",
+            path: "/management/organizers",
             element: (
               <ProtectedRoute allowedRoles={[Roles.Admin]}>
-                <OrganizatorsManagement />
+                <OrganizersManagement />
               </ProtectedRoute>
             ),
           },
@@ -282,14 +283,6 @@ export const router = createBrowserRouter([
             element: (
               <ProtectedRoute allowedRoles={[Roles.Admin]}>
                 <PartnersManagement />
-              </ProtectedRoute>
-            ),
-          },
-          {
-            path: "/management/payment-types",
-            element: (
-              <ProtectedRoute allowedRoles={[Roles.Admin]}>
-                <PaymentTypesManagement />
               </ProtectedRoute>
             ),
           },

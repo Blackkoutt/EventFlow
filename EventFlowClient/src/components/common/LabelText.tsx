@@ -28,7 +28,7 @@ const LabelText = ({
       <p
         style={{
           fontSize: `${fontSize}px`,
-          width: labelWidth !== undefined ? `${labelWidth}px` : undefined,
+          minWidth: labelWidth !== undefined ? `${labelWidth}px` : undefined,
         }}
         className={`font-bold ${
           isTextLeft ? "text-left" : "text-end"
@@ -37,7 +37,7 @@ const LabelText = ({
         {label}
       </p>
       <p
-        style={{ fontSize: `${fontSize}px`, width: `${textWidth}px` }}
+        style={{ fontSize: `${fontSize}px`, minWidth: textWidth }}
         className="text-textPrimary hover:cursor-default"
       >
         {text != undefined || text != null ? text : "Brak danych"}

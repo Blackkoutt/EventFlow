@@ -1,5 +1,5 @@
 import { DataTable } from "primereact/datatable";
-import { AdditionalServices, EventCategory } from "../../models/response_models";
+import { EventCategory } from "../../models/response_models";
 import { ApiEndpoint } from "../../helpers/enums/ApiEndpointEnum";
 import useApi from "../../hooks/useApi";
 import { useEffect } from "react";
@@ -7,10 +7,6 @@ import { Column } from "primereact/column";
 import ActionsTemplate from "../../components/tabledata/ActionTemplate";
 import HeaderTemplate from "../../components/tabledata/HeaderTemplate";
 import { useTable } from "../../hooks/useTable";
-import DetailsAdditionalServiceDialog from "../../components/management/additionalservices/DetailsAdditionalServiceDialog";
-import DeleteAdditionalServiceDialog from "../../components/management/additionalservices/DeleteAdditionalServiceDialog";
-import ModifyAdditonalServiceDialog from "../../components/management/additionalservices/ModifyAdditionalServiceDialog";
-import CreateAdditonalServiceDialog from "../../components/management/additionalservices/CreateAdditionalServiceDialog";
 import CreateEventCategoryDialog from "../../components/management/eventcategories/CreateEventCategoryDialog";
 import DeleteEventCategoryDialog from "../../components/management/eventcategories/DeleteEventCategoryDialog";
 import ModifyEventCategoryDialog from "../../components/management/eventcategories/ModifyCategoryDialog";

@@ -107,7 +107,7 @@ const HomePage = () => {
               title="FAQ"
               subtitle="Znajdź odpowiedzi na najbardziej nurtujące cię pytania"
             />
-            <FaqList />
+            <FaqList faqCountToDisplay={4} />
           </div>
         </div>
       </section>

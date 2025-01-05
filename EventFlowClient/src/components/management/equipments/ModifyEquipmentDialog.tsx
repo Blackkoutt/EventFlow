@@ -19,6 +19,7 @@ import {
   EquipmentUpdateRequest,
   EquipmentUpdateSchema,
 } from "../../../models/update_schemas/EquipmentUpdateSchema";
+import TextArea from "../../common/forms/TextArea";
 
 interface ModifyEquipmentDialogProps {
   item?: Equipment;
@@ -108,14 +109,14 @@ const ModifyEquipmentDialog = forwardRef<HTMLDialogElement, ModifyEquipmentDialo
               className="flex flex-col justify-center items-center gap-3 w-full mt-4"
               onSubmit={handleSubmit(onSubmit)}
             >
-              <div className="flex flex-col justify-center items-center gap-3">
-                <Input
+              <div className="flex flex-col justify-center items-center gap-2 w-full">
+                <TextArea
                   label="Opis"
-                  type="text"
                   name="description"
                   maxLength={200}
                   error={errors.description}
-                  errorHeight={20}
+                  isFirstLetterUpperCase={true}
+                  errorHeight={15}
                 />
               </div>
               <div className="flex flex-row justify-center items-center gap-2">

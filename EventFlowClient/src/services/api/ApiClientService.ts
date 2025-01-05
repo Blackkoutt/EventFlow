@@ -12,12 +12,12 @@ export const api: AxiosInstance = axios.create({
 async function Get<TEntity>(
   endpoint: ApiEndpoint,
   queryParams?: Record<string, any>,
-  id?: number,
+  id?: number | string,
   isBlob: boolean = false
 ) {
   try {
     const url = ApiUrlConfig[endpoint].url(id);
-
+    console.log(id);
     const queryString = queryParams ? `?${new URLSearchParams(queryParams).toString()}` : "";
 
     let response;
@@ -42,7 +42,11 @@ async function Get<TEntity>(
   }
 }
 
-async function Post<TEntity, TPostEntity>(endpoint: ApiEndpoint, body: TPostEntity, id?: number) {
+async function Post<TEntity, TPostEntity>(
+  endpoint: ApiEndpoint,
+  body: TPostEntity,
+  id?: number | string
+) {
   try {
     const url = ApiUrlConfig[endpoint].url(id);
 
@@ -65,7 +69,11 @@ async function Post<TEntity, TPostEntity>(endpoint: ApiEndpoint, body: TPostEnti
   }
 }
 
-async function Put<TEntity, TPutEntity>(endpoint: ApiEndpoint, body: TPutEntity, id?: number) {
+async function Put<TEntity, TPutEntity>(
+  endpoint: ApiEndpoint,
+  body: TPutEntity,
+  id?: number | string
+) {
   try {
     const url = ApiUrlConfig[endpoint].url(id);
 
@@ -90,11 +98,10 @@ async function Put<TEntity, TPutEntity>(endpoint: ApiEndpoint, body: TPutEntity,
 async function Patch<TEntity, TPatchEntity>(
   endpoint: ApiEndpoint,
   body?: TPatchEntity,
-  id?: number
+  id?: number | string
 ) {
   try {
     const url = ApiUrlConfig[endpoint].url(id);
-
     const response = await api.patch<TEntity>(url, body);
 
     const code = response.status;
@@ -105,7 +112,7 @@ async function Patch<TEntity, TPatchEntity>(
   }
 }
 
-async function Delete<TEntity>(endpoint: ApiEndpoint, id: number) {
+async function Delete<TEntity>(endpoint: ApiEndpoint, id: number | string) {
   try {
     const url = ApiUrlConfig[endpoint].url(id);
 
@@ -122,9 +129,30 @@ const GetPhotoEndpoint = (photoEndpoint?: string): string => {
   return photoEndpoint ? `${baseUrl}${photoEndpoint}` : "";
 };
 
+type BlobResponse = {
+  code: number;
+  data: Blob;
+};
+const GetPhoto = async (photoEndpoint?: string) => {
+  try {
+    const fullURL = photoEndpoint ? `${baseUrl}${photoEndpoint}` : "";
+    const response = await api.get<Blob>(fullURL, {
+      withCredentials: true,
+      responseType: "blob",
+    });
+
+    const code = response.status;
+    const data = response.data;
+    return { code: code, data: data } as BlobResponse;
+  } catch (error) {
+    throw error;
+  }
+};
+
 const ApiMethod = {
   Get,
   GetPhotoEndpoint,
+  GetPhoto,
   Post,
   Put,
   Patch,

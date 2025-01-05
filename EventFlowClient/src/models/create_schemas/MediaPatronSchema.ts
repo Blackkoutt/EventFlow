@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { MaxFileSizeAndTypeValidator } from "../validators/MaxFileSizeValidator";
+import { MaxFileSizeAndTypeValidatorNotRequired } from "../validators/MaxFileSizeValidatorNotRequired";
 
 export const MediaPatronSchema = z.object({
   name: z
@@ -10,7 +10,7 @@ export const MediaPatronSchema = z.object({
     .min(2, "Nazwa powinna zawierać przynajmniej 2 znaki.")
     .max(50, "Nazwa powinna zawierać maksymalnie 50 znaków."),
 
-  mediaPatronPhoto: MaxFileSizeAndTypeValidator(10, ["image/jpeg"]).nullish(),
+  mediaPatronPhoto: MaxFileSizeAndTypeValidatorNotRequired(10, ["image/jpeg"]).nullish(),
 });
 
 export type MediaPatronRequest = z.infer<typeof MediaPatronSchema>;

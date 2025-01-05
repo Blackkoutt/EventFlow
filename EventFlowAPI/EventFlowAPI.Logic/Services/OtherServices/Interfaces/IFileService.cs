@@ -6,6 +6,7 @@ using EventFlowAPI.Logic.Errors;
 using EventFlowAPI.Logic.Helpers.Enums;
 using Microsoft.AspNetCore.Http;
 using EventFlowAPI.Logic.DTO.Statistics.RequestDto;
+using EventFlowAPI.Logic.Repositories.Interfaces;
 
 namespace EventFlowAPI.Logic.Services.OtherServices.Interfaces
 {
@@ -26,5 +27,6 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Interfaces
         Task<Result<BlobResponseDto>> ValidateAndGetEntityPhoto<TEntity>(int id) where TEntity : class;
         Task<Result<BlobResponseDto>> GetEntityPhoto<TEntity>(TEntity entity) where TEntity : class;
         Task<Error> DeletePhoto<TEntity>(TEntity entity) where TEntity : class;
+        Task<Result<BlobResponseDto>> GetUserPhoto(string id);
     }
 }

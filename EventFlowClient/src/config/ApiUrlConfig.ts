@@ -2,115 +2,118 @@ import { ApiEndpoint } from "../helpers/enums/ApiEndpointEnum";
 
 export const ApiUrlConfig = {
   [ApiEndpoint.AdditionalServices]: {
-    url: (id?: number) => `/additionalservices${id ? `/${id}` : ""}`,
+    url: (id?: number | string) => `/additionalservices${id ? `/${id}` : ""}`,
   },
   [ApiEndpoint.AuthValidate]: {
-    url: (id?: number) => "/auth/validate",
+    url: (id?: number | string) => "/auth/validate",
   },
   [ApiEndpoint.AuthRegister]: {
-    url: (id?: number) => "/auth/register",
+    url: (id?: number | string) => "/auth/register",
   },
   [ApiEndpoint.AuthLogin]: {
-    url: (id?: number) => "/auth/login",
+    url: (id?: number | string) => "/auth/login",
   },
   [ApiEndpoint.AuthActivate]: {
-    url: (id?: number) => "/auth/activate",
+    url: (id?: number | string) => "/auth/activate",
   },
   [ApiEndpoint.AuthLoginGoogle]: {
-    url: (id?: number) => "/auth/google-login",
+    url: (id?: number | string) => "/auth/google-login",
   },
   [ApiEndpoint.AuthLoginFacebook]: {
-    url: (id?: number) => "/auth/facebook-login",
+    url: (id?: number | string) => "/auth/facebook-login",
   },
   [ApiEndpoint.Equipment]: {
-    url: (id?: number) => `/equipments${id ? `/${id}` : ""}`,
+    url: (id?: number | string) => `/equipments${id ? `/${id}` : ""}`,
   },
   [ApiEndpoint.EventCategory]: {
-    url: (id?: number) => `/eventcategories${id ? `/${id}` : ""}`,
+    url: (id?: number | string) => `/eventcategories${id ? `/${id}` : ""}`,
   },
   [ApiEndpoint.EventPass]: {
-    url: (id?: number) => `/eventpasses${id ? `/${id}` : ""}`,
+    url: (id?: number | string) => `/eventpasses${id ? `/${id}` : ""}`,
   },
   [ApiEndpoint.EventPassCreateRenewTransaction]: {
-    url: (id?: number) => `/eventpasses/${id}/create-renew-transaction`,
+    url: (id?: number | string) => `/eventpasses/${id}/create-renew-transaction`,
   },
   [ApiEndpoint.EventPassCreateBuyTransaction]: {
-    url: (id?: number) => `/eventpasses/create-buy-transaction`,
+    url: (id?: number | string) => `/eventpasses/create-buy-transaction`,
   },
   [ApiEndpoint.EventPassPDF]: {
-    url: (id?: number) => `/eventpasses/${id}/pdf`,
+    url: (id?: number | string) => `/eventpasses/${id}/pdf`,
   },
   [ApiEndpoint.EventPassJPG]: {
-    url: (id?: number) => `/eventpasses/${id}/jpg`,
+    url: (id?: number | string) => `/eventpasses/${id}/jpg`,
   },
   [ApiEndpoint.EventPassType]: {
-    url: (id?: number) => `/eventpasstypes${id ? `/${id}` : ""}`,
+    url: (id?: number | string) => `/eventpasstypes${id ? `/${id}` : ""}`,
   },
   [ApiEndpoint.Event]: {
-    url: (id?: number) => `/events${id ? `/${id}` : ""}`,
+    url: (id?: number | string) => `/events${id ? `/${id}` : ""}`,
   },
   [ApiEndpoint.FAQ]: {
-    url: (id?: number) => `/faq${id ? `/${id}` : ""}`,
+    url: (id?: number | string) => `/faq${id ? `/${id}` : ""}`,
   },
   [ApiEndpoint.Festival]: {
-    url: (id?: number) => `/festivals${id ? `/${id}` : ""}`,
+    url: (id?: number | string) => `/festivals${id ? `/${id}` : ""}`,
   },
   [ApiEndpoint.HallRent]: {
-    url: (id?: number) => `/hallrents${id ? `/${id}` : ""}`,
+    url: (id?: number | string) => `/hallrents${id ? `/${id}` : ""}`,
   },
   [ApiEndpoint.HallRentUpdateHall]: {
-    url: (id?: number) => `/hallrents/${id}/hall`,
+    url: (id?: number | string) => `/hallrents/${id}/hall`,
   },
   [ApiEndpoint.HallRentHallView]: {
-    url: (id?: number) => `/hallrents/${id}/pdf-hallview`,
+    url: (id?: number | string) => `/hallrents/${id}/pdf-hallview`,
   },
   [ApiEndpoint.HallRentPDFInovice]: {
-    url: (id?: number) => `/hallrents/${id}/pdf-invoice`,
+    url: (id?: number | string) => `/hallrents/${id}/pdf-invoice`,
   },
   [ApiEndpoint.Hall]: {
-    url: (id?: number) => `/halls${id ? `/${id}` : ""}`,
+    url: (id?: number | string) => `/halls${id ? `/${id}` : ""}`,
   },
   [ApiEndpoint.HallType]: {
-    url: (id?: number) => `/halltypes${id ? `/${id}` : ""}`,
+    url: (id?: number | string) => `/halltypes${id ? `/${id}` : ""}`,
   },
   [ApiEndpoint.MediaPatron]: {
-    url: (id?: number) => `/mediapatrons${id ? `/${id}` : ""}`,
+    url: (id?: number | string) => `/mediapatrons${id ? `/${id}` : ""}`,
   },
   [ApiEndpoint.News]: {
-    url: (id?: number) => `/news${id ? `/${id}` : ""}`,
+    url: (id?: number | string) => `/news${id ? `/${id}` : ""}`,
   },
   [ApiEndpoint.Organizer]: {
-    url: (id?: number) => `/organizers${id ? `/${id}` : ""}`,
+    url: (id?: number | string) => `/organizers${id ? `/${id}` : ""}`,
   },
   [ApiEndpoint.Partner]: {
-    url: (id?: number) => `/partners${id ? `/${id}` : ""}`,
+    url: (id?: number | string) => `/partners${id ? `/${id}` : ""}`,
   },
   [ApiEndpoint.PaymentType]: {
-    url: (id?: number) => `/paymenttypes${id ? `/${id}` : ""}`,
+    url: (id?: number | string) => `/paymenttypes${id ? `/${id}` : ""}`,
   },
   [ApiEndpoint.Reservation]: {
-    url: (id?: number) => `/reservations${id ? `/${id}` : ""}`,
+    url: (id?: number | string) => `/reservations${id ? `/${id}` : ""}`,
   },
   [ApiEndpoint.ReservationZIPTickets]: {
-    url: (id?: number) => `/reservations/${id}/jpg-tickets`,
+    url: (id?: number | string) => `/reservations/${id}/jpg-tickets`,
   },
   [ApiEndpoint.ReservationPDFTicket]: {
-    url: (id?: number) => `/reservations/${id}/pdf-ticket`,
+    url: (id?: number | string) => `/reservations/${id}/pdf-ticket`,
   },
   [ApiEndpoint.SeatType]: {
-    url: (id?: number) => `/seattypes${id ? `/${id}` : ""}`,
+    url: (id?: number | string) => `/seattypes${id ? `/${id}` : ""}`,
   },
   [ApiEndpoint.Sponsor]: {
-    url: (id?: number) => `/sponsors${id ? `/${id}` : ""}`,
+    url: (id?: number | string) => `/sponsors${id ? `/${id}` : ""}`,
   },
   /*[ApiEndpoint.Statistics]: {
     url: "/statistics",
     mappingType: {} as Sponsor,
   },*/
   [ApiEndpoint.TicketType]: {
-    url: (id?: number) => `/tickettypes${id ? `/${id}` : ""}`,
+    url: (id?: number | string) => `/tickettypes${id ? `/${id}` : ""}`,
   },
   [ApiEndpoint.UserInfo]: {
-    url: (id?: number) => "/users/info",
+    url: (id?: number | string) => "/users/info",
+  },
+  [ApiEndpoint.User]: {
+    url: (id?: number | string) => `/users${id ? `/${id}` : ""}`,
   },
 };

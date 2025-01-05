@@ -158,7 +158,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             await _unitOfWork.SaveChangesAsync();
 
             // Send info about canceled hall Rent
-            var sendError = await _emailSender.SendInfo(hallRent, EmailType.Cancel, user.EmailAddress);
+            var sendError = await _emailSender.SendInfo(hallRent, EmailType.Cancel, hallRent.User.Email!);
             if (sendError != Error.None)
                 return Result<object>.Failure(sendError);
 

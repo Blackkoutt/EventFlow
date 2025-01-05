@@ -22,6 +22,9 @@ namespace EventFlowAPI.Logic.Repositories.Repositories
             return await _context.Users
                         .Include(u => u.UserData)
                         .Include(u => u.Roles)
+                        .Include(u => u.Reservations)
+                        .Include(u => u.EventPasses)
+                        .Include(u => u.HallRents)
                         .FirstOrDefaultAsync(e => e.Id == id);
         }
     }

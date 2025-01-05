@@ -36,5 +36,5 @@ export enum ApiEndpoint {
   UserInfo,
   //Statistics,
   TicketType,
-  //User,
+  User,
 }

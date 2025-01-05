@@ -1,5 +1,5 @@
 import { DataTable } from "primereact/datatable";
-import { Equipment, EventPassType } from "../../models/response_models";
+import { EventPassType } from "../../models/response_models";
 import { ApiEndpoint } from "../../helpers/enums/ApiEndpointEnum";
 import useApi from "../../hooks/useApi";
 import { useEffect } from "react";
@@ -7,10 +7,6 @@ import { Column } from "primereact/column";
 import ActionsTemplate from "../../components/tabledata/ActionTemplate";
 import HeaderTemplate from "../../components/tabledata/HeaderTemplate";
 import { useTable } from "../../hooks/useTable";
-import DetailsEquipmentDialog from "../../components/management/equipments/DetailsEquipmentDialog";
-import CreateEquipmentDialog from "../../components/management/equipments/CreateEquipmentDialog";
-import DeleteEquipmentDialog from "../../components/management/equipments/DeleteEquipmentDialog";
-import ModifyEquipmentDialog from "../../components/management/equipments/ModifyEquipmentDialog";
 import CreateEventPassTypeDialog from "../../components/management/eventpasstypes/CreateEventPassTypeDialog";
 import DeleteEventPassTypeDialog from "../../components/management/eventpasstypes/DeleteEventPassTypeDialog";
 import ModifyEventPassTypeDialog from "../../components/management/eventpasstypes/ModifyEventPassTypeDialog";
@@ -60,7 +56,7 @@ const EventPassTypesManagement = () => {
     {
       header: "Akcja",
       sortable: false,
-      body: (rowData: Equipment) => (
+      body: (rowData: EventPassType) => (
         <ActionsTemplate
           includeDetails={false}
           rowData={rowData}

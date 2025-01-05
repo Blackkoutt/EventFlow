@@ -8,14 +8,14 @@ import { toast } from "react-toastify";
 
 interface RequestParams<TPostEntity, TPutEntity, TPatchEntity> {
   httpMethod: HTTPMethod;
-  id?: number;
+  id?: number | string;
   body?: TPostEntity | TPutEntity | TPatchEntity;
   queryParams?: Record<string, any>;
   isBlob?: boolean;
 }
 
 interface GETRequestParams {
-  id?: number;
+  id?: number | string;
   queryParams?: Record<string, any>;
   isBlob?: boolean;
 }

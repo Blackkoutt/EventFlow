@@ -8,15 +8,16 @@ import { getStatus } from "../../../helpers/GetStatus";
 
 interface DetailsReservationDialogProps {
   reservation?: Reservation;
+  isAdminDetails?: boolean;
 }
 
 const DetailsReservationDialog = forwardRef<HTMLDialogElement, DetailsReservationDialogProps>(
-  ({ reservation }: DetailsReservationDialogProps, ref) => {
+  ({ reservation, isAdminDetails = false }: DetailsReservationDialogProps, ref) => {
     return (
       <div>
         {reservation && (
           <Dialog ref={ref}>
-            <article className="flex flex-col justify-center items-center px-5 pb-2 gap-5 max-w-[750px]">
+            <article className="flex flex-col justify-center items-center px-5 pb-2 gap-5">
               <div className="flex flex-col justify-center items-center gap-2">
                 <h2>Szczegóły rezerwacji</h2>
                 <p className="text-textPrimary text-base text-center">
@@ -37,6 +38,22 @@ const DetailsReservationDialog = forwardRef<HTMLDialogElement, DetailsReservatio
                     }
                     gap={10}
                   />
+                  {isAdminDetails && (
+                    <>
+                      <LabelText
+                        label="Użytkownik:"
+                        labelWidth={140}
+                        text={`${reservation.user?.name} ${reservation.user?.surname}`}
+                        gap={10}
+                      />
+                      <LabelText
+                        label="E-mail:"
+                        labelWidth={140}
+                        text={reservation.user?.emailAddress}
+                        gap={10}
+                      />
+                    </>
+                  )}
                   <LabelText
                     labelWidth={135}
                     label="Status:"
