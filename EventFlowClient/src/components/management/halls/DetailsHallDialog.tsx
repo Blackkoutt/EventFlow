@@ -36,29 +36,29 @@ const DetailsHallDialog = forwardRef<HTMLDialogElement, DetailsHallDialogProps>(
                 </p>
               </div>
               <div className="flex flex-col justify-center items-center gap-2">
-                <div className="flex flex-row justify-center items-center gap-12">
+                <div className="flex flex-row justify-center items-center gap-5">
                   <div className="flex flex-col justify-center items-center gap-2">
-                    <LabelText labelWidth={150} label="ID:" text={hallWithDetails.id} gap={10} />
+                    <LabelText labelWidth={162} label="ID:" text={hallWithDetails.id} gap={10} />
                     <LabelText
-                      labelWidth={150}
+                      labelWidth={162}
                       label="Nr sali:"
                       text={hallWithDetails.hallNr}
                       gap={10}
                     />
                     <LabelText
-                      labelWidth={150}
+                      labelWidth={162}
                       label="Piętro:"
                       text={hallWithDetails.floor}
                       gap={10}
                     />
                     <LabelText
-                      labelWidth={150}
+                      labelWidth={162}
                       label="Cena za 1h:"
                       text={`${hallWithDetails.rentalPricePerHour} zł`}
                       gap={10}
                     />
                     <LabelText
-                      labelWidth={150}
+                      labelWidth={162}
                       label="Ilość miejsc:"
                       text={hallWithDetails.seatsCount}
                       gap={10}
@@ -70,13 +70,13 @@ const DetailsHallDialog = forwardRef<HTMLDialogElement, DetailsHallDialogProps>(
                       gap={10}
                     />
                     <LabelText
-                      labelWidth={150}
+                      labelWidth={162}
                       label="Typ:"
                       text={hallWithDetails.type?.name}
                       gap={10}
                     />
                     <LabelText
-                      labelWidth={150}
+                      labelWidth={162}
                       label="Wyposażenie:"
                       text={hallWithDetails.type?.equipments.map((eq) => eq.name).join(", ")}
                       gap={10}

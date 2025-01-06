@@ -5,6 +5,8 @@ using EventFlowAPI.Logic.Services.OtherServices.Interfaces;
 using EventFlowAPI.Logic.Services.OtherServices.Interfaces.Configuration.HallConfiguration;
 using EventFlowAPI.Logic.Services.OtherServices.Interfaces.Configuration.PassConfiguration;
 using EventFlowAPI.Logic.Services.OtherServices.Interfaces.Configuration.TicketConfiguration;
+using EventFlowAPI.Logic.UnitOfWork;
+using Serilog;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Drawing.Processing;
 using SixLabors.ImageSharp.PixelFormats;
@@ -18,6 +20,7 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
         IHallSeatsConfiguration hallSeatsConfig,
         IEventPassConfiguration eventPassConfig,
         IQRCodeGeneratorService qrCoder,
+        IUnitOfWork unitOfWork,
         IAssetService assetService) : IJPGCreatorService
     {
         private readonly IFestivalTicketConfiguration _festivalTicketConfig = festivalTicketConfig;
@@ -26,6 +29,7 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
         private readonly IEventPassConfiguration _eventPassConfig = eventPassConfig;
         private readonly IQRCodeGeneratorService _qrCoder = qrCoder;
         private readonly IAssetService _assetService = assetService;
+        private readonly IUnitOfWork _unitOfWork = unitOfWork;
 
         public async Task<byte[]> CreateHallJPG(Hall hall)
         {
@@ -45,10 +49,10 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
                 DrawStage(canvas, hall.HallDetails!);
 
                 // Seats
-                DrawSeats(canvas, hall);
+                await DrawSeats(canvas, hall);
 
                 // Legend
-                DrawLegend(canvas, hall);
+                await DrawLegend(canvas, hall);
 
                 // Watermark
                 DrawWatermark(canvas, logo);
@@ -271,9 +275,20 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
             _hallSeatsConfig.SetSeatCursorAfterPrintColNumber();
         }
 
-        private void DrawActiveSeat(Image<Rgba32> canvas, Seat seat)
+        private async Task DrawActiveSeat(Image<Rgba32> canvas, Seat seat)
         {
-            var activeSeatOptions = _hallSeatsConfig.GetActiveSeatRectanglePrintingOptions(seat.SeatType);
+            Log.Information("\n\n\n\n");
+            if (seat == null)
+            {
+                Log.Error("The 'seat' object is null. Cannot draw the active seat.");
+                throw new ArgumentNullException(nameof(seat), "The 'seat' object is null.");
+            }
+
+            Log.Information("Drawing seat with ID: {SeatId}, SeatType: {SeatType}, SeatNr: {SeatNr} SeatTypeId: {SeatNr}",
+               seat.Id, seat.SeatType, seat.SeatNr, seat.SeatTypeId);
+
+            var seatType = await _unitOfWork.GetRepository<SeatType>().GetOneAsync(seat.SeatTypeId);
+            var activeSeatOptions = _hallSeatsConfig.GetActiveSeatRectanglePrintingOptions(seatType);
             canvas.DrawRectangle(activeSeatOptions);
 
             var seatNumberOptions = _hallSeatsConfig.GetSeatNumberPrintingOptions(seat.SeatNr);
@@ -285,7 +300,7 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
             canvas.DrawRectangle(nonActiveSeatOptions);
         }
 
-        private void DrawSeats(Image<Rgba32> canvas, Hall hall)
+        private async Task DrawSeats(Image<Rgba32> canvas, Hall hall)
         {
             _hallSeatsConfig.PrepareToPrintSeats(hall.HallDetails!.MaxNumberOfSeatsColumns);
 
@@ -293,6 +308,13 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
                                 .OrderBy(s => s.GridRow)
                                 .ThenBy(s => s.GridColumn)
                                 .ToDictionary(s => (s.GridRow, s.GridColumn), s => s);
+            foreach(var seat in seatsInHall.Values)
+            {
+                Log.Information("test: {SeatId}, SeatType: {SeatType}, SeatNr: {SeatNr}",
+    seat.Id, seat.SeatType, seat.SeatNr);
+            }
+
+
 
             for (int gridRow = 1; gridRow <= hall.HallDetails!.MaxNumberOfSeatsRows; gridRow++)
             {
@@ -311,7 +333,7 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
 
                     if (seat is not null)
                     {
-                        DrawActiveSeat(canvas, seat);
+                        await DrawActiveSeat(canvas, seat);
                     }
                     else
                     {
@@ -323,7 +345,7 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
             }
         }
 
-        private void DrawLegend(Image<Rgba32> canvas, Hall hall)
+        private async Task DrawLegend(Image<Rgba32> canvas, Hall hall)
         {
             var legendHeaderOptions = _hallSeatsConfig.GetLegendHeaderPrintingOptions();
             canvas.DrawText("Legenda:", legendHeaderOptions);
@@ -338,7 +360,11 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
                             .OrderBy(s => s.GridRow)
                             .ThenBy(s => s.GridColumn)
                             .ToDictionary(s => (s.GridRow, s.GridColumn), s => s);
-            var seatTypes = seatsInHall.Select(x => x.Value.SeatType).DistinctBy(x => x.Name);
+
+            var seatsinHallSeatTypeIds = seatsInHall.Select(s => s.Value.SeatTypeId);
+            var seatTypes = await _unitOfWork.GetRepository<SeatType>().GetAllAsync(q => q.Where(st => seatsinHallSeatTypeIds.Contains(st.Id)));
+
+            //var seatTypes = seatsInHall.Select(x => x.Value.SeatType).DistinctBy(x => x.Name);
 
             foreach (var seatType in seatTypes)
             {

@@ -72,8 +72,9 @@ namespace EventFlowAPI.Extensions
                 var eventPassConfig = scope.ServiceProvider.GetRequiredService<IEventPassConfiguration>();
                 var qrGenerator = scope.ServiceProvider.GetRequiredService<IQRCodeGeneratorService>();
                 var assetService = scope.ServiceProvider.GetRequiredService<IAssetService>();
+                var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
 
-                var jpgbuilder = new JPGCreatorService(festivalTicketConfig, eventTicketConfig, hallSeatsConfig, eventPassConfig, qrGenerator, assetService);
+                var jpgbuilder = new JPGCreatorService(festivalTicketConfig, eventTicketConfig, hallSeatsConfig, eventPassConfig, qrGenerator, unitOfWork, assetService);
                 var hall = GetHall();
                 await jpgbuilder.CreateHallJPG(hall);
             }

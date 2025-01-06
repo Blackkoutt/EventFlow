@@ -16,6 +16,7 @@ using EventFlowAPI.Logic.Services.CRUDServices.Interfaces;
 using EventFlowAPI.Logic.Services.CRUDServices.Services.BaseServices;
 using EventFlowAPI.Logic.Services.OtherServices.Interfaces;
 using EventFlowAPI.Logic.UnitOfWork;
+using Serilog;
 
 namespace EventFlowAPI.Logic.Services.CRUDServices.Services
 {
@@ -120,6 +121,101 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             };
 
             var newHallEntity = (Hall)MapToEntity(requestDto, hallEntity);
+
+            Log.Information("Creating new Hall entity with the following properties:");
+            Log.Information("DefaultId: {DefaultId}, HallNr: {HallNr}, RentalPricePerHour: {RentalPricePerHour}, IsCopy: {IsCopy}, IsVisible: {IsVisible}, IsUpdated: {IsUpdated}, UpdateDate: {UpdateDate}, Floor: {Floor}, HallViewFileName: {HallViewFileName}, HallTypeId: {HallTypeId}",
+                newHallEntity.DefaultId,
+                newHallEntity.HallNr,
+                newHallEntity.RentalPricePerHour,
+                newHallEntity.IsCopy,
+                newHallEntity.IsVisible,
+                newHallEntity.IsUpdated,
+                newHallEntity.UpdateDate,
+                newHallEntity.Floor,
+                newHallEntity.HallViewFileName,
+                newHallEntity.HallTypeId);
+
+            if (newHallEntity.HallDetails != null)
+            {
+                Log.Information("HallDetails: TotalLength: {TotalLength}, TotalWidth: {TotalWidth}, TotalArea: {TotalArea}, StageLength: {StageLength}, StageWidth: {StageWidth}, MaxNumberOfSeatsRows: {MaxNumberOfSeatsRows}, MaxNumberOfSeatsColumns: {MaxNumberOfSeatsColumns}, NumberOfSeats: {NumberOfSeats}, MaxNumberOfSeats: {MaxNumberOfSeats}",
+                    newHallEntity.HallDetails.TotalLength,
+                    newHallEntity.HallDetails.TotalWidth,
+                    newHallEntity.HallDetails.TotalArea,
+                    newHallEntity.HallDetails.StageLength,
+                    newHallEntity.HallDetails.StageWidth,
+                    newHallEntity.HallDetails.MaxNumberOfSeatsRows,
+                    newHallEntity.HallDetails.MaxNumberOfSeatsColumns,
+                    newHallEntity.HallDetails.NumberOfSeats,
+                    newHallEntity.HallDetails.MaxNumberOfSeats);
+            }
+            else
+            {
+                Log.Warning("HallDetails is null.");
+            }
+
+            if (newHallEntity.Type != null)
+            {
+                Log.Information("HallType: Name: {Name}, Description: {Description}, IsUpdated: {IsUpdated}, UpdateDate: {UpdateDate}, IsDeleted: {IsDeleted}, HallTypeGuid: {HallTypeGuid}, DeleteDate: {DeleteDate}, IsSoftUpdated: {IsSoftUpdated}, PhotoName: {PhotoName}",
+                    newHallEntity.Type.Name,
+                    newHallEntity.Type.Description,
+                    newHallEntity.Type.IsUpdated,
+                    newHallEntity.Type.UpdateDate,
+                    newHallEntity.Type.IsDeleted,
+                    newHallEntity.Type.HallTypeGuid,
+                    newHallEntity.Type.DeleteDate,
+                    newHallEntity.Type.IsSoftUpdated,
+                    newHallEntity.Type.PhotoName);
+            }
+            else
+            {
+                Log.Warning("HallType is null.");
+            }
+            foreach(var seat in newHallEntity.Seats)
+            {
+                if (seat == null)
+                {
+                    Log.Warning("Seat object is null.");
+                }
+                else
+                {
+                    // Logowanie właściwości głównego obiektu Seat
+                    Log.Information("Logging Seat details:");
+                    Log.Information("SeatNr: {SeatNr}, Row: {Row}, GridRow: {GridRow}, Column: {Column}, GridColumn: {GridColumn}, SeatTypeId: {SeatTypeId}, HallId: {HallId}, IsUpdated: {IsUpdated}, UpdateDate: {UpdateDate}",
+                        seat.SeatNr,
+                        seat.Row,
+                        seat.GridRow,
+                        seat.Column,
+                        seat.GridColumn,
+                        seat.SeatTypeId,
+                        seat.HallId,
+                        seat.IsUpdated,
+                        seat.UpdateDate);
+
+                    // Logowanie właściwości powiązanego obiektu SeatType
+                    if (seat.SeatType != null)
+                    {
+                        Log.Information("SeatType details:");
+                        Log.Information("Name: {Name}, Description: {Description}, IsDeleted: {IsDeleted}, DeleteDate: {DeleteDate}, IsUpdated: {IsUpdated}, UpdateDate: {UpdateDate}, IsSoftUpdated: {IsSoftUpdated}, AddtionalPaymentPercentage: {AddtionalPaymentPercentage}, SeatColor: {SeatColor}",
+                            seat.SeatType.Name,
+                            seat.SeatType.Description,
+                            seat.SeatType.IsDeleted,
+                            seat.SeatType.DeleteDate,
+                            seat.SeatType.IsUpdated,
+                            seat.SeatType.UpdateDate,
+                            seat.SeatType.IsSoftUpdated,
+                            seat.SeatType.AddtionalPaymentPercentage,
+                            seat.SeatType.SeatColor);
+                    }
+                    else
+                    {
+                        Log.Warning("SeatType is null for SeatNr: {SeatNr}.", seat.SeatNr);
+                    }
+
+                    Log.Information("Finished logging Seat details.");
+
+                }
+            }
+
             //decimal area = requestDto!.HallDetails.TotalLength * requestDto!.HallDetails.TotalWidth;
             //newHallEntity.HallDetails!.TotalArea = Math.Round(area, 2);
 

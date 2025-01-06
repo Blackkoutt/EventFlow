@@ -1,27 +1,38 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useFormContext } from "react-hook-form";
 
 interface CheckboxProps {
+  name: string;
   color: string;
   text: string;
   textColor: string;
   fontSize?: number;
   width?: number;
   height?: number;
+  onCheck?: (isChecked: boolean, name?: string) => void;
 }
 
 const Checkbox = ({
   color,
   text,
+  name,
   textColor,
   fontSize = 12,
   width = 16,
+  onCheck,
   height = 16,
 }: CheckboxProps) => {
   const [isChecked, setIsChecked] = useState(false);
+  const { register, getValues, watch } = useFormContext();
+
+  useEffect(() => {
+    setIsChecked(getValues(name));
+  }, [watch()]);
 
   return (
     <div className="flex gap-2">
       <input
+        {...register(name)}
         type="checkbox"
         id="some_id"
         style={{
@@ -32,7 +43,7 @@ const Checkbox = ({
         }}
         className={`relative peer shrink-0
             appearance-none border-2 rounded-sm bg-white mt-1 hover:cursor-pointer`}
-        onChange={(e) => setIsChecked(e.target.checked)}
+        //onChange={(e) => setIsChecked(e.target.checked)}
       />
       <label
         htmlFor="some_id"

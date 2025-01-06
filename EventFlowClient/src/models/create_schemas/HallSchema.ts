@@ -65,7 +65,7 @@ export const HallSchema = z.object({
       .refine((val) => val >= 1 && val < Number.MAX_VALUE, "Id typu sali musi być większe od 0")
   ),
 
-  seats: z.array(SeatSchema),
+  seats: z.array(SeatSchema).optional(),
 });
 
 export type HallRequest = z.infer<typeof HallSchema>;

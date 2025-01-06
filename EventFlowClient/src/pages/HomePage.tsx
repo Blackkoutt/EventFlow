@@ -160,6 +160,7 @@ const HomePage = () => {
             </div>
             <div className=" max-w-[40vw]">
               <Checkbox
+                name="newsletter"
                 color="#7B2CBF"
                 textColor="#4C4C4C"
                 fontSize={11}

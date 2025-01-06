@@ -76,7 +76,7 @@ const DatePicker = React.forwardRef<HTMLInputElement, DatePickerProps>(
           className={`w-full bg-[#ECECEC] rounded-md px-3 flex flex-row justify-start items-center gap-3 ${
             isOpen ? "outline outline-primaryPurple outline-2" : "outline-none"
           }`}
-          onFocus={() => setIsOpen(true)}
+          onClick={() => setIsOpen(true)}
         >
           <FontAwesomeIcon
             icon={faCalendar}
@@ -85,11 +85,7 @@ const DatePicker = React.forwardRef<HTMLInputElement, DatePickerProps>(
           <div className="w-full relative pt-6 pb-2 ">
             <label
               htmlFor={name}
-              className={`absolute transition-all text-[#2F2F2F] duration-300 ${
-                isOpen || selectedDate
-                  ? "-translate-y-4 text-[12px] text-black"
-                  : "-translate-y-[10px] text-lg"
-              }`}
+              className="absolute transition-all text-[#2F2F2F] duration-300 -translate-y-4 text-[12px]"
             >
               {label}
             </label>

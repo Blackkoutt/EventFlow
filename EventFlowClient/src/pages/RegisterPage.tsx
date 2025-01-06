@@ -113,7 +113,6 @@ const RegisterPage = () => {
               />
 
               <DatePicker
-                //{...register("dateOfBirth")}
                 label="Data urodzenia"
                 name="dateOfBirth"
                 error={errors.dateOfBirth}

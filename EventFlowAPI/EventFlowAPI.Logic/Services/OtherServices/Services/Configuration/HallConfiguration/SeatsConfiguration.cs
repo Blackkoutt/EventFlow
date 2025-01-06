@@ -92,11 +92,18 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services.Configuration.HallC
         public void SetCursorToPrintNextSeatCol() => seatX += seatWidth + seatPaddingRight;
         public void SetCursorToPrintNextSeatsRow() => seatY += seatHeight + rowPadding;
 
-        public OutlineRectanglePrintingOptions GetActiveSeatRectanglePrintingOptions(SeatType seatType)
+        public OutlineRectanglePrintingOptions GetActiveSeatRectanglePrintingOptions(SeatType? seatType)
         {
-            var drawingColor = System.Drawing.ColorTranslator.FromHtml(seatType.SeatColor);
-            Color seatColor = Color.FromRgba(drawingColor.R, drawingColor.G, drawingColor.B, drawingColor.A);
-
+            Color seatColor;
+            if (seatType != null)
+            {
+                var drawingColor = System.Drawing.ColorTranslator.FromHtml(seatType.SeatColor);
+                seatColor = Color.FromRgba(drawingColor.R, drawingColor.G, drawingColor.B, drawingColor.A);
+            }
+            else
+            {
+                seatColor = NonActiveSeatColor;
+            }
             return new OutlineRectanglePrintingOptions
             {
                 Color = seatColor,

@@ -151,7 +151,7 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services.Configuration.HallC
         public void SetSeatCursorAfterPrintColNumber() => _seatsConfiguration.SetSeatCursorAfterPrintColNumber();
         public void SetCursorToPrintNextSeatCol() => _seatsConfiguration.SetCursorToPrintNextSeatCol();
         public void SetCursorToPrintNextSeatsRow() => _seatsConfiguration.SetCursorToPrintNextSeatsRow();
-        public OutlineRectanglePrintingOptions GetActiveSeatRectanglePrintingOptions(SeatType seatType) => _seatsConfiguration.GetActiveSeatRectanglePrintingOptions(seatType);
+        public OutlineRectanglePrintingOptions GetActiveSeatRectanglePrintingOptions(SeatType? seatType) => _seatsConfiguration.GetActiveSeatRectanglePrintingOptions(seatType);
         public FillRectanglePrintingOptions NonActiveSeatRectanglePrintingOptions => _seatsConfiguration.NonActiveSeatRectanglePrintingOptions;
         public int RowNr => _seatsConfiguration.RowNr;
         public int ColNr => _seatsConfiguration.ColNr;

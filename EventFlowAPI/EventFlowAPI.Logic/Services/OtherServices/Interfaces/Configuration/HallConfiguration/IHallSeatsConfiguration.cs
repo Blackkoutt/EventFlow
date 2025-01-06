@@ -27,7 +27,7 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Interfaces.Configuration.Hal
         void SetSeatCursorAfterPrintColNumber();
         void SetCursorToPrintNextSeatCol();
         void SetCursorToPrintNextSeatsRow();
-        OutlineRectanglePrintingOptions GetActiveSeatRectanglePrintingOptions(SeatType seatType);
+        OutlineRectanglePrintingOptions GetActiveSeatRectanglePrintingOptions(SeatType? seatType);
         FillRectanglePrintingOptions NonActiveSeatRectanglePrintingOptions { get; }
         PrintingOptions GetSeatNumberPrintingOptions(int seatNr);
         PrintingOptions GetLegendHeaderPrintingOptions();

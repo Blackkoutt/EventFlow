@@ -12,7 +12,6 @@ import MessageText from "../../common/MessageText";
 import { MessageType } from "../../../helpers/enums/MessageTypeEnum";
 import { SeatRequest, SeatSchema } from "../../../models/create_schemas/SeatSchema";
 import { toast } from "react-toastify";
-import { HallRentHallUpdateRequest } from "../../../models/update_schemas/HallRentHallUpdateSchema";
 import { HTTPStatusCode } from "../../../helpers/enums/HTTPStatusCode";
 import {
   HallUpdateRequest,
@@ -24,8 +23,6 @@ import FormButton from "../../common/forms/FormButton";
 import Input from "../../common/forms/Input";
 import Select from "../../common/forms/Select";
 import { SelectOption } from "../../../helpers/SelectOptions";
-import { HallDetailsSchema } from "../../../models/create_schemas/HallDetailsSchema";
-
 interface ModifyHallDialogProps {
   hallId?: number;
   onDialogClose: () => void;
@@ -47,7 +44,6 @@ const ModifyHallDialog = forwardRef<HTMLDialogElement, ModifyHallDialogProps>(
       ApiEndpoint.Hall
     );
     const { data: seatTypes, get: getSeatTypes } = useApi<SeatType>(ApiEndpoint.SeatType);
-
     const { data: hallTypes, get: getHallTypes } = useApi<HallType>(ApiEndpoint.HallType);
 
     const [hallSeats, setHallSeats] = useState<Seat[]>([]);
@@ -309,36 +305,6 @@ const ModifyHallDialog = forwardRef<HTMLDialogElement, ModifyHallDialogProps>(
         setActionPerformed(true);
       }
     };
-
-    // const onModifyButtonClick = async (maxNumberOfColumns?: number) => {
-    //   if (maxNumberOfColumns != undefined) {
-    //     const requestSeats: SeatRequest[] = [];
-    //     hallSeats.forEach((seat) => {
-    //       try {
-    //         const validatedSeat = seatAsRequest(seat, maxNumberOfColumns);
-    //         requestSeats.push(validatedSeat);
-    //       } catch (error) {
-    //         const errorMessage = error instanceof Error ? error.message : "Nieznany błąd.";
-    //         toast.error(errorMessage);
-    //         return;
-    //       }
-    //     });
-
-    //     const requestHallModify = {
-    //       seats: requestSeats,
-    //     } as HallRentHallUpdateRequest;
-
-    //     console.log(requestSeats);
-    //     setPromisePending(true);
-    //     await toast.promise(updateHall({ id: hallRentId, body: requestHallModify }), {
-    //       pending: "Wykonywanie żądania",
-    //       success: "Sala została zaktualizowana pomyślnie",
-    //       error: "Wystąpił błąd podczas aktualizacji sali",
-    //     });
-    //     setPromisePending(false);
-    //     setActionPerformed(true);
-    //   }
-    // };
 
     useEffect(() => {
       if (actionPerformed) {

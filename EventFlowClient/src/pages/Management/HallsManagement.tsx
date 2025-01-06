@@ -11,6 +11,7 @@ import DownloadHallViewDialog from "../../components/management/halls/DownloadHa
 import DetailsHallDialog from "../../components/management/halls/DetailsHallDialog";
 import DeleteHallDialog from "../../components/management/halls/DeleteHallDialog";
 import ModifyHallDialog from "../../components/management/halls/ModifyHallDialog";
+import CreateHallDialog from "../../components/management/halls/CreateHallDialog";
 
 const HallsManagement = () => {
   const { data: items, get: getItems } = useApi<Hall>(ApiEndpoint.Hall);
@@ -107,6 +108,12 @@ const HallsManagement = () => {
 
   return (
     <div className="max-w-[64vw] self-center">
+      <CreateHallDialog
+        ref={createDialog}
+        onDialogClose={onDialogClose}
+        onDialogSuccess={reloadItemsAfterSuccessDialog}
+      />
+
       <DownloadHallViewDialog
         ref={downloadDialog}
         hall={itemToDownload}
