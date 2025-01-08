@@ -42,7 +42,8 @@ const RegisterPage = () => {
 
   // Register user in application
   const onSubmit: SubmitHandler<UserRegisterRequest> = async (data) => {
-    await registerUser({ body: data });
+    console.log(data);
+    //await registerUser({ body: data });
   };
 
   const validateNameOrSurname = (e: FormEvent<HTMLInputElement>) => {

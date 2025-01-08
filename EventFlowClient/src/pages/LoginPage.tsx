@@ -145,6 +145,7 @@ const LoginPage = () => {
               <div className="flex flex-row justify-between items-center w-full pb-4">
                 <Checkbox
                   color="#7B2CBF"
+                  name="remind"
                   textColor="#2F2F2F"
                   fontSize={16}
                   text="Zapamiętaj mnie"

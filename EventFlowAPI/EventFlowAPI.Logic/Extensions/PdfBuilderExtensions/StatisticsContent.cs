@@ -142,7 +142,7 @@ namespace EventFlowAPI.Logic.Extensions.PdfBuilderExtensions
                    column.AddTextItem(options.GetLabelValueString(label: "Liczba nowych rezerwacji sal: ", value: $"{statistics.AllAddedHallRentsCount}", fontSize: 12.5f));
                    column.AddTextItem(options.GetLabelValueString(label: "Liczba odwołanych rezerwacji sal: ", value: $"{statistics.AllCanceledHallRentsCount}", fontSize: 12.5f));
                    column.AddTextItem(options.GetLabelValueString(label: "Liczba zakończonych lub trwających rezerwacji sal: ", value: $"{statistics.AllHallRentsThatTookPlaceInTimePeriod}", fontSize: 12.5f));
-                   column.AddTextItem(options.GetLabelValueString(label: "Średnia długość rezerwacji: ", value: $"{statistics.DurationAvg.Hours} h {statistics.DurationAvg.Minutes} min", fontSize: 12.5f));
+                   column.AddTextItem(options.GetLabelValueString(label: "Średnia długość rezerwacji: ", value: $"{statistics.DurationAvg/60} h {statistics.DurationAvg} min", fontSize: 12.5f));
                    column.AddTextItem(options.GetLabelValueString(label: "Całkowity przychód z rezerwacji sal: ", value: $"{statistics.TotalHallRentsIncome} {Currency.PLN}", fontSize: 12.5f));
                });
                column.Item().Column(column =>
@@ -171,7 +171,7 @@ namespace EventFlowAPI.Logic.Extensions.PdfBuilderExtensions
                    column.AddTextItem(options.GetLabelValueString(label: "Liczba nowych wydarzeń: ", value: $"{statistics.AllAddedEventsCount}", fontSize: 12.5f));
                    column.AddTextItem(options.GetLabelValueString(label: "Liczba odwołanych wydarzeń: ", value: $"{statistics.AllCanceledEventsCount}", fontSize: 12.5f));
                    column.AddTextItem(options.GetLabelValueString(label: "Liczba zakończonych lub trwających wydarzeń: ", value: $"{statistics.AllEventsThatTookPlaceInTimePeriod}", fontSize: 12.5f));
-                   column.AddTextItem(options.GetLabelValueString(label: "Średnia długość wydarzeń: ", value: $"{statistics.DurationAvg.Hours} h {statistics.DurationAvg.Minutes} min", fontSize: 12.5f));
+                   column.AddTextItem(options.GetLabelValueString(label: "Średnia długość wydarzeń: ", value: $"{statistics.DurationAvg/60} h {statistics.DurationAvg} min", fontSize: 12.5f));
                    column.AddTextItem(options.GetLabelValueString(label: "Całkowity przychód z wydarzeń: ", value: $"{statistics.TotalEventsIncome} {Currency.PLN}", fontSize: 12.5f));
                });
                column.Item().Column(column =>
@@ -200,7 +200,7 @@ namespace EventFlowAPI.Logic.Extensions.PdfBuilderExtensions
                    column.AddTextItem(options.GetLabelValueString(label: "Liczba nowych festiwali: ", value: $"{statistics.AllAddedFestivalsCount}", fontSize: 12.5f));
                    column.AddTextItem(options.GetLabelValueString(label: "Liczba odwołanych festiwali: ", value: $"{statistics.AllCanceledFestivalsCount}", fontSize: 12.5f));
                    column.AddTextItem(options.GetLabelValueString(label: "Liczba zakończonych lub trwających festiwali: ", value: $"{statistics.AllFestivalsThatTookPlaceInTimePeriod}", fontSize: 12.5f));
-                   column.AddTextItem(options.GetLabelValueString(label: "Średnia długość festiwali: ", value: $"{statistics.DurationAvg.Hours} h {statistics.DurationAvg.Minutes} min", fontSize: 12.5f));
+                   column.AddTextItem(options.GetLabelValueString(label: "Średnia długość festiwali: ", value: $"{statistics.DurationAvg/60} h {statistics.DurationAvg} min", fontSize: 12.5f));
                    column.AddTextItem(options.GetLabelValueString(label: "Średnia ilość wydarzeń w festiwalach: ", value: $"{statistics.EventCountAvg}", fontSize: 12.5f));
                    column.AddTextItem(options.GetLabelValueString(label: "Całkowity przychód z festiwali: ", value: $"{statistics.TotalFestivalsIncome} {Currency.PLN}", fontSize: 12.5f));
                });

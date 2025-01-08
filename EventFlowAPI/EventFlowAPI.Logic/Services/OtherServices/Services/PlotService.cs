@@ -94,7 +94,8 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
 
             if (xAxisTicksIdentity)
             {
-                var maxValue = barDict.Values.Max() + 1;
+                double maxValue = 1;
+                if (barDict.Values.Any()) maxValue = barDict.Values.Max() + 1;
                 for (var j = 0; j <= maxValue; j++) bottomTicks.Add(new Tick(j, j.ToString()));
                 plot.Axes.Bottom.TickGenerator = new ScottPlot.TickGenerators.NumericManual(bottomTicks.ToArray());
             }

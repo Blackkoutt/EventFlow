@@ -5,7 +5,7 @@
         public int AllAddedFestivalsCount { get; set; }
         public int AllFestivalsThatTookPlaceInTimePeriod { get; set; }
         public int AllCanceledFestivalsCount { get; set; }
-        public TimeSpan DurationAvg { get; set; }
+        public int DurationAvg { get; set; }
         public int EventCountAvg { get; set; }
         public double TotalFestivalsIncome { get; set; }
         public Dictionary<string, double> MostPopularFestivals { get; set; } = [];

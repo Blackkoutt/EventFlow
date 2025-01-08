@@ -106,10 +106,12 @@ export const ApiUrlConfig = {
   [ApiEndpoint.Sponsor]: {
     url: (id?: number | string) => `/sponsors${id ? `/${id}` : ""}`,
   },
-  /*[ApiEndpoint.Statistics]: {
-    url: "/statistics",
-    mappingType: {} as Sponsor,
-  },*/
+  [ApiEndpoint.Stats]: {
+    url: (id?: number | string) => "/statistics",
+  },
+  [ApiEndpoint.StatsPDF]: {
+    url: (id?: number | string) => "/statistics/pdf-report",
+  },
   [ApiEndpoint.TicketType]: {
     url: (id?: number | string) => `/tickettypes${id ? `/${id}` : ""}`,
   },

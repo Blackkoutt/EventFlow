@@ -6,10 +6,10 @@ import { Organizer } from "./Organizer";
 import { Sponsor } from "./Sponsor";
 
 export type Festival = IModel & {
-  name: string;
+  title: string;
   shortDescription: string;
-  startDate: string;
-  endDate: string;
+  start: string;
+  end: string;
   duration: string;
   photoName: string;
   photoEndpoint: string;

@@ -1,13 +1,19 @@
 ﻿using EventFlowAPI.DB.Entities;
 using EventFlowAPI.Logic.DTO.Abstract;
+using System.Text.Json.Serialization;
 
 namespace EventFlowAPI.Logic.DTO.ResponseDto
 {
     public class EventResponseDto : BaseResponseDto
     {
+        [JsonPropertyName("title")]
         public string Name { get; set; } = string.Empty;
         public string ShortDescription { get; set; } = string.Empty;
-        public DateTime StartDate { get; set; } 
+
+        [JsonPropertyName("start")]
+        public DateTime StartDate { get; set; }
+
+        [JsonPropertyName("end")]
         public DateTime EndDate { get; set; }
         public TimeSpan Duration { get; set; }
         public string PhotoName { get; set; } = string.Empty;

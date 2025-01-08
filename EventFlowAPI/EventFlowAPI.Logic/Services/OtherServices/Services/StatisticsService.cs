@@ -6,6 +6,7 @@ using EventFlowAPI.Logic.Helpers.Enums;
 using EventFlowAPI.Logic.Services.OtherServices.Interfaces;
 using EventFlowAPI.Logic.UnitOfWork;
 using ScottPlot;
+using Serilog;
 
 namespace EventFlowAPI.Logic.Services.OtherServices.Services
 {
@@ -405,19 +406,30 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
 
             var allFestivalsThatTookPlaceInTimePeriod = allFestivals.Where(e => startDate < e.EndDate && endDate > e.StartDate && !e.IsDeleted);
             var allFestivalsThatTookPlaceInTimePeriodCount = allFestivalsThatTookPlaceInTimePeriod.Count();
-
             var allCanceledFestivalsCount = allFestivals.Where(e => e.DeleteDate >= startDate && e.DeleteDate <= endDate && e.IsDeleted).Count();
 
-            // Festival duration avg
-            var durationSumInMinutes = allFestivalsThatTookPlaceInTimePeriod.Select(hr => (hr.EndDate - hr.StartDate).TotalMinutes).Sum();
-            var durationAvg = Math.Round((durationSumInMinutes / allFestivalsThatTookPlaceInTimePeriod.Count()) / 60, 2);
-            int hours = (int)durationAvg;
-            int minutes = (int)((durationAvg - hours) * 60);
-            TimeSpan durationAvgTimeSpan = new TimeSpan(hours, minutes, 0);
+            int minutes = 0;
+            int eventsAvg = 0;
+            if (allFestivalsThatTookPlaceInTimePeriodCount > 0)
+            {
+                // Festival duration avg
+                Log.Information("Liczba festiwali w analizowanym okresie: {FestivalCount}", allFestivalsThatTookPlaceInTimePeriod.Count());
+                var durationSumInMinutes = allFestivalsThatTookPlaceInTimePeriod.Select(hr => (hr.EndDate - hr.StartDate).TotalMinutes).Sum();
+                Log.Information("Suma minut trwania festiwali: {TotalMinutes}", durationSumInMinutes);
 
-            // Festival event count avg
-            var eventCounts = allFestivalsThatTookPlaceInTimePeriod.Select(f => f.Events.Count).Sum();
-            var eventsAvg = (int)(eventCounts / allFestivalsThatTookPlaceInTimePeriod.Count());
+                var durationAvgInMinutes = durationSumInMinutes / allFestivalsThatTookPlaceInTimePeriodCount;
+                Log.Information("Średnia długość festiwali w minutach: {AverageDurationInMinutes}", durationAvgInMinutes);
+
+                int hours = (int)(durationAvgInMinutes / 60);
+                minutes = (int)durationAvgInMinutes;
+                Log.Information("Średnia długość festiwali: {Hours} godziny i {Minutes} minuty", hours, minutes);
+                //TimeSpan durationAvgTimeSpan = new TimeSpan(hours, minutes, 0);
+
+                // Festival event count avg
+                var eventCounts = allFestivalsThatTookPlaceInTimePeriod.Select(f => f.Events.Count).Sum();
+                eventsAvg = (int)(eventCounts / allFestivalsThatTookPlaceInTimePeriodCount);
+            }
+           
 
             // Total eventsIncome
             var totalIncome = (double)Math.Round(allFestivalsThatTookPlaceInTimePeriod
@@ -460,7 +472,7 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
                 AllAddedFestivalsCount = allAddedFestivalsCount,
                 AllFestivalsThatTookPlaceInTimePeriod = allFestivalsThatTookPlaceInTimePeriodCount, 
                 AllCanceledFestivalsCount = allCanceledFestivalsCount,
-                DurationAvg = durationAvgTimeSpan,
+                DurationAvg = minutes,
                 EventCountAvg = eventsAvg,
                 TotalFestivalsIncome = totalIncome,
                 MostPopularFestivals = mostPopularFestivalsDict,
@@ -524,11 +536,15 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
             var allCanceledEventsCount = allEvents.Where(e => e.DeleteDate >= startDate && e.DeleteDate <= endDate && e.IsDeleted).Count();
 
             // Srednia długość eventów
-            var durationSumInMinutes = allEventsThatTookPlaceInTimePeriod.Select(hr => (hr.EndDate - hr.StartDate).TotalMinutes).Sum();
-            var durationAvg = Math.Round((durationSumInMinutes / allEventsThatTookPlaceInTimePeriod.Count()) / 60, 2);
-            int hours = (int)durationAvg;
-            int minutes = (int)((durationAvg - hours) * 60);
-            TimeSpan durationAvgTimeSpan = new TimeSpan(hours, minutes, 0);
+            int minutes = 0;
+            if(allEventsThatTookPlaceInTimePeriodCount > 0)
+            {
+                var durationSumInMinutes = allEventsThatTookPlaceInTimePeriod.Select(hr => (hr.EndDate - hr.StartDate).TotalMinutes).Sum();
+                var durationAvgInMinutes = durationSumInMinutes / allEventsThatTookPlaceInTimePeriodCount;
+                int hours = (int)(durationAvgInMinutes / 60);
+                minutes = (int)durationAvgInMinutes;
+            }
+            //TimeSpan durationAvgTimeSpan = new TimeSpan(hours, minutes, 0);
 
             // Total eventsIncome
             var totalIncome = (double)Math.Round(allEventsThatTookPlaceInTimePeriod.
@@ -574,7 +590,7 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
                 AllAddedEventsCount = allAddedEventsCount,
                 AllEventsThatTookPlaceInTimePeriod = allEventsThatTookPlaceInTimePeriodCount,
                 AllCanceledEventsCount = allCanceledEventsCount,
-                DurationAvg = durationAvgTimeSpan,
+                DurationAvg = minutes,
                 TotalEventsIncome = totalIncome,
                 MostPopularEvents = mostPopularEventsDict,
                 MostProfitableEvents = mostProfitableEventsDict,
@@ -596,11 +612,16 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
             var allCanceledHallRentsCount = allHallRents.Where(hr => hr.DeleteDate >= startDate && hr.DeleteDate <= endDate && hr.IsDeleted).Count();
 
             // Srednia długość rezerwacji sal
-            var durationSumInMinutes = allHallRentsThatTookPlaceInTimePeriod.Select(hr => (hr.EndDate - hr.StartDate).TotalMinutes).Sum();
-            var durationAvg = Math.Round((durationSumInMinutes / allHallRentsThatTookPlaceInTimePeriod.Count()) / 60, 2);
-            int hours = (int)durationAvg;
-            int minutes = (int)((durationAvg - hours) * 60); 
-            TimeSpan durationAvgTimeSpan = new TimeSpan(hours, minutes, 0);
+            int minutes = 0;
+            if(allHallRentsThatTookPlaceInTimePeriodCount > 0)
+            {
+                var durationSumInMinutes = allHallRentsThatTookPlaceInTimePeriod.Select(hr => (hr.EndDate - hr.StartDate).TotalMinutes).Sum();
+                var durationAvgInMinutes = durationSumInMinutes / allHallRentsThatTookPlaceInTimePeriodCount;
+                int hours = (int)(durationAvgInMinutes / 60); // godziny
+                minutes = (int)durationAvgInMinutes;
+            }
+
+            //TimeSpan durationAvgTimeSpan = new TimeSpan(hours, minutes, 0);
 
             // Total eventsIncome
             var totalIncome = (double)Math.Round(allHallRentsThatTookPlaceInTimePeriod.
@@ -639,7 +660,7 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
                 AllAddedHallRentsCount = allAddedHallRentsCount,
                 AllHallRentsThatTookPlaceInTimePeriod = allHallRentsThatTookPlaceInTimePeriodCount,
                 AllCanceledHallRentsCount = allCanceledHallRentsCount,
-                DurationAvg = durationAvgTimeSpan,
+                DurationAvg = minutes,//durationAvgTimeSpan,
                 TotalHallRentsIncome = totalIncome,
                 UserReservationsDict = userReservationsDict,
                 HallReservationsDict = hallReservationsDict,

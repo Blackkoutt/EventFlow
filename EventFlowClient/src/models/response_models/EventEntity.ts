@@ -5,10 +5,10 @@ import { Hall } from "./Hall";
 import { Ticket } from "./Ticket";
 
 export type EventEntity = IModel & {
-  name: string;
+  title: string;
   shortDescription: string;
-  startDate: string;
-  endDate: string;
+  start: string;
+  end: string;
   duration: string;
   photoName: string;
   photoEndpoint: string;

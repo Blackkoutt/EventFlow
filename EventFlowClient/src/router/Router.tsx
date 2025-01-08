@@ -45,6 +45,7 @@ import StatsManagement from "../pages/Management/StatsManagement";
 import TicketTypesManagement from "../pages/Management/TicketTypesManagement";
 import UsersManagement from "../pages/Management/UsersManagement";
 import OrganizersManagement from "../pages/Management/OrganizersManagement";
+import EventsManagement from "../pages/Management/EventsManagement";
 
 export const router = createBrowserRouter([
   {
@@ -210,7 +211,7 @@ export const router = createBrowserRouter([
             path: "/management/events",
             element: (
               <ProtectedRoute allowedRoles={[Roles.Admin]}>
-                <EventPassesManagement />
+                <EventsManagement />
               </ProtectedRoute>
             ),
           },

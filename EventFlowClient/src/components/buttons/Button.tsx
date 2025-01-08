@@ -7,16 +7,18 @@ export enum ButtonStyle {
   Default,
   DefaultGray,
   CTA,
+  Download,
 }
 
 interface ButtonProps {
   text: string;
-  width: number;
+  width?: number;
   height: number;
   type?: "button" | "submit" | "reset";
   style: ButtonStyle;
   rounded?: string;
   fontSize?: number;
+  isFullWidth?: boolean;
   isFontSemibold?: boolean;
   icon?: IconDefinition;
   iconSize?: number;
@@ -35,11 +37,12 @@ const Button = (props: ButtonProps) => {
     style,
     action,
     iconSize,
+    isFullWidth = false,
     icon,
   } = props;
 
   const buttonStyle = {
-    width: `${width}px`,
+    width: width,
     height: `${height}px`,
     fontSize: `${fontSize}px`,
   };
@@ -62,19 +65,23 @@ const Button = (props: ButtonProps) => {
     case ButtonStyle.CTA:
       buttonClass = "bg-[#BA3BBB] text-white text-base";
       break;
+    case ButtonStyle.Download:
+      buttonClass = "bg-[#a855f7] text-white text-base";
+      break;
     default:
       buttonClass = "bg-secondaryPurple text-white text-base";
       break;
   }
 
   const fontWeightClass = isFontSemibold ? "font-semibold" : "font-normal";
+  const fullWidth = isFullWidth ? "w-full" : "";
 
   return (
     <>
       <button
         onClick={action}
         type={type}
-        className={`${rounded} flex flex-row justify-center items-center gap-3 ${buttonClass} ${fontWeightClass} text-center py-0`}
+        className={`${rounded} ${fullWidth} flex flex-row justify-center items-center gap-3 ${buttonClass} ${fontWeightClass} text-center py-0`}
         style={buttonStyle}
       >
         {icon && <FontAwesomeIcon icon={icon} style={{ fontSize: `${iconSize}px` }} />}

@@ -7,7 +7,7 @@ namespace EventFlowAPI.Logic.DTO.Statistics.ResponseDto
         public int AllAddedHallRentsCount { get; set; }
         public int AllHallRentsThatTookPlaceInTimePeriod { get; set; }
         public int AllCanceledHallRentsCount { get; set; }
-        public TimeSpan DurationAvg { get; set; }
+        public int DurationAvg { get; set; }
         public double TotalHallRentsIncome { get; set; }
         public Dictionary<string, double> UserReservationsDict { get; set; } = [];
         public Dictionary<string, double> HallReservationsDict { get; set; } = [];
