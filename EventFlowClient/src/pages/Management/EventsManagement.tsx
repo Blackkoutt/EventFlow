@@ -10,6 +10,10 @@ import DateFormatter from "../../helpers/DateFormatter";
 import { createDragAndDropPlugin } from "@schedule-x/drag-and-drop";
 import Button, { ButtonStyle } from "../../components/buttons/Button";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
+import CreateEventDialog from "../../components/management/events/CreateEventDialog";
+import { useTable } from "../../hooks/useTable";
+import { useDialogs } from "../../hooks/useDialogs";
+import EventClickDialog from "../../components/management/events/EventClickDialog";
 
 const EventsManagement = () => {
   const { data: items, get: getItems } = useApi<EventEntity>(ApiEndpoint.Event);
@@ -23,7 +27,8 @@ const EventsManagement = () => {
     selectedDate: DateFormatter.FormatDateForCalendar(new Date()),
     callbacks: {
       onEventClick(calendarEvent) {
-        console.log("onEventClick", calendarEvent);
+        onModify(calendarEvent as EventEntity);
+        //console.log("onEventClick", calendarEvent as EventEntity);
       },
     },
     plugins: [createEventsServicePlugin(), createDragAndDropPlugin()],
@@ -36,6 +41,7 @@ const EventsManagement = () => {
         ...e,
         start: DateFormatter.FormatDateForCalendar(e.start),
         end: DateFormatter.FormatDateForCalendar(e.end),
+        location: `Sala nr ${e.hall?.hallNr}`,
       }));
       console.log(items);
       calendar.eventsService.set(formattedEvents);
@@ -43,9 +49,42 @@ const EventsManagement = () => {
     }
   }, [items]);
 
+  const {
+    createDialog,
+    detailsDialog,
+    modifyDialog,
+    itemToDelete,
+    itemToDetails,
+    itemToModify,
+    onDialogClose,
+    onDelete,
+    onModify,
+    onCreate,
+    onDetails,
+    closeDialogsAndSetValuesToDefault,
+  } = useDialogs<EventEntity>();
+
+  const reloadItemsAfterSuccessDialog = () => {
+    closeDialogsAndSetValuesToDefault();
+    getItems({ id: undefined, queryParams: undefined });
+  };
+
   return (
     items && (
       <div className="w-full px-5 flex flex-col justify-center items-center gap-4">
+        <CreateEventDialog
+          ref={createDialog}
+          onDialogClose={onDialogClose}
+          onDialogSuccess={reloadItemsAfterSuccessDialog}
+        />
+        <EventClickDialog
+          minWidth={700}
+          ref={modifyDialog}
+          item={itemToModify}
+          onDialogSuccess={reloadItemsAfterSuccessDialog}
+          onDialogClose={onDialogClose}
+        />
+
         <div className="flex flex-row justify-between items-center w-full px-6">
           <h2 className="text-textPrimary">Wydarzenia</h2>
           <Button
@@ -56,7 +95,7 @@ const EventsManagement = () => {
             height={45}
             style={ButtonStyle.Primary}
             rounded="rounded-md"
-            action={() => {}}
+            action={onCreate}
           />
         </div>
         <div className="w-full">

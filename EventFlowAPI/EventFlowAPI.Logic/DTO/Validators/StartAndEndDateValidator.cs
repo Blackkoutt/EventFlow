@@ -1,5 +1,6 @@
 ﻿using EventFlowAPI.Logic.DTO.Abstract;
 using EventFlowAPI.Logic.DTO.RequestDto;
+using Serilog;
 using System.ComponentModel.DataAnnotations;
 
 namespace EventFlowAPI.Logic.DTO.Validators
@@ -10,6 +11,8 @@ namespace EventFlowAPI.Logic.DTO.Validators
         {
             if (validationContext.ObjectInstance is StartEndDateAbstract datesObj)
             {
+               Log.Information("Rozpoczęto walidację dat: StartDate={StartDate}, EndDate={EndDate}",
+            datesObj.StartDate, datesObj.EndDate);
                 if (datesObj.StartDate < DateTime.Now)
                 {
                     return new ValidationResult("Data początkowa nie może być wcześniejsza niż obcena data.");

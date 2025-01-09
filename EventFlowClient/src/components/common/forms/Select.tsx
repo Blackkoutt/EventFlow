@@ -33,8 +33,6 @@ const Select = ({
   const [selectedValue, setSelectedValue] = useState<SelectOption>();
   const [isOpen, setIsOpen] = useState(false);
 
-  console.log(getValues(name) === "");
-
   useEffect(() => {
     if (selectedOption) {
       setValue(name, selectedOption.value);

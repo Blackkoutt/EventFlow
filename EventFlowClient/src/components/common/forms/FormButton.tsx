@@ -11,6 +11,7 @@ interface FormButtonProps {
   height?: number;
   icon?: IconDefinition;
   py?: number;
+  form?: string;
 }
 
 const FormButton = ({
@@ -21,12 +22,14 @@ const FormButton = ({
   icon,
   height,
   iconSize,
+  form,
   background = "#7B2CBF",
   py = 20,
 }: FormButtonProps) => {
   return (
     <button
       disabled={isSubmitting}
+      form={form}
       style={{
         background: background,
         borderRadius: `${rounded ? `${rounded}px` : "6px"}`,

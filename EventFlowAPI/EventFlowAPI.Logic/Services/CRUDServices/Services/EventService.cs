@@ -566,6 +566,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
                     var ticket = t.AsDto<TicketResponseDto>();
                     ticket.Event = null;
                     ticket.Festival = null;
+                    ticket.TicketType = t.TicketType.AsDto<TicketTypeResponseDto>();
                     return ticket;
                 }).ToList();
                 responseDto.Hall = entity.Hall?.AsDto<HallResponseDto>();
@@ -589,6 +590,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
                 var ticket = t.AsDto<TicketResponseDto>();
                 ticket.Event = null;
                 ticket.Festival = null;
+                ticket.TicketType = t.TicketType.AsDto<TicketTypeResponseDto>();
                 return ticket;
             }).ToList();
             responseDto.Hall!.Seats = [];

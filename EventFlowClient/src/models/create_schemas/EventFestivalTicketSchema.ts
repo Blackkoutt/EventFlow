@@ -30,3 +30,4 @@ export const EventFestivalTicketSchema = z.object({
       .refine((val) => val >= 1 && val < Number.MAX_VALUE, "Id typu biletu musi być większe od 0.")
   ),
 });
+export type EventFestivalTicketRequest = z.infer<typeof EventFestivalTicketSchema>;

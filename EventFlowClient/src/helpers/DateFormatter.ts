@@ -1,11 +1,55 @@
 import { DateFormat } from "./enums/DateFormatEnum";
 
 const ParseDate = (input: string): Date | null => {
-  const [day, month, year] = input.split(".").map(Number);
+  const [datePart, timePart] = input.split(" ");
+  const [day, month, year] = datePart.split(".").map(Number);
+
   if (!day || !month || !year) return null;
-  const parsedDate = new Date(year, month - 1, day);
+
+  let hours = 0;
+  let minutes = 0;
+
+  if (timePart) {
+    const [h, m] = timePart.split(":").map(Number);
+    hours = h || 0;
+    minutes = m || 0;
+  }
+
+  const parsedDate = new Date(year, month - 1, day, hours, minutes);
   return isNaN(parsedDate.getTime()) ? null : parsedDate;
 };
+
+function CalculateTimeDifference(start?: string, end?: string) {
+  if (start == undefined || end == undefined) return "Brak danych";
+
+  const startDate = new Date(start.replace(" ", "T"));
+  const endDate = new Date(end.replace(" ", "T"));
+
+  const differenceInMs = endDate.getTime() - startDate.getTime();
+
+  if (differenceInMs < 0) {
+    return `${0} h ${0} min`;
+  }
+
+  const differenceInMinutes = Math.floor(differenceInMs / (1000 * 60));
+  const hours = Math.floor(differenceInMinutes / 60);
+  const minutes = differenceInMinutes % 60;
+
+  return `${hours} h ${minutes} min`;
+}
+
+function FormatDateFromCalendar(input?: string) {
+  if (input == undefined) return "Brak danych";
+  const [datePart, timePart] = input.split(" ");
+  const [year, month, day] = datePart.split("-");
+  return `${day}.${month}.${year} ${timePart}`;
+}
+
+function ToLocalISOString(date: Date) {
+  const offsetMs = date.getTimezoneOffset() * 60000; // Offset w milisekundach
+  const localTime = new Date(date.getTime() - offsetMs); // Korekcja na lokalny czas
+  return localTime.toISOString().slice(0, -1); // Usunięcie "Z" na końcu
+}
 
 const FormatDateForCalendar = (date: Date | string) => {
   if (typeof date === "string") {
@@ -73,6 +117,9 @@ const FormatDate = (date: string | number | undefined | null, dateFormat: DateFo
 };
 
 const DateFormatter = {
+  CalculateTimeDifference,
+  ToLocalISOString,
+  FormatDateFromCalendar,
   FormatDate,
   ParseDate,
   FormatDateForCalendar,
