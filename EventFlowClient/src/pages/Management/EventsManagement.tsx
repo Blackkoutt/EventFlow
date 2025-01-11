@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { ApiEndpoint } from "../../helpers/enums/ApiEndpointEnum";
 import useApi from "../../hooks/useApi";
 import { EventEntity } from "../../models/response_models";
@@ -18,9 +18,14 @@ import EventClickDialog from "../../components/management/events/EventClickDialo
 const EventsManagement = () => {
   const { data: items, get: getItems } = useApi<EventEntity>(ApiEndpoint.Event);
 
+  const [events, setEvents] = useState<EventEntity[]>([]);
   useEffect(() => {
     getItems({ id: undefined, queryParams: undefined });
   }, []);
+
+  useEffect(() => {
+    setEvents(items.filter((item) => item.eventStatus === "Active"));
+  }, [items]);
 
   const calendar = useCalendarApp({
     views: [createViewMonthGrid(), createViewWeek()],
@@ -36,18 +41,18 @@ const EventsManagement = () => {
   });
 
   useEffect(() => {
-    if (items && items.length > 0) {
-      const formattedEvents = items.map((e) => ({
+    if (events && events.length > 0) {
+      const formattedEvents = events.map((e) => ({
         ...e,
         start: DateFormatter.FormatDateForCalendar(e.start),
         end: DateFormatter.FormatDateForCalendar(e.end),
         location: `Sala nr ${e.hall?.hallNr}`,
       }));
-      console.log(items);
+      console.log(events);
       calendar.eventsService.set(formattedEvents);
       console.log(calendar.eventsService.getAll());
     }
-  }, [items]);
+  }, [events]);
 
   const {
     createDialog,
@@ -65,6 +70,7 @@ const EventsManagement = () => {
   } = useDialogs<EventEntity>();
 
   const reloadItemsAfterSuccessDialog = () => {
+    console.log("reload");
     closeDialogsAndSetValuesToDefault();
     getItems({ id: undefined, queryParams: undefined });
   };

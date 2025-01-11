@@ -49,6 +49,12 @@ export const ApiUrlConfig = {
   [ApiEndpoint.Event]: {
     url: (id?: number | string) => `/events${id ? `/${id}` : ""}`,
   },
+  [ApiEndpoint.EventUpdateHall]: {
+    url: (id?: number | string) => `/events/${id}/hall`,
+  },
+  [ApiEndpoint.EventHallView]: {
+    url: (id?: number | string) => `/events/${id}/pdf-hallview`,
+  },
   [ApiEndpoint.FAQ]: {
     url: (id?: number | string) => `/faq${id ? `/${id}` : ""}`,
   },

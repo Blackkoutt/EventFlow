@@ -2,6 +2,7 @@ import { z } from "zod";
 import { MaxFileSizeAndTypeValidator } from "../validators/MaxFileSizeValidator";
 import { EventFestivalTicketSchema } from "../create_schemas/EventFestivalTicketSchema";
 import DateFormatter from "../../helpers/DateFormatter";
+import { MaxFileSizeAndTypeValidatorNotRequired } from "../validators/MaxFileSizeValidatorNotRequired";
 
 export const EventSchema = z
   .object({
@@ -63,7 +64,7 @@ export const EventSchema = z
         .refine((val) => val >= 1 && val < Number.MAX_VALUE, "Id sali musi być większe od 0.")
     ),
 
-    eventPhoto: MaxFileSizeAndTypeValidator(10, ["image/jpeg"]).nullish(),
+    eventPhoto: MaxFileSizeAndTypeValidatorNotRequired(10, ["image/jpeg"]).nullish(),
 
     eventTickets: z.array(EventFestivalTicketSchema).optional(),
 

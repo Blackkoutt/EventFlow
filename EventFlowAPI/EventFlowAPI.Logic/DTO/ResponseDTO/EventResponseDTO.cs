@@ -1,5 +1,6 @@
 ﻿using EventFlowAPI.DB.Entities;
 using EventFlowAPI.Logic.DTO.Abstract;
+using EventFlowAPI.Logic.Helpers.Enums;
 using System.Text.Json.Serialization;
 
 namespace EventFlowAPI.Logic.DTO.ResponseDto
@@ -16,6 +17,7 @@ namespace EventFlowAPI.Logic.DTO.ResponseDto
         [JsonPropertyName("end")]
         public DateTime EndDate { get; set; }
         public TimeSpan Duration { get; set; }
+        public Status EventStatus { get; set; }
         public string PhotoName { get; set; } = string.Empty;
         public string PhotoEndpoint { get; set; } = string.Empty;
         public EventCategoryResponseDto? Category { get; set; }

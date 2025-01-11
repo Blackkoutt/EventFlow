@@ -479,16 +479,15 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
 
             var hallEntity = await _unitOfWork.GetRepository<Hall>()
                                     .GetAllAsync(q => q.Where(h =>
-                                    h.Id == hallId &&
-                                    h.IsVisible));
+                                    h.Id == hallId));
 
-            if (hallEntity == null)
+            if (hallEntity == null || !hallEntity.Any())
                 return EventError.HallNotFound;
 
-            if (await _collisionChecker.CheckTimeCollisionsWithEvents(hallId, startDate, endDate, id))
+            if (await _collisionChecker.CheckTimeCollisionsWithEvents((int)hallEntity.First().DefaultId!, startDate, endDate, id))
                 return EventError.CollisionWithExistingEvent;
 
-            if (await _collisionChecker.CheckTimeCollisionsWithHallRents(hallId, startDate, endDate))
+            if (await _collisionChecker.CheckTimeCollisionsWithHallRents((int)hallEntity.First().DefaultId!, startDate, endDate))
                 return EventError.CollisionWithExistingHallRent;
 
             return Error.None;
@@ -564,12 +563,14 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
                 responseDto.Tickets = entity.Tickets.Select(t =>
                 {
                     var ticket = t.AsDto<TicketResponseDto>();
+                    ticket.IsFestival = t.FestivalId.HasValue;
                     ticket.Event = null;
                     ticket.Festival = null;
                     ticket.TicketType = t.TicketType.AsDto<TicketTypeResponseDto>();
                     return ticket;
                 }).ToList();
                 responseDto.Hall = entity.Hall?.AsDto<HallResponseDto>();
+                responseDto.EventStatus = GetEntityStatus(entity);
                 responseDto.Hall!.Seats = [];
                 responseDto.Hall!.Type = null;
                 responseDto.Hall!.HallDetails = null;
@@ -594,6 +595,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
                 return ticket;
             }).ToList();
             responseDto.Hall!.Seats = [];
+            responseDto.EventStatus = GetEntityStatus(entity);
             responseDto.Hall!.Type = null;
             responseDto.Hall!.HallDetails = null;
             responseDto.PhotoEndpoint = $"/Events/{responseDto.Id}/image";

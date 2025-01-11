@@ -9,7 +9,7 @@ interface EventDetailsProps {
 
 const EventDetails = ({ item }: EventDetailsProps) => {
   return (
-    <article className="flex flex-col justify-center items-center px-5 pb-2 gap-5 max-w-[750px]">
+    <article className="flex flex-col justify-center items-center px-5 pb-2 gap-5 py-3">
       <div className="flex flex-col justify-center items-center gap-2">
         <h2>Szczegóły wydarzenia</h2>
         <p className="text-textPrimary text-base text-center">
@@ -58,7 +58,10 @@ const EventDetails = ({ item }: EventDetailsProps) => {
           labelWidth={145}
           isTextLeft={true}
           label="Bilety:"
-          text={item?.tickets.map((t) => `${t.ticketType?.name}: ${t.price} zł`).join(", ")}
+          text={item?.tickets
+            .filter((t) => !t.isFestival)
+            .map((t) => `${t.ticketType?.name}: ${t.price} zł`)
+            .join(", ")}
           gap={10}
         />
         <LabelText

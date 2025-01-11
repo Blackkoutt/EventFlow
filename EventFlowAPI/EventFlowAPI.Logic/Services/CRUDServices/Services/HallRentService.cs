@@ -381,9 +381,8 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
 
             var hallEntity = await _unitOfWork.GetRepository<Hall>()
                                .GetAllAsync(q => q.Where(h =>
-                               h.Id == hallId &&
-                               h.IsVisible));
-            if (hallEntity == null)
+                               h.Id == hallId));
+            if (hallEntity == null || !hallEntity.Any())
                 return HallRentError.HallNotFound;
 
             if (additionalServicesIds.Distinct().Count() != additionalServicesIds.Count())
@@ -414,10 +413,10 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
                     return HallRentError.TooMuchActiveHallRentsInMonth;
             }
 
-            if (await _collisionChecker.CheckTimeCollisionsWithEvents(hallId, startDate, endDate))
+            if (await _collisionChecker.CheckTimeCollisionsWithEvents((int)hallEntity.First().DefaultId!, startDate, endDate))
                 return HallRentError.CollisionWithExistingEvent;
 
-            if (await _collisionChecker.CheckTimeCollisionsWithHallRents(hallId, startDate, endDate, id))
+            if (await _collisionChecker.CheckTimeCollisionsWithHallRents((int)hallEntity.First().DefaultId!, startDate, endDate, id))
                 return HallRentError.CollisionWithExistingHallRent;
 
             return Error.None;

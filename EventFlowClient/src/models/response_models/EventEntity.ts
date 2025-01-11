@@ -7,6 +7,7 @@ import { Ticket } from "./Ticket";
 export type EventEntity = IModel & {
   title: string;
   shortDescription: string;
+  eventStatus: string;
   start: string;
   end: string;
   duration: string;

@@ -153,6 +153,7 @@ namespace EventFlowAPI.Logic.Extensions
         {
             queryable = queryable.ByStatus(query.Status);
             queryable = queryable.ByDate(query);
+            if (query.EventId != null) queryable = queryable.Where(x => x.Ticket.EventId == query.EventId);
             if (query.FromReservationDate != null) queryable = queryable.Where(x => x.ReservationDate >= query.FromReservationDate);
             if (query.ToReservationDate != null) queryable = queryable.Where(x => x.ReservationDate <= query.ToReservationDate);
             if (query.IsFestivalReservation == true) queryable = queryable.Where(x => x.IsFestivalReservation);

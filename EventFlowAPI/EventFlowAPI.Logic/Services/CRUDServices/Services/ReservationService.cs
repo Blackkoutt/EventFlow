@@ -55,8 +55,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             if (user.IsInRole(Roles.Admin))
             {
                 var allReservations = await _repository.GetAllAsync(q =>
-                                                q.ByStatus(query.Status)
-                                                .SortBy(query.SortBy, query.SortDirection)
+                                                q.ByQuery(query)
                                                 .GetPage(query.PageNumber, query.PageSize));
 
                 var allReservationsDto = MapAsDto(allReservations);
@@ -65,9 +64,8 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             else if (user.IsInRole(Roles.User))
             {
                 var userReservations = await _repository.GetAllAsync(q =>
-                                            q.ByStatus(query.Status)
+                                            q.ByQuery(query)
                                             .Where(r => r.User.Id == user.Id)
-                                            .SortBy(query.SortBy, query.SortDirection)
                                             .GetPage(query.PageNumber, query.PageSize));
 
                 var userReservationsResponse = MapAsDto(userReservations);

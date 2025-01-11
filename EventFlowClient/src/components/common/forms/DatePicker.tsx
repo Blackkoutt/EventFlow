@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { faCalendar } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { FieldError, useFormContext } from "react-hook-form";
+import DateFormatter from "../../../helpers/DateFormatter";
 
 export interface DatePickerProps extends React.InputHTMLAttributes<HTMLInputElement> {
   label: string;
@@ -9,15 +10,25 @@ export interface DatePickerProps extends React.InputHTMLAttributes<HTMLInputElem
   error: FieldError | undefined;
   errorHeight?: number;
   isTime?: boolean;
+  date?: Date;
 }
 
 const DatePicker = React.forwardRef<HTMLInputElement, DatePickerProps>(
-  ({ label, name, error, errorHeight, isTime = false, type = "text", ...props }, ref) => {
+  ({ label, name, error, errorHeight, isTime = false, date, type = "text", ...props }, ref) => {
     const [isOpen, setIsOpen] = useState(false);
-    const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+    //console.log(date != undefined ? DateFormatter.FormatDateForCalendar(date).split(" ")[1] : "");
+    const [selectedDate, setSelectedDate] = useState<Date | null>(date ?? null);
     //const [selectedTime, setSelectedTime] = useState<string>("00:00");
-    const [selectedHour, setSelectedHour] = useState<string>("00");
-    const [selectedMinute, setSelectedMinute] = useState<string>("00");
+    const hour =
+      date != undefined
+        ? DateFormatter.FormatDateForCalendar(date).split(" ")[1].split(":")[0]
+        : "00";
+    const minute =
+      date != undefined
+        ? DateFormatter.FormatDateForCalendar(date).split(" ")[1].split(":")[1]
+        : "00";
+    const [selectedHour, setSelectedHour] = useState<string>(hour);
+    const [selectedMinute, setSelectedMinute] = useState<string>(minute);
     const [currentMonth, setCurrentMonth] = useState(new Date());
 
     const { setValue, register } = useFormContext();

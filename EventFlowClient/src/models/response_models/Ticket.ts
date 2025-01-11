@@ -5,6 +5,7 @@ import { TicketType } from "./TicketType";
 
 export type Ticket = IModel & {
   price: number;
+  isFestival: boolean;
   event?: EventEntity;
   festival?: Festival;
   ticketType: TicketType;

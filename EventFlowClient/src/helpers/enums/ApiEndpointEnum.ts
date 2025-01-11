@@ -9,6 +9,8 @@ export enum ApiEndpoint {
   Equipment,
   EventCategory,
   Event,
+  EventUpdateHall,
+  EventHallView,
   EventPass,
   EventPassCreateRenewTransaction,
   EventPassCreateBuyTransaction,

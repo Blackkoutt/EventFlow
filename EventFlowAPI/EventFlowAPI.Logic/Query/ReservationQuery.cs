@@ -17,6 +17,7 @@ namespace EventFlowAPI.Logic.Query
         public int? PaymentTypeId { get; set; }
         public bool? ReservationByEventPass { get; set; }
         public int? TicketTypeId { get; set; }
+        public int? EventId { get; set; }
         public decimal? MinSeatsCount { get; set; }
         public decimal? MaxSeatsCount { get; set; }
 

@@ -1,8 +1,14 @@
-import { forwardRef, useState } from "react";
+import { forwardRef, useEffect, useState } from "react";
 import Dialog from "../../common/Dialog";
 import LabelText from "../../common/LabelText";
 import { EventEntity } from "../../../models/response_models";
 import EventDetails from "./EventDetails";
+import { EventTabButtonType } from "../../../helpers/enums/EventTabButtonType";
+import EventTabButton from "../../buttons/EventTabButton";
+import ModifyEvent from "./ModifyEvent";
+import ModifyEventHall from "./ModifyEventHall";
+import DownloadEventHall from "./DownloadEventHall";
+import DeleteEvent from "./DeleteEvent";
 
 interface EventClickDialogProps {
   item?: EventEntity;
@@ -13,18 +19,12 @@ interface EventClickDialogProps {
   onDialogClose: () => void;
 }
 
-enum TabButtonType {
-  Details = "Details",
-  Modify = "Modify",
-  Delete = "Delete",
-}
-
 const EventClickDialog = forwardRef<HTMLDialogElement, EventClickDialogProps>(
   (
     { item, maxWidth, minWidth, onDialogClose, paddingX, onDialogSuccess }: EventClickDialogProps,
     ref
   ) => {
-    const [currentTab, setCurrentTab] = useState<string>(TabButtonType.Details);
+    const [currentTab, setCurrentTab] = useState<string>(EventTabButtonType.Details);
 
     return (
       <Dialog
@@ -37,50 +37,73 @@ const EventClickDialog = forwardRef<HTMLDialogElement, EventClickDialogProps>(
       >
         <div className="flex flex-col justify-center items-center w-full gap-5">
           <div className="flex flex-row justify-end items-center gap-4 w-full mt-2">
-            <button
-              type="button"
-              className={`hover:cursor-pointer ${
-                currentTab === TabButtonType.Details
-                  ? "border-b-primaryPurple font-semibold border-b-2 text-primaryPurple"
-                  : "text-textPrimary"
-              }`}
+            <EventTabButton
+              currentTab={currentTab}
+              tabString={EventTabButtonType.Details}
+              text="SZCZEGÓŁY"
               onClick={() => {
-                setCurrentTab(TabButtonType.Details);
+                setCurrentTab(EventTabButtonType.Details);
               }}
-            >
-              SZCZEGÓŁY
-            </button>
-            <button
-              type="button"
-              className={`hover:cursor-pointer ${
-                currentTab === TabButtonType.Modify
-                  ? "border-b-primaryPurple font-semibold border-b-2 text-primaryPurple"
-                  : "text-textPrimary"
-              }`}
+            />
+            <EventTabButton
+              currentTab={currentTab}
+              tabString={EventTabButtonType.Modify}
+              text="MODYFIKUJ"
               onClick={() => {
-                setCurrentTab(TabButtonType.Modify);
+                setCurrentTab(EventTabButtonType.Modify);
               }}
-            >
-              MODYFIKUJ
-            </button>
-            <button
-              type="button"
-              className={`hover:cursor-pointer ${
-                currentTab === TabButtonType.Delete
-                  ? "border-b-primaryPurple font-semibold border-b-2 text-primaryPurple"
-                  : "text-textPrimary"
-              }`}
+            />
+            <EventTabButton
+              currentTab={currentTab}
+              tabString={EventTabButtonType.ModifyHall}
+              text="MODYFIKUJ SALE"
               onClick={() => {
-                setCurrentTab(TabButtonType.Delete);
+                setCurrentTab(EventTabButtonType.ModifyHall);
               }}
-            >
-              USUŃ
-            </button>
+            />
+            <EventTabButton
+              currentTab={currentTab}
+              tabString={EventTabButtonType.Download}
+              text="POBIERZ"
+              onClick={() => {
+                setCurrentTab(EventTabButtonType.Download);
+              }}
+            />
+            <EventTabButton
+              currentTab={currentTab}
+              tabString={EventTabButtonType.Delete}
+              text="USUŃ"
+              onClick={() => {
+                setCurrentTab(EventTabButtonType.Delete);
+              }}
+            />
           </div>
           <div className="w-full">
-            {currentTab === TabButtonType.Details && <EventDetails item={item} />}
-            {currentTab === TabButtonType.Modify && <div>Modifykacja</div>}
-            {currentTab === TabButtonType.Delete && <div>Usuwanie</div>}
+            {currentTab === EventTabButtonType.Details && <EventDetails item={item} />}
+            {currentTab === EventTabButtonType.Modify && (
+              <ModifyEvent
+                onDialogSuccess={onDialogSuccess}
+                onDialogClose={onDialogClose}
+                item={item}
+              />
+            )}
+            {currentTab === EventTabButtonType.ModifyHall && (
+              <ModifyEventHall
+                item={item}
+                onDialogSuccess={onDialogSuccess}
+                onDialogClose={onDialogClose}
+              />
+            )}
+            {currentTab === EventTabButtonType.Download && (
+              <DownloadEventHall onDialogClose={onDialogClose} item={item} />
+            )}
+            {currentTab === EventTabButtonType.Delete && (
+              <DeleteEvent
+                item={item}
+                onDialogSuccess={onDialogSuccess}
+                onDialogClose={onDialogClose}
+              />
+            )}
           </div>
         </div>
       </Dialog>

@@ -1,6 +1,7 @@
 import { DateFormat } from "./enums/DateFormatEnum";
 
 const ParseDate = (input: string): Date | null => {
+  console.log(input);
   const [datePart, timePart] = input.split(" ");
   const [day, month, year] = datePart.split(".").map(Number);
 
@@ -18,6 +19,18 @@ const ParseDate = (input: string): Date | null => {
   const parsedDate = new Date(year, month - 1, day, hours, minutes);
   return isNaN(parsedDate.getTime()) ? null : parsedDate;
 };
+
+function ParseDateFromCalendar(dateString: string | undefined): Date | undefined {
+  if (dateString === undefined) return undefined;
+
+  const [datePart, timePart] = dateString.split(" ");
+
+  const [year, month, day] = datePart.split("-").map(Number);
+
+  const [hours, minutes] = timePart.split(":").map(Number);
+
+  return new Date(year, month - 1, day, hours, minutes);
+}
 
 function CalculateTimeDifference(start?: string, end?: string) {
   if (start == undefined || end == undefined) return "Brak danych";
@@ -117,6 +130,7 @@ const FormatDate = (date: string | number | undefined | null, dateFormat: DateFo
 };
 
 const DateFormatter = {
+  ParseDateFromCalendar,
   CalculateTimeDifference,
   ToLocalISOString,
   FormatDateFromCalendar,

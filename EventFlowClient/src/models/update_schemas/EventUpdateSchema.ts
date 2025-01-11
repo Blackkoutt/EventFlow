@@ -2,6 +2,7 @@ import { z } from "zod";
 import { MaxFileSizeAndTypeValidator } from "../validators/MaxFileSizeValidator";
 import { EventFestivalTicketSchema } from "../create_schemas/EventFestivalTicketSchema";
 import DateFormatter from "../../helpers/DateFormatter";
+import { MaxFileSizeAndTypeValidatorNotRequired } from "../validators/MaxFileSizeValidatorNotRequired";
 
 export const EventUpdateSchema = z
   .object({
@@ -63,39 +64,51 @@ export const EventUpdateSchema = z
         .refine((val) => val >= 1 && val < Number.MAX_VALUE, "Id sali musi być większe od 0.")
     ),
 
-    eventPhoto: MaxFileSizeAndTypeValidator(10, ["image/jpeg"]).nullish(),
+    eventPhoto: MaxFileSizeAndTypeValidatorNotRequired(10, ["image/jpeg"]).optional().nullish(),
 
-    eventTickets: z.array(EventFestivalTicketSchema),
+    eventTickets: z.array(EventFestivalTicketSchema).optional(),
 
     startDate: z
-      .preprocess((input) => DateFormatter.ParseDate(input as string), z.date())
+      .preprocess((input) => {
+        if (typeof input === "string") {
+          console.log(DateFormatter.ParseDate(input as string));
+          return DateFormatter.ParseDate(input as string);
+        }
+        return input;
+      }, z.date())
       .refine(
         (date) => {
           return date >= new Date();
         },
-        { message: `Data początkowa nie może być wcześniejsza niż obcena data` }
+        { message: "Data początkowa musi być w przyszłości" }
       ),
     endDate: z
-      .preprocess((input) => DateFormatter.ParseDate(input as string), z.date())
+      .preprocess((input) => {
+        if (typeof input === "string") {
+          console.log(DateFormatter.ParseDate(input as string));
+          return DateFormatter.ParseDate(input as string);
+        }
+        return input;
+      }, z.date())
       .refine(
         (date) => {
           return date >= new Date();
         },
-        { message: `Data końcowa nie może być wcześniejsza niż obcena data` }
+        { message: "Data zakończenia musi być w przyszłości" }
       ),
   })
   .refine(
     (data) =>
       new Date(data.endDate).getTime() - new Date(data.startDate).getTime() >= 5 * 60 * 1000,
     {
-      message: "Data zakończenia musi być co najmniej 5 minut po dacie początkowej",
+      message: "Zakończenie musi być co najmniej 5 minut po rozpoczęciu",
     }
   )
   .refine(
     (data) =>
       new Date(data.endDate).getTime() - new Date(data.startDate).getTime() <= 24 * 60 * 60 * 1000,
     {
-      message: `Czas trwania wydarzenia nie może przekraczać ${24} godzin`,
+      message: `Wydarzenie może trwać max ${24} h`,
     }
   );
 
