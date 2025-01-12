@@ -10,20 +10,29 @@ import DateFormatter from "../../helpers/DateFormatter";
 import { createDragAndDropPlugin } from "@schedule-x/drag-and-drop";
 import Button, { ButtonStyle } from "../../components/buttons/Button";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
+import CreateFestivalDialog from "../../components/management/festivals/CreateFestivalDialog";
+import { useDialogs } from "../../hooks/useDialogs";
+import FestivalClickDialog from "../../components/management/festivals/FestivalClickDialog";
 
 const FestivalsManagement = () => {
   const { data: items, get: getItems } = useApi<Festival>(ApiEndpoint.Festival);
 
+  const [festivals, setFestivals] = useState<Festival[]>([]);
+
   useEffect(() => {
     getItems({ id: undefined, queryParams: undefined });
   }, []);
+  useEffect(() => {
+    console.log(items);
+    setFestivals(items.filter((item) => item.festivalStatus === "Active"));
+  }, [items]);
 
   const calendar = useCalendarApp({
     views: [createViewMonthGrid(), createViewWeek()],
     selectedDate: DateFormatter.FormatDateForCalendar(new Date()),
     callbacks: {
       onEventClick(calendarEvent) {
-        console.log("onEventClick", calendarEvent);
+        onModify(calendarEvent as Festival);
       },
     },
     plugins: [createEventsServicePlugin(), createDragAndDropPlugin()],
@@ -31,21 +40,57 @@ const FestivalsManagement = () => {
   });
 
   useEffect(() => {
-    if (items && items.length > 0) {
-      const formattedFestivals = items.map((e) => ({
+    console.log(festivals);
+    if (festivals && festivals.length > 0) {
+      const formattedFestivals = festivals.map((e) => ({
         ...e,
         start: DateFormatter.FormatDateForCalendar(e.start),
         end: DateFormatter.FormatDateForCalendar(e.end),
       }));
-      console.log(items);
+      console.log(festivals);
       calendar.eventsService.set(formattedFestivals);
       console.log(calendar.eventsService.getAll());
     }
-  }, [items]);
+  }, [festivals]);
+
+  const {
+    createDialog,
+    detailsDialog,
+    modifyDialog,
+    itemToDelete,
+    itemToDetails,
+    itemToModify,
+    onDialogClose,
+    onDelete,
+    onModify,
+    onCreate,
+    onDetails,
+    closeDialogsAndSetValuesToDefault,
+  } = useDialogs<Festival>();
+
+  const reloadItemsAfterSuccessDialog = () => {
+    console.log("reload");
+    closeDialogsAndSetValuesToDefault();
+    getItems({ id: undefined, queryParams: undefined });
+  };
 
   return (
     items && (
       <div className="w-full px-5 flex flex-col justify-center items-center gap-4">
+        <CreateFestivalDialog
+          minWidth={1000}
+          maxWidth={1000}
+          ref={createDialog}
+          onDialogClose={onDialogClose}
+          onDialogSuccess={reloadItemsAfterSuccessDialog}
+        />
+        <FestivalClickDialog
+          minWidth={700}
+          ref={modifyDialog}
+          item={itemToModify}
+          onDialogSuccess={reloadItemsAfterSuccessDialog}
+          onDialogClose={onDialogClose}
+        />
         <div className="flex flex-row justify-between items-center w-full px-6">
           <h2 className="text-textPrimary">Festiwale</h2>
           <Button
@@ -56,7 +101,7 @@ const FestivalsManagement = () => {
             height={45}
             style={ButtonStyle.Primary}
             rounded="rounded-md"
-            action={() => {}}
+            action={onCreate}
           />
         </div>
         <div className="w-full">

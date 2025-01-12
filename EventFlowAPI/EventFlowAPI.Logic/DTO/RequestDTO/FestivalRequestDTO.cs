@@ -27,7 +27,9 @@ namespace EventFlowAPI.Logic.DTO.RequestDto
 
         [Required(ErrorMessage = "Wybierz co najmniej jednego sponsora.")]
         public List<int> SponsorIds { get; set; } = [];
-        public FestivalDetailsRequestDto? Details { get; set; } = default!;
+        //public FestivalDetailsRequestDto? Details { get; set; } = default!;
+        [MaxLength(2000, ErrorMessage = "Opis powinnien zawierać mniej niż 2000 znaków.")]
+        public string? LongDescription { get; set; }
 
         [MaxFileSizeValidator(10)]
         public IFormFile? FestivalPhoto { get; set; }

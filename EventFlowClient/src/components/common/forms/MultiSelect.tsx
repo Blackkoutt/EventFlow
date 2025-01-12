@@ -64,7 +64,10 @@ const MultiSelect = ({
   const handleRemove = (value: string | number) => {
     const updatedSelection = selectedValues.filter((item) => item.value !== value);
     setSelectedValues(updatedSelection);
-    setValue(name, updatedSelection);
+    setValue(
+      name,
+      updatedSelection.map((s) => s.value)
+    );
   };
 
   const errorMessage = error ? (error as FieldError)?.message : undefined;
@@ -102,7 +105,7 @@ const MultiSelect = ({
           {/* Selected Items */}
           <div
             style={{ width: "calc(100% - 35px)" }}
-            className="flex flex-wrap gap-2 mt-[14px] w-[100%] min-h-[28px]"
+            className="flex flex-wrap gap-2 mt-[14px] w-[100%] min-h-[28px] max-h-[100px] overflow-y-auto"
           >
             {selectedValues.map((option) => (
               <div

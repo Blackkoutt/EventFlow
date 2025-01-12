@@ -2,6 +2,7 @@ import { z } from "zod";
 import { FestivalDetailsSchema } from "./FestivalDetailsSchema";
 import { MaxFileSizeAndTypeValidator } from "../validators/MaxFileSizeValidator";
 import { EventFestivalTicketSchema } from "./EventFestivalTicketSchema";
+import { MaxFileSizeAndTypeValidatorNotRequired } from "../validators/MaxFileSizeValidatorNotRequired";
 
 export const FestivalSchema = z.object({
   name: z
@@ -45,9 +46,20 @@ export const FestivalSchema = z.object({
       invalid_type_error: "Niepoprawny typ wartości",
     })
   ),
-  details: z.object(FestivalDetailsSchema.shape).optional().nullable(),
-  festivalPhoto: MaxFileSizeAndTypeValidator(10, ["image/jpeg"]).nullish(),
-  festivalTickets: z.array(EventFestivalTicketSchema),
+  longDescription: z
+    .string()
+    .optional()
+    .nullable()
+    .transform((val) => (val === "" ? null : val))
+    .refine((val) => {
+      if (val !== undefined && val !== null) {
+        return val.length >= 2 && val.length <= 2000;
+      }
+      return true;
+    }, "Długi opis powinien zawierać od 2 do 2000 znaków."),
+  //details: z.object(FestivalDetailsSchema.shape).optional().nullable(),
+  festivalPhoto: MaxFileSizeAndTypeValidatorNotRequired(10, ["image/jpeg"]).nullish(),
+  festivalTickets: z.array(EventFestivalTicketSchema).optional(),
 });
 
 export type FestivalRequest = z.infer<typeof FestivalSchema>;

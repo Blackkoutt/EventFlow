@@ -13,6 +13,7 @@ using EventFlowAPI.Logic.Repositories.Interfaces.BaseInterfaces;
 using EventFlowAPI.Logic.ResultObject;
 using EventFlowAPI.Logic.Services.CRUDServices.Interfaces.BaseInterfaces;
 using EventFlowAPI.Logic.UnitOfWork;
+using Serilog;
 
 namespace EventFlowAPI.Logic.Services.CRUDServices.Services.BaseServices
 {

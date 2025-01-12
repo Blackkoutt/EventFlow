@@ -19,6 +19,8 @@ namespace EventFlowAPI.Logic.Repositories.Repositories
                         .Include(f => f.Sponsors)
                         .Include(f => f.MediaPatrons)
                         .Include(f => f.Organizers)
+                        .Include(f => f.Tickets)
+                            .ThenInclude(t => t.TicketType)
                         .AsSplitQuery();
 
             return await (query != null ? query(_table).ToListAsync() : _table.ToListAsync());
@@ -36,6 +38,8 @@ namespace EventFlowAPI.Logic.Repositories.Repositories
                         .Include(f => f.Sponsors)
                         .Include(f => f.MediaPatrons)
                         .Include(f => f.Organizers)
+                        .Include(f => f.Tickets)
+                            .ThenInclude(t => t.TicketType)
                         .FirstOrDefaultAsync(f => f.Id == id);
         }
     }

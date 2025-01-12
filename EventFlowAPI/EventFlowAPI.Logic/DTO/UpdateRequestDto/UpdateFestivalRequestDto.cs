@@ -16,8 +16,11 @@ namespace EventFlowAPI.Logic.DTO.UpdateRequestDto
         //[Length(2, 300, ErrorMessage = "Krótki opis powinien zawierać od 2 do 300 znaków.")]
         public string ShortDescription { get; set; } = string.Empty;
 
+        //[Required(ErrorMessage = "Wybierz co najmniej jedno wydarzenie.")]
+        //public Dictionary<int, FestivalUpdate_EventRequestDto?> Events { get; set; } = [];
+
         [Required(ErrorMessage = "Wybierz co najmniej jedno wydarzenie.")]
-        public Dictionary<int, FestivalUpdate_EventRequestDto?> Events { get; set; } = [];
+        public List<int> EventIds { get; set; } = [];
 
         [Required(ErrorMessage = "Wybierz co najmniej jednego patrona medialnego.")]
         public List<int> MediaPatronIds { get; set; } = [];
@@ -27,7 +30,9 @@ namespace EventFlowAPI.Logic.DTO.UpdateRequestDto
 
         [Required(ErrorMessage = "Wybierz co najmniej jednego sponsora.")]
         public List<int> SponsorIds { get; set; } = [];
-        public FestivalDetailsRequestDto? Details { get; set; } = default!;
+
+        [MaxLength(2000, ErrorMessage = "Opis powinnien zawierać mniej niż 2000 znaków.")]
+        public string? LongDescription { get; set; }
 
         [MaxFileSizeValidator(10)]
         public IFormFile? FestivalPhoto { get; set; }

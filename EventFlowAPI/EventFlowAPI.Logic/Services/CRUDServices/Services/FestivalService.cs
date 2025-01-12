@@ -14,6 +14,7 @@ using EventFlowAPI.Logic.Services.CRUDServices.Interfaces;
 using EventFlowAPI.Logic.Services.CRUDServices.Services.BaseServices;
 using EventFlowAPI.Logic.Services.OtherServices.Interfaces;
 using EventFlowAPI.Logic.UnitOfWork;
+using Serilog;
 using System.Collections.Immutable;
 
 namespace EventFlowAPI.Logic.Services.CRUDServices.Services
@@ -82,6 +83,13 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             if (festival == null)
                 return Result<FestivalResponseDto>.Failure(Error.NotFound);
 
+            Log.Information($"Fetched festival: {festival.Id}");
+            foreach (var item in festival.Events)
+            {
+                Log.Information($"Fetched festival: {item.Id} {item.Name}");
+            }
+
+
             bool needToSendMail = false;
 
             var oldFestival = new Festival
@@ -115,13 +123,13 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             if(festival.ShortDescription != requestDto!.ShortDescription)
                 festival.ShortDescription = requestDto!.ShortDescription; 
             
-            if(festival.Details != null && festival.Details.LongDescription != requestDto?.Details?.LongDescription)
-                festival.Details.LongDescription = requestDto?.Details?.LongDescription;
+            if(festival.Details != null && festival.Details.LongDescription != requestDto.LongDescription)
+                festival.Details.LongDescription = requestDto.LongDescription;
 
             // Events
             List<Event> newFestivalEventList = [];
-            List<Reservation> reservationsForEvents = [];
-            foreach(var (eventId, updateEventRequestData) in requestDto!.Events)
+            //List<Reservation> reservationsForEvents = [];
+            /*foreach(var (eventId, updateEventRequestData) in requestDto!.Events)
             {
                 var eventEntity = await _unitOfWork.GetRepository<Event>().GetOneAsync(eventId);  
                 if(updateEventRequestData != null)
@@ -190,13 +198,21 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
                     reservationsForEvents.AddRange(reservationsForEvent);
                 }
                 newFestivalEventList.Add(eventEntity!);
+            }*/
+
+            foreach(var eventId in requestDto.EventIds)
+            {
+                var eventEntity = await _unitOfWork.GetRepository<Event>().GetOneAsync(eventId);
+                newFestivalEventList.Add(eventEntity!);
             }
             bool hasChanges = festival.Events.Count() != newFestivalEventList.Count() || // count changed
                   festival.Events.Any(e => !newFestivalEventList.Any(ne => e.Id == ne.Id)) || // deleted old
                   newFestivalEventList.Any(ne => !festival.Events.Any(e => e.Id == ne.Id)); // added new 
 
-            if (festival.Events.Any(e => newFestivalEventList.Any(ne => !(e.Id == ne.Id))))
-                needToSendMail = true;
+            var reservationForFestival = await _unitOfWork.GetRepository<Reservation>().GetAllAsync(q => q.Where(r => r.EndDate < DateTime.Now && !r.IsDeleted && r.Ticket.FestivalId == festival.Id));
+            var distinctReservation = reservationForFestival.DistinctBy(r => r.ReservationGuid);
+
+            if (hasChanges) needToSendMail = true;
 
             festival.Events = newFestivalEventList;
 
@@ -207,20 +223,23 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
 
             // Media Patrons
             var newFestivalMediaPatrons = (await _unitOfWork.GetRepository<MediaPatron>().GetAllAsync(q =>
-                                                q.Where(mp => !mp.IsDeleted && requestDto.MediaPatronIds.Contains(mp.Id)))).ToList();
+                                                q.Where(mp => !mp.IsDeleted && requestDto!.MediaPatronIds.Contains(mp.Id)))).ToList();
             festival.MediaPatrons = newFestivalMediaPatrons;
 
             // Organizers
             var newFestivalOrganizers = (await _unitOfWork.GetRepository<Organizer>().GetAllAsync(q =>
-                                                q.Where(o => !o.IsDeleted && requestDto.OrganizerIds.Contains(o.Id)))).ToList();
+                                                q.Where(o => !o.IsDeleted && requestDto!.OrganizerIds.Contains(o.Id)))).ToList();
             festival.Organizers = newFestivalOrganizers;
 
             // Sponsors
             var newFestivalSponsors = (await _unitOfWork.GetRepository<Sponsor>().GetAllAsync(q =>
-                                                q.Where(s => !s.IsDeleted && requestDto.SponsorIds.Contains(s.Id)))).ToList();
+                                                q.Where(s => !s.IsDeleted && requestDto!.SponsorIds.Contains(s.Id)))).ToList();
             festival.Sponsors = newFestivalSponsors;
 
             // Tickets
+            Log.Information("Updating tickets for festival. Festival Tickets: {FestivalTickets}",
+    string.Join(", ", requestDto!.FestivalTickets.Select(t => $"Type ID: {t.TicketTypeId}, Price: {t.Price}")));
+
             await _ticketService.UpdateTicketsForFestival(requestDto!.FestivalTickets, festival);
 
             var photoPostError = await _fileService.PostPhoto(festival, requestDto!.FestivalPhoto, $"{festival.Name}_{festival.FestivalGuid}", isUpdate: true);
@@ -232,7 +251,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
 
             if (needToSendMail)
             {
-                var sendError = await _reservationService.SendMailsAboutUpdatedReservations(reservationsForEvents, oldFestival, festival);
+                var sendError = await _reservationService.SendMailsAboutUpdatedReservations(distinctReservation, oldFestival, festival);
                 if (sendError != Error.None)
                     return Result<FestivalResponseDto>.Failure(sendError);
             }
@@ -244,6 +263,8 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
 
         private Error UpdateStartAndEndDateOfFestival(Festival festival)
         {
+            //Log.Information("Festival events: {@FestivalEvents}", festival.Events);
+
             var minFestivalEventStartDate = festival.Events.Min(e => e.StartDate);
             var maxFestivalEventStartDate = festival.Events.Max(e => e.EndDate);
             bool isFestivalDateChanged = false;
@@ -326,7 +347,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
 
             var festivalStartDate = festivalEvents.First().StartDate;
             var festivalEndDate = festivalEvents.Last().EndDate;
-            var festivalDetails = string.IsNullOrEmpty(requestDto.Details?.LongDescription) ? null : new FestivalDetails { LongDescription = requestDto.Details?.LongDescription };
+            var festivalDetails = string.IsNullOrEmpty(requestDto.LongDescription) ? null : new FestivalDetails { LongDescription = requestDto.LongDescription };
 
             return new Festival
             {
@@ -377,7 +398,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
                 return Error.NullParameter;
 
             List<int> eventList= [];
-            Dictionary<int, FestivalUpdate_EventRequestDto?> eventDict = [];
+            //Dictionary<int, FestivalUpdate_EventRequestDto?> eventDict = [];
             List<int> mediaPatronIds = [];
             List<int> organizerIds = [];
             List<int> sponsorIds = [];
@@ -392,7 +413,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
                     festivalTickets = festivalRequestDto.FestivalTickets;
                     break;
                 case UpdateFestivalRequestDto updateFestivalRequestDto:
-                    eventDict = updateFestivalRequestDto.Events;
+                    eventList = updateFestivalRequestDto.EventIds;
                     mediaPatronIds = updateFestivalRequestDto.MediaPatronIds;
                     organizerIds = updateFestivalRequestDto.OrganizerIds;
                     sponsorIds = updateFestivalRequestDto.SponsorIds;
@@ -424,47 +445,27 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
 
             // Events
             IEnumerable<Event> festivalEvents = [];
-            if (id == null)
-            {
-                if (eventList.Count != eventList.Distinct().Count())
-                    return FestivalError.EventDuplicates;
-                if (eventList.Count() < 2)
-                    return FestivalError.TooFewEventsInFestival;
-                if (eventList.Count > 12)
-                    return FestivalError.TooMuchEventsInFestival;
-                var allEventsIdsInDB = (await _unitOfWork.GetRepository<Event>()
-                                            .GetAllAsync(q => q.Where(e =>
-                                                !e.IsDeleted &&
-                                                e.EndDate > DateTime.Now))).Select(e => e.Id);
-                if (!eventList.All(id => allEventsIdsInDB.Contains(id)))
-                    return EventError.EventNotFound;
+            if (eventList.Count != eventList.Distinct().Count())
+                return FestivalError.EventDuplicates;
+            if (eventList.Count() < 2)
+                return FestivalError.TooFewEventsInFestival;
+            if (eventList.Count > 12)
+                return FestivalError.TooMuchEventsInFestival;
+            var allEventsIdsInDB = (await _unitOfWork.GetRepository<Event>()
+                                        .GetAllAsync(q => q.Where(e =>
+                                            !e.IsDeleted &&
+                                            e.EndDate > DateTime.Now))).Select(e => e.Id);
 
-                festivalEvents = (await _unitOfWork.GetRepository<Event>().GetAllAsync(q =>
-                                            q.Where(e => 
-                                                !e.IsDeleted &&
-                                                e.EndDate > DateTime.Now &&
-                                                eventList.Contains(e.Id)).OrderBy(e => e.StartDate)));
-            }
-            else
-            {
-                if (eventDict.Count != eventDict.Distinct().Count())
-                    return FestivalError.EventDuplicates;
-                if (eventDict.Count() < 2)
-                    return FestivalError.TooFewEventsInFestival;
-                if (eventDict.Count > 12)
-                    return FestivalError.TooMuchEventsInFestival;
-                var allEventsIdsInDB = (await _unitOfWork.GetRepository<Event>().GetAllAsync(q => q.Where(e => 
-                                                !e.IsDeleted &&
-                                                e.EndDate > DateTime.Now))).Select(f => f.Id);
-                if (!eventDict.Keys.All(id => allEventsIdsInDB.Contains(id)))
-                    return EventError.EventNotFound;
+            Log.Information("EventList: {EventList}", string.Join(", ", eventList));
+            Log.Information("AllEventsIdsInDB: {AllEventsIdsInDB}", string.Join(", ", allEventsIdsInDB));
+            if (!eventList.All(id => allEventsIdsInDB.Contains(id)))
+                return EventError.EventNotFound;
 
-                festivalEvents = (await _unitOfWork.GetRepository<Event>().GetAllAsync(q =>
-                                            q.Where(e => 
-                                                !e.IsDeleted &&
-                                                e.EndDate > DateTime.Now &&
-                                                eventDict.Select(fe => fe.Key).Contains(e.Id)).OrderBy(e => e.StartDate)));
-            }
+            festivalEvents = (await _unitOfWork.GetRepository<Event>().GetAllAsync(q =>
+                                        q.Where(e =>
+                                            !e.IsDeleted &&
+                                            e.EndDate > DateTime.Now &&
+                                            eventList.Contains(e.Id)).OrderBy(e => e.StartDate)));
 
             if (festivalEvents.Last().EndDate - festivalEvents.First().StartDate > TimeSpan.FromDays(14))
                 return FestivalError.FestivalIsTooLong;
@@ -579,6 +580,16 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
                     eventEntity.Tickets = [];
                     return eventEntity;
                 }).ToList();
+                responseDto.FestivalStatus = GetEntityStatus(entity);
+                responseDto.Tickets = entity.Tickets.Select(t =>
+                {
+                    var ticket = t.AsDto<TicketResponseDto>();
+                    ticket.IsFestival = t.FestivalId.HasValue;
+                    ticket.Event = null;
+                    ticket.Festival = null;
+                    ticket.TicketType = t.TicketType.AsDto<TicketTypeResponseDto>();
+                    return ticket;
+                }).ToList();
                 responseDto.MediaPatrons = entity.MediaPatrons.Select(e => e.AsDto<MediaPatronResponseDto>()).ToList();
                 responseDto.Organizers = entity.Organizers.Select(e => e.AsDto<OrganizerResponseDto>()).ToList();
                 responseDto.Sponsors = entity.Sponsors.Select(e => e.AsDto<SponsorResponseDto>()).ToList();
@@ -606,6 +617,16 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
                     eventEntity.Hall.Type = null;
                 eventEntity.Tickets = [];
                 return eventEntity;
+            }).ToList();
+            responseDto.FestivalStatus = GetEntityStatus(entity);
+            responseDto.Tickets = entity.Tickets.Select(t =>
+            {
+                var ticket = t.AsDto<TicketResponseDto>();
+                ticket.IsFestival = t.FestivalId.HasValue;
+                ticket.Event = null;
+                ticket.Festival = null;
+                ticket.TicketType = t.TicketType.AsDto<TicketTypeResponseDto>();
+                return ticket;
             }).ToList();
             responseDto.MediaPatrons = entity.MediaPatrons.Select(e => e.AsDto<MediaPatronResponseDto>()).ToList();
             responseDto.Organizers = entity.Organizers.Select(e => e.AsDto<OrganizerResponseDto>()).ToList();
