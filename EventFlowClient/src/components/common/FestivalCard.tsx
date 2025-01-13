@@ -13,7 +13,7 @@ const FestivalCard = ({ festival }: FestivalCardProps) => {
     <div className="shadow-xl flex flex-row justify-center items-center">
       <img
         src={ApiClient.GetPhotoEndpoint(festival.photoEndpoint)}
-        alt={`Zdjęcie festiwalu ${festival.name}`}
+        alt={`Zdjęcie festiwalu ${festival.title}`}
       />
       <div className="px-8 flex flex-col justify-center items-start gap-3">
         <div className="flex flex-col justify-center items-start gap-4">
@@ -32,10 +32,10 @@ const FestivalCard = ({ festival }: FestivalCardProps) => {
               return (
                 <div key={event.id} className="flex flex-row justify-center items-start gap-1">
                   <p className="pb-2 text-[18px] font-semibold text-[#00BFC3] w-[170px]">
-                    {DateFormatter.FormatDate(event.startDate, DateFormat.DateTime)}
+                    {DateFormatter.FormatDate(event.start, DateFormat.DateTime)}
                   </p>
                   <p className="text-textPrimary">
-                    {event.category?.name}: {event.name}
+                    {event.category?.name}: {event.title}
                   </p>
                 </div>
               );

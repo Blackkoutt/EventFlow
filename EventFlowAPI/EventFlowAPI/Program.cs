@@ -2,6 +2,7 @@ using EventFlowAPI.Extensions;
 using EventFlowAPI.Logic.Mapper.Profiles;
 using QuestPDF.Infrastructure;
 using Serilog;
+using System.Text.Json.Serialization;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -39,7 +40,11 @@ builder.Services.AddApplicationAuthServices();
 builder.Services.AddApplicationOtherServices();
 
 // Other Services
-builder.Services.AddControllers();
+builder.Services.AddControllers().AddJsonOptions(options =>
+{
+    options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+    //options.JsonSerializerOptions.WriteIndented = true; // Optional: for better readability
+});
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerUI();
 builder.Services.AddAutoMapper(typeof(AutoMapperProfile));

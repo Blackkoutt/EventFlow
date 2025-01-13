@@ -46,6 +46,7 @@ import TicketTypesManagement from "../pages/Management/TicketTypesManagement";
 import UsersManagement from "../pages/Management/UsersManagement";
 import OrganizersManagement from "../pages/Management/OrganizersManagement";
 import EventsManagement from "../pages/Management/EventsManagement";
+import EventPage from "../pages/EventPage";
 
 export const router = createBrowserRouter([
   {
@@ -68,6 +69,10 @@ export const router = createBrowserRouter([
       {
         path: "/events",
         element: <EventsPage />,
+      },
+      {
+        path: "/events/:eventId",
+        element: <EventPage />,
       },
       {
         path: "/eventpasses",

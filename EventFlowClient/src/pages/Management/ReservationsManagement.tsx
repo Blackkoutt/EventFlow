@@ -52,13 +52,13 @@ const ReservationsManagement = () => {
       field: "ticket.festival.name",
       header: "Festiwal",
       sortable: true,
-      body: (rowData: Reservation) => rowData.ticket?.festival?.name,
+      body: (rowData: Reservation) => rowData.ticket?.festival?.title,
     },
     {
       field: "ticket.event.name",
       header: "Wydarzenie",
       sortable: true,
-      body: (rowData: Reservation) => rowData.ticket?.event?.name,
+      body: (rowData: Reservation) => rowData.ticket?.event?.title,
     },
     {
       field: "paymentAmount",
