@@ -4,6 +4,7 @@ import useApi from "../../hooks/useApi";
 import { FAQ } from "../../models/response_models";
 import Button, { ButtonStyle } from "../buttons/Button";
 import Accordion from "../common/Accordion";
+import { Link } from "react-router-dom";
 
 interface FaqListProps {
   faqCountToDisplay?: number;
@@ -32,14 +33,16 @@ const FaqList = ({ faqCountToDisplay }: FaqListProps) => {
             Przejdź do pełnej wersji FAQ klikając w przycisk poniżej.
           </p>
         </div>
-        <Button
-          text="Dowiedz się więcej"
-          width={196}
-          height={53}
-          fontSize={16}
-          style={ButtonStyle.Primary}
-          action={() => {}}
-        />
+        <Link to="/faqs">
+          <Button
+            text="Dowiedz się więcej"
+            width={196}
+            height={53}
+            fontSize={16}
+            style={ButtonStyle.Primary}
+            action={() => {}}
+          />
+        </Link>
       </div>
     </>
   );

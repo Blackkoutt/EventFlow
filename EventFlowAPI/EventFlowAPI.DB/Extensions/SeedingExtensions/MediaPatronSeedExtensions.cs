@@ -13,18 +13,21 @@ namespace EventFlowAPI.DB.Extensions.SeedingExtensions
                    Id = 1,
                    Name = "Gazeta Nowoczesna", 
                    MediaPatronGuid = Guid.NewGuid(),
+                   PhotoName = "gazeta_nowoczesna.png"
                },
                new MediaPatron
                {
                    Id = 2,
                    Name = "Nowy świat TV",
                    MediaPatronGuid = Guid.NewGuid(),
+                   PhotoName = "nowy_swiat.png"
                },
                new MediaPatron
                {
                    Id = 3,
                    Name = "Tygodnik Nowiny",
                    MediaPatronGuid = Guid.NewGuid(),
+                   PhotoName = "tygodnik_nowiny.png"
                }
             );
         }

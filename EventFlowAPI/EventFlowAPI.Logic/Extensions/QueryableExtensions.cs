@@ -65,8 +65,19 @@ namespace EventFlowAPI.Logic.Extensions
 
         public static IQueryable<TEntity> ByDate<TEntity>(this IQueryable<TEntity> queryable, IDateableQuery query)
         {
-            if (query.FromDate != null) queryable = queryable.Where(e => ((IDateableEntity)e!).StartDate >= query.FromDate);
-            if (query.ToDate != null) queryable = queryable.Where(e => ((IDateableEntity)e!).StartDate <= query.ToDate);
+            if (query.FromDate != null)
+            {
+                queryable = queryable.Where(e => ((IDateableEntity)e!).StartDate >= query.FromDate ||
+                                                  ((IDateableEntity)e!).EndDate > query.FromDate);
+            }
+
+            if (query.ToDate != null)
+            {
+                queryable = queryable.Where(e => ((IDateableEntity)e!).StartDate <= query.ToDate);
+            }
+
+            //if (query.FromDate != null) queryable = queryable.Where(e => ((IDateableEntity)e!).StartDate >= query.FromDate);
+            //if (query.ToDate != null) queryable = queryable.Where(e => ((IDateableEntity)e!).StartDate <= query.ToDate);
             return queryable;
         }
 

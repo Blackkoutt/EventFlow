@@ -47,6 +47,13 @@ import UsersManagement from "../pages/Management/UsersManagement";
 import OrganizersManagement from "../pages/Management/OrganizersManagement";
 import EventsManagement from "../pages/Management/EventsManagement";
 import EventPage from "../pages/EventPage";
+import FestivalPage from "../pages/FestivalPage";
+import ConcreteNews from "../pages/ConcreteNews";
+import FAQs from "../pages/FAQs";
+import AccessibilityDeclaration from "../pages/AccessibilityDeclaration";
+import PrivacyPolicy from "../pages/PrivacyPolicy";
+import Rodo from "../pages/Rodo";
+import Statute from "../pages/Statute";
 
 export const router = createBrowserRouter([
   {
@@ -67,6 +74,26 @@ export const router = createBrowserRouter([
         element: <ArchivePage />,
       },
       {
+        path: "/accessibility-declaration",
+        element: <AccessibilityDeclaration />,
+      },
+      {
+        path: "/privacy-policy",
+        element: <PrivacyPolicy />,
+      },
+      {
+        path: "/rodo",
+        element: <Rodo />,
+      },
+      {
+        path: "/statute",
+        element: <Statute />,
+      },
+      {
+        path: "/faqs",
+        element: <FAQs />,
+      },
+      {
         path: "/events",
         element: <EventsPage />,
       },
@@ -83,8 +110,16 @@ export const router = createBrowserRouter([
         element: <FestivalsPage />,
       },
       {
+        path: "/festivals/:festivalId",
+        element: <FestivalPage />,
+      },
+      {
         path: "/news",
         element: <NewsPage />,
+      },
+      {
+        path: "/news/:newsId",
+        element: <ConcreteNews />,
       },
       {
         path: "/rents",

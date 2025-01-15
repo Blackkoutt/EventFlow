@@ -146,7 +146,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             return Result<bool>.Success(result);
         }
 
-        protected sealed override IEnumerable<OrganizerResponseDto> MapAsDto(IEnumerable<Organizer> records)
+        public new IEnumerable<OrganizerResponseDto> MapAsDto(IEnumerable<Organizer> records)
         {
             return records.Select(entity =>
             {
@@ -156,7 +156,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             });
         }
 
-        protected sealed override OrganizerResponseDto MapAsDto(Organizer entity)
+        public new OrganizerResponseDto MapAsDto(Organizer entity)
         {
             var responseDto = entity.AsDto<OrganizerResponseDto>();
             responseDto.PhotoEndpoint = $"/Organizers/{responseDto.Id}/image";

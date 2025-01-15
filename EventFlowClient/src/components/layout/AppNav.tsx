@@ -51,13 +51,6 @@ const AppNav = ({
           Festiwale
         </Link>
         <Link
-          to="/archive"
-          className={`${isSemibold ? "font-semibold" : "font-normal"}`}
-          style={{ fontSize: `${fontSize}px`, color: `${textColor}` }}
-        >
-          Archiwum
-        </Link>
-        <Link
           to="/eventpasses"
           className={`${isSemibold ? "font-semibold" : "font-normal"}`}
           style={{ fontSize: `${fontSize}px`, color: `${textColor}` }}
@@ -70,6 +63,13 @@ const AppNav = ({
           style={{ fontSize: `${fontSize}px`, color: `${textColor}` }}
         >
           Wynajmy
+        </Link>
+        <Link
+          to="/archive"
+          className={`${isSemibold ? "font-semibold" : "font-normal"}`}
+          style={{ fontSize: `${fontSize}px`, color: `${textColor}` }}
+        >
+          Archiwum
         </Link>
       </nav>
     </>

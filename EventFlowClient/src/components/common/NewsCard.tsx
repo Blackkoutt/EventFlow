@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { News } from "../../models/response_models";
 import ApiClient from "../../services/api/ApiClientService";
 
@@ -8,6 +9,7 @@ interface NewsCardProps {
   articleSize: number;
   buttonSize: number;
   objectTopMargin: number;
+  shortText?: boolean;
 }
 const NewsCard = ({
   news,
@@ -16,9 +18,20 @@ const NewsCard = ({
   articleSize,
   buttonSize,
   objectTopMargin,
+  shortText = false,
 }: NewsCardProps) => {
+  const getShortDescription = (description: string) => {
+    if (shortText && description.length > 85) {
+      return description.substring(0, 85) + "...";
+    }
+    return description;
+  };
+
   return (
-    <div className="shadow-xl flex flex-col justify-center items-center gap-2 h-full">
+    <Link
+      to={`/news/${news.id}`}
+      className="shadow-xl flex flex-col justify-center items-center gap-2 h-full hover:bg-slate-50 hover:cursor-pointer"
+    >
       <img
         className="object-cover w-full h-full"
         src={ApiClient.GetPhotoEndpoint(news.photoEndpoint)}
@@ -41,7 +54,7 @@ const NewsCard = ({
             {news.title}
           </h3>
           <p className="text-textPrimary" style={{ fontSize: `${articleSize}px` }}>
-            {news.shortDescription}
+            {getShortDescription(news.shortDescription)}
           </p>
           <p
             className="text-[#987EFE] pb-2 text-[14px] pt-1"
@@ -51,7 +64,7 @@ const NewsCard = ({
           </p>
         </article>
       </div>
-    </div>
+    </Link>
   );
 };
 export default NewsCard;

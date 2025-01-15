@@ -1,10 +1,10 @@
-function AboutPage() {
+const PrivacyPolicy = () => {
   return (
     <div className="w-full py-10">
       <div className="flex flex-col gap-6">
-        <h1>O nas</h1>
+        <h1>Polityka prywatności</h1>
       </div>
     </div>
   );
-}
-export default AboutPage;
+};
+export default PrivacyPolicy;

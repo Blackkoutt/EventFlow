@@ -13,18 +13,21 @@ namespace EventFlowAPI.DB.Extensions.SeedingExtensions
                    Id = 1,
                    Name = "EventFlow", 
                    OrganizerGuid = Guid.NewGuid(),
+                   PhotoName = "eventflow.png",
                },
                new Organizer
                {
                    Id = 2,
                    Name = "Snowflake",
                    OrganizerGuid = Guid.NewGuid(),
+                   PhotoName = "snowflake.png",
                },
                new Organizer
                {
                    Id = 3,
                    Name = "Aura",
                    OrganizerGuid = Guid.NewGuid(),
+                   PhotoName = "aura.png",
                }
             );
         }

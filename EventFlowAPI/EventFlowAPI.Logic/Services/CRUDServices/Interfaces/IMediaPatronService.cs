@@ -16,5 +16,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Interfaces
             MediaPatronQuery
         >
     {
+        IEnumerable<MediaPatronResponseDto> MapAsDto(IEnumerable<MediaPatron> records);
+        MediaPatronResponseDto MapAsDto(MediaPatron entity);
     }
 }

@@ -40,7 +40,7 @@ const EventPage = () => {
       <div className="flex flex-col w-[80%] justify-start items-start my-10 pb-6 rounded-md shadow-xl">
         <div className="relative w-full">
           <img
-            className="object-cover w-full max-h-[250px] shadow-md"
+            className="object-cover w-full max-h-[300px] shadow-md"
             src={ApiClient.GetPhotoEndpoint(eventEntity.photoEndpoint)}
             alt={`Zdjęcie wydarzenia ${eventEntity.title}`}
           />
@@ -62,46 +62,51 @@ const EventPage = () => {
         </div>
 
         <div className="flex flex-row justify-between items-start w-full pr-3 pt-2">
-          <div className="flex flex-col justify-start items-start gap-2 pl-[250px] pt-2">
-            <div className="flex flex-row justify-start items-center gap-1">
-              <i
-                className={eventEntity.category?.icon}
-                style={{ color: eventEntity.category?.color, fontSize: "24px" }}
-              ></i>
-              <p
-                className="text-[16px] font-semibold"
-                style={{ color: eventEntity.category?.color }}
-              >
-                {eventEntity.category?.name.toLocaleUpperCase()}
-              </p>
+          <article className="flex flex-col justify-start items-start gap-2 max-w-[76%]">
+            <div className="flex flex-col justify-start items-start gap-2 pl-[250px] pt-2">
+              <div className="flex flex-row justify-start items-center gap-1">
+                <i
+                  className={eventEntity.category?.icon}
+                  style={{ color: eventEntity.category?.color, fontSize: "24px" }}
+                ></i>
+                <p
+                  className="text-[16px] font-semibold"
+                  style={{ color: eventEntity.category?.color }}
+                >
+                  {eventEntity.category?.name.toLocaleUpperCase()}
+                </p>
+              </div>
+              <h3 className="text-[22px] font-semibold text-textPrimary">{eventEntity.title}</h3>
             </div>
-            <h3 className="text-[22px] font-semibold text-textPrimary">{eventEntity.title}</h3>
-          </div>
+            <p className="pl-6 w-full">{eventEntity.details?.longDescription}</p>
+          </article>
+
           <div className="flex flex-col justify-center items-center gap-[14px] min-w-[180px] py-2">
             <div className="flex flex-row justify-center items-center gap-3">
               <FontAwesomeIcon
                 icon={faLocationDot}
-                style={{ color: `${eventEntity.category?.color}`, width: "21px", height: "21px" }}
+                style={{ color: `${eventEntity.category?.color}`, width: "22px", height: "22px" }}
               />
-              <p className="font-semibold text-[15px] text-center text-textPrimary">
+              <p className="font-semibold text-[16px] text-center text-textPrimary">
                 Sala: nr {eventEntity.hall?.hallNr}
               </p>
             </div>
             <div className="flex flex-row justify-center items-center gap-3">
               <FontAwesomeIcon
                 icon={faTicket}
-                style={{ color: `${eventEntity.category?.color}`, width: "21px", height: "21px" }}
+                style={{ color: `${eventEntity.category?.color}`, width: "22px", height: "22px" }}
               />
-              <p className="font-semibold text-[15px] text-center text-textPrimary">
+              <p className="font-semibold text-[16px] text-center text-textPrimary">
                 Cena od: {Math.min(...eventEntity.tickets.map((ticket) => ticket.price))} zł
               </p>
             </div>
             <div>
               <Button
                 text="Kup bilet"
-                width={112}
-                height={38}
-                fontSize={14}
+                width={130}
+                height={43}
+                fontSize={17}
+                isFontSemibold={true}
                 style={ButtonStyle.Default}
                 action={() => {}}
               />

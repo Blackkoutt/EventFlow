@@ -25,6 +25,9 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
         IAuthService authService,
         IEventService eventService,
         IReservationService reservationService,
+        IOrganizerService organizerService,
+        ISponsorService sponsorService,
+        IMediaPatronService mediaPatronService,
         IFileService fileService) :
         GenericService<
             Festival,
@@ -39,6 +42,9 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
         private readonly IEventService _eventService = eventService;
         private readonly IReservationService _reservationService = reservationService;
         private readonly IFileService _fileService = fileService;
+        private readonly IOrganizerService _organizerService = organizerService;
+        private readonly IMediaPatronService _mediaPatronService = mediaPatronService;
+        private readonly ISponsorService _sponsorService = sponsorService;
         public sealed override async Task<Result<IEnumerable<FestivalResponseDto>>> GetAllAsync(FestivalQuery query)
         {
             var records = await _repository.GetAllAsync(q => q.ByQuery(query)
@@ -590,9 +596,9 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
                     ticket.TicketType = t.TicketType.AsDto<TicketTypeResponseDto>();
                     return ticket;
                 }).ToList();
-                responseDto.MediaPatrons = entity.MediaPatrons.Select(e => e.AsDto<MediaPatronResponseDto>()).ToList();
-                responseDto.Organizers = entity.Organizers.Select(e => e.AsDto<OrganizerResponseDto>()).ToList();
-                responseDto.Sponsors = entity.Sponsors.Select(e => e.AsDto<SponsorResponseDto>()).ToList();
+                responseDto.MediaPatrons = entity.MediaPatrons.Select(mp => _mediaPatronService.MapAsDto(mp)).ToList();
+                responseDto.Organizers = entity.Organizers.Select(o => _organizerService.MapAsDto(o)).ToList();
+                responseDto.Sponsors = entity.Sponsors.Select(s => _sponsorService.MapAsDto(s)).ToList();
                 responseDto.PhotoEndpoint = $"/Festivals/{responseDto.Id}/image";
                 return responseDto;
             });
@@ -628,9 +634,9 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
                 ticket.TicketType = t.TicketType.AsDto<TicketTypeResponseDto>();
                 return ticket;
             }).ToList();
-            responseDto.MediaPatrons = entity.MediaPatrons.Select(e => e.AsDto<MediaPatronResponseDto>()).ToList();
-            responseDto.Organizers = entity.Organizers.Select(e => e.AsDto<OrganizerResponseDto>()).ToList();
-            responseDto.Sponsors = entity.Sponsors.Select(e => e.AsDto<SponsorResponseDto>()).ToList();
+            responseDto.MediaPatrons = entity.MediaPatrons.Select(mp => _mediaPatronService.MapAsDto(mp)).ToList();
+            responseDto.Organizers = entity.Organizers.Select(o => _organizerService.MapAsDto(o)).ToList();
+            responseDto.Sponsors = entity.Sponsors.Select(s => _sponsorService.MapAsDto(s)).ToList();
             responseDto.PhotoEndpoint = $"/Festivals/{responseDto.Id}/image";
             return responseDto;
         }

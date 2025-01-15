@@ -10,6 +10,7 @@ import PartnerList from "../components/homepage/PartnerList";
 import Checkbox from "../components/common/Checkbox";
 import { FormProvider } from "react-hook-form";
 import Newsletter from "../components/homepage/Newsletter";
+import { Link } from "react-router-dom";
 
 const HomePage = () => {
   return (
@@ -89,14 +90,16 @@ const HomePage = () => {
           </p>
         </article>
         <div>
-          <Button
-            text="Sprawdź"
-            width={155}
-            height={53}
-            fontSize={16}
-            style={ButtonStyle.CTA}
-            action={() => {}}
-          />
+          <Link to="/eventpasses">
+            <Button
+              text="Sprawdź"
+              width={155}
+              height={53}
+              fontSize={16}
+              style={ButtonStyle.CTA}
+              action={() => {}}
+            />
+          </Link>
         </div>
       </section>
       <section

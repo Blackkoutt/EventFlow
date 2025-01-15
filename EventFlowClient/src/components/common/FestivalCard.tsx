@@ -4,27 +4,30 @@ import FestivalIcon from "../../assets/festival_icon.png";
 import DateFormatter from "../../helpers/DateFormatter";
 import { DateFormat } from "../../helpers/enums/DateFormatEnum";
 import Button, { ButtonStyle } from "../buttons/Button";
+import { Link } from "react-router-dom";
 
 interface FestivalCardProps {
   festival: Festival;
 }
 const FestivalCard = ({ festival }: FestivalCardProps) => {
   return (
-    <div className="shadow-xl flex flex-row justify-center items-center">
+    <Link
+      to={`/festivals/${festival.id}`}
+      className="shadow-xl flex flex-row justify-center items-center w-full min-h-[500px] max-h-[600px] hover:bg-slate-50 hover:cursor-pointer"
+    >
       <img
+        className="object-cover min-w-[42%] max-w-[42%] h-full"
         src={ApiClient.GetPhotoEndpoint(festival.photoEndpoint)}
         alt={`Zdjęcie festiwalu ${festival.title}`}
       />
-      <div className="px-8 flex flex-col justify-center items-start gap-3">
+      <div className="px-8 flex flex-col justify-center items-start gap-3 py-8 w-full">
         <div className="flex flex-col justify-center items-start gap-4">
           <div className="flex flex-col justify-center items-start gap-[10px]">
             <div className="flex flex-row justify-center items-center gap-2">
               <img src={FestivalIcon} alt="Ikona festivalu" />
               <p className="text-[20px] text-[#00BFC3] font-semibold m-0">FESTIWAL</p>
             </div>
-            <h3 className="text-[40px] font-bold header_text text-[#4C4C4C]">
-              Festiwal Muzyki Hip-Hop
-            </h3>
+            <h3 className="text-[40px] font-bold header_text text-[#4C4C4C]">{festival.title}</h3>
           </div>
           <p className="text-2xl font-semibold text-textPrimary m-0 p-0">Program festiwalu:</p>
           <div className="flex flex-col justify-center items-start">
@@ -60,7 +63,7 @@ const FestivalCard = ({ festival }: FestivalCardProps) => {
           />
         </div>
       </div>
-    </div>
+    </Link>
   );
 };
 

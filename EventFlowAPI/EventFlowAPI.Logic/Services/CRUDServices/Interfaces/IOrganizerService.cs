@@ -16,5 +16,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Interfaces
             OrganizerQuery
         >
     {
+        IEnumerable<OrganizerResponseDto> MapAsDto(IEnumerable<Organizer> records);
+        OrganizerResponseDto MapAsDto(Organizer entity);
     }
 }

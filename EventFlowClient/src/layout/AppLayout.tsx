@@ -135,18 +135,21 @@ function AppLayout() {
                 </h4>
                 <div className="flex flex-row justify-start items-start gap-14">
                   <div className="flex flex-col justify-start items-start gap-4">
-                    <Link to="/" className="text-[16px] text-black font-normal">
+                    <Link
+                      to="/accessibility-declaration"
+                      className="text-[16px] text-black font-normal"
+                    >
                       Deklaracja dostępności
                     </Link>
-                    <Link to="/" className="text-[16px] text-black font-normal">
+                    <Link to="/privacy-policy" className="text-[16px] text-black font-normal">
                       Polityka prywatności
                     </Link>
                   </div>
                   <div className="flex flex-col justify-start items-start gap-4">
-                    <Link to="/" className="text-[16px] text-black font-normal">
+                    <Link to="/rodo" className="text-[16px] text-black font-normal">
                       RODO
                     </Link>
-                    <Link to="/" className="text-[16px] text-black font-normal">
+                    <Link to="/statute" className="text-[16px] text-black font-normal">
                       Regulamin
                     </Link>
                   </div>

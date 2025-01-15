@@ -147,7 +147,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             return Result<bool>.Success(result);
         }
 
-        protected sealed override IEnumerable<MediaPatronResponseDto> MapAsDto(IEnumerable<MediaPatron> records)
+        public new IEnumerable<MediaPatronResponseDto> MapAsDto(IEnumerable<MediaPatron> records)
         {
             return records.Select(entity =>
             {
@@ -157,7 +157,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             });
         }
 
-        protected sealed override MediaPatronResponseDto MapAsDto(MediaPatron entity)
+        public new MediaPatronResponseDto MapAsDto(MediaPatron entity)
         {
             var responseDto = entity.AsDto<MediaPatronResponseDto>();
             responseDto.PhotoEndpoint = $"/MediaPatrons/{responseDto.Id}/image";

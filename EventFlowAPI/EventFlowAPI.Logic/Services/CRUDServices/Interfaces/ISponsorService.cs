@@ -16,5 +16,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Interfaces
             SponsorQuery
         >
     {
+        IEnumerable<SponsorResponseDto> MapAsDto(IEnumerable<Sponsor> records);
+        SponsorResponseDto MapAsDto(Sponsor entity);
     }
 }
