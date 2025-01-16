@@ -24,8 +24,6 @@ function EventsPage() {
     getCategories({ id: undefined, queryParams: undefined });
   }, []);
 
-  useEffect(() => {});
-
   useEffect(() => {
     console.log(selectedCategory);
     let queryParams;

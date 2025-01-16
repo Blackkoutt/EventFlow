@@ -9,6 +9,7 @@ using EventFlowAPI.Logic.Services.CRUDServices.Interfaces;
 using EventFlowAPI.Logic.Services.OtherServices.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Serilog;
 using System.Net;
 
 namespace EventFlowAPI.Controllers
@@ -76,6 +77,7 @@ namespace EventFlowAPI.Controllers
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<IActionResult> CreateEventPass()
         {
+            Log.Information("CreateEventPass");
             var result = await _eventPassService.BuyEventPass();
             if (!result.IsSuccessful)
             {

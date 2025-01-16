@@ -228,7 +228,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             return Result<bool>.Success(result);
         }
 
-        protected sealed override IEnumerable<HallTypeResponseDto> MapAsDto(IEnumerable<HallType> records)
+        public new IEnumerable<HallTypeResponseDto> MapAsDto(IEnumerable<HallType> records)
         {
             return records.Select(entity =>
             {
@@ -239,7 +239,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             });
         }
 
-        protected sealed override HallTypeResponseDto MapAsDto(HallType entity)
+        public new HallTypeResponseDto MapAsDto(HallType entity)
         {
             var responseDto = entity.AsDto<HallTypeResponseDto>();
             responseDto.Equipments = entity.Equipments.Select(eq => eq.AsDto<EquipmentResponseDto>()).ToList();

@@ -69,8 +69,8 @@ function useApi<TEntity, TPostEntity = undefined, TPutEntity = undefined, TPatch
             break;
 
           case HTTPMethod.POST:
-            if (typeof body === undefined || body === undefined)
-              throw Error("POST Error: body is undefined");
+            // if (typeof body === undefined || body === undefined)
+            //   throw Error("POST Error: body is undefined");
             const [postData, postCode] = await ApiClient.Post<TEntity, TPostEntity>(
               endpoint,
               body as TPostEntity,

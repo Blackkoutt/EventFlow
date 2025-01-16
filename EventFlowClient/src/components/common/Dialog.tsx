@@ -12,6 +12,7 @@ interface DialogProps {
   minHeight?: number;
   maxHeight?: number;
   marginTop?: number;
+  top?: number;
 }
 
 const Dialog = forwardRef<HTMLDialogElement, DialogProps>(
@@ -26,6 +27,7 @@ const Dialog = forwardRef<HTMLDialogElement, DialogProps>(
       maxWidth,
       marginTop,
       onClose,
+      top,
     }: DialogProps,
     ref
   ) => {
@@ -48,6 +50,8 @@ const Dialog = forwardRef<HTMLDialogElement, DialogProps>(
           paddingRight: paddingRight,
           marginTop: marginTop,
           maxWidth: maxWidth,
+          position: "absolute",
+          top: top ? window.scrollY + top : undefined,
         }}
         className="rounded-xl py-7 relative overflow-visible"
       >

@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EventFlowAPI.DB.Migrations
 {
     [DbContext(typeof(APIContext))]
-    [Migration("20250115200006_Initial")]
+    [Migration("20250116212802_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -238,7 +238,7 @@ namespace EventFlowAPI.DB.Migrations
                             CategoryId = 1,
                             Duration = -3600L,
                             EndDate = new DateTime(2025, 1, 31, 1, 0, 0, 0, DateTimeKind.Unspecified),
-                            EventGuid = new Guid("f2f3bade-8360-48c6-b4b9-15895420a81d"),
+                            EventGuid = new Guid("92720716-e1de-469b-bc55-6f70361a9f93"),
                             HallId = 6,
                             IsDeleted = false,
                             IsUpdated = false,
@@ -254,7 +254,7 @@ namespace EventFlowAPI.DB.Migrations
                             CategoryId = 3,
                             Duration = -10800L,
                             EndDate = new DateTime(2025, 2, 1, 3, 0, 0, 0, DateTimeKind.Unspecified),
-                            EventGuid = new Guid("1df5757b-1420-4d99-8e63-2e152651f2a6"),
+                            EventGuid = new Guid("d18d04bd-ceec-444a-99ee-4855842e0093"),
                             HallId = 7,
                             IsDeleted = false,
                             IsUpdated = false,
@@ -270,7 +270,7 @@ namespace EventFlowAPI.DB.Migrations
                             CategoryId = 2,
                             Duration = -7200L,
                             EndDate = new DateTime(2025, 2, 2, 2, 0, 0, 0, DateTimeKind.Unspecified),
-                            EventGuid = new Guid("dc476b7f-a4fa-45ec-8efd-518605802159"),
+                            EventGuid = new Guid("900e5d40-2776-4df0-a9ed-b7b60b934223"),
                             HallId = 5,
                             IsDeleted = false,
                             IsUpdated = false,
@@ -286,7 +286,7 @@ namespace EventFlowAPI.DB.Migrations
                             CategoryId = 4,
                             Duration = -10800L,
                             EndDate = new DateTime(2025, 2, 3, 3, 0, 0, 0, DateTimeKind.Unspecified),
-                            EventGuid = new Guid("2f80985b-d71d-4003-8f6d-4ba8f6665187"),
+                            EventGuid = new Guid("d5b43553-05ca-433c-bb6b-c99a70ffbbb3"),
                             HallId = 8,
                             IsDeleted = false,
                             IsUpdated = false,
@@ -302,7 +302,7 @@ namespace EventFlowAPI.DB.Migrations
                             CategoryId = 1,
                             Duration = -3600L,
                             EndDate = new DateTime(2025, 3, 1, 1, 0, 0, 0, DateTimeKind.Unspecified),
-                            EventGuid = new Guid("998277b5-5363-4987-9451-e24f308da5d5"),
+                            EventGuid = new Guid("115a054d-24da-4d62-9c01-a26a54819af5"),
                             HallId = 10,
                             IsDeleted = false,
                             IsUpdated = false,
@@ -318,7 +318,7 @@ namespace EventFlowAPI.DB.Migrations
                             CategoryId = 2,
                             Duration = -7200L,
                             EndDate = new DateTime(2025, 3, 3, 2, 0, 0, 0, DateTimeKind.Unspecified),
-                            EventGuid = new Guid("dae5c0c3-37b7-4d25-a0ef-1091329e89d6"),
+                            EventGuid = new Guid("288ad23b-e788-4984-bd25-73c362a3e796"),
                             HallId = 9,
                             IsDeleted = false,
                             IsUpdated = false,
@@ -334,7 +334,7 @@ namespace EventFlowAPI.DB.Migrations
                             CategoryId = 4,
                             Duration = -10800L,
                             EndDate = new DateTime(2025, 3, 4, 3, 0, 0, 0, DateTimeKind.Unspecified),
-                            EventGuid = new Guid("0f4697c1-f8f8-40e8-bc6a-2c69bf617f6f"),
+                            EventGuid = new Guid("dab4fda8-314a-4327-9b73-edda1448b9e6"),
                             HallId = 11,
                             IsDeleted = false,
                             IsUpdated = false,
@@ -804,7 +804,7 @@ namespace EventFlowAPI.DB.Migrations
                             AddDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Duration = -2595600L,
                             EndDate = new DateTime(2025, 3, 1, 1, 0, 0, 0, DateTimeKind.Unspecified),
-                            FestivalGuid = new Guid("b6f962a4-ea7f-47d2-ba5a-deb88d763dac"),
+                            FestivalGuid = new Guid("6b6a1e50-f4bb-436b-82dd-104ac440ddb9"),
                             IsDeleted = false,
                             IsUpdated = false,
                             Name = "Festiwal muzyki hip-hop",
@@ -818,7 +818,7 @@ namespace EventFlowAPI.DB.Migrations
                             AddDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Duration = -2599200L,
                             EndDate = new DateTime(2025, 3, 3, 2, 0, 0, 0, DateTimeKind.Unspecified),
-                            FestivalGuid = new Guid("13117423-53e3-4f18-887c-b78765aa59f5"),
+                            FestivalGuid = new Guid("083673dc-c242-4da5-aaa8-343d6fbefd1a"),
                             IsDeleted = false,
                             IsUpdated = false,
                             Name = "Festiwal filmowy",
@@ -832,7 +832,7 @@ namespace EventFlowAPI.DB.Migrations
                             AddDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Duration = -2516400L,
                             EndDate = new DateTime(2025, 3, 4, 3, 0, 0, 0, DateTimeKind.Unspecified),
-                            FestivalGuid = new Guid("ba0cbe00-5c33-44f3-8558-636f0cb6769a"),
+                            FestivalGuid = new Guid("e0652ff6-729f-45b1-9ef7-3ee46f8a76a2"),
                             IsDeleted = false,
                             IsUpdated = false,
                             Name = "Festiwal sztuki abstrakcyjnej",
@@ -1603,7 +1603,7 @@ namespace EventFlowAPI.DB.Migrations
                             Duration = 28800L,
                             EndDate = new DateTime(2025, 1, 31, 8, 0, 0, 0, DateTimeKind.Unspecified),
                             HallId = 12,
-                            HallRentGuid = new Guid("e59706c2-c508-4508-b704-7397625658f4"),
+                            HallRentGuid = new Guid("8c0da64d-7b14-4eee-a02c-df729aec064f"),
                             HallRentPDFName = "wynajem_sali_1.pdf",
                             IsDeleted = false,
                             IsUpdated = false,
@@ -1620,7 +1620,7 @@ namespace EventFlowAPI.DB.Migrations
                             Duration = 14400L,
                             EndDate = new DateTime(2025, 2, 1, 4, 0, 0, 0, DateTimeKind.Unspecified),
                             HallId = 13,
-                            HallRentGuid = new Guid("bae73d10-b4b2-4e6e-92ab-282cb6131e8f"),
+                            HallRentGuid = new Guid("983c1d92-e0bd-4bd4-83c3-09da8cb966dd"),
                             HallRentPDFName = "wynajem_sali_2.pdf",
                             IsDeleted = false,
                             IsUpdated = false,
@@ -1637,7 +1637,7 @@ namespace EventFlowAPI.DB.Migrations
                             Duration = 7200L,
                             EndDate = new DateTime(2025, 2, 2, 2, 0, 0, 0, DateTimeKind.Unspecified),
                             HallId = 14,
-                            HallRentGuid = new Guid("c6b52f6f-dcbb-48ac-894c-ce30061d25e7"),
+                            HallRentGuid = new Guid("e23fc53c-bedf-48ae-979f-73d2443d7ba5"),
                             HallRentPDFName = "wynajem_sali_3.pdf",
                             IsDeleted = false,
                             IsUpdated = false,
@@ -1654,7 +1654,7 @@ namespace EventFlowAPI.DB.Migrations
                             Duration = 3600L,
                             EndDate = new DateTime(2025, 2, 3, 1, 0, 0, 0, DateTimeKind.Unspecified),
                             HallId = 15,
-                            HallRentGuid = new Guid("7677c2d1-ef8d-4c25-bddc-8b4c609bbd84"),
+                            HallRentGuid = new Guid("d1fd63a6-e9bb-4d97-9042-3ec452063095"),
                             HallRentPDFName = "wynajem_sali_4.pdf",
                             IsDeleted = false,
                             IsUpdated = false,
@@ -1767,7 +1767,7 @@ namespace EventFlowAPI.DB.Migrations
                             IsSoftUpdated = false,
                             IsUpdated = false,
                             Name = "Sala filmowa",
-                            PhotoName = ""
+                            PhotoName = "filmowa.jpg"
                         },
                         new
                         {
@@ -1778,7 +1778,7 @@ namespace EventFlowAPI.DB.Migrations
                             IsSoftUpdated = false,
                             IsUpdated = false,
                             Name = "Sala koncertowa",
-                            PhotoName = ""
+                            PhotoName = "koncertowa.jpg"
                         },
                         new
                         {
@@ -1789,7 +1789,7 @@ namespace EventFlowAPI.DB.Migrations
                             IsSoftUpdated = false,
                             IsUpdated = false,
                             Name = "Sala teatralna",
-                            PhotoName = ""
+                            PhotoName = "teatralna.jpg"
                         },
                         new
                         {
@@ -1800,7 +1800,7 @@ namespace EventFlowAPI.DB.Migrations
                             IsSoftUpdated = false,
                             IsUpdated = false,
                             Name = "Sala wystawowa",
-                            PhotoName = ""
+                            PhotoName = "wystawowa.jpg"
                         },
                         new
                         {
@@ -1811,7 +1811,7 @@ namespace EventFlowAPI.DB.Migrations
                             IsSoftUpdated = false,
                             IsUpdated = false,
                             Name = "Sala ogólna",
-                            PhotoName = ""
+                            PhotoName = "ogolna.jpg"
                         });
                 });
 
@@ -1899,7 +1899,7 @@ namespace EventFlowAPI.DB.Migrations
                             Id = 1,
                             IsDeleted = false,
                             IsUpdated = false,
-                            MediaPatronGuid = new Guid("fad59ea0-0127-4d76-a84b-71575a9c3734"),
+                            MediaPatronGuid = new Guid("542881fc-d860-480c-a186-d3e8dc822a5f"),
                             Name = "Gazeta Nowoczesna",
                             PhotoName = "gazeta_nowoczesna.png"
                         },
@@ -1908,7 +1908,7 @@ namespace EventFlowAPI.DB.Migrations
                             Id = 2,
                             IsDeleted = false,
                             IsUpdated = false,
-                            MediaPatronGuid = new Guid("6322d6aa-1c90-4c76-9e2e-4b63dbc2c113"),
+                            MediaPatronGuid = new Guid("84ef4d60-9c05-4ddc-849e-bae268788a01"),
                             Name = "Nowy świat TV",
                             PhotoName = "nowy_swiat.png"
                         },
@@ -1917,7 +1917,7 @@ namespace EventFlowAPI.DB.Migrations
                             Id = 3,
                             IsDeleted = false,
                             IsUpdated = false,
-                            MediaPatronGuid = new Guid("22ce8d9f-213e-4c20-ba25-57ca72db8dde"),
+                            MediaPatronGuid = new Guid("fa791d95-409b-4655-b150-2a5fb5de0976"),
                             Name = "Tygodnik Nowiny",
                             PhotoName = "tygodnik_nowiny.png"
                         });
@@ -1962,7 +1962,7 @@ namespace EventFlowAPI.DB.Migrations
                         {
                             Id = 1,
                             LongDescription = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut id nibh ornare, luctus velit ac, feugiat turpis. Vestibulum fermentum placerat mi nec scelerisque. Ut id nibh ornare, luctus velit ac, feugiat turpis. Vestibulum fermentum. Vestibulum fermentum placerat mi nec. Ut id nibh ornare, luctus velit ac, feugiat turpis.Vestibulum fermentum. Vestibulum fermentum.",
-                            NewsGuid = new Guid("1284eb46-3d01-4bbf-8906-f4c83a374a2c"),
+                            NewsGuid = new Guid("f05805f0-3ce1-4265-91e7-43f97a44d8f1"),
                             PhotoName = "konkurs_artystyczny.png",
                             PublicationDate = new DateTime(2024, 12, 30, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             ShortDescription = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut id nibh ornare, luctus velit ac, feugiat turpis. Vestibulum fermentum placerat mi nec scelerisque. Ut id nibh ornare, luctus velit ac, feugiat turpis. Vestibulum fermentum. Vestibulum fermentum placerat mi nec. Ut id nibh ornare, luctus velit ac, feugiat turpis.Vestibulum fermentum. Vestibulum fermentum.",
@@ -1972,7 +1972,7 @@ namespace EventFlowAPI.DB.Migrations
                         {
                             Id = 2,
                             LongDescription = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut id nibh ornare, luctus...",
-                            NewsGuid = new Guid("b1c33262-003b-4ad1-a066-f62f6dff50ae"),
+                            NewsGuid = new Guid("084adce7-2b17-42f2-8365-520dfe70f3d1"),
                             PhotoName = "koncert_lunar_vibes.png",
                             PublicationDate = new DateTime(2024, 12, 30, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             ShortDescription = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut id nibh ornare, luctus...",
@@ -1982,7 +1982,7 @@ namespace EventFlowAPI.DB.Migrations
                         {
                             Id = 3,
                             LongDescription = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut id nibh ornare, luctus...",
-                            NewsGuid = new Guid("7db29c4e-7139-421d-9723-2e1cc9985f7d"),
+                            NewsGuid = new Guid("9f47f344-f359-484a-aa2b-043834acd5b9"),
                             PhotoName = "modernizacja sali.png",
                             PublicationDate = new DateTime(2024, 12, 30, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             ShortDescription = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut id nibh ornare, luctus...",
@@ -1992,7 +1992,7 @@ namespace EventFlowAPI.DB.Migrations
                         {
                             Id = 4,
                             LongDescription = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut id nibh ornare, luctus...",
-                            NewsGuid = new Guid("0416c0c3-0408-4327-a991-00624ec14399"),
+                            NewsGuid = new Guid("19f9082f-c0cf-43a8-ada3-c6c78fe9caba"),
                             PhotoName = "znizka.png",
                             PublicationDate = new DateTime(2024, 12, 30, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             ShortDescription = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut id nibh ornare, luctus...",
@@ -2002,7 +2002,7 @@ namespace EventFlowAPI.DB.Migrations
                         {
                             Id = 5,
                             LongDescription = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut id nibh ornare, luctus...",
-                            NewsGuid = new Guid("366551c9-b7d2-4bb1-be0a-845829d59263"),
+                            NewsGuid = new Guid("4f324cdd-dead-4877-a221-dbc9fde3b2cb"),
                             PhotoName = "noc_filmowa.png",
                             PublicationDate = new DateTime(2024, 12, 30, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             ShortDescription = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut id nibh ornare, luctus...",
@@ -2012,7 +2012,7 @@ namespace EventFlowAPI.DB.Migrations
                         {
                             Id = 6,
                             LongDescription = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut id nibh ornare, luctus...",
-                            NewsGuid = new Guid("7cc9f382-c0fa-4827-b8a7-1e1beabeb111"),
+                            NewsGuid = new Guid("79dce24f-b1ae-4bc4-ac27-09ac30a7d4ee"),
                             PhotoName = "wernisaz.png",
                             PublicationDate = new DateTime(2024, 12, 30, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             ShortDescription = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut id nibh ornare, luctus...",
@@ -2063,7 +2063,7 @@ namespace EventFlowAPI.DB.Migrations
                             IsDeleted = false,
                             IsUpdated = false,
                             Name = "EventFlow",
-                            OrganizerGuid = new Guid("26937b6f-f03f-4e4e-aa4b-5fec0a7d8046"),
+                            OrganizerGuid = new Guid("b5e80c96-bec9-47c3-ab1d-0e1abf2f2198"),
                             PhotoName = "eventflow.png"
                         },
                         new
@@ -2072,7 +2072,7 @@ namespace EventFlowAPI.DB.Migrations
                             IsDeleted = false,
                             IsUpdated = false,
                             Name = "Snowflake",
-                            OrganizerGuid = new Guid("d3bee89d-fac6-4c0f-991a-a27f4f1ce787"),
+                            OrganizerGuid = new Guid("7ef42bd5-c006-4843-968e-0adc2a397488"),
                             PhotoName = "snowflake.png"
                         },
                         new
@@ -2081,7 +2081,7 @@ namespace EventFlowAPI.DB.Migrations
                             IsDeleted = false,
                             IsUpdated = false,
                             Name = "Aura",
-                            OrganizerGuid = new Guid("cbe920e2-5c59-4e2b-8a8c-362eabd21592"),
+                            OrganizerGuid = new Guid("74cf96dd-ef60-4ae7-ba28-cefa04a71988"),
                             PhotoName = "aura.png"
                         });
                 });
@@ -2114,35 +2114,35 @@ namespace EventFlowAPI.DB.Migrations
                         {
                             Id = 1,
                             Name = "Basel",
-                            PartnerGuid = new Guid("0d637612-f432-41c0-848b-0c533d6d2de9"),
+                            PartnerGuid = new Guid("d64dadcc-d781-447f-be63-e9063c029e79"),
                             PhotoName = "basel.png"
                         },
                         new
                         {
                             Id = 2,
                             Name = "Aura",
-                            PartnerGuid = new Guid("801085e4-feba-41ca-b029-4163bd7b1fc2"),
+                            PartnerGuid = new Guid("71242114-318d-4d1b-b7cc-4c3f677a30ad"),
                             PhotoName = "aura.png"
                         },
                         new
                         {
                             Id = 3,
                             Name = "Vision",
-                            PartnerGuid = new Guid("7b5e84d2-a44c-46e8-a20c-a0f8d5d427d8"),
+                            PartnerGuid = new Guid("cad68f28-cfb4-478f-86af-08a3b160138e"),
                             PhotoName = "vision.png"
                         },
                         new
                         {
                             Id = 4,
                             Name = "Snowflake",
-                            PartnerGuid = new Guid("632c9397-d785-4822-8515-07a2f96f859b"),
+                            PartnerGuid = new Guid("b33c6e62-d9b2-4a82-91e6-ed3dc7baade0"),
                             PhotoName = "snowflake.png"
                         },
                         new
                         {
                             Id = 5,
                             Name = "Waveless",
-                            PartnerGuid = new Guid("0be3d7d6-7e13-4123-aac6-5e12207b01bf"),
+                            PartnerGuid = new Guid("d7d0d425-c73c-4432-b353-e83ebe206866"),
                             PhotoName = "waveless.png"
                         });
                 });
@@ -2190,7 +2190,7 @@ namespace EventFlowAPI.DB.Migrations
                             IsDeleted = false,
                             IsUpdated = false,
                             Name = "PayU",
-                            PaymentTypeGuid = new Guid("e0188762-3c3f-4f1b-a6d2-6dc9bfa4b4e6"),
+                            PaymentTypeGuid = new Guid("51beb0ef-c458-4df8-ac09-708e23e6650e"),
                             PhotoName = ""
                         },
                         new
@@ -2199,7 +2199,7 @@ namespace EventFlowAPI.DB.Migrations
                             IsDeleted = false,
                             IsUpdated = false,
                             Name = "Karnet",
-                            PaymentTypeGuid = new Guid("4ed11511-671e-454f-a9c7-0b8f222fca68"),
+                            PaymentTypeGuid = new Guid("5390b216-779c-4392-82d9-c0567e91ae27"),
                             PhotoName = ""
                         });
                 });
@@ -3372,7 +3372,7 @@ namespace EventFlowAPI.DB.Migrations
                             IsUpdated = false,
                             Name = "Basel",
                             PhotoName = "basel.png",
-                            SponsorGuid = new Guid("b1fc269a-5c57-4332-9c63-c980d4f2cad1")
+                            SponsorGuid = new Guid("d2f63b1c-9cdc-4029-bba7-258372550375")
                         },
                         new
                         {
@@ -3381,7 +3381,7 @@ namespace EventFlowAPI.DB.Migrations
                             IsUpdated = false,
                             Name = "Vision",
                             PhotoName = "vision.png",
-                            SponsorGuid = new Guid("3df7bc37-ad67-48d8-aa10-9936d097ca03")
+                            SponsorGuid = new Guid("13216c00-93c4-469e-ac83-945b3ee61128")
                         },
                         new
                         {
@@ -3390,7 +3390,7 @@ namespace EventFlowAPI.DB.Migrations
                             IsUpdated = false,
                             Name = "Waveless",
                             PhotoName = "waveless.png",
-                            SponsorGuid = new Guid("8bf64aae-da84-4c5e-be92-361f299f6f3d")
+                            SponsorGuid = new Guid("28c0ba3e-e71a-486a-a4fe-e04e930b5249")
                         });
                 });
 
@@ -3798,7 +3798,7 @@ namespace EventFlowAPI.DB.Migrations
                         {
                             Id = "1",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "28b5863e-308a-4b3e-8c4d-58c325498dca",
+                            ConcurrencyStamp = "97ea1b86-e981-4d16-a216-718c8e01795b",
                             DateOfBirth = new DateTime(2000, 4, 3, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "admin@gmail.com",
                             EmailConfirmed = true,
@@ -3807,12 +3807,12 @@ namespace EventFlowAPI.DB.Migrations
                             Name = "Admin",
                             NormalizedEmail = "ADMIN@GMAIL.COM",
                             NormalizedUserName = "ADMIN@GMAIL.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEDLsuC2xCYeUDp4lGNnPTavAfzhI3n90y9CISPY2FJ4Y+EAvY+3q56e8L6DpN979Jw==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEEg79LOoMbjZasgZRP5hqOzX4cdYdn81NfausrolHldmGQdmxt/JlGGwr7mO9FcwnQ==",
                             PhoneNumberConfirmed = false,
                             PhotoName = "admin.jpg",
                             Provider = "APP",
                             RegisteredDate = new DateTime(2024, 12, 30, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            SecurityStamp = "6326a917-2b21-4a84-99a4-3dca75305b4f",
+                            SecurityStamp = "6b2ef18b-2c20-4a12-9a5c-83574ae25d0e",
                             Surname = "Admin",
                             TwoFactorEnabled = false,
                             UserName = "admin@gmail.com"
@@ -3821,7 +3821,7 @@ namespace EventFlowAPI.DB.Migrations
                         {
                             Id = "2",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "89828c1b-5803-44ee-b56f-80f0f87aa29e",
+                            ConcurrencyStamp = "6275b86f-b5da-4780-9f6d-10640f838be3",
                             DateOfBirth = new DateTime(1985, 2, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "mateusz.strapczuk2@gmail.com",
                             EmailConfirmed = true,
@@ -3830,12 +3830,12 @@ namespace EventFlowAPI.DB.Migrations
                             Name = "Mateusz2",
                             NormalizedEmail = "MATEUSZ.STRAPCZUK2@GMAIL.COM",
                             NormalizedUserName = "MATEUSZ.STRAPCZUK2@GMAIL.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAED75KbSjaS5CWlrI/ggsfT4EwXvOT0ZOHYjUm8Rm07tFwUD3LDeW0ksdAA093HHREA==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEFudPSgY5hk0F5nJ7i47ly+94hC8Ra55WTnN/QFE3swYMez44u8aNX9em2EY+Bl4pg==",
                             PhoneNumberConfirmed = false,
                             PhotoName = "user2.jpg",
                             Provider = "APP",
                             RegisteredDate = new DateTime(2024, 12, 30, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            SecurityStamp = "f976f8bc-bc9f-4679-b5db-fff7a5efe78a",
+                            SecurityStamp = "45eac891-3d61-472e-a89f-35ae19ea62dd",
                             Surname = "Strapczuk2",
                             TwoFactorEnabled = false,
                             UserName = "mateusz.strapczuk2@gmail.com"
@@ -3844,7 +3844,7 @@ namespace EventFlowAPI.DB.Migrations
                         {
                             Id = "3",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "622ed55e-783d-44a5-a5b6-019d5779dc16",
+                            ConcurrencyStamp = "d8e9a42f-013a-4409-bd23-767c5be487b3",
                             DateOfBirth = new DateTime(1979, 12, 11, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "mateusz.strapczuk3@gmail.com",
                             EmailConfirmed = true,
@@ -3853,12 +3853,12 @@ namespace EventFlowAPI.DB.Migrations
                             Name = "Mateusz3",
                             NormalizedEmail = "MATEUSZ.STRAPCZUK3@GMAIL.COM",
                             NormalizedUserName = "MATEUSZ.STRAPCZUK3@GMAIL.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEGKqCE0UygO3YNFoiMcH5AK3mKcRKKk7dNp2TcPmkBP3CjXjLbmMgd3N/LgDdwtLcA==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEMDp+3Csg+GUfqt5EyUAYwdeBGVheOptkDhtOKD8a6w9WSntgB4VkyCkFQyLGiGShg==",
                             PhoneNumberConfirmed = false,
                             PhotoName = "user3.jpg",
                             Provider = "APP",
                             RegisteredDate = new DateTime(2024, 12, 30, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            SecurityStamp = "f0cd086e-478a-476d-9dc4-733d0aa2b99f",
+                            SecurityStamp = "0b65e6cd-de71-4522-bcf5-5176ffe9c64e",
                             Surname = "Strapczuk3",
                             TwoFactorEnabled = false,
                             UserName = "mateusz.strapczuk3@gmail.com"
@@ -3867,7 +3867,7 @@ namespace EventFlowAPI.DB.Migrations
                         {
                             Id = "4",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "7541c975-4f09-4b27-b2a5-3ec9f4c5d347",
+                            ConcurrencyStamp = "ac369cb6-ae39-456d-8437-52160b107488",
                             DateOfBirth = new DateTime(1979, 12, 11, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "mateusz.strapczuk4@gmail.com",
                             EmailConfirmed = true,
@@ -3876,12 +3876,12 @@ namespace EventFlowAPI.DB.Migrations
                             Name = "Mateusz4",
                             NormalizedEmail = "MATEUSZ.STRAPCZUK4@GMAIL.COM",
                             NormalizedUserName = "MATEUSZ.STRAPCZUK4@GMAIL.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEPDXTwRy+uPxT1Yqp2RwBaKafUlvhhiY2DAz0rXfzZ6EqOW3fA6Xh5SmKVJQsadAFw==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEEk6HDvyrWYEjHTL/q9McsAauDRx93Fi08pj/+YlDb+lnoas//RM3r/ifx2Y7QFlQg==",
                             PhoneNumberConfirmed = false,
                             PhotoName = "user4.jpg",
                             Provider = "APP",
                             RegisteredDate = new DateTime(2024, 12, 30, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            SecurityStamp = "fdf68376-cd7f-46ce-856a-89a332e41213",
+                            SecurityStamp = "c0d9174a-48d2-4c4f-85c7-ac824f471854",
                             Surname = "Strapczuk4",
                             TwoFactorEnabled = false,
                             UserName = "mateusz.strapczuk4@gmail.com"
@@ -3890,7 +3890,7 @@ namespace EventFlowAPI.DB.Migrations
                         {
                             Id = "5",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "bb9c82a9-2db0-48b7-a462-57dd25488356",
+                            ConcurrencyStamp = "6b41b78b-570d-40e5-945a-e219f1bfae65",
                             DateOfBirth = new DateTime(1979, 12, 11, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "mateusz.strapczuk1@gmail.com",
                             EmailConfirmed = true,
@@ -3899,12 +3899,12 @@ namespace EventFlowAPI.DB.Migrations
                             Name = "Mateusz",
                             NormalizedEmail = "MATEUSZ.STRAPCZUK1@GMAIL.COM",
                             NormalizedUserName = "MATEUSZ.STRAPCZUK1@GMAIL.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAED4h3SPFAE7ZAlW2HKcFjzq9njkZznPsRfv8ZNSTGcL4Dn5touOpUAIMV+YuggujDQ==",
+                            PasswordHash = "AQAAAAIAAYagAAAAELqUalcYN12UZCbQI8atKbEvZAF7JMnVJDlMe7qYluJPJo5+M010nQDPdYeLmLm8AA==",
                             PhoneNumberConfirmed = false,
                             PhotoName = "user5.jpg",
                             Provider = "APP",
                             RegisteredDate = new DateTime(2024, 12, 30, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            SecurityStamp = "cf736823-b5fe-4875-bc5a-009734b5bfc8",
+                            SecurityStamp = "3dd6adc2-c27a-47a3-8181-83f14c02e29a",
                             Surname = "Strapczuk",
                             TwoFactorEnabled = false,
                             UserName = "mateusz.strapczuk1@gmail.com"

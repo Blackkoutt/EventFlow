@@ -193,7 +193,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
                 {
                     new PayUProductDto
                     {
-                        Name = "Karnetu EventFlow",
+                        Name = "Karnet EventFlow",
                         Price = (int)passType!.Price * 100,
                         Quanitity = 1,
                     }
@@ -566,6 +566,10 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
                 default:
                     return Error.BadRequestType;
             }
+
+            var userResult = await _authService.GetCurrentUser();
+            if (!userResult.IsSuccessful)
+                return userResult.Error;
 
             var activeEventPassResult = await IsSameEntityExistInDatabase(requestDto);
             if (!activeEventPassResult.IsSuccessful) return activeEventPassResult.Error;

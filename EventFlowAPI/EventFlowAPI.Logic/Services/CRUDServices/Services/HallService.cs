@@ -29,6 +29,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
         IFestivalService festivalService,
         ITicketService ticketService,
         IHallRentService hallRentService,
+        IHallTypeService hallTypeService,
         IFileService fileService) :
         GenericService<
             Hall,
@@ -46,6 +47,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
         private readonly ITicketService _ticketService = ticketService;
         private readonly IHallRentService _hallRentService = hallRentService;
         private readonly IFileService _fileService = fileService;
+        private readonly IHallTypeService _hallTypeService = hallTypeService;
 
         public sealed override async Task<Result<IEnumerable<HallResponseDto>>> GetAllAsync(HallQuery query)
         {
@@ -778,7 +780,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             {
                 var responseDto = entity.AsDto<HallResponseDto>();
                 responseDto.HallDetails = null;
-                responseDto.Type = entity.Type.AsDto<HallTypeResponseDto>();
+                responseDto.Type = _hallTypeService.MapAsDto(entity.Type);
                 responseDto.Type.Equipments = [];
                 responseDto.SeatsCount = entity.Seats.Count;
                 responseDto.Seats = [];
@@ -792,7 +794,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             if (responseDto.HallDetails?.StageLength != null && responseDto.HallDetails.StageWidth != null)
                 responseDto.HallDetails.StageArea = (decimal)responseDto.HallDetails.StageLength * (decimal)responseDto.HallDetails.StageWidth;
 
-            responseDto.Type = entity.Type.AsDto<HallTypeResponseDto>();
+            responseDto.Type = _hallTypeService.MapAsDto(entity.Type);
             responseDto.Type.Equipments = entity.Type.Equipments.Select(eq =>
             {
                 var equipmentDto = eq.AsDto<EquipmentResponseDto>();

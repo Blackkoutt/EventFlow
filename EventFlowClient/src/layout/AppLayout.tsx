@@ -10,6 +10,7 @@ import { useAuth } from "../context/AuthContext";
 import { Slide, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import UserAccordion from "../components/UserAccordion";
+import ScrollToTop from "../components/common/ScrollToTop";
 
 function AppLayout() {
   const { authenticated } = useAuth();
@@ -17,6 +18,7 @@ function AppLayout() {
   return (
     <>
       <header className="flex flex-col justify-center items-center">
+        <ScrollToTop />
         <div className="flex w-[100%] flex-col justify-center items-center gap-4 border-b-4 border-black pt-1 pb-4">
           <div className="self-end">
             <TopOptions />

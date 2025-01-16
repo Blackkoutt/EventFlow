@@ -16,5 +16,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Interfaces
             HallTypeQuery
         >
     {
+        IEnumerable<HallTypeResponseDto> MapAsDto(IEnumerable<HallType> records);
+        HallTypeResponseDto MapAsDto(HallType entity);
     }
 }
