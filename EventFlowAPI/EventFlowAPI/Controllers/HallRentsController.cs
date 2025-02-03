@@ -4,6 +4,7 @@ using EventFlowAPI.Logic.Helpers.Enums;
 using EventFlowAPI.Logic.Identity.Helpers;
 using EventFlowAPI.Logic.Query;
 using EventFlowAPI.Logic.Services.CRUDServices.Interfaces;
+using EventFlowAPI.Logic.Services.CRUDServices.Services;
 using EventFlowAPI.Logic.Services.OtherServices.Interfaces;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
@@ -94,9 +95,9 @@ namespace EventFlowAPI.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        public async Task<IActionResult> CreateHallRent([FromBody] HallRentRequestDto hallRentReqestDto)
+        public async Task<IActionResult> CreateHallRent()
         {
-            var result = await _hallRentService.MakeRent(hallRentReqestDto);
+            var result = await _hallRentService.MakeRent();
             if (!result.IsSuccessful)
             {
                 return result.Error.Details!.Code switch
@@ -110,6 +111,27 @@ namespace EventFlowAPI.Controllers
             return CreatedAtAction(nameof(GetHallRentById), new { id = result.Value.Id }, result.Value);
         }
 
+        [Authorize]
+        [HttpPost("create-rent-transaction")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        public async Task<IActionResult> CreateRentTransaction([FromBody] HallRentRequestDto hallRentReqestDto)
+        {
+            var result = await _hallRentService.CreateRentPayment(hallRentReqestDto);
+            if (!result.IsSuccessful)
+            {
+                return result.Error.Details!.Code switch
+                {
+                    HttpStatusCode.BadRequest => BadRequest(result.Error.Details),
+                    HttpStatusCode.Unauthorized => Unauthorized(result.Error.Details),
+                    HttpStatusCode.Forbidden => StatusCode((int)HttpStatusCode.Forbidden, result.Error.Details),
+                    _ => StatusCode((int)HttpStatusCode.InternalServerError, result.Error.Details)
+                };
+            }
+            return Ok(result.Value);
+        }
 
 
 

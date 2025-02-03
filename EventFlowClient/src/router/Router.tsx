@@ -12,10 +12,10 @@ import AppLayout from "../layout/AppLayout";
 import LoginPage from "../pages/LoginPage";
 import RegisterPage from "../pages/RegisterPage";
 import ForgotPasswordPage from "../pages/ForgotPasswordPage";
-import VerificationEmailSent from "../pages/VerificationEmailSent";
+import VerificationEmailSent from "../pages/VerificationEmailSentPage";
 import ProtectedRoute from "../wrappers/ProtectedRoute";
-import UserProfile from "../pages/UserProfile";
-import Management from "../pages/Management";
+import UserProfile from "../pages/UserProfilePage";
+import Management from "../pages/ManagementPage";
 import { Roles } from "../helpers/enums/UserRoleEnum";
 import UserInfo from "../pages/Profile/UserInfo";
 import UserAdditionalInfo from "../pages/Profile/UserAdditionalInfo";
@@ -46,12 +46,21 @@ import OrganizersManagement from "../pages/Management/OrganizersManagement";
 import EventsManagement from "../pages/Management/EventsManagement";
 import EventPage from "../pages/EventPage";
 import FestivalPage from "../pages/FestivalPage";
-import ConcreteNews from "../pages/ConcreteNews";
-import FAQs from "../pages/FAQs";
-import AccessibilityDeclaration from "../pages/AccessibilityDeclaration";
-import PrivacyPolicy from "../pages/PrivacyPolicy";
-import Rodo from "../pages/Rodo";
-import Statute from "../pages/Statute";
+import ConcreteNews from "../pages/ConcreteNewsPage";
+import FAQs from "../pages/FAQPage";
+import AccessibilityDeclaration from "../pages/AccessibilityDeclarationPage";
+import PrivacyPolicy from "../pages/PrivacyPolicyPage";
+import Rodo from "../pages/RodoPage";
+import Statute from "../pages/StatutePage";
+import FAQPage from "../pages/FAQPage";
+import AccessibilityDeclarationPage from "../pages/AccessibilityDeclarationPage";
+import PrivacyPolicyPage from "../pages/PrivacyPolicyPage";
+import RodoPage from "../pages/RodoPage";
+import StatutePage from "../pages/StatutePage";
+import VerificationEmailSentPage from "../pages/VerificationEmailSentPage";
+import UserProfilePage from "../pages/UserProfilePage";
+import ManagementPage from "../pages/ManagementPage";
+import RentPage from "../pages/RentPage";
 
 export const router = createBrowserRouter([
   {
@@ -73,23 +82,23 @@ export const router = createBrowserRouter([
       },
       {
         path: "/accessibility-declaration",
-        element: <AccessibilityDeclaration />,
+        element: <AccessibilityDeclarationPage />,
       },
       {
         path: "/privacy-policy",
-        element: <PrivacyPolicy />,
+        element: <PrivacyPolicyPage />,
       },
       {
         path: "/rodo",
-        element: <Rodo />,
+        element: <RodoPage />,
       },
       {
         path: "/statute",
-        element: <Statute />,
+        element: <StatutePage />,
       },
       {
         path: "/faqs",
-        element: <FAQs />,
+        element: <FAQPage />,
       },
       {
         path: "/events",
@@ -124,6 +133,10 @@ export const router = createBrowserRouter([
         element: <RentsPage />,
       },
       {
+        path: "/rents/:hallId",
+        element: <RentPage />,
+      },
+      {
         path: "/sign-in",
         element: <LoginPage />,
       },
@@ -137,13 +150,13 @@ export const router = createBrowserRouter([
       },
       {
         path: "/email-verification",
-        element: <VerificationEmailSent />,
+        element: <VerificationEmailSentPage />,
       },
       {
         path: "/profile",
         element: (
           <ProtectedRoute>
-            <UserProfile />
+            <UserProfilePage />
           </ProtectedRoute>
         ),
         children: [
@@ -193,7 +206,7 @@ export const router = createBrowserRouter([
         path: "/management",
         element: (
           <ProtectedRoute allowedRoles={[Roles.Admin]}>
-            <Management />
+            <ManagementPage />
           </ProtectedRoute>
         ),
         children: [

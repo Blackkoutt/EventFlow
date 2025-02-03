@@ -88,6 +88,7 @@ namespace EventFlowAPI.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> DeleteEventPassType([FromRoute] int id)
         {
             var result = await _eventPassTypeService.DeleteAsync(id);
@@ -98,6 +99,7 @@ namespace EventFlowAPI.Controllers
                     HttpStatusCode.BadRequest => BadRequest(result.Error.Details),
                     HttpStatusCode.Unauthorized => Unauthorized(result.Error.Details),
                     HttpStatusCode.Forbidden => StatusCode((int)HttpStatusCode.Forbidden, result.Error.Details),
+                    HttpStatusCode.NotFound => NotFound(result.Error.Details),
                     _ => StatusCode((int)HttpStatusCode.InternalServerError, result.Error.Details)
                 };
             }

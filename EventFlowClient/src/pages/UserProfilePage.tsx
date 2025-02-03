@@ -8,7 +8,7 @@ import ProfilePhoto from "../components/profile/ProfilePhoto";
 import ChangePhotoDialog from "../components/profile/ChangePhotoDialog";
 import TabButton from "../components/buttons/TabButton";
 
-const UserProfile = () => {
+const UserProfilePage = () => {
   const { data: info, get: getInfo } = useApi<User>(ApiEndpoint.UserInfo);
   const changePhotoDialog = useRef<HTMLDialogElement>(null);
   const [cacheBuster, setCacheBuster] = useState(Date.now());
@@ -64,4 +64,4 @@ const UserProfile = () => {
     ""
   );
 };
-export default UserProfile;
+export default UserProfilePage;

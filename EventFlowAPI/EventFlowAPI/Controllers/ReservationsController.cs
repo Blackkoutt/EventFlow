@@ -137,9 +137,31 @@ namespace EventFlowAPI.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        public async Task<IActionResult> CreateReservation([FromBody] ReservationRequestDto reservationReqestDto)
+        public async Task<IActionResult> CreateReservation([FromBody] ReservationRequestDto? reservationReqestDto)
         {
             var result = await _reservationService.MakeReservation(reservationReqestDto);
+            if (!result.IsSuccessful)
+            {
+                return result.Error.Details!.Code switch
+                {
+                    HttpStatusCode.BadRequest => BadRequest(result.Error.Details),
+                    HttpStatusCode.Unauthorized => Unauthorized(result.Error.Details),
+                    HttpStatusCode.Forbidden => StatusCode((int)HttpStatusCode.Forbidden, result.Error.Details),
+                    _ => StatusCode((int)HttpStatusCode.InternalServerError, result.Error.Details)
+                };
+            }
+            return Ok(result.Value);
+        }
+
+        [Authorize]
+        [HttpPost("create-reservation-transaction")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        public async Task<IActionResult> CreateReservationTransaction([FromBody] ReservationRequestDto reservationReqestDto)
+        {
+            var result = await _reservationService.CreateReservationPayment(reservationReqestDto);
             if (!result.IsSuccessful)
             {
                 return result.Error.Details!.Code switch

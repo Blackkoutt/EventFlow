@@ -1,6 +1,6 @@
 import unauthorized from "../assets/unauthorized.png";
 
-const AccessDenied = () => {
+const AccessDeniedPage = () => {
   return (
     <div className="flex flex-row justify-center items-center gap-14 py-16 max-w-[1250px]">
       <img
@@ -28,4 +28,4 @@ const AccessDenied = () => {
     </div>
   );
 };
-export default AccessDenied;
+export default AccessDeniedPage;

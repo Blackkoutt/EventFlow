@@ -1,16 +1,11 @@
 import { useParams } from "react-router-dom";
-import { EventEntity, News } from "../models/response_models";
+import { News } from "../models/response_models";
 import useApi from "../hooks/useApi";
 import { ApiEndpoint } from "../helpers/enums/ApiEndpointEnum";
 import { useEffect, useState } from "react";
 import ApiClient from "../services/api/ApiClientService";
-import DateFormatter from "../helpers/DateFormatter";
-import { DateFormat } from "../helpers/enums/DateFormatEnum";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faLocationDot, faTicket } from "@fortawesome/free-solid-svg-icons";
-import Button, { ButtonStyle } from "../components/buttons/Button";
 
-const ConcreteNews = () => {
+const ConcreteNewsPage = () => {
   const { data: items, get: getItems } = useApi<News>(ApiEndpoint.News);
   const [news, setNews] = useState<News>();
 
@@ -28,7 +23,7 @@ const ConcreteNews = () => {
 
   return (
     news && (
-      <div className="flex flex-col w-[80%] justify-start items-start my-10 pb-6 rounded-md shadow-xl">
+      <div className="flex flex-col w-[80%] justify-start items-start my-10 pb-6 rounded-md shadow-xl overflow-hidden">
         <img
           className="object-cover w-full min-h-[400px] max-h-[400px]"
           src={ApiClient.GetPhotoEndpoint(news.photoEndpoint)}
@@ -55,4 +50,4 @@ const ConcreteNews = () => {
     )
   );
 };
-export default ConcreteNews;
+export default ConcreteNewsPage;

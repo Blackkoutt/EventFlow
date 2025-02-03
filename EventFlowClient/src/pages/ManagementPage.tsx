@@ -9,7 +9,7 @@ type TabButtonProps = {
   path: string;
 };
 
-const Management = () => {
+const ManagementPage = () => {
   const [tabButtons] = useState<TabButtonProps[]>([
     { width: 200, text: "Strona główna", path: "/management" },
     { width: 200, text: "Dodatkowe usługi", path: "/management/additional-services" },
@@ -87,4 +87,4 @@ const Management = () => {
     </div>
   );
 };
-export default Management;
+export default ManagementPage;

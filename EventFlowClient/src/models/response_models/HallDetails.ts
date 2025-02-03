@@ -5,6 +5,8 @@ export type HallDetails = IModel & {
   totalWidth: number;
   totalArea: number;
   stageArea?: number;
+  stageWidth?: number;
+  stageLength?: number;
   maxNumberOfSeatsRows: number;
   maxNumberOfSeatsColumns: number;
   numberOfSeats: number;

@@ -1,4 +1,5 @@
-﻿using EventFlowAPI.Logic.Errors;
+﻿using EventFlowAPI.Logic.DTO.RequestDto;
+using EventFlowAPI.Logic.Errors;
 using EventFlowAPI.Logic.Helpers.Enums;
 using EventFlowAPI.Logic.Helpers.PayU;
 using EventFlowAPI.Logic.ResultObject;
@@ -16,6 +17,23 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
         private readonly IConfiguration _configuration = configuration;
         private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
 
+        public async Task<Result<TRequestDto>> CheckNewTransactionStatus<TRequestDto>(string key) where TRequestDto : class
+        {
+            var rentRequestString = _httpContextAccessor.HttpContext!.Session.GetString(key);
+            if (rentRequestString == null)
+                return Result<TRequestDto>.Failure(Error.SessionError);
+            else
+                _httpContextAccessor.HttpContext!.Session.Remove(key);
+
+            var isTransactionCompleteResult = await CheckTransactionStatus();
+            if (!isTransactionCompleteResult.IsSuccessful)
+                return Result<TRequestDto>.Failure(isTransactionCompleteResult.Error);
+
+            var requestDto = JsonSerializer.Deserialize<TRequestDto>(rentRequestString);
+            if (requestDto == null) return Result<TRequestDto>.Failure(Error.SerializationError);
+
+            return Result<TRequestDto>.Success(requestDto);
+        }
 
         public async Task<Result<object>> CheckTransactionStatus()
         {

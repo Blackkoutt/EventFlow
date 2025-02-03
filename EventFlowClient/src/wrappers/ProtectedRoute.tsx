@@ -1,7 +1,7 @@
 import { PropsWithChildren } from "react";
 import { useAuth } from "../context/AuthContext";
-import { Roles } from "../helpers/enums/UserRoleEnum";
-import AccessDenied from "../pages/AccessDenied";
+import AccessDenied from "../pages/AccessDeniedPage";
+import AccessDeniedPage from "../pages/AccessDeniedPage";
 
 type ProtectedRouteProps = PropsWithChildren & {
   allowedRoles?: string[];
@@ -18,7 +18,7 @@ const ProtectedRoute = ({ allowedRoles, children }: ProtectedRouteProps) => {
       Array.isArray(currentUser.userRoles) &&
       !currentUser.userRoles.some((role) => allowedRoles.includes(role)))
   ) {
-    return <AccessDenied />;
+    return <AccessDeniedPage />;
   }
   if (
     currentUser === null ||
@@ -26,7 +26,7 @@ const ProtectedRoute = ({ allowedRoles, children }: ProtectedRouteProps) => {
       !Array.isArray(currentUser.userRoles) &&
       !allowedRoles.includes(currentUser.userRoles))
   ) {
-    return <AccessDenied />;
+    return <AccessDeniedPage />;
   }
 
   return children;

@@ -37,7 +37,7 @@ const FestivalPage = () => {
 
   return (
     festival && (
-      <div className="flex flex-row w-[80%] justify-start items-start my-10 rounded-md shadow-xl">
+      <div className="flex flex-row w-[80%] justify-start items-start my-10 rounded-md shadow-xl overflow-hidden">
         <img
           className="object-cover min-w-[42%] max-w-[42%] min-h-[550px]"
           src={ApiClient.GetPhotoEndpoint(festival.photoEndpoint)}

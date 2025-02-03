@@ -37,7 +37,7 @@ const EventPage = () => {
 
   return (
     eventEntity && (
-      <div className="flex flex-col w-[80%] justify-start items-start my-10 pb-6 rounded-md shadow-xl">
+      <div className="flex flex-col w-[80%] justify-start items-start my-10 pb-6 rounded-md shadow-xl overflow-hidden">
         <div className="relative w-full">
           <img
             className="object-cover w-full max-h-[300px] shadow-md"

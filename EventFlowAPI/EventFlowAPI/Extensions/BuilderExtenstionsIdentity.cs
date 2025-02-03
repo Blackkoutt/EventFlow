@@ -39,13 +39,7 @@ namespace EventFlowAPI.Extensions
                 {
                     OnMessageReceived = context =>
                     {
-                       /* foreach (var header in context.Request.Headers)
-                        {
-                            Console.WriteLine($"{header.Key}: {header.Value}");
-                        }*/
-
                         var token = context.Request.Cookies["EventFlowJWTCookie"];
-                       // Log.Information($"Token {token}");
                         if (!string.IsNullOrEmpty(token))
                         {
                             context.Token = token;

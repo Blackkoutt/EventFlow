@@ -23,6 +23,7 @@ export const getUserFormCookie = () => {
   const token = Cookies.get(jwtTokenCookieName);
   if (token === undefined) return null;
   const decodedToken = jwtDecode(token) as User;
+  console.log(decodedToken);
   const user: User = {
     id: decodedToken.id,
     name: decodedToken.name,

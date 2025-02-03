@@ -5,7 +5,7 @@ import { FAQ } from "../models/response_models";
 import Accordion from "../components/common/Accordion";
 import SectionHeader from "../components/common/SectionHeader";
 
-const FAQs = () => {
+const FAQPage = () => {
   const { data: faqs, get: getFAQs } = useApi<FAQ>(ApiEndpoint.FAQ);
 
   useEffect(() => {
@@ -26,4 +26,4 @@ const FAQs = () => {
     </div>
   );
 };
-export default FAQs;
+export default FAQPage;

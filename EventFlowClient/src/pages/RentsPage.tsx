@@ -81,7 +81,7 @@ function RentsPage() {
       </div>
       <div className="py-6">
         {halls && (
-          <div className="grid 3xl:grid-cols-3 xl:grid-cols-3 3xl:gap-4 xl:gap-10">
+          <div className="grid 3xl:grid-cols-3 xl:grid-cols-2 3xl:gap-4 xl:gap-10">
             {halls.map((item) => (
               <HallCard key={item.id} item={item} />
             ))}

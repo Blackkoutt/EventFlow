@@ -35,6 +35,5 @@ namespace EventFlowAPI.Logic.Repositories.Repositories.BaseRepositories
 
         public void Delete(T entity) => _table.Remove(entity);
         public void Detach(T entity) => _context.Entry(entity).State = EntityState.Detached;
-
     }
 }

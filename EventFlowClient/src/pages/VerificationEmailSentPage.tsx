@@ -1,6 +1,6 @@
 import email from "../assets/email.png";
 
-const VerificationEmailSent = () => {
+const VerificationEmailSentPage = () => {
   return (
     <div className="flex flex-row justify-center items-center gap-14 py-16 max-w-[1250px]">
       <img
@@ -28,4 +28,4 @@ const VerificationEmailSent = () => {
     </div>
   );
 };
-export default VerificationEmailSent;
+export default VerificationEmailSentPage;

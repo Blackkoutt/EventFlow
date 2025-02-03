@@ -9,6 +9,7 @@ using EventFlowAPI.Logic.Errors;
 using EventFlowAPI.Logic.Extensions;
 using EventFlowAPI.Logic.Helpers;
 using EventFlowAPI.Logic.Helpers.Enums;
+using EventFlowAPI.Logic.Helpers.PayU;
 using EventFlowAPI.Logic.Identity.Helpers;
 using EventFlowAPI.Logic.Identity.Services.Interfaces;
 using EventFlowAPI.Logic.Mapper.Extensions;
@@ -18,9 +19,13 @@ using EventFlowAPI.Logic.ResultObject;
 using EventFlowAPI.Logic.Services.CRUDServices.Interfaces;
 using EventFlowAPI.Logic.Services.CRUDServices.Services.BaseServices;
 using EventFlowAPI.Logic.Services.OtherServices.Interfaces;
+using EventFlowAPI.Logic.Services.OtherServices.Services;
 using EventFlowAPI.Logic.UnitOfWork;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Server.HttpSys;
 using Serilog;
 using System.Linq;
+using System.Text.Json;
 
 namespace EventFlowAPI.Logic.Services.CRUDServices.Services
 {
@@ -29,7 +34,9 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
         ISeatService seatService,
         IAuthService authService,
         IFileService fileService,
-        IEmailSenderService emailSender
+        IEmailSenderService emailSender,
+        IPaymentService paymentService,
+        IHttpContextAccessor httpContextAccessor
         ) :
         GenericService<
             Reservation,
@@ -43,6 +50,8 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
         private readonly ISeatService _seatService = seatService;
         private readonly IFileService _fileService = fileService;
         private readonly IEmailSenderService _emailSender = emailSender;
+        private readonly IPaymentService _paymentService = paymentService;
+        private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
         private readonly ITicketRepository _ticketRepository = (ITicketRepository)unitOfWork.GetRepository<Ticket>();
 
         public sealed override async Task<Result<IEnumerable<ReservationResponseDto>>> GetAllAsync(ReservationQuery query)
@@ -95,9 +104,82 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             return Result<ReservationResponseDto>.Success(reservation);         
         }
 
-
-        public async Task<Result<IEnumerable<ReservationResponseDto>>> MakeReservation(ReservationRequestDto? requestDto)
+        public async Task<Result<PayUCreatePaymentResponseDto>> CreateReservationPayment(ReservationRequestDto? requestDto)
         {
+
+            var validationError = await ValidateEntity(requestDto, null);
+            if (validationError != Error.None)
+                return Result<PayUCreatePaymentResponseDto>.Failure(validationError);
+
+            var userResult = await _authService.GetCurrentUser();
+            if (!userResult.IsSuccessful)
+                return Result<PayUCreatePaymentResponseDto>.Failure(userResult.Error);
+            var user = userResult.Value;
+
+            var ticket = await ((ITicketRepository)_unitOfWork.GetRepository<Ticket>()).GetOneAsync(requestDto!.TicketId);
+            var seatsList = (await _seatService.GetSeatsByListOfIds(requestDto!.SeatsIds)).ToList();
+
+            decimal reservationPrice = 0;
+            if (requestDto!.IsReservationForFestival)
+            {
+                reservationPrice = ticket!.Price;
+            }
+            else
+            {
+                decimal totalAdditionalPayment = 0;
+                foreach (var seat in seatsList)
+                {
+                    var additionalPayment = ticket!.Price * (seat.SeatType.AddtionalPaymentPercentage / 100);
+                    totalAdditionalPayment += additionalPayment;
+                    reservationPrice += ticket.Price + additionalPayment;
+                }
+            }
+
+            var paymentRequest = new PayURequestPaymentDto
+            {
+                Description = $"Kupno biletu EventFlow",
+                ContinueUrl = "http://localhost:5173/rents?rent",
+                TotalAmount = (int)(reservationPrice * 100),
+                Products = new List<PayUProductDto>()
+                {
+                    new PayUProductDto
+                    {
+                        Name = $"Bilet EventFlow - {(requestDto.IsReservationForFestival ? ticket!.Festival!.Name : ticket!.Event.Name)}",
+                        Price = (int)(reservationPrice * 100),
+                        Quanitity = 1,
+                    }
+                },
+                Buyer = new PayUBuyerDto
+                {
+                    Email = user.EmailAddress,
+                    FirstName = user.Name,
+                    LastName = user.Surname,
+                }
+            };
+
+            var createPaymentResult = await _paymentService.CreatePayment(paymentRequest);
+            if (!createPaymentResult.IsSuccessful)
+                return Result<PayUCreatePaymentResponseDto>.Failure(createPaymentResult.Error);
+
+            var response = createPaymentResult.Value;
+            _httpContextAccessor.HttpContext!.Session.SetString("TransactionId", response.OrderId);
+            _httpContextAccessor.HttpContext!.Session.SetString("ReservationRequest", JsonSerializer.Serialize(requestDto));
+
+            return Result<PayUCreatePaymentResponseDto>.Success(response);
+        }
+
+        public async Task<Result<IEnumerable<ReservationResponseDto>>> MakeReservation(ReservationRequestDto? reservationRequestDto)
+        {
+            var requestDto = reservationRequestDto;
+            if (requestDto == null)
+            {
+                var transactionStatusResult = await _paymentService.CheckNewTransactionStatus<ReservationRequestDto>("ReservationRequest");
+                if (!transactionStatusResult.IsSuccessful)
+                    return Result<IEnumerable<ReservationResponseDto>>.Failure(transactionStatusResult.Error);
+
+                requestDto = transactionStatusResult.Value;
+            }
+
             // Validation
             var validationError = await ValidateEntity(requestDto);
             if (validationError != Error.None)

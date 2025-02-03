@@ -8,7 +8,7 @@ namespace EventFlowAPI.DB.Extensions
     {
         public static void Seed(this ModelBuilder modelBuilder)
         {
-            var today = new DateTime(2024, 12, 30);
+            var today = new DateTime(2025, 02, 02);
 
 
             // Seed Identity

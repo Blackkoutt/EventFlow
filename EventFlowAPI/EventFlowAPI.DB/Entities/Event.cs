@@ -17,6 +17,14 @@ namespace EventFlowAPI.DB.Entities
         public DateTime StartDate { get; set; } 
         public DateTime EndDate { get; set; }
         public long Duration { get; set; } 
+        public int CategoryId { get; set; } 
+        public int HallId { get; set; }
+        public EventCategory Category { get; set; } = default!;
+        public EventDetails? Details { get; set; }
+        public Hall Hall { get; set; } = default!;
+        public ICollection<Festival> Festivals { get; set; } = [];
+        public ICollection<Ticket> Tickets { get; set; } = [];
+
         [NotMapped]
         public bool IsExpired => EndDate < DateTime.Now;
         public bool IsDeleted { get; set; } = false;
@@ -25,13 +33,6 @@ namespace EventFlowAPI.DB.Entities
         public DateTime? UpdateDate { get; set; }
         public Guid EventGuid { get; set; }
         public string PhotoName { get; set; } = string.Empty;
-        public int CategoryId { get; set; } 
-        public int HallId { get; set; }
-        public EventCategory Category { get; set; } = default!;
-        public EventDetails? Details { get; set; }
-        public Hall Hall { get; set; } = default!;
-        public ICollection<Festival> Festivals { get; set; } = [];
-        public ICollection<Ticket> Tickets { get; set; } = [];
 
         [NotMapped]
         public TimeSpan DurationTimeSpan

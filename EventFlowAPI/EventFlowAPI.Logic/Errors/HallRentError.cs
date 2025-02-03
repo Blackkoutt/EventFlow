@@ -14,5 +14,6 @@ namespace EventFlowAPI.Logic.Errors
         public static readonly Error HallRentDoesNotExist = new(new BadRequestResponse("Such hall rent does not exist or was canceled some time before."));
         public static readonly Error TooMuchActiveHallRentsInMonth = new(new BadRequestResponse("User have too much active hall rents in this month."));
         public static readonly Error HallRentListIsEmpty = new(new BadRequestResponse("Can not found hall rents to update."));
+        public static readonly Error SessionError = new(new InternalServerErrorResponse("Błąd sesji użytkownika: Cannot found data for transaction and hall rent."));
     }
 }
