@@ -5,7 +5,7 @@ interface LabelTextProps {
   labelWidth?: number;
   textWidth?: number;
   gap?: number;
-  text?: string | number | null;
+  text?: string | number | Date | null;
   isTextLeft?: boolean;
   isLabelBold?: boolean;
   between?: boolean;
@@ -61,7 +61,7 @@ const LabelText = ({
         style={{ fontSize: `${fontSize}px`, minWidth: textWidth }}
         className={`text-textPrimary hover:cursor-default ${isTextBold ? "font-bold" : ""}`}
       >
-        {text != undefined || text != null ? text : "Brak danych"}
+        {text != undefined || text != null ? text.toString() : "Brak danych"}
       </p>
     </div>
   );

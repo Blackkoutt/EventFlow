@@ -1,6 +1,7 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { forwardRef, useRef } from "react";
+import { forwardRef, ReactNode, useEffect, useImperativeHandle, useRef, useState } from "react";
 import { faCircleXmark } from "@fortawesome/free-solid-svg-icons";
+import { Slide, ToastContainer } from "react-toastify";
 
 interface DialogProps {
   children?: React.ReactNode;
@@ -32,6 +33,7 @@ const Dialog = forwardRef<HTMLDialogElement, DialogProps>(
     ref
   ) => {
     const dialogRef = useRef<HTMLDialogElement | null>(null);
+
     return (
       <dialog
         ref={(node) => {
@@ -44,7 +46,7 @@ const Dialog = forwardRef<HTMLDialogElement, DialogProps>(
         }}
         style={{
           minHeight: minHeight,
-          maxHeight: maxHeight,
+          zIndex: 99,
           minWidth: minWidth,
           paddingLeft: paddingLeft,
           paddingRight: paddingRight,
@@ -53,7 +55,7 @@ const Dialog = forwardRef<HTMLDialogElement, DialogProps>(
           position: "absolute",
           top: top ? window.scrollY + top : undefined,
         }}
-        className="rounded-xl py-7 relative overflow-visible"
+        className="rounded-xl py-7 relative overflow-visible max-h-none"
       >
         <FontAwesomeIcon
           icon={faCircleXmark}

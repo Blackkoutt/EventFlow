@@ -5,6 +5,7 @@ namespace EventFlowAPI.Logic.Query
 {
     public class HallRentQuery : QueryObject, IDateableQuery
     {
+        public bool? GetAll { get; set; } = false;
         public Status? Status { get; set; }
         public DateTime? FromDate { get; set; }
         public DateTime? ToDate { get; set; }

@@ -1,8 +1,8 @@
 import { useParams } from "react-router-dom";
 import useApi from "../hooks/useApi";
 import { ApiEndpoint } from "../helpers/enums/ApiEndpointEnum";
-import { AdditionalServices, Hall } from "../models/response_models";
-import { useEffect, useState } from "react";
+import { AdditionalServices, Hall, HallRent } from "../models/response_models";
+import { useEffect, useRef, useState } from "react";
 import ApiClient from "../services/api/ApiClientService";
 import Button, { ButtonStyle } from "../components/buttons/Button";
 import {
@@ -20,6 +20,10 @@ import {
 import HallInfoElement from "../components/hallrentspage/HallInfoElement";
 import HallInfoSectionHeader from "../components/hallrentspage/HallInfoSectionHeader";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { toast } from "react-toastify";
+import RentHallDialog from "../components/hallrentspage/RentHallDialog";
+import { useAuth } from "../context/AuthContext";
+import { HTTPStatusCode } from "../helpers/enums/HTTPStatusCode";
 
 const RentPage = () => {
   const { hallId } = useParams();
@@ -28,8 +32,51 @@ const RentPage = () => {
   const { data: services, get: getServices } = useApi<AdditionalServices>(
     ApiEndpoint.AdditionalServices
   );
+  const { post: rentHallRequest, statusCode: rentStatusCode } = useApi<HallRent>(
+    ApiEndpoint.HallRent
+  );
 
   const [hall, setHall] = useState<Hall>();
+  //const [hallToRent, setHallToRent] = useState<HallRent | undefined>(undefined);
+
+  const rentHallDialog = useRef<HTMLDialogElement>(null);
+  const hasRentRef = useRef(false);
+  const hasRentErrorRef = useRef(false);
+
+  useEffect(() => {
+    if (rentStatusCode == HTTPStatusCode.Created) {
+      toast.success("Rezerwacja sali została dokonana pomyślnie");
+    } else if (rentStatusCode != null) {
+      toast.error("Wystąpił błąd podczas rezerwacji sali");
+    }
+  }, [rentStatusCode]);
+
+  useEffect(() => {
+    const rentHall = async () => {
+      const queryParams = new URLSearchParams(window.location.search);
+      console.log("Error", queryParams.has("error"));
+      console.log("Rent", queryParams.has("rent"));
+      if (queryParams.has("error") && !hasRentErrorRef.current) {
+        hasRentErrorRef.current = true;
+        toast.error("Transakcja została anulowana");
+        const url = new URL(window.location.toString());
+        url.searchParams.delete("error");
+        url.searchParams.delete("rent");
+        window.history.replaceState({}, "", url.toString());
+      } else if (queryParams.has("rent") && !hasRentRef.current && !hasRentErrorRef.current) {
+        hasRentRef.current = true;
+        await toast.promise(rentHallRequest({ id: undefined, body: undefined }), {
+          pending: "Wysyłanie żądania rezerwacji sali",
+          success: "Sala została zarezerowana pomyślnie",
+          error: "Wystąpił błąd podczas rezerwacji sali",
+        });
+        const url = new URL(window.location.toString());
+        url.searchParams.delete("rent");
+        window.history.replaceState({}, "", url.toString());
+      }
+    };
+    rentHall();
+  }, []);
 
   useEffect(() => {
     getHalls({ id: hallId, queryParams: undefined });
@@ -40,11 +87,15 @@ const RentPage = () => {
     if (halls && halls.length > 0) setHall(halls[0]);
   }, [halls]);
 
-  console.log(hall);
-
   return (
     hall && (
       <div className="flex flex-col w-[70%] justify-start items-start my-10 pb-6 rounded-md shadow-xl overflow-hidden">
+        <RentHallDialog
+          ref={rentHallDialog}
+          hall={hall}
+          onDialogClose={() => rentHallDialog.current?.close()}
+          onDialogConfirm={() => rentHallDialog.current?.close()}
+        />
         <img
           className="object-cover w-full max-h-[300px] shadow-md"
           src={ApiClient.GetPhotoEndpoint(hall.type?.photoEndpoint)}
@@ -82,7 +133,9 @@ const RentPage = () => {
                     fontSize={17}
                     isFontSemibold={true}
                     style={ButtonStyle.Primary}
-                    action={() => {}}
+                    action={() => {
+                      rentHallDialog.current?.showModal();
+                    }}
                   />
                 </div>
               </div>

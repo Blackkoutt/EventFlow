@@ -156,7 +156,7 @@ const DatePicker = React.forwardRef<HTMLInputElement, DatePickerProps>(
             />
             {isOpen && (
               <div
-                className="absolute top-[101.2%] left-0 bg-white p-3 drop-shadow-xl z-10 flex flex-row gap-8"
+                className="absolute top-[102%] -left-12 bg-white p-3 drop-shadow-xl z-10 flex flex-row gap-8"
                 onBlur={() => setIsOpen(false)}
                 tabIndex={0}
               >

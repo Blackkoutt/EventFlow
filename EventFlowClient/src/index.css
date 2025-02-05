@@ -34,6 +34,14 @@
   width: 80%;
 }
 
+.toast {
+  z-index: 9999999 !important;
+}
+
+.sx-react-calendar-wrapper {
+  height: 500px;
+}
+
 body {
   display: flex;
   flex-direction: column;

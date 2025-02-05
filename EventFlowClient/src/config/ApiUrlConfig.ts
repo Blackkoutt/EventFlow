@@ -64,6 +64,9 @@ export const ApiUrlConfig = {
   [ApiEndpoint.HallRent]: {
     url: (id?: number | string) => `/hallrents${id ? `/${id}` : ""}`,
   },
+  [ApiEndpoint.HallRentCreateTransaction]: {
+    url: (id?: number | string) => `/hallrents/create-rent-transaction`,
+  },
   [ApiEndpoint.HallRentUpdateHall]: {
     url: (id?: number | string) => `/hallrents/${id}/hall`,
   },

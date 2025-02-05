@@ -25,7 +25,7 @@ namespace EventFlowAPI.Controllers
         private IHallService _hallService = hallService;
         private IFileService _fileService = fileService;
 
-        [Authorize]
+        //[Authorize]
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]

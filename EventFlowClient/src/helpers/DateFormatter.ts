@@ -78,7 +78,8 @@ const FormatDateForCalendar = (date: Date | string) => {
 };
 
 const FormatDate = (date: string | number | undefined | null, dateFormat: DateFormat): string => {
-  if (date === undefined || date === null) return "";
+  console.log(date);
+  if (date == undefined || date == null) return "";
   const dateObj = new Date(date);
   let formatter: Intl.DateTimeFormat;
 

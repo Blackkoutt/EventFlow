@@ -9,6 +9,7 @@ import { PrimeReactProvider } from "primereact/api";
 //import "primeicons/primeicons.css";
 import "primereact/resources/primereact.min.css";
 import "primereact/resources/themes/lara-light-blue/theme.css";
+import { Slide, ToastContainer } from "react-toastify";
 
 const originalWarn = console.warn;
 console.warn = (...args) => {
@@ -23,6 +24,21 @@ createRoot(document.getElementById("root")!).render(
     <PrimeReactProvider value={{ unstyled: false }}>
       <AuthProvider>
         <RouterProvider router={router} />
+        <ToastContainer
+          position="bottom-right"
+          autoClose={4000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          theme="colored"
+          transition={Slide}
+          limit={5}
+          style={{ zIndex: "9999 !important" }}
+        />
       </AuthProvider>
     </PrimeReactProvider>
   </StrictMode>

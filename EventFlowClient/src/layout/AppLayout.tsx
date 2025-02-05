@@ -59,20 +59,6 @@ function AppLayout() {
       </header>
       <main className="flex flex-col justify-center items-center">
         <Outlet />
-        <ToastContainer
-          position="bottom-right"
-          autoClose={4000}
-          hideProgressBar={false}
-          newestOnTop={false}
-          closeOnClick
-          rtl={false}
-          pauseOnFocusLoss
-          draggable
-          pauseOnHover
-          theme="colored"
-          transition={Slide}
-          limit={5}
-        />
       </main>
       <footer className="w-full border-t-4 border-black pt-6 pb-10 flex flex-col gap-8 items-start justify-start">
         <div className="flex flex-row justify-between items-center w-full pr-8">

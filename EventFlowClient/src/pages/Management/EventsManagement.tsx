@@ -7,11 +7,9 @@ import { createViewWeek, createViewMonthGrid } from "@schedule-x/calendar";
 import "@schedule-x/theme-default/dist/calendar.css";
 import { createEventsServicePlugin } from "@schedule-x/events-service";
 import DateFormatter from "../../helpers/DateFormatter";
-import { createDragAndDropPlugin } from "@schedule-x/drag-and-drop";
 import Button, { ButtonStyle } from "../../components/buttons/Button";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import CreateEventDialog from "../../components/management/events/CreateEventDialog";
-import { useTable } from "../../hooks/useTable";
 import { useDialogs } from "../../hooks/useDialogs";
 import EventClickDialog from "../../components/management/events/EventClickDialog";
 
@@ -19,6 +17,7 @@ const EventsManagement = () => {
   const { data: items, get: getItems } = useApi<EventEntity>(ApiEndpoint.Event);
 
   const [events, setEvents] = useState<EventEntity[]>([]);
+
   useEffect(() => {
     getItems({ id: undefined, queryParams: undefined });
   }, []);
@@ -36,7 +35,7 @@ const EventsManagement = () => {
         //console.log("onEventClick", calendarEvent as EventEntity);
       },
     },
-    plugins: [createEventsServicePlugin(), createDragAndDropPlugin()],
+    plugins: [createEventsServicePlugin()],
     locale: "pl-PL",
   });
 

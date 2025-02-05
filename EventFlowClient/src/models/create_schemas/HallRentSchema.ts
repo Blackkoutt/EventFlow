@@ -3,20 +3,21 @@ import DateFormatter from "../../helpers/DateFormatter";
 
 export const HallRentSchema = z
   .object({
-    hallId: z.preprocess(
-      (value) => {
-        if (value === "" || value === null || value === undefined) {
-          return NaN;
-        }
-        return Number(value);
-      },
-      z
-        .number({
-          required_error: "Sala jest wymagana",
-          invalid_type_error: "Sala jest wymagana",
-        })
-        .refine((val) => val >= 1 && val < Number.MAX_VALUE, "Id sali musi być większe od 0.")
-    ),
+    // hallId: z.preprocess(
+    //   (value) => {
+    //     if (value === "" || value === null || value === undefined) {
+    //       return NaN;
+    //     }
+    //     return Number(value);
+    //   },
+    //   z
+    //     .number({
+    //       required_error: "Sala jest wymagana",
+    //       invalid_type_error: "Sala jest wymagana",
+    //     })
+    //     .refine((val) => val >= 1 && val < Number.MAX_VALUE, "Id sali musi być większe od 0.")
+    // ),
+    hallId: z.number().optional(),
 
     additionalServicesIds: z.array(
       z.number({
@@ -31,7 +32,7 @@ export const HallRentSchema = z
         (date) => {
           return date >= new Date();
         },
-        { message: `Data początkowa nie może być wcześniejsza niż obcena data` }
+        { message: `Data początkowa jest wcześniejsza niż obcena data` }
       ),
     endDate: z
       .preprocess((input) => DateFormatter.ParseDate(input as string), z.date())
@@ -39,7 +40,7 @@ export const HallRentSchema = z
         (date) => {
           return date >= new Date();
         },
-        { message: `Data końcowa nie może być wcześniejsza niż obcena data` }
+        { message: `Data końcowa jest wcześniejsza niż obcena data` }
       ),
   })
   .refine(

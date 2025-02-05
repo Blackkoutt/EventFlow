@@ -10,6 +10,7 @@ export interface MultiSelectProps extends React.SelectHTMLAttributes<HTMLSelectE
   errorHeight?: number;
   isIcons?: boolean;
   maxHeight?: number;
+  maxSelectedItemsHeight?: number;
   optionValues: SelectOption[];
   selectedOptions?: SelectOption[];
   error:
@@ -24,6 +25,7 @@ const MultiSelect = ({
   error,
   isIcons = false,
   name,
+  maxSelectedItemsHeight = 100,
   errorHeight,
   maxHeight = 250,
   optionValues,
@@ -104,8 +106,8 @@ const MultiSelect = ({
 
           {/* Selected Items */}
           <div
-            style={{ width: "calc(100% - 35px)" }}
-            className="flex flex-wrap gap-2 mt-[14px] w-[100%] min-h-[28px] max-h-[100px] overflow-y-auto"
+            style={{ width: "calc(100% - 35px)", maxHeight: maxSelectedItemsHeight }}
+            className="flex flex-wrap gap-2 mt-[14px] w-[100%] min-h-[28px] overflow-y-scroll"
           >
             {selectedValues.map((option) => (
               <div

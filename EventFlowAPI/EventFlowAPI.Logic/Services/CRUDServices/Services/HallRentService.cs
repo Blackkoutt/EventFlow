@@ -19,6 +19,7 @@ using EventFlowAPI.Logic.Helpers.PayU;
 using EventFlowAPI.Logic.Services.OtherServices.Services;
 using Microsoft.AspNetCore.Http;
 using System.Text.Json;
+using Serilog;
 
 namespace EventFlowAPI.Logic.Services.CRUDServices.Services
 {
@@ -49,12 +50,16 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
 
         public sealed override async Task<Result<IEnumerable<HallRentResponseDto>>> GetAllAsync(HallRentQuery query)
         {
-            var userResult = await _authService.GetCurrentUser();
-            if (!userResult.IsSuccessful)
-                return Result<IEnumerable<HallRentResponseDto>>.Failure(userResult.Error);
+            UserResponseDto? user = default!;
+            if(query.GetAll != true)
+            {
+                var userResult = await _authService.GetCurrentUser();
+                if (!userResult.IsSuccessful)
+                    return Result<IEnumerable<HallRentResponseDto>>.Failure(userResult.Error);
+                user = userResult.Value;
+            }     
 
-            var user = userResult.Value;
-            if (user.IsInRole(Roles.Admin))
+            if (query.GetAll == true || user.IsInRole(Roles.Admin))
             {
                 var allHallRents = await _repository.GetAllAsync(q => q.ByQuery(query)
                                                                        .GetPage(query.PageNumber, query.PageSize));
@@ -118,6 +123,9 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
 
         public async Task<Result<PayUCreatePaymentResponseDto>> CreateRentPayment(HallRentRequestDto? requestDto)
         {
+            // Logowanie requestDto
+            Log.Information("Received HallRentRequestDto: {@RequestDto}", requestDto);
+
             var validationError = await ValidateEntity(requestDto, null);
             if (validationError != Error.None)
                 return Result<PayUCreatePaymentResponseDto>.Failure(validationError);
@@ -135,7 +143,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             var paymentRequest = new PayURequestPaymentDto
             {
                 Description = $"Rezerwacja sali nr {hall!.HallNr} EventFlow",
-                ContinueUrl = "http://localhost:5173/rents?rent",
+                ContinueUrl = $"http://localhost:5173/rents/{requestDto.HallId}?rent",
                 TotalAmount = (int)(rentPrice * 100),
                 Products = new List<PayUProductDto>()
                 {
