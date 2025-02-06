@@ -5,6 +5,6 @@ namespace EventFlowAPI.Logic.Errors
 {
     public sealed record OrganizerError(HttpResponse? Details = null)
     {
-        public static readonly Error OrganizerNotFound = new(new BadRequestResponse("Organizer with given Id does not exist in database."));
+        public static readonly Error OrganizerNotFound = new(new BadRequestResponse("Organizator o podanym ID nie istnieje w bazie danych."));
     }
 }

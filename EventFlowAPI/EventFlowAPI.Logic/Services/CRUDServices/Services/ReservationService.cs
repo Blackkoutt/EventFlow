@@ -56,12 +56,17 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
 
         public sealed override async Task<Result<IEnumerable<ReservationResponseDto>>> GetAllAsync(ReservationQuery query)
         {
-            var userResult = await _authService.GetCurrentUser();
-            if (!userResult.IsSuccessful)
-                return Result<IEnumerable<ReservationResponseDto>>.Failure(userResult.Error);
+            UserResponseDto? user = default!;
+            if (query.GetAll != true)
+            {
+                var userResult = await _authService.GetCurrentUser();
+                if (!userResult.IsSuccessful)
+                    return Result<IEnumerable<ReservationResponseDto>>.Failure(userResult.Error);
+                user = userResult.Value;
+            }
 
-            var user = userResult.Value;
-            if (user.IsInRole(Roles.Admin))
+
+            if (query.GetAll == true || user.IsInRole(Roles.Admin))
             {
                 var allReservations = await _repository.GetAllAsync(q =>
                                                 q.ByQuery(query)
@@ -135,10 +140,15 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
                 }
             }
 
+            
+            string continuteUrl = string.Empty;
+            if (requestDto.IsReservationForFestival) continuteUrl = $"http://localhost:5173/festivals/{ticket!.FestivalId}?reservation";
+            else continuteUrl = $"http://localhost:5173/events/{ticket!.EventId}?reservation";
+
             var paymentRequest = new PayURequestPaymentDto
             {
                 Description = $"Kupno biletu EventFlow",
-                ContinueUrl = "http://localhost:5173/rents?rent",
+                ContinueUrl = continuteUrl,
                 TotalAmount = (int)(reservationPrice * 100),
                 Products = new List<PayUProductDto>()
                 {

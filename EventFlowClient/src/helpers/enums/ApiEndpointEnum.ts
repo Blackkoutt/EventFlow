@@ -33,6 +33,7 @@ export enum ApiEndpoint {
   Partner,
   PaymentType,
   Reservation,
+  ReservationCreateTransaction,
   ReservationZIPTickets,
   ReservationPDFTicket,
   SeatType,

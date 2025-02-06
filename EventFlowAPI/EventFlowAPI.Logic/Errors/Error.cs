@@ -6,16 +6,16 @@ namespace EventFlowAPI.Logic.Errors
     public sealed record Error(HttpResponse? Details = null)
     {
         public static readonly Error None = new();
-        public static readonly Error NullParameter = new(new BadRequestResponse("Request body param is null."));
-        public static readonly Error RouteParamOutOfRange = new(new BadRequestResponse("Route param is out of range."));
-        public static readonly Error QueryParamOutOfRange = new(new BadRequestResponse("Query param is out of range."));
-        public static readonly Error NotFound = new(new NotFoundResponse("Entity with given Id does not exist in database."));
-        public static readonly Error SuchEntityExistInDb = new(new ConflictResponse("Entity with given name already exist in database."));
-        public static readonly Error EntityIsExpired = new(new BadRequestResponse("Can not perform action beacuse entity is expired."));
-        public static readonly Error EntityIsDeleted = new(new BadRequestResponse("Can not perform action beacuse entity was canceled some time before."));
-        public static readonly Error BadRequestType = new(new BadRequestResponse("Bad request type."));
-        public static readonly Error BadPhotoFileExtension = new(new BadRequestResponse("Bad file extension. Try upload jpeg or png file."));
-        public static readonly Error SerializationError = new(new InternalServerErrorResponse("Błąd serializacji"));
-        public static readonly Error SessionError = new(new InternalServerErrorResponse("Błąd sesji użytkownika: Cannot found data for transaction."));
+        public static readonly Error NullParameter = new(new BadRequestResponse("Parametr w ciele żądania jest null."));
+        public static readonly Error RouteParamOutOfRange = new(new BadRequestResponse("Parametr w ścieżce jest poza zakresem."));
+        public static readonly Error QueryParamOutOfRange = new(new BadRequestResponse("Parametr zapytania jest poza zakresem."));
+        public static readonly Error NotFound = new(new NotFoundResponse("Encja o podanym ID nie istnieje w bazie danych."));
+        public static readonly Error SuchEntityExistInDb = new(new ConflictResponse("Encja o podanej nazwie już istnieje w bazie danych."));
+        public static readonly Error EntityIsExpired = new(new BadRequestResponse("Nie można wykonać operacji, ponieważ encja wygasła."));
+        public static readonly Error EntityIsDeleted = new(new BadRequestResponse("Nie można wykonać operacji, ponieważ encja została usunięta wcześniej."));
+        public static readonly Error BadRequestType = new(new BadRequestResponse("Niepoprawny typ żądania."));
+        public static readonly Error BadPhotoFileExtension = new(new BadRequestResponse("Niepoprawne rozszerzenie pliku. Spróbuj przesłać plik w formacie jpeg lub png."));
+        public static readonly Error SerializationError = new(new InternalServerErrorResponse("Błąd serializacji."));
+        public static readonly Error SessionError = new(new InternalServerErrorResponse("Błąd sesji użytkownika: Nie można znaleźć danych dla transakcji."));s
     }
 }

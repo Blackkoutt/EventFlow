@@ -68,6 +68,7 @@ namespace EventFlowAPI.DB.Extensions.SeedingExtensions
                     FestivalId = 2,
                     TicketTypeId = 2
                 }
+                               
             );
         }
     }

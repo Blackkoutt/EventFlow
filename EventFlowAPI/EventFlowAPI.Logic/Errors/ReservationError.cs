@@ -5,12 +5,12 @@ namespace EventFlowAPI.Logic.Errors
 {
     public sealed record ReservationError(HttpResponse? Details = null)
     {
-        public static readonly Error ReservationListIsEmpty = new(new BadRequestResponse("Could not print ticket because of empty reservation list."));
-        public static readonly Error ReservationDoesNotExist = new(new BadRequestResponse("Such reservaion does not exist or was canceled some time before."));
-        public static readonly Error ReservationIsExpired = new(new BadRequestResponse("Can not cancel reservation that has been expired."));
-        public static readonly Error EventIsOutOfDate = new(new BadRequestResponse("Can not make reservation for out of date event."));
-        public static readonly Error CannotMakeReservationForFestivalOnEventTicket = new(new BadRequestResponse("Can not make reservation for festival because ticket for event was chosen."));
-        public static readonly Error CannotMakeReservationForSameEventByEventPass = new(new BadRequestResponse("Can not make reservation because only one reservation per event made by event pass is allowed."));
-        public static readonly Error ReservationIsDeleted = new(new BadRequestResponse("Reservation is canceled."));
+        public static readonly Error ReservationListIsEmpty = new(new BadRequestResponse("Nie można wydrukować biletu z powodu pustej listy rezerwacji."));
+        public static readonly Error ReservationDoesNotExist = new(new BadRequestResponse("Taka rezerwacja nie istnieje lub została anulowana wcześniej."));
+        public static readonly Error ReservationIsExpired = new(new BadRequestResponse("Nie można anulować rezerwacji, która wygasła."));
+        public static readonly Error EventIsOutOfDate = new(new BadRequestResponse("Nie można dokonać rezerwacji na wydarzenie, które już się odbyło."));
+        public static readonly Error CannotMakeReservationForFestivalOnEventTicket = new(new BadRequestResponse("Nie można dokonać rezerwacji na festiwal, ponieważ wybrano bilet na wydarzenie."));
+        public static readonly Error CannotMakeReservationForSameEventByEventPass = new(new BadRequestResponse("Nie można dokonać rezerwacji, ponieważ możliwa jest jedna rezerwacja na karnet."));
+        public static readonly Error ReservationIsDeleted = new(new BadRequestResponse("Rezerwacja została anulowana."));
     }
 }

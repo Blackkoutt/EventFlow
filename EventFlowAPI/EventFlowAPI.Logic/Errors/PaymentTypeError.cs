@@ -5,6 +5,6 @@ namespace EventFlowAPI.Logic.Errors
 {
     public sealed record PaymentTypeError(HttpResponse? Details = null)
     {
-        public static readonly Error PaymentTypeNotFound = new(new BadRequestResponse("Payment type with given Id does not exist in database."));
+        public static readonly Error PaymentTypeNotFound = new(new BadRequestResponse("Typ płatności o podanym ID nie istnieje w bazie danych."));
     }
 }

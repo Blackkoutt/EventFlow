@@ -32,15 +32,8 @@ export const ReservationSchema = z.object({
         "Id biletu musi być mniejsze od MAX_VALUE."
       )
   ),
-  isReservationForFestival: z.boolean(),
-  seatsIds: z
-    .array(
-      z.number({
-        required_error: "Miejsca są wymagane",
-        invalid_type_error: "Niepoprawny typ wartości",
-      })
-    )
-    .refine((arr) => arr.length > 0, "Lista miejsc nie może być pusta"),
+  isReservationForFestival: z.boolean().optional(),
+  seatsIds: z.array(z.number()).optional(),
 });
 
 export type ReservationRequest = z.infer<typeof ReservationSchema>;

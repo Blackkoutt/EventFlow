@@ -103,6 +103,9 @@ export const ApiUrlConfig = {
   [ApiEndpoint.Reservation]: {
     url: (id?: number | string) => `/reservations${id ? `/${id}` : ""}`,
   },
+  [ApiEndpoint.ReservationCreateTransaction]: {
+    url: (id?: number | string) => `/reservations/create-reservation-transaction`,
+  },
   [ApiEndpoint.ReservationZIPTickets]: {
     url: (id?: number | string) => `/reservations/${id}/jpg-tickets`,
   },

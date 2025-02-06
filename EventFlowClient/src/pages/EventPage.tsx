@@ -1,19 +1,26 @@
 import { useParams } from "react-router-dom";
-import { EventEntity } from "../models/response_models";
+import { EventEntity, Reservation } from "../models/response_models";
 import useApi from "../hooks/useApi";
 import { ApiEndpoint } from "../helpers/enums/ApiEndpointEnum";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import ApiClient from "../services/api/ApiClientService";
 import DateFormatter from "../helpers/DateFormatter";
 import { DateFormat } from "../helpers/enums/DateFormatEnum";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faLocationDot, faTicket } from "@fortawesome/free-solid-svg-icons";
 import Button, { ButtonStyle } from "../components/buttons/Button";
+import EventReservationDialog from "../components/events/EventReservationDialog";
+import { toast } from "react-toastify";
+import { HTTPStatusCode } from "../helpers/enums/HTTPStatusCode";
 
 const EventPage = () => {
   const { data: items, get: getItems } = useApi<EventEntity>(ApiEndpoint.Event);
   const [eventEntity, setEventEntity] = useState<EventEntity>();
+  const { post: reservationRequest, statusCode: reservationStatusCode } = useApi<Reservation>(
+    ApiEndpoint.Reservation
+  );
 
+  const reservationDialog = useRef<HTMLDialogElement>(null);
   const { eventId } = useParams();
 
   useEffect(() => {
@@ -35,9 +42,57 @@ const EventPage = () => {
   };
   const [dayOfWeek, date, timeLabel, time] = FormatEventDate();
 
+  const hasReservationRef = useRef(false);
+  const hasReservationErrorRef = useRef(false);
+
+  useEffect(() => {
+    if (reservationStatusCode == HTTPStatusCode.Ok) {
+      toast.success("Bilet został zakupiony pomyślnie");
+    } else if (reservationStatusCode != null) {
+      toast.error("Wystąpił błąd podczas kupna biletu");
+    }
+  }, [reservationStatusCode]);
+
+  useEffect(() => {
+    const buyTicket = async () => {
+      const queryParams = new URLSearchParams(window.location.search);
+      console.log("Error", queryParams.has("error"));
+      console.log("Reservation", queryParams.has("reservation"));
+      if (queryParams.has("error") && !hasReservationErrorRef.current) {
+        hasReservationErrorRef.current = true;
+        toast.error("Transakcja została anulowana");
+        const url = new URL(window.location.toString());
+        url.searchParams.delete("error");
+        url.searchParams.delete("reservation");
+        window.history.replaceState({}, "", url.toString());
+      } else if (
+        queryParams.has("reservation") &&
+        !hasReservationRef.current &&
+        !hasReservationErrorRef.current
+      ) {
+        hasReservationRef.current = true;
+        await toast.promise(reservationRequest({ id: undefined, body: undefined }), {
+          pending: "Wysyłanie żądania kupna biletu",
+          success: "Bilet został zakupiony pomyślnie",
+          error: "Wystąpił błąd podczas kupna biletu",
+        });
+        const url = new URL(window.location.toString());
+        url.searchParams.delete("reservation");
+        window.history.replaceState({}, "", url.toString());
+      }
+    };
+    buyTicket();
+  }, []);
+
   return (
     eventEntity && (
       <div className="flex flex-col w-[80%] justify-start items-start my-10 pb-6 rounded-md shadow-xl overflow-hidden">
+        <EventReservationDialog
+          ref={reservationDialog}
+          eventEntity={eventEntity}
+          onDialogClose={() => reservationDialog.current?.close()}
+          onDialogConfirm={() => reservationDialog.current?.close()}
+        />
         <div className="relative w-full">
           <img
             className="object-cover w-full max-h-[300px] shadow-md"
@@ -108,7 +163,7 @@ const EventPage = () => {
                 fontSize={17}
                 isFontSemibold={true}
                 style={ButtonStyle.Default}
-                action={() => {}}
+                action={() => reservationDialog.current?.showModal()}
               />
             </div>
           </div>

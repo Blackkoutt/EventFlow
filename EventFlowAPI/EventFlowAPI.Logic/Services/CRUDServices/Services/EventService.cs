@@ -563,7 +563,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
                 responseDto.Tickets = entity.Tickets.Select(t =>
                 {
                     var ticket = t.AsDto<TicketResponseDto>();
-                    ticket.IsFestival = t.FestivalId.HasValue;
+                    ticket.IsFestival = t.FestivalId != null;
                     ticket.Event = null;
                     ticket.Festival = null;
                     ticket.TicketType = t.TicketType.AsDto<TicketTypeResponseDto>();
@@ -589,6 +589,7 @@ namespace EventFlowAPI.Logic.Services.CRUDServices.Services
             responseDto.Tickets = entity.Tickets.Select(t =>
             {
                 var ticket = t.AsDto<TicketResponseDto>();
+                ticket.IsFestival = t.FestivalId != null;
                 ticket.Event = null;
                 ticket.Festival = null;
                 ticket.TicketType = t.TicketType.AsDto<TicketTypeResponseDto>();

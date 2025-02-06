@@ -5,6 +5,6 @@ namespace EventFlowAPI.Logic.Errors
 {
     public sealed record TicketError(HttpResponse? Details = null)
     {
-        public static readonly Error TicketNotFound = new(new BadRequestResponse("Ticket with given Id does not exist in database."));
+        public static readonly Error TicketNotFound = new(new BadRequestResponse("Bilet o podanym ID nie istnieje w bazie danych."));
     }
 }

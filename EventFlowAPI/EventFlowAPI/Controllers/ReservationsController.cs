@@ -22,7 +22,7 @@ namespace EventFlowAPI.Controllers
         private readonly IFileService _fileService = fileService;
 
 
-        [Authorize]
+        //[Authorize]
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]

@@ -13,6 +13,7 @@ interface LabelTextProps {
   isTextBold?: boolean;
   px?: number;
   py?: number;
+  emptyMessage?: string;
 }
 
 const LabelText = ({
@@ -30,6 +31,7 @@ const LabelText = ({
   px,
   py,
   isTextBold = false,
+  emptyMessage = "Brak danych",
 }: LabelTextProps) => {
   return (
     <div
@@ -61,7 +63,7 @@ const LabelText = ({
         style={{ fontSize: `${fontSize}px`, minWidth: textWidth }}
         className={`text-textPrimary hover:cursor-default ${isTextBold ? "font-bold" : ""}`}
       >
-        {text != undefined || text != null ? text.toString() : "Brak danych"}
+        {text != undefined || text != null ? text.toString() : emptyMessage}
       </p>
     </div>
   );

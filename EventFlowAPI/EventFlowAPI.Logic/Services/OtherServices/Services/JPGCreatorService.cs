@@ -113,7 +113,7 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
             image.DrawText(eventEntity.Hall.HallNr.ToString(), hallOptions);
 
             var durationOptions = _eventTicketConfig.GetDurationPrintingOpitons(eventEntity);
-            image.DrawText($"{eventEntity.DurationTimeSpan.TotalMinutes} min", durationOptions);
+            image.DrawText($"{(eventEntity.EndDate - eventEntity.StartDate).TotalMinutes} min", durationOptions);
  
             var seatsOptions = _eventTicketConfig.GetSeatsPrintingOptions();
             image.DrawText(string.Join(", ", reservation.Seats.Select(s => s.SeatNr)), seatsOptions);

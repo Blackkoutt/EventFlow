@@ -5,6 +5,6 @@ namespace EventFlowAPI.Logic.Errors
 {
     public sealed record MediaPatronError(HttpResponse? Details = null)
     {
-        public static readonly Error MediaPatronNotFound = new(new BadRequestResponse("Media patron with given Id does not exist in database."));
+        public static readonly Error MediaPatronNotFound = new(new BadRequestResponse("Patron medialny o podanym ID nie istnieje w bazie danych."));
     }
 }

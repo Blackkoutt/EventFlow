@@ -5,6 +5,6 @@ namespace EventFlowAPI.Logic.Errors
 {
     public sealed record EventPassTypeError(HttpResponse? Details = null)
     {
-        public static readonly Error EventPassTypeNotFound = new(new BadRequestResponse("Event pass type with given Id does not exist in database."));
+        public static readonly Error EventPassTypeNotFound = new(new BadRequestResponse("Typ karnetu o podanym ID nie istnieje w bazie danych."));
     }
 }

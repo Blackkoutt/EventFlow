@@ -17,7 +17,6 @@ async function Get<TEntity>(
 ) {
   try {
     const url = ApiUrlConfig[endpoint].url(id);
-    console.log(id);
     const queryString = queryParams ? `?${new URLSearchParams(queryParams).toString()}` : "";
 
     let response;

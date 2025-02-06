@@ -5,7 +5,7 @@ namespace EventFlowAPI.Logic.Errors
 {
     public sealed record UserError(HttpResponse? Details = null)
     {
-        public static readonly Error UserNotFound = new(new BadRequestResponse("User with given Id does not exist in database."));
-        public static readonly Error UserEmailNotFound = new(new BadRequestResponse("Could not find user email in database."));
+        public static readonly Error UserNotFound = new(new BadRequestResponse("Użytkownik o podanym ID nie istnieje w bazie danych."));
+        public static readonly Error UserEmailNotFound = new(new BadRequestResponse("Nie można znaleźć adresu e-mail użytkownika w bazie danych."));
     }
 }
