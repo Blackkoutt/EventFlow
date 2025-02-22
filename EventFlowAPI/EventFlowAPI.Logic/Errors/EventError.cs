@@ -15,7 +15,7 @@ namespace EventFlowAPI.Logic.Errors
         public static readonly Error EventIsDeleted = new(new BadRequestResponse("Nie można wykonać operacji, ponieważ wydarzenie zostało anulowane."));
         public static readonly Error EventIsExpired = new(new BadRequestResponse("Nie można wykonać operacji, ponieważ wydarzenie wygasło."));
         public static readonly Error EventCanNotHaveManySameTicketTypes = new(new BadRequestResponse("Wydarzenie może mieć tylko jeden bilet danego typu."));
-        public static readonly Error EventIsPartOfTooMuchFestivals = new(new BadRequestResponse("Wydarzenie może być częścią maksymalnie 3 festiwali."));;
+        public static readonly Error EventIsPartOfTooMuchFestivals = new(new BadRequestResponse("Wydarzenie może być częścią maksymalnie 3 festiwali."));
     }
 }
 

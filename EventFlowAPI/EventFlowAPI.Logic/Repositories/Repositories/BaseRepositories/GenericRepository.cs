@@ -5,17 +5,17 @@ using Microsoft.EntityFrameworkCore;
 
 namespace EventFlowAPI.Logic.Repositories.Repositories.BaseRepositories
 {
-    public abstract class GenericRepository<T> : IGenericRepository<T> where T : class
+    public abstract class GenericRepository<T>(APIContext context) : IGenericRepository<T> where T : class
     {
-        protected readonly APIContext _context;
-        private readonly DbSet<T> _table;
+        protected readonly APIContext _context = context;
+        private readonly DbSet<T> _table = context.Set<T>();
 
-        protected GenericRepository(APIContext context) 
+        /*protected GenericRepository(APIContext context) 
         {
             _context = context;
             _table = _context.Set<T>();
             
-        }
+        }*/
 
         public async Task AddAsync(T entity) => await _table.AddAsync(entity);
 

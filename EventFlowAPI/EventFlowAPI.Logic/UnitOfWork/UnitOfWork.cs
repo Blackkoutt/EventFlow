@@ -11,7 +11,6 @@ namespace EventFlowAPI.Logic.UnitOfWork
     {
         private readonly APIContext _context;
         private readonly Dictionary<Type, IRepository> _repositories;
-        public APIContext Context { get { return _context; } }
         public UnitOfWork(APIContext context) 
         {
             _context = context;
@@ -70,6 +69,8 @@ namespace EventFlowAPI.Logic.UnitOfWork
             _context.Dispose();
             GC.SuppressFinalize(this);
         }
+
+        public APIContext Context { get { return _context; } }
 
         private Dictionary<Type, IRepository> InitRepositoriesDictionary()
         {

@@ -1,16 +1,12 @@
 import Button, { ButtonStyle } from "../components/buttons/Button";
 import hero from "../assets/hero_section_img.png";
-import tickets from "../assets/tickets.png";
 import SectionHeader from "../components/common/SectionHeader";
 import NewsList from "../components/homepage/NewsList";
 import EventList from "../components/homepage/EventList";
 import FestivalList from "../components/homepage/FestivalList";
 import FaqList from "../components/homepage/FaqList";
 import PartnerList from "../components/homepage/PartnerList";
-import Checkbox from "../components/common/Checkbox";
-import { FormProvider } from "react-hook-form";
 import Newsletter from "../components/homepage/Newsletter";
-import { Link } from "react-router-dom";
 import EventPassCTA from "../components/homepage/EventPassCTA";
 
 const HomePage = () => {

@@ -143,7 +143,7 @@ function AppLayout() {
                   </div>
                 </div>
               </div>
-              <p className="text-black text-[14px]">2024 &copy; EventFlow</p>
+              <p className="text-black text-[14px]">2025 &copy; EventFlow</p>
             </div>
           </div>
         </div>
