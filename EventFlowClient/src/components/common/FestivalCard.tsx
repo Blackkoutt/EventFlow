@@ -16,7 +16,7 @@ const FestivalCard = ({ festival }: FestivalCardProps) => {
       className="shadow-xl flex flex-row justify-center items-center w-full min-h-[500px] max-h-[600px] hover:bg-slate-50 hover:cursor-pointer"
     >
       <img
-        className="object-cover min-w-[42%] max-w-[42%] h-full"
+        className="object-cover min-w-[42%] max-w-[42%]"
         src={ApiClient.GetPhotoEndpoint(festival.photoEndpoint)}
         alt={`Zdjęcie festiwalu ${festival.title}`}
       />

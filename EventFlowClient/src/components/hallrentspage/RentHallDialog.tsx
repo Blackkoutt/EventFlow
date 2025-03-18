@@ -3,7 +3,7 @@ import { faCheck, faXmark } from "@fortawesome/free-solid-svg-icons";
 import { toast } from "react-toastify";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { AdditionalServices, Hall, HallRent } from "../../models/response_models";
+import { AdditionalServices, EventEntity, Hall, HallRent } from "../../models/response_models";
 import { HallRentRequest, HallRentSchema } from "../../models/create_schemas/HallRentSchema";
 import MultiSelect from "../common/forms/MultiSelect";
 import DatePicker from "../common/forms/DatePicker";
@@ -50,6 +50,7 @@ const RentHallDialog = forwardRef<HTMLDialogElement, RentHallDialogProps>(
       ApiEndpoint.AdditionalServices
     );
     const { data: allRents, get: getAllRents } = useApi<HallRent>(ApiEndpoint.HallRent);
+    const { data: allEvents, get: getAllEvents } = useApi<EventEntity>(ApiEndpoint.Event);
 
     const calendar = useCalendarApp({
       views: [createViewMonthGrid(), createViewWeek()],
@@ -75,19 +76,33 @@ const RentHallDialog = forwardRef<HTMLDialogElement, RentHallDialogProps>(
     useEffect(() => {
       getServices({ id: undefined, queryParams: undefined });
       getAllRents({ id: undefined, queryParams: { getAll: true, hallNr: hall?.hallNr } });
+      getAllEvents({ id: undefined, queryParams: { getAll: true, hallNr: hall?.hallNr } });
     }, []);
 
     useEffect(() => {
       if (allRents && allRents.length > 0) {
         const formattedRents = allRents.map((r) => ({
           ...r,
-          name: "Rezerwacja",
+          title: "Rezerwacja",
+          location: `Sala nr ${hall?.hallNr}`,
           start: DateFormatter.FormatDateForCalendar(r.startDate),
           end: DateFormatter.FormatDateForCalendar(r.endDate),
         }));
-        calendar.eventsService.set(formattedRents);
+
+        const formattedEvents = allEvents.map((e) => ({
+          ...e,
+          title: e.title || "Wydarzenie",
+          location: `Sala nr ${hall?.hallNr}`,
+          start: DateFormatter.FormatDateForCalendar(e.start),
+          end: DateFormatter.FormatDateForCalendar(e.end),
+        }));
+
+        const allFormattedEvents = [...formattedRents, ...formattedEvents];
+        calendar.eventsService.set(allFormattedEvents);
+        console.log(calendar.events.getAll());
       }
-    }, [allRents]);
+      console.log(allEvents);
+    }, [allRents, allEvents]);
 
     useEffect(() => {
       const selectOptions: SelectOption[] = services.map(

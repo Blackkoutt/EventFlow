@@ -116,9 +116,9 @@ const EventPage = () => {
           </div>
         </div>
 
-        <div className="flex flex-row justify-between items-start w-full pr-3 pt-2">
+        <div className="flex flex-row justify-between items-start w-full pr-3 pt-1">
           <article className="flex flex-col justify-start items-start gap-2 max-w-[76%]">
-            <div className="flex flex-col justify-start items-start gap-2 pl-[250px] pt-2">
+            <div className="flex flex-col justify-start items-start gap-1 pl-[250px] pt-2">
               <div className="flex flex-row justify-start items-center gap-1">
                 <i
                   className={eventEntity.category?.icon}
@@ -131,12 +131,12 @@ const EventPage = () => {
                   {eventEntity.category?.name.toLocaleUpperCase()}
                 </p>
               </div>
-              <h3 className="text-[22px] font-semibold text-textPrimary">{eventEntity.title}</h3>
+              <h3 className="text-[24px] font-semibold ">{eventEntity.title}</h3>
             </div>
-            <p className="pl-6 w-full">{eventEntity.details?.longDescription}</p>
+            <p className="pl-6 w-full text-textPrimary">{eventEntity.details?.longDescription}</p>
           </article>
 
-          <div className="flex flex-col justify-center items-center gap-[14px] min-w-[180px] py-2">
+          <div className="flex flex-col justify-center items-center gap-[14px] min-w-[180px] py-4">
             <div className="flex flex-row justify-center items-center gap-3">
               <FontAwesomeIcon
                 icon={faLocationDot}
@@ -146,26 +146,30 @@ const EventPage = () => {
                 Sala: nr {eventEntity.hall?.hallNr}
               </p>
             </div>
-            <div className="flex flex-row justify-center items-center gap-3">
-              <FontAwesomeIcon
-                icon={faTicket}
-                style={{ color: `${eventEntity.category?.color}`, width: "22px", height: "22px" }}
-              />
-              <p className="font-semibold text-[16px] text-center text-textPrimary">
-                Cena od: {Math.min(...eventEntity.tickets.map((ticket) => ticket.price))} zł
-              </p>
-            </div>
-            <div>
-              <Button
-                text="Kup bilet"
-                width={130}
-                height={43}
-                fontSize={17}
-                isFontSemibold={true}
-                style={ButtonStyle.Default}
-                action={() => reservationDialog.current?.showModal()}
-              />
-            </div>
+            {new Date(eventEntity.end).getTime() > Date.now() && (
+              <div className="flex flex-row justify-center items-center gap-3">
+                <FontAwesomeIcon
+                  icon={faTicket}
+                  style={{ color: `${eventEntity.category?.color}`, width: "22px", height: "22px" }}
+                />
+                <p className="font-semibold text-[16px] text-center text-textPrimary">
+                  Cena od: {Math.min(...eventEntity.tickets.map((ticket) => ticket.price))} zł
+                </p>
+              </div>
+            )}
+            {new Date(eventEntity.end).getTime() > Date.now() && (
+              <div>
+                <Button
+                  text="Kup bilet"
+                  width={130}
+                  height={43}
+                  fontSize={17}
+                  isFontSemibold={true}
+                  style={ButtonStyle.Default}
+                  action={() => reservationDialog.current?.showModal()}
+                />
+              </div>
+            )}
           </div>
         </div>
       </div>

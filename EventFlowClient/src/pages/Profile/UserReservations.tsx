@@ -133,8 +133,8 @@ const UserReservations = () => {
           header="Data rezerwacji"
           body={(rowData) => DateFormatter.FormatDate(rowData.reservationDate, DateFormat.DateTime)}
         ></Column>
-        <Column field="ticket.event.name" sortable header="Wydarzenie" />
-        <Column field="ticket.festival.name" sortable header="Festiwal" />
+        <Column field="ticket.event.title" sortable header="Wydarzenie" />
+        <Column field="ticket.festival.title" sortable header="Festiwal" />
 
         <Column field="ticket.event.hall.hallNr" header="Nr sali" />
         <Column

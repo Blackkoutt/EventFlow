@@ -535,6 +535,193 @@ namespace EventFlowAPI.DB.Extensions.SeedingExtensions
                     GridColumn = 1,
                     SeatTypeId = 3,
                     HallId = 15
+                },
+                new Seat
+                {
+                    Id = 49,
+                    SeatNr = 1,
+                    Row = 1,
+                    GridRow = 1,
+                    Column = 1,
+                    GridColumn = 1,
+                    SeatTypeId = 3,
+                    HallId = 16
+                },
+                new Seat
+                {
+                    Id = 50,
+                    SeatNr = 2,
+                    Row = 1,
+                    GridRow = 1,
+                    Column = 2,
+                    GridColumn = 2,
+                    SeatTypeId = 3,
+                    HallId = 16
+                },
+                new Seat
+                {
+                    Id = 51,
+                    SeatNr = 3,
+                    Row = 1,
+                    GridRow = 1,
+                    Column = 3,
+                    GridColumn = 3,
+                    SeatTypeId = 3,
+                    HallId = 16
+                },
+                new Seat
+                {
+                    Id = 52,
+                    SeatNr = 4,
+                    Row = 1,
+                    GridRow = 1,
+                    Column = 4,
+                    GridColumn = 4,
+                    SeatTypeId = 3,
+                    HallId = 16
+                },
+                 new Seat
+                 {
+                     Id = 53,
+                     SeatNr = 1,
+                     Row = 1,
+                     GridRow = 1,
+                     Column = 1,
+                     GridColumn = 1,
+                     SeatTypeId = 2,
+                     HallId = 17
+                 },
+                new Seat
+                {
+                    Id = 54,
+                    SeatNr = 2,
+                    Row = 1,
+                    GridRow = 1,
+                    Column = 2,
+                    GridColumn = 2,
+                    SeatTypeId = 2,
+                    HallId = 17
+                },
+                new Seat
+                {
+                    Id = 55,
+                    SeatNr = 3,
+                    Row = 1,
+                    GridRow = 1,
+                    Column = 3,
+                    GridColumn = 3,
+                    SeatTypeId = 1,
+                    HallId = 17
+                },
+                new Seat
+                {
+                    Id = 56,
+                    SeatNr = 4,
+                    Row = 1,
+                    GridRow = 1,
+                    Column = 4,
+                    GridColumn = 4,
+                    SeatTypeId = 2,
+                    HallId = 17
+                },
+                new Seat
+                {
+                    Id = 57,
+                    SeatNr = 1,
+                    Row = 1,
+                    GridRow = 1,
+                    Column = 1,
+                    GridColumn = 1,
+                    SeatTypeId = 1,
+                    HallId = 18
+                },
+                new Seat
+                {
+                    Id = 58,
+                    SeatNr = 2,
+                    Row = 1,
+                    GridRow = 1,
+                    Column = 2,
+                    GridColumn = 2,
+                    SeatTypeId = 1,
+                    HallId = 18
+                },
+                new Seat
+                {
+                    Id = 59,
+                    SeatNr = 3,
+                    Row = 1,
+                    GridRow = 1,
+                    Column = 3,
+                    GridColumn = 3,
+                    SeatTypeId = 1,
+                    HallId = 18
+                },
+                new Seat
+                {
+                    Id = 60,
+                    SeatNr = 4,
+                    Row = 1,
+                    GridRow = 1,
+                    Column = 4,
+                    GridColumn = 4,
+                    SeatTypeId = 1,
+                    HallId = 18
+                },
+                new Seat
+                {
+                    Id = 61,
+                    SeatNr = 1,
+                    Row = 1,
+                    GridRow = 1,
+                    Column = 1,
+                    GridColumn = 1,
+                    SeatTypeId = 3,
+                    HallId = 19
+                },
+                new Seat
+                {
+                    Id = 62,
+                    SeatNr = 2,
+                    Row = 1,
+                    GridRow = 1,
+                    Column = 2,
+                    GridColumn = 2,
+                    SeatTypeId = 3,
+                    HallId = 19
+                },
+                new Seat
+                {
+                    Id = 63,
+                    SeatNr = 3,
+                    Row = 1,
+                    GridRow = 1,
+                    Column = 3,
+                    GridColumn = 3,
+                    SeatTypeId = 3,
+                    HallId = 19
+                },
+                new Seat
+                {
+                    Id = 64,
+                    SeatNr = 4,
+                    Row = 1,
+                    GridRow = 1,
+                    Column = 4,
+                    GridColumn = 4,
+                    SeatTypeId = 3,
+                    HallId = 19
+                },
+                new Seat
+                {
+                    Id = 65,
+                    SeatNr = 1,
+                    Row = 1,
+                    GridRow = 1,
+                    Column = 1,
+                    GridColumn = 1,
+                    SeatTypeId = 3,
+                    HallId = 20
                 }
             );
         }

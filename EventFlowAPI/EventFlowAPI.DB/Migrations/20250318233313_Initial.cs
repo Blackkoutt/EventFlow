@@ -1050,7 +1050,9 @@ namespace EventFlowAPI.DB.Migrations
                     { 2, null, null, false, false, false, "Obsługa oświetlenia", 340.00m, null },
                     { 3, null, null, false, false, false, "Obsługa nagłośnienia", 250.00m, null },
                     { 4, null, null, false, false, false, "Fotograf", 200.00m, null },
-                    { 5, null, null, false, false, false, "Promocja wydarzenia", 140.00m, null }
+                    { 5, null, null, false, false, false, "Promocja wydarzenia", 140.00m, null },
+                    { 6, null, null, false, false, false, "Kamerzysta", 500.00m, null },
+                    { 7, null, null, false, false, false, "Catering", 1000.00m, null }
                 });
 
             migrationBuilder.InsertData(
@@ -1067,11 +1069,11 @@ namespace EventFlowAPI.DB.Migrations
                 columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "DateOfBirth", "Email", "EmailConfirmed", "IsVerified", "LockoutEnabled", "LockoutEnd", "Name", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "PhotoName", "Provider", "RegisteredDate", "SecurityStamp", "Surname", "TwoFactorEnabled", "UserName" },
                 values: new object[,]
                 {
-                    { "1", 0, "b375fe05-a127-4b83-903a-2a1fb68b7ae5", new DateTime(2000, 4, 3, 0, 0, 0, 0, DateTimeKind.Unspecified), "admin@gmail.com", true, true, false, null, "Admin", "ADMIN@GMAIL.COM", "ADMIN@GMAIL.COM", "AQAAAAIAAYagAAAAELs9StoAaXUqaZha/C0wY7wYDfUGNweEHXSSinz+BJPrOPXCNMt2ttXC7/z3J+UNIw==", null, false, "admin.jpg", "APP", new DateTime(2025, 2, 2, 0, 0, 0, 0, DateTimeKind.Unspecified), "cb3d6f7b-e60e-4d4c-801f-71ac757a5e21", "Admin", false, "admin@gmail.com" },
-                    { "2", 0, "b43f5c0b-55db-45a9-919e-dcdd06481617", new DateTime(1985, 2, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "mateusz.strapczuk2@gmail.com", true, true, false, null, "Mateusz2", "MATEUSZ.STRAPCZUK2@GMAIL.COM", "MATEUSZ.STRAPCZUK2@GMAIL.COM", "AQAAAAIAAYagAAAAEERfnGSAHONv7woZ1pTPsM7bgkKSLRw/oFL/iNoKuaTmijI61zr2KS4eVOW5qpsZyg==", null, false, "user2.jpg", "APP", new DateTime(2025, 2, 2, 0, 0, 0, 0, DateTimeKind.Unspecified), "44b3d131-f466-4f9e-93a0-98f42a1583c9", "Strapczuk2", false, "mateusz.strapczuk2@gmail.com" },
-                    { "3", 0, "fb368dd7-a4b7-482b-a559-c7cc570d0148", new DateTime(1979, 12, 11, 0, 0, 0, 0, DateTimeKind.Unspecified), "mateusz.strapczuk3@gmail.com", true, true, false, null, "Mateusz3", "MATEUSZ.STRAPCZUK3@GMAIL.COM", "MATEUSZ.STRAPCZUK3@GMAIL.COM", "AQAAAAIAAYagAAAAEFLgQD8os5R5DoIwjyJysloPf4ti0rNYNDnVI3LpPjtmPPwsm6vwcbmW36DEpGJmFg==", null, false, "user3.jpg", "APP", new DateTime(2025, 2, 2, 0, 0, 0, 0, DateTimeKind.Unspecified), "c265f011-d9a4-4775-a040-b85f6c5d3633", "Strapczuk3", false, "mateusz.strapczuk3@gmail.com" },
-                    { "4", 0, "3a3e9943-6437-4c3c-8ab2-5f0458483c63", new DateTime(1979, 12, 11, 0, 0, 0, 0, DateTimeKind.Unspecified), "mateusz.strapczuk4@gmail.com", true, true, false, null, "Mateusz4", "MATEUSZ.STRAPCZUK4@GMAIL.COM", "MATEUSZ.STRAPCZUK4@GMAIL.COM", "AQAAAAIAAYagAAAAEA2rbfe7KUq56JHuVWnR0iG/oqtQ2Dmxb40JTHK4t2B4RjI0jq6UOxtCDHb150/JYQ==", null, false, "user4.jpg", "APP", new DateTime(2025, 2, 2, 0, 0, 0, 0, DateTimeKind.Unspecified), "5ca28484-ad4c-4d5e-ad08-93884355fde9", "Strapczuk4", false, "mateusz.strapczuk4@gmail.com" },
-                    { "5", 0, "b011c822-5ae1-4956-9a4b-3f075635b4a7", new DateTime(1979, 12, 11, 0, 0, 0, 0, DateTimeKind.Unspecified), "mateusz.strapczuk1@gmail.com", true, true, false, null, "Mateusz", "MATEUSZ.STRAPCZUK1@GMAIL.COM", "MATEUSZ.STRAPCZUK1@GMAIL.COM", "AQAAAAIAAYagAAAAEFlflb7lzGW/wQK19Vk6c7ejqr+wY+PkC94G6f/9emqTOC9puVFLpYEbG78XOytRfA==", null, false, "user5.jpg", "APP", new DateTime(2025, 2, 2, 0, 0, 0, 0, DateTimeKind.Unspecified), "9c8ed61f-8797-43f6-ae4f-40cb2a7dbe2e", "Strapczuk", false, "mateusz.strapczuk1@gmail.com" }
+                    { "1", 0, "95ca56b0-be1b-4b9a-b9cb-77b705ab1bbc", new DateTime(2000, 4, 3, 0, 0, 0, 0, DateTimeKind.Unspecified), "admin@gmail.com", true, true, false, null, "Admin", "ADMIN@GMAIL.COM", "ADMIN@GMAIL.COM", "AQAAAAIAAYagAAAAEK4/hlBoE1k2Sdq8n2DYNHysLOR3Fg/7anvL/W7qoX0GxzJBNLQqG79m14mPJ6iwrw==", null, false, "admin.jpg", "APP", new DateTime(2025, 3, 18, 0, 0, 0, 0, DateTimeKind.Unspecified), "b0fcb126-8927-42fb-8d13-13c4f1681351", "Admin", false, "admin@gmail.com" },
+                    { "2", 0, "c79bc252-1135-418f-a752-59ea3ced3ad1", new DateTime(1985, 2, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "mateusz.strapczuk2@gmail.com", true, true, false, null, "Mateusz2", "MATEUSZ.STRAPCZUK2@GMAIL.COM", "MATEUSZ.STRAPCZUK2@GMAIL.COM", "AQAAAAIAAYagAAAAEG6rZhspfbU8XJjYA5dsJzuNC6oO71cVoB6GJ3pm3voqJFOM7pvY0OsDo5PZDIuzxA==", null, false, "user2.jpg", "APP", new DateTime(2025, 3, 18, 0, 0, 0, 0, DateTimeKind.Unspecified), "28db39ee-4875-4a8c-b689-02eabddb96aa", "Strapczuk2", false, "mateusz.strapczuk2@gmail.com" },
+                    { "3", 0, "fdf14307-4b05-422d-b5ae-a8571afd609d", new DateTime(1979, 12, 11, 0, 0, 0, 0, DateTimeKind.Unspecified), "mateusz.strapczuk3@gmail.com", true, true, false, null, "Mateusz3", "MATEUSZ.STRAPCZUK3@GMAIL.COM", "MATEUSZ.STRAPCZUK3@GMAIL.COM", "AQAAAAIAAYagAAAAEAlgQ4Qs/GFmn3hHt58p/CNdbRcnd2+tGvTWqNDxznjanmwir/VeibWWI3B9jZhf8g==", null, false, "user3.jpg", "APP", new DateTime(2025, 3, 18, 0, 0, 0, 0, DateTimeKind.Unspecified), "959425f8-a938-433a-923e-d5d01925122c", "Strapczuk3", false, "mateusz.strapczuk3@gmail.com" },
+                    { "4", 0, "cbbf0722-3f05-411d-b87f-a05fe3726e3c", new DateTime(1979, 12, 11, 0, 0, 0, 0, DateTimeKind.Unspecified), "mateusz.strapczuk4@gmail.com", true, true, false, null, "Mateusz4", "MATEUSZ.STRAPCZUK4@GMAIL.COM", "MATEUSZ.STRAPCZUK4@GMAIL.COM", "AQAAAAIAAYagAAAAEErLVney/2f4Wm11sn7nK8cNngA8P3qvHSertKvrBHNSE/000BYDaS+/F5tYAhMIFQ==", null, false, "user4.jpg", "APP", new DateTime(2025, 3, 18, 0, 0, 0, 0, DateTimeKind.Unspecified), "9bd8c1e8-5875-4e50-876d-3a69c2fdc470", "Strapczuk4", false, "mateusz.strapczuk4@gmail.com" },
+                    { "5", 0, "1a9d5c0a-7f87-4f87-bbfe-ea099479ac03", new DateTime(1979, 12, 11, 0, 0, 0, 0, DateTimeKind.Unspecified), "mateusz.strapczuk1@gmail.com", true, true, false, null, "Mateusz", "MATEUSZ.STRAPCZUK1@GMAIL.COM", "MATEUSZ.STRAPCZUK1@GMAIL.COM", "AQAAAAIAAYagAAAAEFjlpJmB1mkCX/au5X5r7DmJLIjfboZ0uKo0vyl9ZfqXDpEWpvdISbzfLhblOMN/uQ==", null, false, "user5.jpg", "APP", new DateTime(2025, 3, 18, 0, 0, 0, 0, DateTimeKind.Unspecified), "f1e975b0-0b98-4b68-8f3b-fbcb7a0c22f4", "Strapczuk", false, "mateusz.strapczuk1@gmail.com" }
                 });
 
             migrationBuilder.InsertData(
@@ -1079,10 +1081,17 @@ namespace EventFlowAPI.DB.Migrations
                 columns: new[] { "Id", "Description", "IsUpdated", "Name", "UpdateDate" },
                 values: new object[,]
                 {
-                    { 1, "Nowoczesny projektor", false, "Projektor multimedialny", null },
-                    { 2, "Wysokiej klasy oświetlenie", false, "Oświetlenie", null },
-                    { 3, "Głośniki przeznaczone do odtwrzania filmów", false, "Nagłośnienie kinowe", null },
-                    { 4, "Głośniki przeznaczone do koncertów", false, "Nagłośnienie koncertowe", null }
+                    { 1, "Nowoczesny projektor, idealny do prezentacji multimedialnych, z wysoką rozdzielczością i możliwością podłączenia różnych źródeł sygnału.", false, "Projektor multimedialny", null },
+                    { 2, "Wysokiej klasy oświetlenie, umożliwiające regulację jasności i kolorów, idealne do sal konferencyjnych i eventów.", false, "Oświetlenie", null },
+                    { 3, "Głośniki przeznaczone do odtwarzania filmów, zapewniające doskonałą jakość dźwięku przestrzennego w dużych przestrzeniach.", false, "Nagłośnienie kinowe", null },
+                    { 4, "Głośniki przeznaczone do koncertów, oferujące mocny dźwięk i wyrazistość w każdych warunkach, z możliwością regulacji.", false, "Nagłośnienie koncertowe", null },
+                    { 5, "Profesjonalne mikrofony bezprzewodowe, zapewniające czysty dźwięk i niezawodność w ruchu, idealne do konferencji i wystąpień.", false, "Mikrofony bezprzewodowe", null },
+                    { 6, "Tablica interaktywna do rysowania i prezentowania treści w sposób dynamiczny.", false, "Tablica interaktywna", null },
+                    { 7, "System klimatyzacji zapewniający komfortową temperaturę w sali podczas wydarzeń.", false, "Klimatyzacja", null },
+                    { 8, "Duży stół konferencyjny, idealny do spotkań biznesowych i prezentacji.", false, "Stół konferencyjny", null },
+                    { 9, "Kurtyna teatralna służąca do oddzielania sceny od widowni lub zmiany scenerii w trakcie przedstawienia.", false, "Kurtyna", null },
+                    { 10, "Tablice służące do umieszczania informacji o eksponatach.", false, "Tablice informacyjne", null },
+                    { 11, "Stojaki umożliwiają prezentowanie dzieł sztuki, takich jak obrazy, grafiki czy rzeźby.", false, "Stojaki", null }
                 });
 
             migrationBuilder.InsertData(
@@ -1101,13 +1110,18 @@ namespace EventFlowAPI.DB.Migrations
                 columns: new[] { "Id", "LongDescription" },
                 values: new object[,]
                 {
-                    { 1, "Krótki opis wydarzenia Koncert: Mystic Waves" },
-                    { 2, "Krótki opis wydarzenia Spektakl: Cień Przeszłość" },
-                    { 3, "Krótki opis wydarzenia Film: Królestwo planety małp" },
-                    { 4, "Krótki opis wydarzenia Wystawa: Nowe inspiracje" },
-                    { 5, "Krótki opis wydarzenia Koncert: New Era" },
-                    { 6, "Krótki opis wydarzenia Film: Gladiator" },
-                    { 7, "Krótki opis wydarzenia Wystawa: Nowa sztuka" }
+                    { 1, "Koncert Mystic Waves to wyjątkowe wydarzenie muzyczne, które przeniesie Cię w świat atmosferycznych dźwięków. Zespół wystąpi z premierowym materiałem, łączącym elementy muzyki elektronicznej i ambientowej. Koncert odbędzie się w klimatycznej sali, z wykorzystaniem nowoczesnej technologii dźwiękowej i wizualnej, co zapewni niezapomniane przeżycia. Muzycy znani z licznych występów na scenach festiwalowych zaprezentują swoją najnowszą produkcję, która z pewnością oczaruje fanów muzyki eksperymentalnej." },
+                    { 2, "Spektakl 'Cień Przeszłość' to wciągająca produkcja teatralna, która porusza tematykę przemijania i refleksji nad przeszłością. Historia opowiada o dwóch postaciach, które spotykają się po latach, by skonfrontować swoje wspomnienia i tajemnice. Reżyseria, mistrzowskie aktorstwo oraz emocjonalna głębia tej sztuki sprawiają, że jest to wydarzenie, które zostanie z widzami na długo. Spektakl jest pełen symboliki i zaskakujących zwrotów akcji, które skłonią do przemyśleń o upływającym czasie." },
+                    { 3, "Film 'Królestwo planety małp' to spektakularna produkcja science-fiction, która kontynuuje historię walczących o przetrwanie małp. Akcja filmu toczy się w post-apokaliptycznym świecie, w którym małpy zaczynają dominować nad ludźmi. W filmie zobaczymy dynamiczne sceny bitewne, dramatyczne decyzje bohaterów i wciągającą fabułę, która porusza kwestie moralności i przyszłości ludzkości. Wysoka jakość efektów specjalnych oraz rewelacyjna gra aktorska sprawiają, że jest to jeden z najważniejszych filmów tego roku." },
+                    { 4, "Wystawa 'Nowe inspiracje' to wyjątkowa ekspozycja sztuki współczesnej, która gromadzi prace młodych artystów z całego świata. Wystawa skupia się na nowych nurtach artystycznych, które łączą tradycję z nowoczesnością. Można tu zobaczyć prace w różnych mediach, od malarstwa po instalacje interaktywne. Artyści eksperymentują z formą i materiałami, zapraszając widzów do interakcji z dziełami. Jest to przestrzeń, która otwiera umysł na nowe pomysły i inspiracje, zachęcając do refleksji nad współczesnym światem sztuki." },
+                    { 5, "Koncert 'New Era' to wyjątkowe wydarzenie muzyczne, które łączy najnowsze trendy w muzyce elektronicznej z klasycznymi brzmieniami. Zespół zaprezentuje utwory z debiutanckiego albumu, który zdobył uznanie wśród krytyków muzycznych. Występ będzie pełen energetycznych melodii i przejmujących dźwięków, które z pewnością poruszą serca słuchaczy. Nowoczesne technologie audio-wizualne, wykorzystywane podczas koncertu, sprawią, że każdy utwór nabierze nowego wymiaru. Warto być częścią tego muzycznego doświadczenia!" },
+                    { 6, "Film 'Gladiator' to epicka opowieść o wojowniku, który staje do walki nie tylko o swoje życie, ale także o wolność i sprawiedliwość. Akcja rozgrywa się w starożytnym Rzymie, gdzie główny bohater, Maximus, zostaje zdradzony przez cesarza, a jego rodzina zostaje zamordowana. Maximus trafia do areny, gdzie walczy o przetrwanie i zemstę. Film pełen jest emocjonujących walk, dramatycznych zwrotów akcji i wciągającej fabuły, która porusza tematy honoru, lojalności i zemsty." },
+                    { 7, "Wystawa 'Nowa sztuka' to prezentacja młodych artystów, którzy swoją twórczość ukierunkowali na przekroczenie granic tradycyjnej sztuki. Na wystawie można zobaczyć prace w różnorodnych technikach: od klasycznych obrazów po awangardowe instalacje. Artyści bawią się konwencjami, angażując widza w interaktywną formę prezentacji. Wystawa jest zaproszeniem do refleksji nad tym, czym współczesna sztuka może być i jakie emocje potrafi wywołać. To wydarzenie, które pokazuje, jak sztuka może zmieniać nasze postrzeganie świata." },
+                    { 8, "Cień Nad Miastem to mroczny thriller teatralny, który przenosi widza w świat pełen tajemniczych wydarzeń, które zaczynają wstrząsać miastem po zmroku. Główna fabuła opowiada historię, w której pozornie spokojne miasto staje się areną niebezpiecznych wydarzeń, których rozwiązanie wciąga nie tylko bohaterów, ale również publiczność. W spektaklu dominują napięcie i atmosfera niepokoju, które potęgują świetnie dobrane efekty wizualne oraz świetne aktorstwo. Każda scena jest przemyślana, a dramaturgia składa się z zagadek i zwrotów akcji, które trzymają widza w ciągłym napięciu. To przedstawienie nie tylko o mrocznych wydarzeniach, ale także o ludzkich emocjach, które rodzą się w sytuacjach kryzysowych, zmieniając życie bohaterów na zawsze. W trakcie spektaklu widzowie będą mieli okazję odkryć tajemnice miasta i skonfrontować się z pytaniem, jak cienka jest granica między rzeczywistością a tym, co wytworzyła wyobraźnia." },
+                    { 9, "Jazzowe Brzmienia to wyjątkowy koncert, który przenosi uczestników w świat żywego jazzu. Podczas wydarzenia wystąpią znani artyści jazzowi, którzy zabiorą widzów w podróż po różnorodnych stylach tego gatunku. Atmosfera pełna emocji, improwizacji i magicznych dźwięków sprawia, że każda chwila staje się niezapomnianym doświadczeniem. Koncert jest idealną okazją, by poczuć autentyczną magię jazzu w wyjątkowym wykonaniu na żywo, a publiczność wciągnie się w niepowtarzalny klimat muzycznej ekspresji." },
+                    { 10, "Interstellar to epicka podróż w głąb kosmosu, która bada granice ludzkiej wytrzymałości, miłości i poświęcenia. Grupa astronautów, wyruszając na misję w poszukiwaniu nowego domu dla ludzkości, zmierzy się z niewyobrażalnymi wyzwaniami. Film porusza tematykę czasu, przestrzeni i ofiary, ukazując niesamowite krajobrazy kosmiczne oraz ludzką determinację w walce o przetrwanie. Każdy moment to prawdziwa uczta dla zmysłów, a historia miłości i poświęcenia łączy się z naukową fascynacją, tworząc niezapomniane doświadczenie filmowe." },
+                    { 11, "Spektakl 'Zatrzymać Przeznaczenie' to głęboka opowieść o postaci, która staje przed obliczem nieuchronnego przeznaczenia. Bohaterowie zmagają się z wyborem, który może zmienić bieg wydarzeń, a ich działania prowadzą do nieodwracalnych konsekwencji. Spektakl skłania do refleksji nad wolną wolą, nieuchronnością losu i odpowiedzialnością za własne wybory. Z pomocą wciągającej dramaturgii oraz poruszających dialogów, spektakl ukazuje, jak delikatna jest granica między tym, co możemy kontrolować, a tym, co jest zapisane w naszych losach." },
+                    { 12, "Wystawa 'Nowe Perspektywy' zaprasza do odkrywania sztuki współczesnej z zupełnie nowych punktów widzenia. Artyści wykorzystują różnorodne techniki, od tradycyjnych obrazów po innowacyjne instalacje, które angażują widza w interaktywną formę prezentacji. Każda praca na wystawie to zaproszenie do zastanowienia się nad tym, jak sztuka może zmieniać nasze postrzeganie rzeczywistości. To także próba przekroczenia granic tradycyjnych konwencji, poszukiwania nowych środków wyrazu i głębokiej refleksji nad naturą współczesnej sztuki." }
                 });
 
             migrationBuilder.InsertData(
@@ -1126,10 +1140,10 @@ namespace EventFlowAPI.DB.Migrations
                 columns: new[] { "Id", "Answer", "Question" },
                 values: new object[,]
                 {
-                    { 1, "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed justo erat, tempor quis sagittis et, sodales id nibh. Phasellus diam enim, sodales pharetra neque eget, sollicitudin vulputate est. Morbi ac velit sed arcu malesuada feugiat. Suspendisse potenti. Donec commodo mauris nisi. Nulla ut mi eu lectus consequat porta at commodo.", "W jaki sposób mogę kupić bilet na wydarzenie ?" },
-                    { 2, "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed justo erat, tempor quis sagittis et, sodales id nibh. Phasellus diam enim, sodales pharetra neque eget, sollicitudin vulputate est. Morbi ac velit sed arcu malesuada feugiat. Suspendisse potenti. Donec commodo mauris nisi. Nulla ut mi eu lectus consequat porta at commodo.", "Jak mogę wynająć salę ?" },
-                    { 3, "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed justo erat, tempor quis sagittis et, sodales id nibh. Phasellus diam enim, sodales pharetra neque eget, sollicitudin vulputate est. Morbi ac velit sed arcu malesuada feugiat. Suspendisse potenti. Donec commodo mauris nisi. Nulla ut mi eu lectus consequat porta at commodo.", "Co ile czasu muszę przedłużać karnet ?" },
-                    { 4, "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed justo erat, tempor quis sagittis et, sodales id nibh. Phasellus diam enim, sodales pharetra neque eget, sollicitudin vulputate est. Morbi ac velit sed arcu malesuada feugiat. Suspendisse potenti. Donec commodo mauris nisi. Nulla ut mi eu lectus consequat porta at commodo.", "Jak zwrócić zakupiony bilet ?" }
+                    { 1, "Bilety możesz kupić przechodząc do zakładki Wydarzenia. Następnie wybierz interesujące cię wydarzenie i kliknij przycisk Kup bilet. Wyświetli okno dialogowe w którym możliwy jest wybór miejsca i typu biletu. Wybierz miejsca i typ biletu, a następnie kliknij ponownie Kup bilet. Zostaniesz przekierowany do bramki płatniczej za pomocą której dokonasz opłaty za bilet. Po dokonaniu opłaty bilet zostanie przesłany na adres e-mail oraz będzie możliwy do pobrania w zakładce Profil > Moje rezerwacje.", "W jaki sposób mogę kupić bilet na wydarzenie ?" },
+                    { 2, "Aby wynająć salę przejdź do zakładki Wynajem. Następnie wybierz interesującą cię sale i kliknij przycisk Wynajmij. Pojawi się okno dialogowe z kalendarzem możliwych do wybrania dat rezerwacji. Wybierz datę rozpoczęcia i zakończenia rezerwacji oraz ewentualne dodatkowe usługi po czym kliknij przycisk Wynajmij. Zostaniesz przekierowany do bramki płątniczej za pomocą której dokonasz opłaty za wynajem. Po dokonaniu opłaty potwierdzenie wynajmu zostanie wysłane na adres e-mail oraz będzie możliwe do pobrania w zakładce Profil > Moje wynajmy.", "Jak mogę wynająć salę ?" },
+                    { 3, "Karnet możesz przedłużyć w dowolnym momencie przed upływem jego daty ważności. Przy przedłużeniu karnetu zawsze otrzymasz zniżkę w zależności od aktualnie posiadanego karnetu. Przykładowo jeśli posiadasz karnet roczny otrzymasz 20% zniżki na każdy typ karnetu.", "Co ile czasu muszę przedłużać karnet ?" },
+                    { 4, "Aby zwrócić zakupiony bilet konieczne jest anulowanie rezerwacji. Możesz tego dokonać przechodząc do zakładki Profil > Moje rezerwacje. Następnie z listy wybierz rezerwację którą chcesz anulowac i kliknij przycisk Anuluj. Pojawi się okno dialogowe z zapytaniem czy naewno chcesz wykonać daną operację. Po potwierdzeniu wykonania operacji otrzymasz na maila informację o anulowaniu biletu, a zwrot kosztów otrzymasz w ciągu 7 dni robocznych. Po anulowaniu rezerwacji posiadany bilet staje się nieważny.s", "Jak zwrócić zakupiony bilet ?" }
                 });
 
             migrationBuilder.InsertData(
@@ -1137,9 +1151,9 @@ namespace EventFlowAPI.DB.Migrations
                 columns: new[] { "Id", "LongDescription" },
                 values: new object[,]
                 {
-                    { 1, "Opis festiwalu muzyki współczesnej" },
-                    { 2, "Opis festiwalu filmowego" },
-                    { 3, "Opis festiwalu sztuki abstrakcyjnej" }
+                    { 1, "Festiwal Muzyki Hip-Hop to coroczne wydarzenie dedykowane nowoczesnym brzmieniom i eksperymentalnym kompozycjom. Na scenie pojawiają się zarówno uznani artyści, jak i młode talenty, prezentując innowacyjne podejście do muzyki. W programie znajdują się koncerty, warsztaty, spotkania z twórcami oraz panele dyskusyjne dotyczące przyszłości muzyki. Festiwal przyciąga miłośników dźwięków elektronicznych, jazzowych improwizacji, minimalistycznych kompozycji i nowych form ekspresji dźwiękowej. To wyjątkowa okazja, by odkryć najnowsze trendy muzyczne i poszerzyć swoje horyzonty artystyczne." },
+                    { 2, "Festiwal Filmowy to wyjątkowe święto kina, które gromadzi pasjonatów filmów z różnych zakątków świata. W repertuarze znajdują się zarówno filmy fabularne, dokumentalne, jak i krótkometrażowe, reprezentujące różne nurty i stylistyki. Organizowane są spotkania z reżyserami, aktorami oraz warsztaty dla młodych filmowców. Każda edycja festiwalu poświęcona jest określonemu tematowi przewodniemu, który inspiruje twórców do dyskusji nad istotnymi kwestiami społecznymi, kulturowymi i artystycznymi. To doskonała okazja, by zobaczyć premiery, odkryć nowe talenty i zanurzyć się w magiczny świat kinematografii." },
+                    { 3, "Festiwal Sztuki to wydarzenie celebrujące kreatywność i nieograniczoną ekspresję artystyczną. W ramach festiwalu prezentowane są prace artystów, którzy eksperymentują z formą, kolorem i strukturą, tworząc unikalne dzieła sztuki nowoczesnej. Oprócz wystaw odbywają się warsztaty, podczas których uczestnicy mogą spróbować swoich sił w malarstwie, rzeźbie czy instalacjach multimedialnych. Festiwal to także przestrzeń do rozmów o współczesnych trendach w sztuce, spotkania z artystami oraz wykłady ekspertów. To niepowtarzalna okazja, by odkryć nowe inspiracje i spojrzeć na sztukę z innej perspektywy." }
                 });
 
             migrationBuilder.InsertData(
@@ -1147,11 +1161,12 @@ namespace EventFlowAPI.DB.Migrations
                 columns: new[] { "Id", "DeleteDate", "Description", "HallTypeGuid", "IsDeleted", "IsSoftUpdated", "IsUpdated", "Name", "PhotoName", "UpdateDate" },
                 values: new object[,]
                 {
-                    { 1, null, "Nowa sala kinowa wyposażona w nowoczesne nagłośnienie i ekran", new Guid("00000000-0000-0000-0000-000000000000"), false, false, false, "Sala filmowa", "filmowa.jpg", null },
-                    { 2, null, "Nowa sala koncertowa wyposażona w najwyższej klasy nagłośnienie", new Guid("00000000-0000-0000-0000-000000000000"), false, false, false, "Sala koncertowa", "koncertowa.jpg", null },
-                    { 3, null, "Opis sali teatralnej", new Guid("00000000-0000-0000-0000-000000000000"), false, false, false, "Sala teatralna", "teatralna.jpg", null },
-                    { 4, null, "Opis sali wystawowa", new Guid("00000000-0000-0000-0000-000000000000"), false, false, false, "Sala wystawowa", "wystawowa.jpg", null },
-                    { 5, null, "Sala ogólna", new Guid("00000000-0000-0000-0000-000000000000"), false, false, false, "Sala ogólna", "ogolna.jpg", null }
+                    { 1, null, "Nowoczesna sala kinowa, wyposażona w wysokiej jakości projektor oraz system nagłośnienia Dolby Digital. Idealna do projekcji filmów w różnych formatach, zapewniająca doskonałe wrażenia wizualne i dźwiękowe. Pomieszczenie jest przystosowane do projekcji 2D i 3D, z przestronnymi fotelami zapewniającymi komfort podczas długotrwałego seansu.", new Guid("00000000-0000-0000-0000-000000000000"), false, false, false, "Sala filmowa", "filmowa.jpg", null },
+                    { 2, null, "Sala koncertowa o najwyższej jakości akustyce, przeznaczona do organizacji koncertów, recitali i występów muzycznych. Wyposażona w profesjonalny system nagłośnienia i adaptację akustyczną, która zapewnia doskonałe warunki dźwiękowe dla artystów oraz publiczności. Przestronny design, komfortowe siedzenia oraz nowoczesne oświetlenie sprawiają, że jest to idealne miejsce do wydarzeń muzycznych.", new Guid("00000000-0000-0000-0000-000000000000"), false, false, false, "Sala koncertowa", "koncertowa.jpg", null },
+                    { 3, null, "Sala teatralna o wysokiej jakości akustyce i estetyce, przystosowana do organizacji spektakli teatralnych, przedstawień, recitalów oraz wydarzeń artystycznych. Wyposażona w profesjonalne oświetlenie sceniczne, nagłośnienie oraz przestronną scenę, która zapewnia doskonałą widoczność i akustykę. To przestrzeń, która sprzyja artystycznemu wyrazowi i tworzeniu niezapomnianych doznań dla widzów.", new Guid("00000000-0000-0000-0000-000000000000"), false, false, false, "Sala teatralna", "teatralna.jpg", null },
+                    { 4, null, "Przestronna sala wystawowa dedykowana organizacji wystaw, targów i ekspozycji artystycznych. Zapewnia dużą powierzchnię do prezentacji dzieł sztuki, rzemiosła i innych ekspozycji. Zmodernizowane oświetlenie i możliwość aranżacji przestrzeni pozwalają na profesjonalne wyeksponowanie dzieł. Jest to przestrzeń elastyczna, doskonała do organizacji wydarzeń kulturalnych i wystaw artystycznych.", new Guid("00000000-0000-0000-0000-000000000000"), false, false, false, "Sala wystawowa", "wystawowa.jpg", null },
+                    { 5, null, "Sala ogólna to wszechstronna przestrzeń, która może być wykorzystana do różnorodnych wydarzeń, takich jak konferencje, szkolenia, spotkania biznesowe, czy kameralne wydarzenia kulturalne. Elastyczne ustawienie sali oraz nowoczesne wyposażenie audiowizualne sprawiają, że jest to idealne miejsce do organizacji wydarzeń o różnym charakterze. Wysoka jakość akustyki i komfortowe warunki zapewniają dogodną atmosferę.", new Guid("00000000-0000-0000-0000-000000000000"), false, false, false, "Sala ogólna", "ogolna.jpg", null },
+                    { 6, null, "Sala konferencyjna dedykowana organizacji spotkań biznesowych, konferencji, prezentacji i seminariów. Wyposażona w nowoczesny sprzęt audiowizualny, systemy do wideokonferencji oraz przestronną salę, która pomieści większą liczbę uczestników. Komfortowe, ergonomiczne fotele i stół konferencyjny sprzyjają profesjonalnym spotkaniom, a elastyczne ustawienie sali pozwala dostosować ją do różnych formatów spotkań.", new Guid("00000000-0000-0000-0000-000000000000"), false, false, false, "Sala konferencyjna", "konferencyjna.jpg", null }
                 });
 
             migrationBuilder.InsertData(
@@ -1159,9 +1174,9 @@ namespace EventFlowAPI.DB.Migrations
                 columns: new[] { "Id", "DeleteDate", "IsDeleted", "IsUpdated", "MediaPatronGuid", "Name", "PhotoName", "UpdateDate" },
                 values: new object[,]
                 {
-                    { 1, null, false, false, new Guid("da1df267-ddde-4cfe-920c-695395641039"), "Gazeta Nowoczesna", "gazeta_nowoczesna.png", null },
-                    { 2, null, false, false, new Guid("7c5472ca-523b-448f-8954-53734e2e3e8b"), "Nowy świat TV", "nowy_swiat.png", null },
-                    { 3, null, false, false, new Guid("5d4b8e17-bebb-4f83-b966-f3291905a91d"), "Tygodnik Nowiny", "tygodnik_nowiny.png", null }
+                    { 1, null, false, false, new Guid("ae371ef5-1408-4a99-9df5-c02da3894a64"), "Gazeta Nowoczesna", "gazeta_nowoczesna.png", null },
+                    { 2, null, false, false, new Guid("1888ac98-9879-49d8-b5a0-a9bdedf65b79"), "Nowy świat TV", "nowy_swiat.png", null },
+                    { 3, null, false, false, new Guid("21721629-b1aa-4fd0-8fce-689d78d6c326"), "Tygodnik Nowiny", "tygodnik_nowiny.png", null }
                 });
 
             migrationBuilder.InsertData(
@@ -1169,12 +1184,12 @@ namespace EventFlowAPI.DB.Migrations
                 columns: new[] { "Id", "LongDescription", "NewsGuid", "PhotoName", "PublicationDate", "ShortDescription", "Title" },
                 values: new object[,]
                 {
-                    { 1, "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut id nibh ornare, luctus velit ac, feugiat turpis. Vestibulum fermentum placerat mi nec scelerisque. Ut id nibh ornare, luctus velit ac, feugiat turpis. Vestibulum fermentum. Vestibulum fermentum placerat mi nec. Ut id nibh ornare, luctus velit ac, feugiat turpis.Vestibulum fermentum. Vestibulum fermentum.", new Guid("30a8de0d-855c-441d-a1c4-76182fb97f74"), "konkurs_artystyczny.png", new DateTime(2025, 2, 2, 0, 0, 0, 0, DateTimeKind.Unspecified), "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut id nibh ornare, luctus velit ac, feugiat turpis. Vestibulum fermentum placerat mi nec scelerisque. Ut id nibh ornare, luctus velit ac, feugiat turpis. Vestibulum fermentum. Vestibulum fermentum placerat mi nec. Ut id nibh ornare, luctus velit ac, feugiat turpis.Vestibulum fermentum. Vestibulum fermentum.", "Finał konkursu artystycznego" },
-                    { 2, "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut id nibh ornare, luctus...", new Guid("8e123c45-98fc-4868-af72-57764986de8f"), "koncert_lunar_vibes.png", new DateTime(2025, 2, 2, 0, 0, 0, 0, DateTimeKind.Unspecified), "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut id nibh ornare, luctus...", "Relacja z koncertu zespołu Lunar Vibes" },
-                    { 3, "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut id nibh ornare, luctus...", new Guid("38f1dda7-2aa6-4d37-830c-60407ec30f6c"), "modernizacja sali.png", new DateTime(2025, 2, 2, 0, 0, 0, 0, DateTimeKind.Unspecified), "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut id nibh ornare, luctus...", "Modernizacja sali koncertowej" },
-                    { 4, "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut id nibh ornare, luctus...", new Guid("d96794a3-877b-4459-87ff-1caf28cd881a"), "znizka.png", new DateTime(2025, 2, 2, 0, 0, 0, 0, DateTimeKind.Unspecified), "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut id nibh ornare, luctus...", "Zniżka 20% na zakup karnetów" },
-                    { 5, "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut id nibh ornare, luctus...", new Guid("17b8f15c-837d-4dea-b309-f2decf70394b"), "noc_filmowa.png", new DateTime(2025, 2, 2, 0, 0, 0, 0, DateTimeKind.Unspecified), "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut id nibh ornare, luctus...", "Noc Filmowa z Klasykami Kina" },
-                    { 6, "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut id nibh ornare, luctus...", new Guid("865ffa28-3d6f-48e3-9aca-68f31e0c0ee7"), "wernisaz.png", new DateTime(2025, 2, 2, 0, 0, 0, 0, DateTimeKind.Unspecified), "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut id nibh ornare, luctus...", "Wernisaż: Nowe inspiracje" }
+                    { 1, "Finał konkursu artystycznego, który odbył się w naszym centrum, okazał się prawdziwym świętem sztuki. Udział wzięli artyści z różnych dziedzin: malarstwo, rzeźba, fotografia oraz sztuki wizualne. Każdy z uczestników miał okazję zaprezentować swoje dzieła przed szerszą publicznością, a także przed specjalnie powołaną komisją, składającą się z profesjonalistów z branży artystycznej. Zwycięzcy konkursu otrzymali nagrody pieniężne oraz profesjonalne wsparcie w dalszym rozwoju kariery artystycznej. Wydarzenie zakończyło się uroczystą galą, która na długo pozostanie w pamięci uczestników i widzów.", new Guid("c771ea3f-aa24-45c9-9fde-76695d5eab1d"), "konkurs_artystyczny.png", new DateTime(2025, 3, 18, 0, 0, 0, 0, DateTimeKind.Unspecified), "Z radością ogłaszamy finał naszego konkursu artystycznego, w którym uczestnicy rywalizowali w różnych kategoriach. Wydarzenie przyciągnęło wielu utalentowanych artystów. Zwycięzcy otrzymali cenne nagrody i wyróżnienia.", "Finał konkursu artystycznego" },
+                    { 2, "Koncert zespołu Lunar Vibes, który odbył się w naszej sali koncertowej, przyciągnął rzeszę miłośników muzyki alternatywnej i elektronicznej. Zespół, znany z dynamicznych i innowacyjnych brzmień, zapewnił publiczności niezapomniane przeżycia muzyczne. Dźwięki, które łączyły różnorodne gatunki muzyczne, wprowadziły słuchaczy w trans, a energetyzujące występy artystów zapewniły fantastyczną atmosferę. W trakcie koncertu widzowie mogli usłyszeć zarówno starsze utwory zespołu, jak i nowości, które dopiero mają trafić na nadchodzący album. Zespół zagrał przed pełną salą, a po wydarzeniu odbył się kameralny after party, podczas którego fani mieli okazję porozmawiać z artystami. Koncert Lunar Vibes był jednym z najważniejszych wydarzeń muzycznych w tym roku.", new Guid("94ab03cd-63d8-4516-a45b-990351680077"), "koncert_lunar_vibes.png", new DateTime(2025, 3, 18, 0, 0, 0, 0, DateTimeKind.Unspecified), "Zespół Lunar Vibes zachwycił publiczność podczas swojego koncertu w naszej sali koncertowej. Przenoszący w inny wymiar dźwięk, energetyzujący występ, który zapisał się na stałe w pamięci uczestników.", "Relacja z koncertu zespołu Lunar Vibes" },
+                    { 3, "Z radością ogłaszamy zakończenie modernizacji naszej sali koncertowej. Dzięki inwestycjom w nowoczesne technologie, poprawiliśmy zarówno akustykę, jak i komfort naszych gości. Wymieniono systemy nagłośnienia i oświetlenia, a także dostosowano przestrzeń do większych wydarzeń, takich jak koncerty, festiwale muzyczne czy transmisje na żywo. Zwiększona pojemność sali oraz nowoczesne fotele zapewniają wygodę i komfort nawet podczas długotrwałych wydarzeń. Ponadto wprowadziliśmy innowacyjne rozwiązania z zakresu multimediów, dzięki czemu organizacja eventów o zróżnicowanej tematyce stała się jeszcze łatwiejsza. Od teraz, nasza sala koncertowa oferuje jeszcze lepsze warunki dla artystów i publiczności. Zapraszamy do odwiedzenia nowego, odmienionego wnętrza.", new Guid("253bc760-25d9-43ef-89dc-28453c96ef9a"), "modernizacja sali.png", new DateTime(2025, 3, 18, 0, 0, 0, 0, DateTimeKind.Unspecified), "Nasza sala koncertowa zyskała nowy wygląd i nowoczesne wyposażenie, które pozwoli na organizację jeszcze lepszych wydarzeń muzycznych. Zapraszamy do odwiedzenia odnowionego wnętrza.", "Modernizacja sali koncertowej" },
+                    { 4, "Przygotowaliśmy wyjątkową ofertę dla naszych stałych i nowych gości. Tylko teraz oferujemy 20% zniżki na wszystkie karnety w sprzedaży. Karnet upoważnia do udziału w wydarzeniach organizowanych w naszym centrum przez najbliższy sezon. Oferujemy szeroką gamę wydarzeń, od koncertów, przez wystawy artystyczne, po spektakle teatralne. Zniżka dotyczy zarówno karnetów indywidualnych, jak i grupowych. To doskonała okazja, by zagwarantować sobie dostęp do najlepszych wydarzeń w atrakcyjnej cenie. Oferta jest ograniczona czasowo, dlatego warto się pospieszyć i skorzystać z tej wyjątkowej promocji, zanim będzie za późno.", new Guid("457bb9e7-2489-4854-952c-b92c452a7e63"), "znizka.png", new DateTime(2025, 3, 18, 0, 0, 0, 0, DateTimeKind.Unspecified), "Zachęcamy do zakupu karnetów na nadchodzące wydarzenia w naszym centrum. Tylko teraz oferujemy 20% zniżki na wszystkie karnety. To doskonała okazja, by nie przegapić żadnego z naszych wydarzeń.", "Zniżka 20% na zakup karnetów" },
+                    { 5, "Noc Filmowa to wydarzenie, które przyciąga wszystkich miłośników dobrego kina. Podczas tego specjalnego wieczoru będziemy wyświetlać klasyki światowego kina, które na zawsze zapisały się w historii filmografii. Filmy będą prezentowane na dużym ekranie, a publiczność będzie miała okazję zobaczyć je w towarzystwie innych pasjonatów kina. Zadbaliśmy o wyjątkową atmosferę, w tym profesjonalne nagłośnienie i oświetlenie, by każda projekcja była niezapomnianym przeżyciem. To wydarzenie jest doskonałą okazją, by spędzić czas w gronie osób, które dzielą tę samą pasję do sztuki filmowej. Zapraszamy do wspólnego świętowania klasyki kina.", new Guid("57da63cb-91af-4afb-9b3b-092f72620f75"), "noc_filmowa.png", new DateTime(2025, 3, 18, 0, 0, 0, 0, DateTimeKind.Unspecified), "Zapraszamy na wyjątkowy wieczór z klasykami kina. Noc Filmowa to doskonała okazja, by obejrzeć kultowe filmy na dużym ekranie w towarzystwie innych miłośników kina.", "Noc Filmowa z Klasykami Kina" },
+                    { 6, "Wernisaż wystawy pt. 'Nowe inspiracje' to wydarzenie, które łączy w sobie różne formy sztuki współczesnej. Na wystawie zaprezentowane zostaną prace artystów z różnych dziedzin: malarstwo, fotografia, rzeźba oraz multimedia. Każdy z artystów pokaże swoje najnowsze dzieła, które są wynikiem ich poszukiwań i eksperymentów artystycznych. Wystawa daje możliwość zobaczenia sztuki w jej najnowszej odsłonie i odkrycia nowych, świeżych inspiracji. Wernisaż to doskonała okazja, by spotkać się z twórcami, porozmawiać o ich pracy i zbliżyć się do współczesnej sztuki. Wydarzenie odbędzie się w naszej przestronnej galerii, która doskonale nadaje się do prezentacji tego typu wystaw.", new Guid("8bb51e9e-1807-48b8-b48b-5eb6cfa04980"), "wernisaz.png", new DateTime(2025, 3, 18, 0, 0, 0, 0, DateTimeKind.Unspecified), "Zapraszamy na wernisaż wystawy 'Nowe inspiracje'. Artyści z różnych dziedzin sztuki zaprezentują swoje najnowsze prace. To doskonała okazja, by odkryć świeże spojrzenie na współczesną sztukę.", "Wernisaż: Nowe inspiracje" }
                 });
 
             migrationBuilder.InsertData(
@@ -1182,9 +1197,9 @@ namespace EventFlowAPI.DB.Migrations
                 columns: new[] { "Id", "DeleteDate", "IsDeleted", "IsUpdated", "Name", "OrganizerGuid", "PhotoName", "UpdateDate" },
                 values: new object[,]
                 {
-                    { 1, null, false, false, "EventFlow", new Guid("b5e599e9-825c-4197-9ba8-93a0f57897da"), "eventflow.png", null },
-                    { 2, null, false, false, "Snowflake", new Guid("a9abdef2-d177-4aca-aaf7-3550b3470244"), "snowflake.png", null },
-                    { 3, null, false, false, "Aura", new Guid("77de8c0e-d4f4-49b1-b369-c0fc3d98cd86"), "aura.png", null }
+                    { 1, null, false, false, "EventFlow", new Guid("4656853b-fbf1-4407-8a15-9f60fe367343"), "eventflow.png", null },
+                    { 2, null, false, false, "Snowflake", new Guid("175c000d-26c4-4519-b49d-c9d1d7935699"), "snowflake.png", null },
+                    { 3, null, false, false, "Aura", new Guid("d044fdef-73a3-4f97-962f-d85e36760f4e"), "aura.png", null }
                 });
 
             migrationBuilder.InsertData(
@@ -1192,11 +1207,11 @@ namespace EventFlowAPI.DB.Migrations
                 columns: new[] { "Id", "Name", "PartnerGuid", "PhotoName" },
                 values: new object[,]
                 {
-                    { 1, "Basel", new Guid("87dddfa7-0768-4f9b-a320-3bebff702688"), "basel.png" },
-                    { 2, "Aura", new Guid("0bd88367-c450-48ca-b504-080783e17fbd"), "aura.png" },
-                    { 3, "Vision", new Guid("bebb64e1-54a2-406f-b94c-2022e2f19354"), "vision.png" },
-                    { 4, "Snowflake", new Guid("8779459c-4f4b-49a3-a18e-d194809e4ab5"), "snowflake.png" },
-                    { 5, "Waveless", new Guid("8a496b2a-6f21-4c80-8cfa-9a66d61a7f3b"), "waveless.png" }
+                    { 1, "Basel", new Guid("8e0ab6f0-ebbd-4d96-ae19-574b276e985c"), "basel.png" },
+                    { 2, "Aura", new Guid("fa1fefc3-3a92-4162-a5cc-30aafea11323"), "aura.png" },
+                    { 3, "Vision", new Guid("bb243a20-bf87-4534-b9b2-a994004f00c4"), "vision.png" },
+                    { 4, "Snowflake", new Guid("2a1dbe6b-42f3-4fec-ab63-dffba70184b7"), "snowflake.png" },
+                    { 5, "Waveless", new Guid("20f68122-1bdf-4881-8ce4-f808701648a5"), "waveless.png" }
                 });
 
             migrationBuilder.InsertData(
@@ -1204,8 +1219,8 @@ namespace EventFlowAPI.DB.Migrations
                 columns: new[] { "Id", "DeleteDate", "IsDeleted", "IsUpdated", "Name", "PaymentTypeGuid", "PhotoName", "UpdateDate" },
                 values: new object[,]
                 {
-                    { 1, null, false, false, "PayU", new Guid("9da251ca-e818-4987-91c3-61b45fb9317a"), "", null },
-                    { 2, null, false, false, "Karnet", new Guid("e3227eec-f00b-4bb7-9b82-4ebebe1713e5"), "", null }
+                    { 1, null, false, false, "PayU", new Guid("2aa93a32-7232-48e7-a05b-8364c8aafffc"), "", null },
+                    { 2, null, false, false, "Karnet", new Guid("1938093d-7427-40e5-a736-c2aa4305dc16"), "", null }
                 });
 
             migrationBuilder.InsertData(
@@ -1223,9 +1238,9 @@ namespace EventFlowAPI.DB.Migrations
                 columns: new[] { "Id", "DeleteDate", "IsDeleted", "IsUpdated", "Name", "PhotoName", "SponsorGuid", "UpdateDate" },
                 values: new object[,]
                 {
-                    { 1, null, false, false, "Basel", "basel.png", new Guid("b04fa0a0-4f67-4fce-85e6-cd6980814555"), null },
-                    { 2, null, false, false, "Vision", "vision.png", new Guid("c31b5336-1122-492d-985c-a4e22754f688"), null },
-                    { 3, null, false, false, "Waveless", "waveless.png", new Guid("14c560f7-aad1-4bf4-bba2-688514f2d24c"), null }
+                    { 1, null, false, false, "Basel", "basel.png", new Guid("423d7369-b70c-4471-97a8-968d001718a7"), null },
+                    { 2, null, false, false, "Vision", "vision.png", new Guid("6ba10301-43f6-4207-835c-15f03d7904c7"), null },
+                    { 3, null, false, false, "Waveless", "waveless.png", new Guid("ca9f16d2-cfa6-47dc-9aff-a0821ce6bf79"), null }
                 });
 
             migrationBuilder.InsertData(
@@ -1283,9 +1298,9 @@ namespace EventFlowAPI.DB.Migrations
                 columns: new[] { "Id", "DeleteDate", "EndDate", "EventPassGuid", "EventPassJPGName", "EventPassPDFName", "IsDeleted", "IsUpdated", "PassTypeId", "PaymentAmount", "PaymentDate", "PaymentTypeId", "PreviousEndDate", "RenewalDate", "StartDate", "TotalDiscount", "TotalDiscountPercentage", "UpdateDate", "UserId" },
                 values: new object[,]
                 {
-                    { 1, null, new DateTime(2025, 8, 2, 0, 0, 0, 0, DateTimeKind.Unspecified), new Guid("b00ca94a-e6b2-4d2e-b270-244b3e76048d"), "eventflow_karnet_b00ca94a-e6b2-4d2e-b270-244b3e76048d.jpg", "eventflow_karnet_b00ca94a-e6b2-4d2e-b270-244b3e76048d.pdf", false, false, 3, 499.99m, new DateTime(2025, 2, 2, 0, 0, 0, 0, DateTimeKind.Unspecified), 1, null, null, new DateTime(2025, 2, 2, 0, 0, 0, 0, DateTimeKind.Unspecified), 0m, 0m, null, "2" },
-                    { 2, null, new DateTime(2026, 2, 2, 0, 0, 0, 0, DateTimeKind.Unspecified), new Guid("766245b4-8c08-49dd-9480-2606aaa590be"), "eventflow_karnet_766245b4-8c08-49dd-9480-2606aaa590be.jpg", "eventflow_karnet_766245b4-8c08-49dd-9480-2606aaa590be.pdf", false, false, 4, 999.99m, new DateTime(2025, 2, 2, 0, 0, 0, 0, DateTimeKind.Unspecified), 1, null, null, new DateTime(2025, 2, 2, 0, 0, 0, 0, DateTimeKind.Unspecified), 0m, 0m, null, "3" },
-                    { 3, null, new DateTime(2025, 5, 2, 0, 0, 0, 0, DateTimeKind.Unspecified), new Guid("33610a0d-a1b7-4700-bffe-9e334b977e6a"), "eventflow_karnet_33610a0d-a1b7-4700-bffe-9e334b977e6a.jpg", "eventflow_karnet_33610a0d-a1b7-4700-bffe-9e334b977e6a.pdf", false, false, 2, 235.99m, new DateTime(2025, 2, 2, 0, 0, 0, 0, DateTimeKind.Unspecified), 1, null, null, new DateTime(2025, 2, 2, 0, 0, 0, 0, DateTimeKind.Unspecified), 0m, 0m, null, "4" }
+                    { 1, null, new DateTime(2025, 9, 18, 0, 0, 0, 0, DateTimeKind.Unspecified), new Guid("b00ca94a-e6b2-4d2e-b270-244b3e76048d"), "eventflow_karnet_b00ca94a-e6b2-4d2e-b270-244b3e76048d.jpg", "eventflow_karnet_b00ca94a-e6b2-4d2e-b270-244b3e76048d.pdf", false, false, 3, 499.99m, new DateTime(2025, 3, 18, 0, 0, 0, 0, DateTimeKind.Unspecified), 1, null, null, new DateTime(2025, 3, 18, 0, 0, 0, 0, DateTimeKind.Unspecified), 0m, 0m, null, "2" },
+                    { 2, null, new DateTime(2026, 3, 18, 0, 0, 0, 0, DateTimeKind.Unspecified), new Guid("766245b4-8c08-49dd-9480-2606aaa590be"), "eventflow_karnet_766245b4-8c08-49dd-9480-2606aaa590be.jpg", "eventflow_karnet_766245b4-8c08-49dd-9480-2606aaa590be.pdf", false, false, 4, 999.99m, new DateTime(2025, 3, 18, 0, 0, 0, 0, DateTimeKind.Unspecified), 1, null, null, new DateTime(2025, 3, 18, 0, 0, 0, 0, DateTimeKind.Unspecified), 0m, 0m, null, "3" },
+                    { 3, null, new DateTime(2025, 6, 18, 0, 0, 0, 0, DateTimeKind.Unspecified), new Guid("33610a0d-a1b7-4700-bffe-9e334b977e6a"), "eventflow_karnet_33610a0d-a1b7-4700-bffe-9e334b977e6a.jpg", "eventflow_karnet_33610a0d-a1b7-4700-bffe-9e334b977e6a.pdf", false, false, 2, 235.99m, new DateTime(2025, 3, 18, 0, 0, 0, 0, DateTimeKind.Unspecified), 1, null, null, new DateTime(2025, 3, 18, 0, 0, 0, 0, DateTimeKind.Unspecified), 0m, 0m, null, "4" }
                 });
 
             migrationBuilder.InsertData(
@@ -1293,9 +1308,9 @@ namespace EventFlowAPI.DB.Migrations
                 columns: new[] { "Id", "AddDate", "DeleteDate", "Duration", "EndDate", "FestivalGuid", "IsDeleted", "IsUpdated", "Name", "PhotoName", "ShortDescription", "StartDate", "UpdateDate" },
                 values: new object[,]
                 {
-                    { 1, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, -2768400L, new DateTime(2025, 4, 3, 1, 0, 0, 0, DateTimeKind.Unspecified), new Guid("ffdc0ec4-a249-474c-8982-cd208f70a0ae"), false, false, "Festiwal muzyki hip-hop", "festival.png", "Festiwal muzyki hip-hop to nowy festiwal organizowany przez XYZ.", new DateTime(2025, 3, 3, 0, 0, 0, 0, DateTimeKind.Unspecified), null },
-                    { 2, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, -2772000L, new DateTime(2025, 4, 5, 2, 0, 0, 0, DateTimeKind.Unspecified), new Guid("9a330cf8-c5fa-4395-b907-9ac0443ea8c2"), false, false, "Festiwal filmowy", "", "Festiwal filmowy to festiwal na którym można obejrzeć filmy.", new DateTime(2025, 3, 4, 0, 0, 0, 0, DateTimeKind.Unspecified), null },
-                    { 3, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, -2689200L, new DateTime(2025, 4, 6, 3, 0, 0, 0, DateTimeKind.Unspecified), new Guid("51e5c07d-d4db-4bc4-87c9-183eb5f5b272"), false, false, "Festiwal sztuki abstrakcyjnej", "", "Festiwal sztuki abstrakcyjnej to festiwal na którym można zobaczyć sztukę.", new DateTime(2025, 3, 6, 0, 0, 0, 0, DateTimeKind.Unspecified), null }
+                    { 1, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, -2682000L, new DateTime(2025, 5, 19, 1, 0, 0, 0, DateTimeKind.Unspecified), new Guid("0e36fd43-030a-4459-88fa-f99f53e601a3"), false, false, "Festiwal Muzyki Hip-Hop", "festiwal_muzyki_hip_hop.png", "Największy festiwal hip-hopowy! Koncerty, freestyle battle, warsztaty DJ-skie i spotkania z artystami.", new DateTime(2025, 4, 19, 0, 0, 0, 0, DateTimeKind.Unspecified), null },
+                    { 2, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, -2685600L, new DateTime(2025, 5, 21, 2, 0, 0, 0, DateTimeKind.Unspecified), new Guid("d946406d-7b80-40ca-aeff-c2966dcb6727"), false, false, "Festiwal Filmowy", "festiwal_filmowy.png", "Przegląd najlepszych filmów z całego świata! Premiera, spotkania z reżyserami i nocne maratony kinowe.", new DateTime(2025, 4, 20, 0, 0, 0, 0, DateTimeKind.Unspecified), null },
+                    { 3, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, -2602800L, new DateTime(2025, 5, 22, 3, 0, 0, 0, DateTimeKind.Unspecified), new Guid("d96a3633-6a7f-42fb-ba84-94e5902adce7"), false, false, "Festiwal Sztuki", "festiwal_sztuki.png", "Wystawy, instalacje i performanse! Odkryj nowoczesne formy sztuki i weź udział w kreatywnych warsztatach.", new DateTime(2025, 4, 22, 0, 0, 0, 0, DateTimeKind.Unspecified), null }
                 });
 
             migrationBuilder.InsertData(
@@ -1317,7 +1332,12 @@ namespace EventFlowAPI.DB.Migrations
                     { 12, 1, 2m, 1, 1, "sala_5_5_12.pdf", true, false, false, 120.99m, null },
                     { 13, 2, 1m, 2, 2, "sala_5_5_13.pdf", true, false, false, 89.99m, null },
                     { 14, 3, 2m, 3, 3, "sala_5_5_14.pdf", true, false, false, 179.99m, null },
-                    { 15, 4, 1m, 4, 4, "sala_5_5_15.pdf", true, false, false, 199.99m, null }
+                    { 15, 4, 1m, 4, 4, "sala_5_5_15.pdf", true, false, false, 199.99m, null },
+                    { 16, 3, 2m, 3, 3, "sala_5_5_16.pdf", true, false, false, 179.99m, null },
+                    { 17, 2, 1m, 2, 2, "sala_5_5_17.pdf", true, false, false, 89.99m, null },
+                    { 18, 1, 2m, 1, 1, "sala_5_5_18.pdf", true, false, false, 120.99m, null },
+                    { 19, 3, 2m, 3, 3, "sala_5_5_19.pdf", true, false, false, 179.99m, null },
+                    { 20, 4, 1m, 4, 4, "sala_5_5_20.pdf", true, false, false, 199.99m, null }
                 });
 
             migrationBuilder.InsertData(
@@ -1326,10 +1346,28 @@ namespace EventFlowAPI.DB.Migrations
                 values: new object[,]
                 {
                     { 1, 1 },
+                    { 1, 4 },
+                    { 1, 5 },
+                    { 1, 6 },
                     { 2, 2 },
                     { 2, 3 },
                     { 3, 1 },
-                    { 4, 2 }
+                    { 4, 2 },
+                    { 5, 2 },
+                    { 5, 5 },
+                    { 5, 6 },
+                    { 6, 5 },
+                    { 6, 6 },
+                    { 7, 1 },
+                    { 7, 2 },
+                    { 7, 3 },
+                    { 7, 4 },
+                    { 7, 5 },
+                    { 7, 6 },
+                    { 8, 6 },
+                    { 9, 3 },
+                    { 10, 4 },
+                    { 11, 4 }
                 });
 
             migrationBuilder.InsertData(
@@ -1348,13 +1386,18 @@ namespace EventFlowAPI.DB.Migrations
                 columns: new[] { "Id", "AddDate", "CategoryId", "DeleteDate", "Duration", "EndDate", "EventGuid", "HallId", "IsDeleted", "IsUpdated", "Name", "PhotoName", "ShortDescription", "StartDate", "UpdateDate" },
                 values: new object[,]
                 {
-                    { 1, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1, null, -3600L, new DateTime(2025, 3, 3, 1, 0, 0, 0, DateTimeKind.Unspecified), new Guid("8f712ff6-e5d2-47f5-ab7e-b496b5fa55e5"), 6, false, false, "Koncert: Mystic Waves", "koncert_mystic_waves.png", "Któtki opis koncertu Mystic Waves.", new DateTime(2025, 3, 3, 0, 0, 0, 0, DateTimeKind.Unspecified), null },
-                    { 2, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 3, null, -10800L, new DateTime(2025, 3, 4, 3, 0, 0, 0, DateTimeKind.Unspecified), new Guid("7f8f1676-fc63-424b-98c7-422e93d92ffb"), 7, false, false, "Cień Przeszłości", "cien_przeszlosci.png", "Krótki opis spektaklu pt. Cień Przeszłości.", new DateTime(2025, 3, 4, 0, 0, 0, 0, DateTimeKind.Unspecified), null },
-                    { 3, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2, null, -7200L, new DateTime(2025, 3, 5, 2, 0, 0, 0, DateTimeKind.Unspecified), new Guid("3d1216ba-30e0-4591-9e75-fae837c79c79"), 5, false, false, "Królestwo planety małp", "krolestwo_planety_malp.png", "Nowy film Królestwo planety małp już w kinach!.", new DateTime(2025, 3, 5, 0, 0, 0, 0, DateTimeKind.Unspecified), null },
-                    { 4, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 4, null, -10800L, new DateTime(2025, 3, 6, 3, 0, 0, 0, DateTimeKind.Unspecified), new Guid("380a07bc-d281-441a-b643-cac8ca7e6cc6"), 8, false, false, "Nowe inspiracje", "nowe_inspiracje.png", "Nowe inspiracje to nowoczesna wystawa sztuki.", new DateTime(2025, 3, 6, 0, 0, 0, 0, DateTimeKind.Unspecified), null },
-                    { 5, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1, null, -3600L, new DateTime(2025, 4, 3, 1, 0, 0, 0, DateTimeKind.Unspecified), new Guid("c869bcff-72ad-479b-a8c0-61d78f59bf52"), 10, false, false, "Koncert: New Era", "", "Jedyna taka okazja na usłyszenie New Era na żywo.", new DateTime(2025, 4, 3, 0, 0, 0, 0, DateTimeKind.Unspecified), null },
-                    { 6, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2, null, -7200L, new DateTime(2025, 4, 5, 2, 0, 0, 0, DateTimeKind.Unspecified), new Guid("68b0b48f-6404-46dc-9eac-41275ecf196d"), 9, false, false, "Gladiator", "", "Nowy film Gladiator już w kinach!.", new DateTime(2025, 4, 5, 0, 0, 0, 0, DateTimeKind.Unspecified), null },
-                    { 7, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 4, null, -10800L, new DateTime(2025, 4, 6, 3, 0, 0, 0, DateTimeKind.Unspecified), new Guid("0e43092a-ee4e-47dc-a85b-48134eaa001e"), 11, false, false, "Nowa sztuka", "", "Nowe sztuka to nowoczesna wystawa sztuki.", new DateTime(2025, 4, 6, 0, 0, 0, 0, DateTimeKind.Unspecified), null }
+                    { 1, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1, null, -3600L, new DateTime(2025, 4, 19, 1, 0, 0, 0, DateTimeKind.Unspecified), new Guid("bd9cf606-260b-4611-bb6f-3cde4298edc7"), 6, false, false, "Koncert: Mystic Waves", "koncert_mystic_waves.png", "Mystic Waves to niezapomniana podróż przez elektroniczne brzmienia i hipnotyzujące melodie.", new DateTime(2025, 4, 19, 0, 0, 0, 0, DateTimeKind.Unspecified), null },
+                    { 2, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 3, null, -10800L, new DateTime(2025, 4, 20, 3, 0, 0, 0, DateTimeKind.Unspecified), new Guid("30f24949-51df-4274-a804-544ee7e2e1d2"), 7, false, false, "Cień Przeszłości", "cien_przeszlosci.png", "Dramatyczna opowieść o sekretach przeszłości, które powracają, by zmienić teraźniejszość.", new DateTime(2025, 4, 20, 0, 0, 0, 0, DateTimeKind.Unspecified), null },
+                    { 3, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2, null, -7200L, new DateTime(2025, 4, 21, 2, 0, 0, 0, DateTimeKind.Unspecified), new Guid("63b9ba64-48dd-4997-95c9-dbfa2389f066"), 5, false, false, "Królestwo planety małp", "krolestwo_planety_malp.png", "Kolejna część kultowej serii sci-fi. Świat, w którym dominują małpy, a ludzie walczą o przetrwanie.", new DateTime(2025, 4, 21, 0, 0, 0, 0, DateTimeKind.Unspecified), null },
+                    { 4, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 4, null, -10800L, new DateTime(2025, 4, 22, 3, 0, 0, 0, DateTimeKind.Unspecified), new Guid("5e01e785-8f63-4f8c-af89-25ee89f22b83"), 8, false, false, "Nowe inspiracje", "nowe_inspiracje.png", "Wystawa prezentująca prace nowoczesnych artystów, pełna świeżych perspektyw i innowacji.", new DateTime(2025, 4, 22, 0, 0, 0, 0, DateTimeKind.Unspecified), null },
+                    { 5, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1, null, -3600L, new DateTime(2025, 5, 19, 1, 0, 0, 0, DateTimeKind.Unspecified), new Guid("7f940a53-f3a2-46d8-8d39-b28e076d40aa"), 10, false, false, "Koncert: New Era", "new_era.png", "Energetyczny koncert zespołu New Era – mieszanka rocka, elektroniki i alternatywnych brzmień.", new DateTime(2025, 5, 19, 0, 0, 0, 0, DateTimeKind.Unspecified), null },
+                    { 6, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2, null, -7200L, new DateTime(2025, 5, 21, 2, 0, 0, 0, DateTimeKind.Unspecified), new Guid("bc7b2f85-b498-4186-ad5c-5cf25d938499"), 9, false, false, "Gladiator", "gladiator.png", "Legendarna opowieść o honorze i zemście w starożytnym Rzymie.", new DateTime(2025, 5, 21, 0, 0, 0, 0, DateTimeKind.Unspecified), null },
+                    { 7, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 4, null, -10800L, new DateTime(2025, 5, 22, 3, 0, 0, 0, DateTimeKind.Unspecified), new Guid("775b339d-4524-4829-bd42-4da8f88cf3f1"), 11, false, false, "Nowa sztuka", "", "Wystawa prezentująca najnowsze prace artystów eksperymentalnych i awangardowych.", new DateTime(2025, 5, 22, 0, 0, 0, 0, DateTimeKind.Unspecified), null },
+                    { 8, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 3, null, 9000L, new DateTime(2025, 6, 2, 2, 30, 0, 0, DateTimeKind.Unspecified), new Guid("08050835-f7b3-4395-9679-b7bc915c84a6"), 16, false, false, "Cień Nad Miastem", "cien_nad_miastem.png", "Mroczny thriller teatralny o tajemniczych wydarzeniach, które wstrząsają miastem po zmroku.", new DateTime(2025, 6, 2, 0, 0, 0, 0, DateTimeKind.Unspecified), null },
+                    { 9, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1, null, 7200L, new DateTime(2025, 3, 17, 3, 0, 0, 0, DateTimeKind.Unspecified), new Guid("a4f24bff-10c1-4763-b410-ba0e6e7bb3d3"), 17, false, false, "Jazzowe Brzmienia", "jazz.png", "Magiczny czas z jazzem na żywo – koncert znanych artystów jazzowych, którzy przeniosą Cię w świat wyjątkowych dźwięków.", new DateTime(2025, 3, 17, 1, 0, 0, 0, DateTimeKind.Unspecified), null },
+                    { 10, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2, null, 7200L, new DateTime(2025, 3, 16, 4, 0, 0, 0, DateTimeKind.Unspecified), new Guid("f9b817c5-e386-4107-9ed3-49b7ce38c519"), 18, false, false, "Interstellar", "interstellar.jpg", "Epicka podróż kosmiczna, która bada granice ludzkiej wytrzymałości i miłości.", new DateTime(2025, 3, 16, 2, 0, 0, 0, DateTimeKind.Unspecified), null },
+                    { 11, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 3, null, 7200L, new DateTime(2025, 3, 15, 5, 0, 0, 0, DateTimeKind.Unspecified), new Guid("ef97fdf1-9b04-47aa-bc42-1ff4f7fd5a07"), 19, false, false, "Zatrzymać Przeznaczenie", "zatrzymac_przeznaczenie.jpg", "Spektakl o postaci, która staje w obliczu nieuchronnego przeznaczenia.", new DateTime(2025, 3, 15, 3, 0, 0, 0, DateTimeKind.Unspecified), null },
+                    { 12, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 4, null, 7200L, new DateTime(2025, 3, 14, 6, 0, 0, 0, DateTimeKind.Unspecified), new Guid("3c229abc-c4e2-41e9-9aad-487cd733f8a5"), 20, false, false, "Nowe Perspektywy", "nowe_perspektywy.jpg", "Wystawa sztuki współczesnej, która zaprasza do odkrywania świata z nowych punktów widzenia.", new DateTime(2025, 3, 14, 4, 0, 0, 0, DateTimeKind.Unspecified), null }
                 });
 
             migrationBuilder.InsertData(
@@ -1401,21 +1444,26 @@ namespace EventFlowAPI.DB.Migrations
                 columns: new[] { "Id", "MaxNumberOfSeats", "MaxNumberOfSeatsColumns", "MaxNumberOfSeatsRows", "NumberOfSeats", "StageLength", "StageWidth", "TotalArea", "TotalLength", "TotalWidth" },
                 values: new object[,]
                 {
-                    { 1, 255m, 15m, 15m, 100m, 4m, 20m, 800m, 20m, 40m },
-                    { 2, 150m, 10m, 15m, 150m, null, null, 150m, 15m, 10m },
-                    { 3, 60m, 10m, 6m, 60m, 4m, 5m, 80m, 10m, 8m },
-                    { 4, 100m, 10m, 10m, 100m, 5m, 8m, 140m, 14m, 10m },
-                    { 5, 255m, 15m, 15m, 100m, 4m, 20m, 800m, 20m, 40m },
-                    { 6, 150m, 10m, 15m, 150m, null, null, 150m, 15m, 10m },
-                    { 7, 60m, 10m, 6m, 60m, 4m, 5m, 80m, 10m, 8m },
-                    { 8, 100m, 10m, 10m, 100m, 5m, 8m, 140m, 14m, 10m },
-                    { 9, 255m, 15m, 15m, 100m, 4m, 20m, 800m, 20m, 40m },
-                    { 10, 150m, 10m, 15m, 150m, null, null, 150m, 15m, 10m },
-                    { 11, 100m, 10m, 10m, 100m, 5m, 8m, 140m, 14m, 10m },
-                    { 12, 255m, 15m, 15m, 100m, 4m, 20m, 800m, 20m, 40m },
-                    { 13, 150m, 10m, 15m, 150m, null, null, 150m, 15m, 10m },
-                    { 14, 60m, 10m, 6m, 60m, 4m, 5m, 80m, 10m, 8m },
-                    { 15, 100m, 10m, 10m, 100m, 5m, 8m, 140m, 14m, 10m }
+                    { 1, 255m, 15m, 15m, 100m, 4.4m, 7m, 308m, 22m, 14m },
+                    { 2, 150m, 10m, 15m, 150m, null, null, 198m, 22m, 9m },
+                    { 3, 60m, 10m, 6m, 60m, 4.4m, 5.6m, 99m, 11m, 9m },
+                    { 4, 100m, 10m, 10m, 100m, 6m, 7.2m, 153m, 17m, 9m },
+                    { 5, 255m, 15m, 15m, 100m, 4.4m, 7m, 108m, 22m, 14m },
+                    { 6, 150m, 10m, 15m, 150m, null, null, 198m, 22m, 9m },
+                    { 7, 60m, 10m, 6m, 60m, 4.4m, 5.6m, 99m, 11m, 9m },
+                    { 8, 100m, 10m, 10m, 100m, 6m, 7.2m, 153m, 17m, 9m },
+                    { 9, 255m, 15m, 15m, 100m, 4.4m, 7m, 308m, 22m, 14m },
+                    { 10, 150m, 10m, 15m, 150m, null, null, 198m, 22m, 9m },
+                    { 11, 100m, 10m, 10m, 100m, 6m, 7.2m, 153m, 17m, 9m },
+                    { 12, 255m, 15m, 15m, 100m, 4.4m, 7m, 308m, 22m, 14m },
+                    { 13, 150m, 10m, 15m, 150m, null, null, 198m, 22m, 9m },
+                    { 14, 60m, 10m, 6m, 60m, 4.4m, 5.6m, 99m, 11m, 9m },
+                    { 15, 100m, 10m, 10m, 100m, 6m, 7.2m, 153m, 17m, 9m },
+                    { 16, 60m, 10m, 6m, 60m, 4.4m, 5.6m, 99m, 11m, 9m },
+                    { 17, 150m, 10m, 15m, 150m, null, null, 198m, 22m, 9m },
+                    { 18, 255m, 15m, 15m, 100m, 4.4m, 7m, 308m, 22m, 14m },
+                    { 19, 60m, 10m, 6m, 60m, 4.4m, 5.6m, 99m, 11m, 9m },
+                    { 20, 100m, 10m, 10m, 100m, 6m, 7.2m, 153m, 17m, 9m }
                 });
 
             migrationBuilder.InsertData(
@@ -1423,10 +1471,10 @@ namespace EventFlowAPI.DB.Migrations
                 columns: new[] { "Id", "DeleteDate", "Duration", "EndDate", "HallId", "HallRentGuid", "HallRentPDFName", "IsDeleted", "IsUpdated", "PaymentAmount", "PaymentDate", "PaymentTypeId", "RentDate", "StartDate", "UpdateDate", "UserId" },
                 values: new object[,]
                 {
-                    { 1, null, 28800L, new DateTime(2025, 3, 3, 8, 0, 0, 0, DateTimeKind.Unspecified), 12, new Guid("dc870197-f673-4261-8e01-d58ef9220fae"), "wynajem_sali_1.pdf", false, false, 899.99m, new DateTime(2025, 2, 2, 0, 0, 0, 0, DateTimeKind.Unspecified), 1, new DateTime(2025, 2, 2, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2025, 3, 3, 0, 0, 0, 0, DateTimeKind.Unspecified), null, "4" },
-                    { 2, null, 14400L, new DateTime(2025, 3, 4, 4, 0, 0, 0, DateTimeKind.Unspecified), 13, new Guid("11e60f61-ba77-4b97-b127-6c768b361561"), "wynajem_sali_2.pdf", false, false, 699.99m, new DateTime(2025, 2, 2, 0, 0, 0, 0, DateTimeKind.Unspecified), 1, new DateTime(2025, 2, 2, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2025, 3, 4, 0, 0, 0, 0, DateTimeKind.Unspecified), null, "3" },
-                    { 3, null, 7200L, new DateTime(2025, 3, 5, 2, 0, 0, 0, DateTimeKind.Unspecified), 14, new Guid("78ffb2e2-9e20-4099-9979-85899dee9615"), "wynajem_sali_3.pdf", false, false, 399.99m, new DateTime(2025, 2, 2, 0, 0, 0, 0, DateTimeKind.Unspecified), 1, new DateTime(2025, 2, 2, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2025, 3, 5, 0, 0, 0, 0, DateTimeKind.Unspecified), null, "3" },
-                    { 4, null, 3600L, new DateTime(2025, 3, 6, 1, 0, 0, 0, DateTimeKind.Unspecified), 15, new Guid("287c60ec-aa13-4a3b-9462-796ea454fcf2"), "wynajem_sali_4.pdf", false, false, 150.99m, new DateTime(2025, 2, 2, 0, 0, 0, 0, DateTimeKind.Unspecified), 1, new DateTime(2025, 2, 2, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2025, 3, 6, 0, 0, 0, 0, DateTimeKind.Unspecified), null, "2" }
+                    { 1, null, 28800L, new DateTime(2025, 4, 19, 8, 0, 0, 0, DateTimeKind.Unspecified), 12, new Guid("48972d7a-ab0d-4827-bdd6-2002dc1f1e08"), "wynajem_sali_1.pdf", false, false, 899.99m, new DateTime(2025, 3, 18, 0, 0, 0, 0, DateTimeKind.Unspecified), 1, new DateTime(2025, 3, 18, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2025, 4, 19, 0, 0, 0, 0, DateTimeKind.Unspecified), null, "4" },
+                    { 2, null, 14400L, new DateTime(2025, 4, 20, 4, 0, 0, 0, DateTimeKind.Unspecified), 13, new Guid("3ad58762-60f0-4753-bdf7-c9c7e3eb775c"), "wynajem_sali_2.pdf", false, false, 699.99m, new DateTime(2025, 3, 18, 0, 0, 0, 0, DateTimeKind.Unspecified), 1, new DateTime(2025, 3, 18, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2025, 4, 20, 0, 0, 0, 0, DateTimeKind.Unspecified), null, "3" },
+                    { 3, null, 7200L, new DateTime(2025, 4, 21, 2, 0, 0, 0, DateTimeKind.Unspecified), 14, new Guid("38daa558-0f6e-414a-913c-c500d41d5dc5"), "wynajem_sali_3.pdf", false, false, 399.99m, new DateTime(2025, 3, 18, 0, 0, 0, 0, DateTimeKind.Unspecified), 1, new DateTime(2025, 3, 18, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2025, 4, 21, 0, 0, 0, 0, DateTimeKind.Unspecified), null, "3" },
+                    { 4, null, 3600L, new DateTime(2025, 4, 22, 1, 0, 0, 0, DateTimeKind.Unspecified), 15, new Guid("e690b490-7387-490c-89df-bd9eaf2cc36b"), "wynajem_sali_4.pdf", false, false, 150.99m, new DateTime(2025, 3, 18, 0, 0, 0, 0, DateTimeKind.Unspecified), 1, new DateTime(2025, 3, 18, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2025, 4, 22, 0, 0, 0, 0, DateTimeKind.Unspecified), null, "2" }
                 });
 
             migrationBuilder.InsertData(
@@ -1481,7 +1529,24 @@ namespace EventFlowAPI.DB.Migrations
                     { 45, 4m, 4m, 1m, 14, false, 1m, 4m, 3, null },
                     { 46, 1m, 1m, 1m, 8, false, 1m, 1m, 3, null },
                     { 47, 1m, 1m, 1m, 11, false, 1m, 1m, 3, null },
-                    { 48, 1m, 1m, 1m, 15, false, 1m, 1m, 3, null }
+                    { 48, 1m, 1m, 1m, 15, false, 1m, 1m, 3, null },
+                    { 49, 1m, 1m, 1m, 16, false, 1m, 1m, 3, null },
+                    { 50, 2m, 2m, 1m, 16, false, 1m, 2m, 3, null },
+                    { 51, 3m, 3m, 1m, 16, false, 1m, 3m, 3, null },
+                    { 52, 4m, 4m, 1m, 16, false, 1m, 4m, 3, null },
+                    { 53, 1m, 1m, 1m, 17, false, 1m, 1m, 2, null },
+                    { 54, 2m, 2m, 1m, 17, false, 1m, 2m, 2, null },
+                    { 55, 3m, 3m, 1m, 17, false, 1m, 3m, 1, null },
+                    { 56, 4m, 4m, 1m, 17, false, 1m, 4m, 2, null },
+                    { 57, 1m, 1m, 1m, 18, false, 1m, 1m, 1, null },
+                    { 58, 2m, 2m, 1m, 18, false, 1m, 2m, 1, null },
+                    { 59, 3m, 3m, 1m, 18, false, 1m, 3m, 1, null },
+                    { 60, 4m, 4m, 1m, 18, false, 1m, 4m, 1, null },
+                    { 61, 1m, 1m, 1m, 19, false, 1m, 1m, 3, null },
+                    { 62, 2m, 2m, 1m, 19, false, 1m, 2m, 3, null },
+                    { 63, 3m, 3m, 1m, 19, false, 1m, 3m, 3, null },
+                    { 64, 4m, 4m, 1m, 19, false, 1m, 4m, 3, null },
+                    { 65, 1m, 1m, 1m, 20, false, 1m, 1m, 3, null }
                 });
 
             migrationBuilder.InsertData(
@@ -1516,13 +1581,17 @@ namespace EventFlowAPI.DB.Migrations
                 values: new object[,]
                 {
                     { 1, null, 1, null, false, false, 24.99m, 1, null },
-                    { 2, null, 2, null, false, false, 34.99m, 2, null },
-                    { 3, null, 3, null, false, false, 29.99m, 3, null },
-                    { 4, null, 4, null, false, false, 19.99m, 3, null },
+                    { 2, null, 2, null, false, false, 34.99m, 1, null },
+                    { 3, null, 3, null, false, false, 29.99m, 1, null },
+                    { 4, null, 4, null, false, false, 19.99m, 1, null },
                     { 5, null, 1, 1, false, false, 19.99m, 1, null },
                     { 6, null, 5, 1, false, false, 19.99m, 1, null },
                     { 7, null, 2, 2, false, false, 29.99m, 2, null },
-                    { 8, null, 6, 2, false, false, 29.99m, 2, null }
+                    { 8, null, 6, 2, false, false, 29.99m, 2, null },
+                    { 9, null, 5, null, false, false, 24.99m, 1, null },
+                    { 10, null, 6, null, false, false, 32.99m, 1, null },
+                    { 11, null, 7, null, false, false, 34.99m, 1, null },
+                    { 12, null, 8, null, false, false, 19.99m, 1, null }
                 });
 
             migrationBuilder.InsertData(
@@ -1530,14 +1599,14 @@ namespace EventFlowAPI.DB.Migrations
                 columns: new[] { "Id", "DeleteDate", "EndDate", "EventPassId", "IsDeleted", "IsFestivalReservation", "IsUpdated", "PaymentAmount", "PaymentDate", "PaymentTypeId", "ReservationDate", "ReservationGuid", "StartDate", "TicketId", "TicketPDFId", "TotalAdditionalPaymentAmount", "TotalAddtionalPaymentPercentage", "TotalDiscount", "UpdateDate", "UserId" },
                 values: new object[,]
                 {
-                    { 1, null, new DateTime(2025, 3, 3, 1, 0, 0, 0, DateTimeKind.Unspecified), null, false, false, false, 24.99m, new DateTime(2025, 2, 2, 0, 0, 0, 0, DateTimeKind.Unspecified), 1, new DateTime(2025, 2, 2, 0, 0, 0, 0, DateTimeKind.Unspecified), new Guid("53538b58-f885-4f4a-b675-a4aa4063ccf3"), new DateTime(2025, 3, 3, 0, 0, 0, 0, DateTimeKind.Unspecified), 1, 1, 2.5m, 10m, 0m, null, "4" },
-                    { 2, null, new DateTime(2025, 3, 4, 3, 0, 0, 0, DateTimeKind.Unspecified), null, false, false, false, 34.99m, new DateTime(2025, 2, 2, 0, 0, 0, 0, DateTimeKind.Unspecified), 1, new DateTime(2025, 2, 2, 0, 0, 0, 0, DateTimeKind.Unspecified), new Guid("ed8b9230-223b-4609-8d13-aa6017edad09"), new DateTime(2025, 3, 4, 0, 0, 0, 0, DateTimeKind.Unspecified), 2, 2, 0m, 0m, 0m, null, "2" },
-                    { 3, null, new DateTime(2025, 3, 5, 2, 0, 0, 0, DateTimeKind.Unspecified), null, false, false, false, 29.99m, new DateTime(2025, 2, 2, 0, 0, 0, 0, DateTimeKind.Unspecified), 1, new DateTime(2025, 2, 2, 0, 0, 0, 0, DateTimeKind.Unspecified), new Guid("f9a076c4-3475-4a28-a60c-6e0e3c03731a"), new DateTime(2025, 3, 5, 0, 0, 0, 0, DateTimeKind.Unspecified), 3, 3, 7.5m, 25m, 0m, null, "3" },
-                    { 4, null, new DateTime(2025, 3, 6, 3, 0, 0, 0, DateTimeKind.Unspecified), null, false, false, false, 19.99m, new DateTime(2025, 2, 2, 0, 0, 0, 0, DateTimeKind.Unspecified), 1, new DateTime(2025, 2, 2, 0, 0, 0, 0, DateTimeKind.Unspecified), new Guid("de1d6773-f027-4888-996a-0296e5c52708"), new DateTime(2025, 3, 6, 0, 0, 0, 0, DateTimeKind.Unspecified), 4, 4, 0m, 0m, 0m, null, "3" },
-                    { 5, null, new DateTime(2025, 3, 3, 1, 0, 0, 0, DateTimeKind.Unspecified), null, false, true, false, 19.99m, new DateTime(2025, 2, 2, 0, 0, 0, 0, DateTimeKind.Unspecified), 1, new DateTime(2025, 2, 2, 0, 0, 0, 0, DateTimeKind.Unspecified), new Guid("0b74ec7b-933b-4163-afa5-e0997681dccd"), new DateTime(2025, 3, 3, 0, 0, 0, 0, DateTimeKind.Unspecified), 5, 5, 2m, 10m, 0m, null, "2" },
-                    { 6, null, new DateTime(2025, 4, 3, 1, 0, 0, 0, DateTimeKind.Unspecified), null, false, true, false, 19.99m, new DateTime(2025, 2, 2, 0, 0, 0, 0, DateTimeKind.Unspecified), 1, new DateTime(2025, 2, 2, 0, 0, 0, 0, DateTimeKind.Unspecified), new Guid("0b74ec7b-933b-4163-afa5-e0997681dccd"), new DateTime(2025, 4, 3, 0, 0, 0, 0, DateTimeKind.Unspecified), 6, 5, 2m, 10m, 0m, null, "2" },
-                    { 7, null, new DateTime(2025, 3, 4, 3, 0, 0, 0, DateTimeKind.Unspecified), null, false, true, false, 29.99m, new DateTime(2025, 2, 2, 0, 0, 0, 0, DateTimeKind.Unspecified), 1, new DateTime(2025, 2, 2, 0, 0, 0, 0, DateTimeKind.Unspecified), new Guid("806cade1-2685-43dc-8cfc-682fc4229db6"), new DateTime(2025, 3, 4, 0, 0, 0, 0, DateTimeKind.Unspecified), 7, 6, 0m, 0m, 0m, null, "2" },
-                    { 8, null, new DateTime(2025, 4, 5, 2, 0, 0, 0, DateTimeKind.Unspecified), null, false, true, false, 29.99m, new DateTime(2025, 2, 2, 0, 0, 0, 0, DateTimeKind.Unspecified), 1, new DateTime(2025, 2, 2, 0, 0, 0, 0, DateTimeKind.Unspecified), new Guid("806cade1-2685-43dc-8cfc-682fc4229db6"), new DateTime(2025, 4, 5, 0, 0, 0, 0, DateTimeKind.Unspecified), 8, 6, 0m, 0m, 0m, null, "2" }
+                    { 1, null, new DateTime(2025, 4, 19, 1, 0, 0, 0, DateTimeKind.Unspecified), null, false, false, false, 24.99m, new DateTime(2025, 3, 18, 0, 0, 0, 0, DateTimeKind.Unspecified), 1, new DateTime(2025, 3, 18, 0, 0, 0, 0, DateTimeKind.Unspecified), new Guid("53538b58-f885-4f4a-b675-a4aa4063ccf3"), new DateTime(2025, 4, 19, 0, 0, 0, 0, DateTimeKind.Unspecified), 1, 1, 2.5m, 10m, 0m, null, "4" },
+                    { 2, null, new DateTime(2025, 4, 20, 3, 0, 0, 0, DateTimeKind.Unspecified), null, false, false, false, 34.99m, new DateTime(2025, 3, 18, 0, 0, 0, 0, DateTimeKind.Unspecified), 1, new DateTime(2025, 3, 18, 0, 0, 0, 0, DateTimeKind.Unspecified), new Guid("ed8b9230-223b-4609-8d13-aa6017edad09"), new DateTime(2025, 4, 20, 0, 0, 0, 0, DateTimeKind.Unspecified), 2, 2, 0m, 0m, 0m, null, "2" },
+                    { 3, null, new DateTime(2025, 4, 21, 2, 0, 0, 0, DateTimeKind.Unspecified), null, false, false, false, 29.99m, new DateTime(2025, 3, 18, 0, 0, 0, 0, DateTimeKind.Unspecified), 1, new DateTime(2025, 3, 18, 0, 0, 0, 0, DateTimeKind.Unspecified), new Guid("f9a076c4-3475-4a28-a60c-6e0e3c03731a"), new DateTime(2025, 4, 21, 0, 0, 0, 0, DateTimeKind.Unspecified), 3, 3, 7.5m, 25m, 0m, null, "3" },
+                    { 4, null, new DateTime(2025, 4, 22, 3, 0, 0, 0, DateTimeKind.Unspecified), null, false, false, false, 19.99m, new DateTime(2025, 3, 18, 0, 0, 0, 0, DateTimeKind.Unspecified), 1, new DateTime(2025, 3, 18, 0, 0, 0, 0, DateTimeKind.Unspecified), new Guid("de1d6773-f027-4888-996a-0296e5c52708"), new DateTime(2025, 4, 22, 0, 0, 0, 0, DateTimeKind.Unspecified), 4, 4, 0m, 0m, 0m, null, "3" },
+                    { 5, null, new DateTime(2025, 4, 19, 1, 0, 0, 0, DateTimeKind.Unspecified), null, false, true, false, 19.99m, new DateTime(2025, 3, 18, 0, 0, 0, 0, DateTimeKind.Unspecified), 1, new DateTime(2025, 3, 18, 0, 0, 0, 0, DateTimeKind.Unspecified), new Guid("0b74ec7b-933b-4163-afa5-e0997681dccd"), new DateTime(2025, 4, 19, 0, 0, 0, 0, DateTimeKind.Unspecified), 5, 5, 2m, 10m, 0m, null, "2" },
+                    { 6, null, new DateTime(2025, 5, 19, 1, 0, 0, 0, DateTimeKind.Unspecified), null, false, true, false, 19.99m, new DateTime(2025, 3, 18, 0, 0, 0, 0, DateTimeKind.Unspecified), 1, new DateTime(2025, 3, 18, 0, 0, 0, 0, DateTimeKind.Unspecified), new Guid("0b74ec7b-933b-4163-afa5-e0997681dccd"), new DateTime(2025, 5, 19, 0, 0, 0, 0, DateTimeKind.Unspecified), 6, 5, 2m, 10m, 0m, null, "2" },
+                    { 7, null, new DateTime(2025, 4, 20, 3, 0, 0, 0, DateTimeKind.Unspecified), null, false, true, false, 29.99m, new DateTime(2025, 3, 18, 0, 0, 0, 0, DateTimeKind.Unspecified), 1, new DateTime(2025, 3, 18, 0, 0, 0, 0, DateTimeKind.Unspecified), new Guid("806cade1-2685-43dc-8cfc-682fc4229db6"), new DateTime(2025, 4, 20, 0, 0, 0, 0, DateTimeKind.Unspecified), 7, 6, 0m, 0m, 0m, null, "2" },
+                    { 8, null, new DateTime(2025, 5, 21, 2, 0, 0, 0, DateTimeKind.Unspecified), null, false, true, false, 29.99m, new DateTime(2025, 3, 18, 0, 0, 0, 0, DateTimeKind.Unspecified), 1, new DateTime(2025, 3, 18, 0, 0, 0, 0, DateTimeKind.Unspecified), new Guid("806cade1-2685-43dc-8cfc-682fc4229db6"), new DateTime(2025, 5, 21, 0, 0, 0, 0, DateTimeKind.Unspecified), 8, 6, 0m, 0m, 0m, null, "2" }
                 });
 
             migrationBuilder.InsertData(

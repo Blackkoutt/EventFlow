@@ -98,7 +98,7 @@ const DetailsReservationDialog = forwardRef<HTMLDialogElement, DetailsReservatio
                   <LabelText
                     labelWidth={175}
                     label="Festiwal:"
-                    text={reservation.ticket?.festival ? reservation.ticket.festival.name : "-"}
+                    text={reservation.ticket?.festival ? reservation.ticket.festival.title : "-"}
                     gap={10}
                   />
                   <LabelText
@@ -110,14 +110,14 @@ const DetailsReservationDialog = forwardRef<HTMLDialogElement, DetailsReservatio
                   <LabelText
                     labelWidth={175}
                     label="Wydarzenie:"
-                    text={reservation.ticket?.event?.name}
+                    text={reservation.ticket?.event?.title}
                     gap={10}
                   />
                   <LabelText
                     labelWidth={175}
                     label="Początek wydarzenia:"
                     text={DateFormatter.FormatDate(
-                      reservation.ticket?.event?.startDate,
+                      reservation.ticket?.event?.start,
                       DateFormat.DateTime
                     )}
                     gap={10}
@@ -126,7 +126,7 @@ const DetailsReservationDialog = forwardRef<HTMLDialogElement, DetailsReservatio
                     labelWidth={175}
                     label="Koniec wydarzenia:"
                     text={DateFormatter.FormatDate(
-                      reservation.ticket?.event?.endDate,
+                      reservation.ticket?.event?.end,
                       DateFormat.DateTime
                     )}
                     gap={10}

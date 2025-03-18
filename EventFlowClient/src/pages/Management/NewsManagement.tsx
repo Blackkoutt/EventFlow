@@ -58,11 +58,6 @@ const NewsManagement = () => {
         DateFormatter.FormatDate(rowData.publicationDate, DateFormat.DateTime),
     },
     {
-      field: "shortDescription",
-      header: "Krótki opis",
-      body: (rowData: News) => rowData.shortDescription,
-    },
-    {
       header: "Akcja",
       sortable: false,
       body: (rowData: News) => (

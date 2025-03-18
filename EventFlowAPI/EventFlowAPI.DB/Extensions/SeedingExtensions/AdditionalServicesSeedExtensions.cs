@@ -38,6 +38,18 @@ namespace EventFlowAPI.DB.Extensions.SeedingExtensions
                     Id = 5,
                     Name = "Promocja wydarzenia",
                     Price = 140.00m
+                },
+                new AdditionalServices
+                {
+                    Id = 6,
+                    Name = "Kamerzysta",
+                    Price = 500.00m
+                },
+                new AdditionalServices
+                {
+                    Id = 7,
+                    Name = "Catering",
+                    Price = 1000.00m
                 }
             );
         }

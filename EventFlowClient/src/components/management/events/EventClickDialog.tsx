@@ -29,6 +29,7 @@ const EventClickDialog = forwardRef<HTMLDialogElement, EventClickDialogProps>(
     return (
       <Dialog
         ref={ref}
+        top={250}
         maxWidth={maxWidth}
         paddingLeft={paddingX}
         paddingRight={paddingX}

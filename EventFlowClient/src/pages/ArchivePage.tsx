@@ -91,7 +91,7 @@ function ArchivePage() {
         {items && (
           <div className="grid 3xl:grid-cols-3 xl:grid-cols-2 3xl:gap-4 xl:gap-10">
             {items.map((item) => (
-              <EventCard key={item.id} event={item} />
+              <EventCard key={item.id} event={item} isArchived={true} />
             ))}
           </div>
         )}

@@ -187,6 +187,66 @@ namespace EventFlowAPI.DB.Extensions.SeedingExtensions
                     IsCopy = true,
                     IsVisible = false,
                     HallTypeId = 4
+                },
+                new Hall
+                {
+                    Id = 16,
+                    DefaultId = 3,
+                    HallNr = 3,
+                    RentalPricePerHour = 179.99m,
+                    HallViewFileName = "sala_5_5_16.pdf",
+                    Floor = 2,
+                    IsCopy = true,
+                    IsVisible = false,
+                    HallTypeId = 3
+                },
+                new Hall
+                {
+                    Id = 17,
+                    DefaultId = 2,
+                    HallNr = 2,
+                    RentalPricePerHour = 89.99m,
+                    HallViewFileName = "sala_5_5_17.pdf",
+                    Floor = 1,
+                    IsCopy = true,
+                    IsVisible = false,
+                    HallTypeId = 2
+                },
+                new Hall
+                {
+                    Id = 18,
+                    DefaultId = 1,
+                    HallNr = 1,
+                    RentalPricePerHour = 120.99m,
+                    HallViewFileName = "sala_5_5_18.pdf",
+                    Floor = 2,
+                    IsCopy = true,
+                    IsVisible = false,
+                    HallTypeId = 1
+                },
+                new Hall
+                {
+                    Id = 19,
+                    DefaultId = 3,
+                    HallNr = 3,
+                    RentalPricePerHour = 179.99m,
+                    HallViewFileName = "sala_5_5_19.pdf",
+                    Floor = 2,
+                    IsCopy = true,
+                    IsVisible = false,
+                    HallTypeId = 3
+                },
+                new Hall
+                {
+                    Id = 20,
+                    DefaultId = 4,
+                    HallNr = 4,
+                    RentalPricePerHour = 199.99m,
+                    HallViewFileName = "sala_5_5_20.pdf",
+                    Floor = 1,
+                    IsCopy = true,
+                    IsVisible = false,
+                    HallTypeId = 4
                 }
             );
         }

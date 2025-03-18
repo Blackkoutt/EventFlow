@@ -52,7 +52,7 @@ const NewsList = () => {
                 headerSize={20}
                 articleSize={14}
                 buttonSize={12}
-                objectTopMargin={-108}
+                objectTopMargin={-145}
               />
             ) : null
           )}
@@ -68,7 +68,7 @@ const NewsList = () => {
                 headerSize={16}
                 articleSize={12}
                 buttonSize={12}
-                objectTopMargin={-108}
+                objectTopMargin={-135}
               />
             </div>
           ) : null

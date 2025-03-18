@@ -119,7 +119,7 @@ const RentPage = () => {
           <article className="flex flex-col justify-start items-center gap-8 w-full">
             <div className="flex flex-col justify-start items-start w-full pl-[100px] gap-2">
               <div className="w-full flex flex-row justify-between items-center">
-                <h3 className="text-[28px] font-semibold text-textPrimary">{hall.type?.name}</h3>
+                <h3 className="text-[28px] font-semibold ">{hall.type?.name}</h3>
                 <div className="flex flex-row justify-center items-center gap-5">
                   <div className="flex flex-row justify-center items-center gap-2 text-[18px] ">
                     <p className="text-textPrimary">Cena za 1h:</p>
@@ -127,10 +127,10 @@ const RentPage = () => {
                   </div>
                   <Button
                     text="Wynajmij"
-                    height={48}
+                    height={44}
                     icon={faBookmark}
-                    width={150}
-                    fontSize={17}
+                    width={140}
+                    fontSize={16}
                     isFontSemibold={true}
                     style={ButtonStyle.Primary}
                     action={() => {
@@ -139,8 +139,8 @@ const RentPage = () => {
                   />
                 </div>
               </div>
-              <p className="text-textPrimary">{hall.type?.description}</p>
             </div>
+            <p className="text-textPrimary -mt-5">{hall.type?.description}</p>
             <div className="flex flex-col justify-center items-center w-full gap-4">
               <div className="w-full flex flex-col justify-center items-center gap-4">
                 <HallInfoSectionHeader icon={faInfoCircle} text="Informacje o sali" />

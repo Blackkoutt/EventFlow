@@ -58,25 +58,27 @@ function RentsPage() {
           >
             Wszystkie
           </button>
-          {hallTypes.map((type) => (
-            <button
-              key={type.id}
-              className={`px-4 py-2 rounded-full min-w-[150px] ${
-                selectedType.name == type.name
-                  ? "text-white bg-primaryPurple"
-                  : "bg-gray-200 text-gray-600"
-              }`}
-              onClick={() =>
-                setSelectedType({
-                  name: type.name,
-                  value: type.id,
-                })
-              }
-              style={{ fontSize: 18 }}
-            >
-              {type.name}
-            </button>
-          ))}
+          {hallTypes
+            .filter((type) => type.name !== "Sala ogólna")
+            .map((type) => (
+              <button
+                key={type.id}
+                className={`px-4 py-2 rounded-full min-w-[150px] ${
+                  selectedType.name == type.name
+                    ? "text-white bg-primaryPurple"
+                    : "bg-gray-200 text-gray-600"
+                }`}
+                onClick={() =>
+                  setSelectedType({
+                    name: type.name,
+                    value: type.id,
+                  })
+                }
+                style={{ fontSize: 18 }}
+              >
+                {type.name}
+              </button>
+            ))}
         </div>
       </div>
       <div className="py-6">

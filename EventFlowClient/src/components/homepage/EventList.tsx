@@ -11,11 +11,13 @@ const EventList = () => {
     const eventStartDateQueryParams = {
       sortBy: "StartDate",
       sortDirection: "ASC",
+      status: "Active",
       pageNumber: 1,
       pageSize: 4,
     };
     getEvents({ id: undefined, queryParams: eventStartDateQueryParams });
   }, []);
+  console.log(events);
 
   return (
     <>

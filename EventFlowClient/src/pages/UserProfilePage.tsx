@@ -48,7 +48,7 @@ const UserProfilePage = () => {
               <>
                 <TabButton text="Moje rezerwacje" path="/profile/reservations" />
                 <TabButton text="Moje karnety" path="/profile/eventpasses" />
-                <TabButton text="Moje rezerwacje sal" path="/profile/hallrents" />
+                <TabButton text="Moje wynajmy sal" path="/profile/hallrents" />
               </>
             )}
           </div>

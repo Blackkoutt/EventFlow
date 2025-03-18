@@ -20,21 +20,21 @@ namespace EventFlowAPI.DB.Extensions.SeedingExtensions
                     Id = 2,
                     Price = 34.99m,
                     EventId = 2,
-                    TicketTypeId = 2
+                    TicketTypeId = 1
                 },
                 new Ticket
                 {
                     Id = 3,
                     Price = 29.99m,
                     EventId = 3,
-                    TicketTypeId = 3
+                    TicketTypeId = 1
                 },
                 new Ticket
                 {
                     Id = 4,
                     Price = 19.99m,
                     EventId = 4,
-                    TicketTypeId = 3
+                    TicketTypeId = 1
                 },
                 new Ticket
                 {
@@ -67,8 +67,35 @@ namespace EventFlowAPI.DB.Extensions.SeedingExtensions
                     EventId = 6,
                     FestivalId = 2,
                     TicketTypeId = 2
+                },
+                 new Ticket
+                 {
+                     Id = 9,
+                     Price = 24.99m,
+                     EventId = 5,
+                     TicketTypeId = 1
+                 },
+                new Ticket
+                {
+                    Id = 10,
+                    Price = 32.99m,
+                    EventId = 6,
+                    TicketTypeId = 1
+                },
+                new Ticket
+                {
+                    Id = 11,
+                    Price = 34.99m,
+                    EventId = 7,
+                    TicketTypeId = 1
+                },
+                new Ticket
+                {
+                    Id = 12,
+                    Price = 19.99m,
+                    EventId = 8,
+                    TicketTypeId = 1
                 }
-                               
             );
         }
     }

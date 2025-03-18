@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EventFlowAPI.DB.Migrations
 {
     [DbContext(typeof(APIContext))]
-    [Migration("20250206131322_Initial")]
+    [Migration("20250318233313_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -109,6 +109,24 @@ namespace EventFlowAPI.DB.Migrations
                             IsUpdated = false,
                             Name = "Promocja wydarzenia",
                             Price = 140.00m
+                        },
+                        new
+                        {
+                            Id = 6,
+                            IsDeleted = false,
+                            IsSoftUpdated = false,
+                            IsUpdated = false,
+                            Name = "Kamerzysta",
+                            Price = 500.00m
+                        },
+                        new
+                        {
+                            Id = 7,
+                            IsDeleted = false,
+                            IsSoftUpdated = false,
+                            IsUpdated = false,
+                            Name = "Catering",
+                            Price = 1000.00m
                         });
                 });
 
@@ -143,30 +161,79 @@ namespace EventFlowAPI.DB.Migrations
                         new
                         {
                             Id = 1,
-                            Description = "Nowoczesny projektor",
+                            Description = "Nowoczesny projektor, idealny do prezentacji multimedialnych, z wysoką rozdzielczością i możliwością podłączenia różnych źródeł sygnału.",
                             IsUpdated = false,
                             Name = "Projektor multimedialny"
                         },
                         new
                         {
                             Id = 2,
-                            Description = "Wysokiej klasy oświetlenie",
+                            Description = "Wysokiej klasy oświetlenie, umożliwiające regulację jasności i kolorów, idealne do sal konferencyjnych i eventów.",
                             IsUpdated = false,
                             Name = "Oświetlenie"
                         },
                         new
                         {
                             Id = 3,
-                            Description = "Głośniki przeznaczone do odtwrzania filmów",
+                            Description = "Głośniki przeznaczone do odtwarzania filmów, zapewniające doskonałą jakość dźwięku przestrzennego w dużych przestrzeniach.",
                             IsUpdated = false,
                             Name = "Nagłośnienie kinowe"
                         },
                         new
                         {
                             Id = 4,
-                            Description = "Głośniki przeznaczone do koncertów",
+                            Description = "Głośniki przeznaczone do koncertów, oferujące mocny dźwięk i wyrazistość w każdych warunkach, z możliwością regulacji.",
                             IsUpdated = false,
                             Name = "Nagłośnienie koncertowe"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            Description = "Profesjonalne mikrofony bezprzewodowe, zapewniające czysty dźwięk i niezawodność w ruchu, idealne do konferencji i wystąpień.",
+                            IsUpdated = false,
+                            Name = "Mikrofony bezprzewodowe"
+                        },
+                        new
+                        {
+                            Id = 6,
+                            Description = "Tablica interaktywna do rysowania i prezentowania treści w sposób dynamiczny.",
+                            IsUpdated = false,
+                            Name = "Tablica interaktywna"
+                        },
+                        new
+                        {
+                            Id = 7,
+                            Description = "System klimatyzacji zapewniający komfortową temperaturę w sali podczas wydarzeń.",
+                            IsUpdated = false,
+                            Name = "Klimatyzacja"
+                        },
+                        new
+                        {
+                            Id = 8,
+                            Description = "Duży stół konferencyjny, idealny do spotkań biznesowych i prezentacji.",
+                            IsUpdated = false,
+                            Name = "Stół konferencyjny"
+                        },
+                        new
+                        {
+                            Id = 9,
+                            Description = "Kurtyna teatralna służąca do oddzielania sceny od widowni lub zmiany scenerii w trakcie przedstawienia.",
+                            IsUpdated = false,
+                            Name = "Kurtyna"
+                        },
+                        new
+                        {
+                            Id = 10,
+                            Description = "Tablice służące do umieszczania informacji o eksponatach.",
+                            IsUpdated = false,
+                            Name = "Tablice informacyjne"
+                        },
+                        new
+                        {
+                            Id = 11,
+                            Description = "Stojaki umożliwiają prezentowanie dzieł sztuki, takich jak obrazy, grafiki czy rzeźby.",
+                            IsUpdated = false,
+                            Name = "Stojaki"
                         });
                 });
 
@@ -237,15 +304,15 @@ namespace EventFlowAPI.DB.Migrations
                             AddDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CategoryId = 1,
                             Duration = -3600L,
-                            EndDate = new DateTime(2025, 3, 3, 1, 0, 0, 0, DateTimeKind.Unspecified),
-                            EventGuid = new Guid("8f712ff6-e5d2-47f5-ab7e-b496b5fa55e5"),
+                            EndDate = new DateTime(2025, 4, 19, 1, 0, 0, 0, DateTimeKind.Unspecified),
+                            EventGuid = new Guid("bd9cf606-260b-4611-bb6f-3cde4298edc7"),
                             HallId = 6,
                             IsDeleted = false,
                             IsUpdated = false,
                             Name = "Koncert: Mystic Waves",
                             PhotoName = "koncert_mystic_waves.png",
-                            ShortDescription = "Któtki opis koncertu Mystic Waves.",
-                            StartDate = new DateTime(2025, 3, 3, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            ShortDescription = "Mystic Waves to niezapomniana podróż przez elektroniczne brzmienia i hipnotyzujące melodie.",
+                            StartDate = new DateTime(2025, 4, 19, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
@@ -253,15 +320,15 @@ namespace EventFlowAPI.DB.Migrations
                             AddDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CategoryId = 3,
                             Duration = -10800L,
-                            EndDate = new DateTime(2025, 3, 4, 3, 0, 0, 0, DateTimeKind.Unspecified),
-                            EventGuid = new Guid("7f8f1676-fc63-424b-98c7-422e93d92ffb"),
+                            EndDate = new DateTime(2025, 4, 20, 3, 0, 0, 0, DateTimeKind.Unspecified),
+                            EventGuid = new Guid("30f24949-51df-4274-a804-544ee7e2e1d2"),
                             HallId = 7,
                             IsDeleted = false,
                             IsUpdated = false,
                             Name = "Cień Przeszłości",
                             PhotoName = "cien_przeszlosci.png",
-                            ShortDescription = "Krótki opis spektaklu pt. Cień Przeszłości.",
-                            StartDate = new DateTime(2025, 3, 4, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            ShortDescription = "Dramatyczna opowieść o sekretach przeszłości, które powracają, by zmienić teraźniejszość.",
+                            StartDate = new DateTime(2025, 4, 20, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
@@ -269,15 +336,15 @@ namespace EventFlowAPI.DB.Migrations
                             AddDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CategoryId = 2,
                             Duration = -7200L,
-                            EndDate = new DateTime(2025, 3, 5, 2, 0, 0, 0, DateTimeKind.Unspecified),
-                            EventGuid = new Guid("3d1216ba-30e0-4591-9e75-fae837c79c79"),
+                            EndDate = new DateTime(2025, 4, 21, 2, 0, 0, 0, DateTimeKind.Unspecified),
+                            EventGuid = new Guid("63b9ba64-48dd-4997-95c9-dbfa2389f066"),
                             HallId = 5,
                             IsDeleted = false,
                             IsUpdated = false,
                             Name = "Królestwo planety małp",
                             PhotoName = "krolestwo_planety_malp.png",
-                            ShortDescription = "Nowy film Królestwo planety małp już w kinach!.",
-                            StartDate = new DateTime(2025, 3, 5, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            ShortDescription = "Kolejna część kultowej serii sci-fi. Świat, w którym dominują małpy, a ludzie walczą o przetrwanie.",
+                            StartDate = new DateTime(2025, 4, 21, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
@@ -285,15 +352,15 @@ namespace EventFlowAPI.DB.Migrations
                             AddDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CategoryId = 4,
                             Duration = -10800L,
-                            EndDate = new DateTime(2025, 3, 6, 3, 0, 0, 0, DateTimeKind.Unspecified),
-                            EventGuid = new Guid("380a07bc-d281-441a-b643-cac8ca7e6cc6"),
+                            EndDate = new DateTime(2025, 4, 22, 3, 0, 0, 0, DateTimeKind.Unspecified),
+                            EventGuid = new Guid("5e01e785-8f63-4f8c-af89-25ee89f22b83"),
                             HallId = 8,
                             IsDeleted = false,
                             IsUpdated = false,
                             Name = "Nowe inspiracje",
                             PhotoName = "nowe_inspiracje.png",
-                            ShortDescription = "Nowe inspiracje to nowoczesna wystawa sztuki.",
-                            StartDate = new DateTime(2025, 3, 6, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            ShortDescription = "Wystawa prezentująca prace nowoczesnych artystów, pełna świeżych perspektyw i innowacji.",
+                            StartDate = new DateTime(2025, 4, 22, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
@@ -301,15 +368,15 @@ namespace EventFlowAPI.DB.Migrations
                             AddDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CategoryId = 1,
                             Duration = -3600L,
-                            EndDate = new DateTime(2025, 4, 3, 1, 0, 0, 0, DateTimeKind.Unspecified),
-                            EventGuid = new Guid("c869bcff-72ad-479b-a8c0-61d78f59bf52"),
+                            EndDate = new DateTime(2025, 5, 19, 1, 0, 0, 0, DateTimeKind.Unspecified),
+                            EventGuid = new Guid("7f940a53-f3a2-46d8-8d39-b28e076d40aa"),
                             HallId = 10,
                             IsDeleted = false,
                             IsUpdated = false,
                             Name = "Koncert: New Era",
-                            PhotoName = "",
-                            ShortDescription = "Jedyna taka okazja na usłyszenie New Era na żywo.",
-                            StartDate = new DateTime(2025, 4, 3, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            PhotoName = "new_era.png",
+                            ShortDescription = "Energetyczny koncert zespołu New Era – mieszanka rocka, elektroniki i alternatywnych brzmień.",
+                            StartDate = new DateTime(2025, 5, 19, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
@@ -317,15 +384,15 @@ namespace EventFlowAPI.DB.Migrations
                             AddDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CategoryId = 2,
                             Duration = -7200L,
-                            EndDate = new DateTime(2025, 4, 5, 2, 0, 0, 0, DateTimeKind.Unspecified),
-                            EventGuid = new Guid("68b0b48f-6404-46dc-9eac-41275ecf196d"),
+                            EndDate = new DateTime(2025, 5, 21, 2, 0, 0, 0, DateTimeKind.Unspecified),
+                            EventGuid = new Guid("bc7b2f85-b498-4186-ad5c-5cf25d938499"),
                             HallId = 9,
                             IsDeleted = false,
                             IsUpdated = false,
                             Name = "Gladiator",
-                            PhotoName = "",
-                            ShortDescription = "Nowy film Gladiator już w kinach!.",
-                            StartDate = new DateTime(2025, 4, 5, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            PhotoName = "gladiator.png",
+                            ShortDescription = "Legendarna opowieść o honorze i zemście w starożytnym Rzymie.",
+                            StartDate = new DateTime(2025, 5, 21, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
@@ -333,15 +400,95 @@ namespace EventFlowAPI.DB.Migrations
                             AddDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CategoryId = 4,
                             Duration = -10800L,
-                            EndDate = new DateTime(2025, 4, 6, 3, 0, 0, 0, DateTimeKind.Unspecified),
-                            EventGuid = new Guid("0e43092a-ee4e-47dc-a85b-48134eaa001e"),
+                            EndDate = new DateTime(2025, 5, 22, 3, 0, 0, 0, DateTimeKind.Unspecified),
+                            EventGuid = new Guid("775b339d-4524-4829-bd42-4da8f88cf3f1"),
                             HallId = 11,
                             IsDeleted = false,
                             IsUpdated = false,
                             Name = "Nowa sztuka",
                             PhotoName = "",
-                            ShortDescription = "Nowe sztuka to nowoczesna wystawa sztuki.",
-                            StartDate = new DateTime(2025, 4, 6, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            ShortDescription = "Wystawa prezentująca najnowsze prace artystów eksperymentalnych i awangardowych.",
+                            StartDate = new DateTime(2025, 5, 22, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                        },
+                        new
+                        {
+                            Id = 8,
+                            AddDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CategoryId = 3,
+                            Duration = 9000L,
+                            EndDate = new DateTime(2025, 6, 2, 2, 30, 0, 0, DateTimeKind.Unspecified),
+                            EventGuid = new Guid("08050835-f7b3-4395-9679-b7bc915c84a6"),
+                            HallId = 16,
+                            IsDeleted = false,
+                            IsUpdated = false,
+                            Name = "Cień Nad Miastem",
+                            PhotoName = "cien_nad_miastem.png",
+                            ShortDescription = "Mroczny thriller teatralny o tajemniczych wydarzeniach, które wstrząsają miastem po zmroku.",
+                            StartDate = new DateTime(2025, 6, 2, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                        },
+                        new
+                        {
+                            Id = 9,
+                            AddDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CategoryId = 1,
+                            Duration = 7200L,
+                            EndDate = new DateTime(2025, 3, 17, 3, 0, 0, 0, DateTimeKind.Unspecified),
+                            EventGuid = new Guid("a4f24bff-10c1-4763-b410-ba0e6e7bb3d3"),
+                            HallId = 17,
+                            IsDeleted = false,
+                            IsUpdated = false,
+                            Name = "Jazzowe Brzmienia",
+                            PhotoName = "jazz.png",
+                            ShortDescription = "Magiczny czas z jazzem na żywo – koncert znanych artystów jazzowych, którzy przeniosą Cię w świat wyjątkowych dźwięków.",
+                            StartDate = new DateTime(2025, 3, 17, 1, 0, 0, 0, DateTimeKind.Unspecified)
+                        },
+                        new
+                        {
+                            Id = 10,
+                            AddDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CategoryId = 2,
+                            Duration = 7200L,
+                            EndDate = new DateTime(2025, 3, 16, 4, 0, 0, 0, DateTimeKind.Unspecified),
+                            EventGuid = new Guid("f9b817c5-e386-4107-9ed3-49b7ce38c519"),
+                            HallId = 18,
+                            IsDeleted = false,
+                            IsUpdated = false,
+                            Name = "Interstellar",
+                            PhotoName = "interstellar.jpg",
+                            ShortDescription = "Epicka podróż kosmiczna, która bada granice ludzkiej wytrzymałości i miłości.",
+                            StartDate = new DateTime(2025, 3, 16, 2, 0, 0, 0, DateTimeKind.Unspecified)
+                        },
+                        new
+                        {
+                            Id = 11,
+                            AddDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CategoryId = 3,
+                            Duration = 7200L,
+                            EndDate = new DateTime(2025, 3, 15, 5, 0, 0, 0, DateTimeKind.Unspecified),
+                            EventGuid = new Guid("ef97fdf1-9b04-47aa-bc42-1ff4f7fd5a07"),
+                            HallId = 19,
+                            IsDeleted = false,
+                            IsUpdated = false,
+                            Name = "Zatrzymać Przeznaczenie",
+                            PhotoName = "zatrzymac_przeznaczenie.jpg",
+                            ShortDescription = "Spektakl o postaci, która staje w obliczu nieuchronnego przeznaczenia.",
+                            StartDate = new DateTime(2025, 3, 15, 3, 0, 0, 0, DateTimeKind.Unspecified)
+                        },
+                        new
+                        {
+                            Id = 12,
+                            AddDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CategoryId = 4,
+                            Duration = 7200L,
+                            EndDate = new DateTime(2025, 3, 14, 6, 0, 0, 0, DateTimeKind.Unspecified),
+                            EventGuid = new Guid("3c229abc-c4e2-41e9-9aad-487cd733f8a5"),
+                            HallId = 20,
+                            IsDeleted = false,
+                            IsUpdated = false,
+                            Name = "Nowe Perspektywy",
+                            PhotoName = "nowe_perspektywy.jpg",
+                            ShortDescription = "Wystawa sztuki współczesnej, która zaprasza do odkrywania świata z nowych punktów widzenia.",
+                            StartDate = new DateTime(2025, 3, 14, 4, 0, 0, 0, DateTimeKind.Unspecified)
                         });
                 });
 
@@ -448,37 +595,62 @@ namespace EventFlowAPI.DB.Migrations
                         new
                         {
                             Id = 1,
-                            LongDescription = "Krótki opis wydarzenia Koncert: Mystic Waves"
+                            LongDescription = "Koncert Mystic Waves to wyjątkowe wydarzenie muzyczne, które przeniesie Cię w świat atmosferycznych dźwięków. Zespół wystąpi z premierowym materiałem, łączącym elementy muzyki elektronicznej i ambientowej. Koncert odbędzie się w klimatycznej sali, z wykorzystaniem nowoczesnej technologii dźwiękowej i wizualnej, co zapewni niezapomniane przeżycia. Muzycy znani z licznych występów na scenach festiwalowych zaprezentują swoją najnowszą produkcję, która z pewnością oczaruje fanów muzyki eksperymentalnej."
                         },
                         new
                         {
                             Id = 2,
-                            LongDescription = "Krótki opis wydarzenia Spektakl: Cień Przeszłość"
+                            LongDescription = "Spektakl 'Cień Przeszłość' to wciągająca produkcja teatralna, która porusza tematykę przemijania i refleksji nad przeszłością. Historia opowiada o dwóch postaciach, które spotykają się po latach, by skonfrontować swoje wspomnienia i tajemnice. Reżyseria, mistrzowskie aktorstwo oraz emocjonalna głębia tej sztuki sprawiają, że jest to wydarzenie, które zostanie z widzami na długo. Spektakl jest pełen symboliki i zaskakujących zwrotów akcji, które skłonią do przemyśleń o upływającym czasie."
                         },
                         new
                         {
                             Id = 3,
-                            LongDescription = "Krótki opis wydarzenia Film: Królestwo planety małp"
+                            LongDescription = "Film 'Królestwo planety małp' to spektakularna produkcja science-fiction, która kontynuuje historię walczących o przetrwanie małp. Akcja filmu toczy się w post-apokaliptycznym świecie, w którym małpy zaczynają dominować nad ludźmi. W filmie zobaczymy dynamiczne sceny bitewne, dramatyczne decyzje bohaterów i wciągającą fabułę, która porusza kwestie moralności i przyszłości ludzkości. Wysoka jakość efektów specjalnych oraz rewelacyjna gra aktorska sprawiają, że jest to jeden z najważniejszych filmów tego roku."
                         },
                         new
                         {
                             Id = 4,
-                            LongDescription = "Krótki opis wydarzenia Wystawa: Nowe inspiracje"
+                            LongDescription = "Wystawa 'Nowe inspiracje' to wyjątkowa ekspozycja sztuki współczesnej, która gromadzi prace młodych artystów z całego świata. Wystawa skupia się na nowych nurtach artystycznych, które łączą tradycję z nowoczesnością. Można tu zobaczyć prace w różnych mediach, od malarstwa po instalacje interaktywne. Artyści eksperymentują z formą i materiałami, zapraszając widzów do interakcji z dziełami. Jest to przestrzeń, która otwiera umysł na nowe pomysły i inspiracje, zachęcając do refleksji nad współczesnym światem sztuki."
                         },
                         new
                         {
                             Id = 5,
-                            LongDescription = "Krótki opis wydarzenia Koncert: New Era"
+                            LongDescription = "Koncert 'New Era' to wyjątkowe wydarzenie muzyczne, które łączy najnowsze trendy w muzyce elektronicznej z klasycznymi brzmieniami. Zespół zaprezentuje utwory z debiutanckiego albumu, który zdobył uznanie wśród krytyków muzycznych. Występ będzie pełen energetycznych melodii i przejmujących dźwięków, które z pewnością poruszą serca słuchaczy. Nowoczesne technologie audio-wizualne, wykorzystywane podczas koncertu, sprawią, że każdy utwór nabierze nowego wymiaru. Warto być częścią tego muzycznego doświadczenia!"
                         },
                         new
                         {
                             Id = 6,
-                            LongDescription = "Krótki opis wydarzenia Film: Gladiator"
+                            LongDescription = "Film 'Gladiator' to epicka opowieść o wojowniku, który staje do walki nie tylko o swoje życie, ale także o wolność i sprawiedliwość. Akcja rozgrywa się w starożytnym Rzymie, gdzie główny bohater, Maximus, zostaje zdradzony przez cesarza, a jego rodzina zostaje zamordowana. Maximus trafia do areny, gdzie walczy o przetrwanie i zemstę. Film pełen jest emocjonujących walk, dramatycznych zwrotów akcji i wciągającej fabuły, która porusza tematy honoru, lojalności i zemsty."
                         },
                         new
                         {
                             Id = 7,
-                            LongDescription = "Krótki opis wydarzenia Wystawa: Nowa sztuka"
+                            LongDescription = "Wystawa 'Nowa sztuka' to prezentacja młodych artystów, którzy swoją twórczość ukierunkowali na przekroczenie granic tradycyjnej sztuki. Na wystawie można zobaczyć prace w różnorodnych technikach: od klasycznych obrazów po awangardowe instalacje. Artyści bawią się konwencjami, angażując widza w interaktywną formę prezentacji. Wystawa jest zaproszeniem do refleksji nad tym, czym współczesna sztuka może być i jakie emocje potrafi wywołać. To wydarzenie, które pokazuje, jak sztuka może zmieniać nasze postrzeganie świata."
+                        },
+                        new
+                        {
+                            Id = 8,
+                            LongDescription = "Cień Nad Miastem to mroczny thriller teatralny, który przenosi widza w świat pełen tajemniczych wydarzeń, które zaczynają wstrząsać miastem po zmroku. Główna fabuła opowiada historię, w której pozornie spokojne miasto staje się areną niebezpiecznych wydarzeń, których rozwiązanie wciąga nie tylko bohaterów, ale również publiczność. W spektaklu dominują napięcie i atmosfera niepokoju, które potęgują świetnie dobrane efekty wizualne oraz świetne aktorstwo. Każda scena jest przemyślana, a dramaturgia składa się z zagadek i zwrotów akcji, które trzymają widza w ciągłym napięciu. To przedstawienie nie tylko o mrocznych wydarzeniach, ale także o ludzkich emocjach, które rodzą się w sytuacjach kryzysowych, zmieniając życie bohaterów na zawsze. W trakcie spektaklu widzowie będą mieli okazję odkryć tajemnice miasta i skonfrontować się z pytaniem, jak cienka jest granica między rzeczywistością a tym, co wytworzyła wyobraźnia."
+                        },
+                        new
+                        {
+                            Id = 9,
+                            LongDescription = "Jazzowe Brzmienia to wyjątkowy koncert, który przenosi uczestników w świat żywego jazzu. Podczas wydarzenia wystąpią znani artyści jazzowi, którzy zabiorą widzów w podróż po różnorodnych stylach tego gatunku. Atmosfera pełna emocji, improwizacji i magicznych dźwięków sprawia, że każda chwila staje się niezapomnianym doświadczeniem. Koncert jest idealną okazją, by poczuć autentyczną magię jazzu w wyjątkowym wykonaniu na żywo, a publiczność wciągnie się w niepowtarzalny klimat muzycznej ekspresji."
+                        },
+                        new
+                        {
+                            Id = 10,
+                            LongDescription = "Interstellar to epicka podróż w głąb kosmosu, która bada granice ludzkiej wytrzymałości, miłości i poświęcenia. Grupa astronautów, wyruszając na misję w poszukiwaniu nowego domu dla ludzkości, zmierzy się z niewyobrażalnymi wyzwaniami. Film porusza tematykę czasu, przestrzeni i ofiary, ukazując niesamowite krajobrazy kosmiczne oraz ludzką determinację w walce o przetrwanie. Każdy moment to prawdziwa uczta dla zmysłów, a historia miłości i poświęcenia łączy się z naukową fascynacją, tworząc niezapomniane doświadczenie filmowe."
+                        },
+                        new
+                        {
+                            Id = 11,
+                            LongDescription = "Spektakl 'Zatrzymać Przeznaczenie' to głęboka opowieść o postaci, która staje przed obliczem nieuchronnego przeznaczenia. Bohaterowie zmagają się z wyborem, który może zmienić bieg wydarzeń, a ich działania prowadzą do nieodwracalnych konsekwencji. Spektakl skłania do refleksji nad wolną wolą, nieuchronnością losu i odpowiedzialnością za własne wybory. Z pomocą wciągającej dramaturgii oraz poruszających dialogów, spektakl ukazuje, jak delikatna jest granica między tym, co możemy kontrolować, a tym, co jest zapisane w naszych losach."
+                        },
+                        new
+                        {
+                            Id = 12,
+                            LongDescription = "Wystawa 'Nowe Perspektywy' zaprasza do odkrywania sztuki współczesnej z zupełnie nowych punktów widzenia. Artyści wykorzystują różnorodne techniki, od tradycyjnych obrazów po innowacyjne instalacje, które angażują widza w interaktywną formę prezentacji. Każda praca na wystawie to zaproszenie do zastanowienia się nad tym, jak sztuka może zmieniać nasze postrzeganie rzeczywistości. To także próba przekroczenia granic tradycyjnych konwencji, poszukiwania nowych środków wyrazu i głębokiej refleksji nad naturą współczesnej sztuki."
                         });
                 });
 
@@ -559,7 +731,7 @@ namespace EventFlowAPI.DB.Migrations
                         new
                         {
                             Id = 1,
-                            EndDate = new DateTime(2025, 8, 2, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            EndDate = new DateTime(2025, 9, 18, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             EventPassGuid = new Guid("b00ca94a-e6b2-4d2e-b270-244b3e76048d"),
                             EventPassJPGName = "eventflow_karnet_b00ca94a-e6b2-4d2e-b270-244b3e76048d.jpg",
                             EventPassPDFName = "eventflow_karnet_b00ca94a-e6b2-4d2e-b270-244b3e76048d.pdf",
@@ -567,9 +739,9 @@ namespace EventFlowAPI.DB.Migrations
                             IsUpdated = false,
                             PassTypeId = 3,
                             PaymentAmount = 499.99m,
-                            PaymentDate = new DateTime(2025, 2, 2, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            PaymentDate = new DateTime(2025, 3, 18, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             PaymentTypeId = 1,
-                            StartDate = new DateTime(2025, 2, 2, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            StartDate = new DateTime(2025, 3, 18, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             TotalDiscount = 0m,
                             TotalDiscountPercentage = 0m,
                             UserId = "2"
@@ -577,7 +749,7 @@ namespace EventFlowAPI.DB.Migrations
                         new
                         {
                             Id = 2,
-                            EndDate = new DateTime(2026, 2, 2, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            EndDate = new DateTime(2026, 3, 18, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             EventPassGuid = new Guid("766245b4-8c08-49dd-9480-2606aaa590be"),
                             EventPassJPGName = "eventflow_karnet_766245b4-8c08-49dd-9480-2606aaa590be.jpg",
                             EventPassPDFName = "eventflow_karnet_766245b4-8c08-49dd-9480-2606aaa590be.pdf",
@@ -585,9 +757,9 @@ namespace EventFlowAPI.DB.Migrations
                             IsUpdated = false,
                             PassTypeId = 4,
                             PaymentAmount = 999.99m,
-                            PaymentDate = new DateTime(2025, 2, 2, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            PaymentDate = new DateTime(2025, 3, 18, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             PaymentTypeId = 1,
-                            StartDate = new DateTime(2025, 2, 2, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            StartDate = new DateTime(2025, 3, 18, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             TotalDiscount = 0m,
                             TotalDiscountPercentage = 0m,
                             UserId = "3"
@@ -595,7 +767,7 @@ namespace EventFlowAPI.DB.Migrations
                         new
                         {
                             Id = 3,
-                            EndDate = new DateTime(2025, 5, 2, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            EndDate = new DateTime(2025, 6, 18, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             EventPassGuid = new Guid("33610a0d-a1b7-4700-bffe-9e334b977e6a"),
                             EventPassJPGName = "eventflow_karnet_33610a0d-a1b7-4700-bffe-9e334b977e6a.jpg",
                             EventPassPDFName = "eventflow_karnet_33610a0d-a1b7-4700-bffe-9e334b977e6a.pdf",
@@ -603,9 +775,9 @@ namespace EventFlowAPI.DB.Migrations
                             IsUpdated = false,
                             PassTypeId = 2,
                             PaymentAmount = 235.99m,
-                            PaymentDate = new DateTime(2025, 2, 2, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            PaymentDate = new DateTime(2025, 3, 18, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             PaymentTypeId = 1,
-                            StartDate = new DateTime(2025, 2, 2, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            StartDate = new DateTime(2025, 3, 18, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             TotalDiscount = 0m,
                             TotalDiscountPercentage = 0m,
                             UserId = "4"
@@ -724,25 +896,25 @@ namespace EventFlowAPI.DB.Migrations
                         new
                         {
                             Id = 1,
-                            Answer = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed justo erat, tempor quis sagittis et, sodales id nibh. Phasellus diam enim, sodales pharetra neque eget, sollicitudin vulputate est. Morbi ac velit sed arcu malesuada feugiat. Suspendisse potenti. Donec commodo mauris nisi. Nulla ut mi eu lectus consequat porta at commodo.",
+                            Answer = "Bilety możesz kupić przechodząc do zakładki Wydarzenia. Następnie wybierz interesujące cię wydarzenie i kliknij przycisk Kup bilet. Wyświetli okno dialogowe w którym możliwy jest wybór miejsca i typu biletu. Wybierz miejsca i typ biletu, a następnie kliknij ponownie Kup bilet. Zostaniesz przekierowany do bramki płatniczej za pomocą której dokonasz opłaty za bilet. Po dokonaniu opłaty bilet zostanie przesłany na adres e-mail oraz będzie możliwy do pobrania w zakładce Profil > Moje rezerwacje.",
                             Question = "W jaki sposób mogę kupić bilet na wydarzenie ?"
                         },
                         new
                         {
                             Id = 2,
-                            Answer = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed justo erat, tempor quis sagittis et, sodales id nibh. Phasellus diam enim, sodales pharetra neque eget, sollicitudin vulputate est. Morbi ac velit sed arcu malesuada feugiat. Suspendisse potenti. Donec commodo mauris nisi. Nulla ut mi eu lectus consequat porta at commodo.",
+                            Answer = "Aby wynająć salę przejdź do zakładki Wynajem. Następnie wybierz interesującą cię sale i kliknij przycisk Wynajmij. Pojawi się okno dialogowe z kalendarzem możliwych do wybrania dat rezerwacji. Wybierz datę rozpoczęcia i zakończenia rezerwacji oraz ewentualne dodatkowe usługi po czym kliknij przycisk Wynajmij. Zostaniesz przekierowany do bramki płątniczej za pomocą której dokonasz opłaty za wynajem. Po dokonaniu opłaty potwierdzenie wynajmu zostanie wysłane na adres e-mail oraz będzie możliwe do pobrania w zakładce Profil > Moje wynajmy.",
                             Question = "Jak mogę wynająć salę ?"
                         },
                         new
                         {
                             Id = 3,
-                            Answer = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed justo erat, tempor quis sagittis et, sodales id nibh. Phasellus diam enim, sodales pharetra neque eget, sollicitudin vulputate est. Morbi ac velit sed arcu malesuada feugiat. Suspendisse potenti. Donec commodo mauris nisi. Nulla ut mi eu lectus consequat porta at commodo.",
+                            Answer = "Karnet możesz przedłużyć w dowolnym momencie przed upływem jego daty ważności. Przy przedłużeniu karnetu zawsze otrzymasz zniżkę w zależności od aktualnie posiadanego karnetu. Przykładowo jeśli posiadasz karnet roczny otrzymasz 20% zniżki na każdy typ karnetu.",
                             Question = "Co ile czasu muszę przedłużać karnet ?"
                         },
                         new
                         {
                             Id = 4,
-                            Answer = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed justo erat, tempor quis sagittis et, sodales id nibh. Phasellus diam enim, sodales pharetra neque eget, sollicitudin vulputate est. Morbi ac velit sed arcu malesuada feugiat. Suspendisse potenti. Donec commodo mauris nisi. Nulla ut mi eu lectus consequat porta at commodo.",
+                            Answer = "Aby zwrócić zakupiony bilet konieczne jest anulowanie rezerwacji. Możesz tego dokonać przechodząc do zakładki Profil > Moje rezerwacje. Następnie z listy wybierz rezerwację którą chcesz anulowac i kliknij przycisk Anuluj. Pojawi się okno dialogowe z zapytaniem czy naewno chcesz wykonać daną operację. Po potwierdzeniu wykonania operacji otrzymasz na maila informację o anulowaniu biletu, a zwrot kosztów otrzymasz w ciągu 7 dni robocznych. Po anulowaniu rezerwacji posiadany bilet staje się nieważny.s",
                             Question = "Jak zwrócić zakupiony bilet ?"
                         });
                 });
@@ -802,43 +974,43 @@ namespace EventFlowAPI.DB.Migrations
                         {
                             Id = 1,
                             AddDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Duration = -2768400L,
-                            EndDate = new DateTime(2025, 4, 3, 1, 0, 0, 0, DateTimeKind.Unspecified),
-                            FestivalGuid = new Guid("ffdc0ec4-a249-474c-8982-cd208f70a0ae"),
+                            Duration = -2682000L,
+                            EndDate = new DateTime(2025, 5, 19, 1, 0, 0, 0, DateTimeKind.Unspecified),
+                            FestivalGuid = new Guid("0e36fd43-030a-4459-88fa-f99f53e601a3"),
                             IsDeleted = false,
                             IsUpdated = false,
-                            Name = "Festiwal muzyki hip-hop",
-                            PhotoName = "festival.png",
-                            ShortDescription = "Festiwal muzyki hip-hop to nowy festiwal organizowany przez XYZ.",
-                            StartDate = new DateTime(2025, 3, 3, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            Name = "Festiwal Muzyki Hip-Hop",
+                            PhotoName = "festiwal_muzyki_hip_hop.png",
+                            ShortDescription = "Największy festiwal hip-hopowy! Koncerty, freestyle battle, warsztaty DJ-skie i spotkania z artystami.",
+                            StartDate = new DateTime(2025, 4, 19, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             Id = 2,
                             AddDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Duration = -2772000L,
-                            EndDate = new DateTime(2025, 4, 5, 2, 0, 0, 0, DateTimeKind.Unspecified),
-                            FestivalGuid = new Guid("9a330cf8-c5fa-4395-b907-9ac0443ea8c2"),
+                            Duration = -2685600L,
+                            EndDate = new DateTime(2025, 5, 21, 2, 0, 0, 0, DateTimeKind.Unspecified),
+                            FestivalGuid = new Guid("d946406d-7b80-40ca-aeff-c2966dcb6727"),
                             IsDeleted = false,
                             IsUpdated = false,
-                            Name = "Festiwal filmowy",
-                            PhotoName = "",
-                            ShortDescription = "Festiwal filmowy to festiwal na którym można obejrzeć filmy.",
-                            StartDate = new DateTime(2025, 3, 4, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            Name = "Festiwal Filmowy",
+                            PhotoName = "festiwal_filmowy.png",
+                            ShortDescription = "Przegląd najlepszych filmów z całego świata! Premiera, spotkania z reżyserami i nocne maratony kinowe.",
+                            StartDate = new DateTime(2025, 4, 20, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             Id = 3,
                             AddDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Duration = -2689200L,
-                            EndDate = new DateTime(2025, 4, 6, 3, 0, 0, 0, DateTimeKind.Unspecified),
-                            FestivalGuid = new Guid("51e5c07d-d4db-4bc4-87c9-183eb5f5b272"),
+                            Duration = -2602800L,
+                            EndDate = new DateTime(2025, 5, 22, 3, 0, 0, 0, DateTimeKind.Unspecified),
+                            FestivalGuid = new Guid("d96a3633-6a7f-42fb-ba84-94e5902adce7"),
                             IsDeleted = false,
                             IsUpdated = false,
-                            Name = "Festiwal sztuki abstrakcyjnej",
-                            PhotoName = "",
-                            ShortDescription = "Festiwal sztuki abstrakcyjnej to festiwal na którym można zobaczyć sztukę.",
-                            StartDate = new DateTime(2025, 3, 6, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            Name = "Festiwal Sztuki",
+                            PhotoName = "festiwal_sztuki.png",
+                            ShortDescription = "Wystawy, instalacje i performanse! Odkryj nowoczesne formy sztuki i weź udział w kreatywnych warsztatach.",
+                            StartDate = new DateTime(2025, 4, 22, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         });
                 });
 
@@ -862,17 +1034,17 @@ namespace EventFlowAPI.DB.Migrations
                         new
                         {
                             Id = 1,
-                            LongDescription = "Opis festiwalu muzyki współczesnej"
+                            LongDescription = "Festiwal Muzyki Hip-Hop to coroczne wydarzenie dedykowane nowoczesnym brzmieniom i eksperymentalnym kompozycjom. Na scenie pojawiają się zarówno uznani artyści, jak i młode talenty, prezentując innowacyjne podejście do muzyki. W programie znajdują się koncerty, warsztaty, spotkania z twórcami oraz panele dyskusyjne dotyczące przyszłości muzyki. Festiwal przyciąga miłośników dźwięków elektronicznych, jazzowych improwizacji, minimalistycznych kompozycji i nowych form ekspresji dźwiękowej. To wyjątkowa okazja, by odkryć najnowsze trendy muzyczne i poszerzyć swoje horyzonty artystyczne."
                         },
                         new
                         {
                             Id = 2,
-                            LongDescription = "Opis festiwalu filmowego"
+                            LongDescription = "Festiwal Filmowy to wyjątkowe święto kina, które gromadzi pasjonatów filmów z różnych zakątków świata. W repertuarze znajdują się zarówno filmy fabularne, dokumentalne, jak i krótkometrażowe, reprezentujące różne nurty i stylistyki. Organizowane są spotkania z reżyserami, aktorami oraz warsztaty dla młodych filmowców. Każda edycja festiwalu poświęcona jest określonemu tematowi przewodniemu, który inspiruje twórców do dyskusji nad istotnymi kwestiami społecznymi, kulturowymi i artystycznymi. To doskonała okazja, by zobaczyć premiery, odkryć nowe talenty i zanurzyć się w magiczny świat kinematografii."
                         },
                         new
                         {
                             Id = 3,
-                            LongDescription = "Opis festiwalu sztuki abstrakcyjnej"
+                            LongDescription = "Festiwal Sztuki to wydarzenie celebrujące kreatywność i nieograniczoną ekspresję artystyczną. W ramach festiwalu prezentowane są prace artystów, którzy eksperymentują z formą, kolorem i strukturą, tworząc unikalne dzieła sztuki nowoczesnej. Oprócz wystaw odbywają się warsztaty, podczas których uczestnicy mogą spróbować swoich sił w malarstwie, rzeźbie czy instalacjach multimedialnych. Festiwal to także przestrzeń do rozmów o współczesnych trendach w sztuce, spotkania z artystami oraz wykłady ekspertów. To niepowtarzalna okazja, by odkryć nowe inspiracje i spojrzeć na sztukę z innej perspektywy."
                         });
                 });
 
@@ -1303,6 +1475,71 @@ namespace EventFlowAPI.DB.Migrations
                             IsUpdated = false,
                             IsVisible = false,
                             RentalPricePerHour = 199.99m
+                        },
+                        new
+                        {
+                            Id = 16,
+                            DefaultId = 3,
+                            Floor = 2m,
+                            HallNr = 3,
+                            HallTypeId = 3,
+                            HallViewFileName = "sala_5_5_16.pdf",
+                            IsCopy = true,
+                            IsUpdated = false,
+                            IsVisible = false,
+                            RentalPricePerHour = 179.99m
+                        },
+                        new
+                        {
+                            Id = 17,
+                            DefaultId = 2,
+                            Floor = 1m,
+                            HallNr = 2,
+                            HallTypeId = 2,
+                            HallViewFileName = "sala_5_5_17.pdf",
+                            IsCopy = true,
+                            IsUpdated = false,
+                            IsVisible = false,
+                            RentalPricePerHour = 89.99m
+                        },
+                        new
+                        {
+                            Id = 18,
+                            DefaultId = 1,
+                            Floor = 2m,
+                            HallNr = 1,
+                            HallTypeId = 1,
+                            HallViewFileName = "sala_5_5_18.pdf",
+                            IsCopy = true,
+                            IsUpdated = false,
+                            IsVisible = false,
+                            RentalPricePerHour = 120.99m
+                        },
+                        new
+                        {
+                            Id = 19,
+                            DefaultId = 3,
+                            Floor = 2m,
+                            HallNr = 3,
+                            HallTypeId = 3,
+                            HallViewFileName = "sala_5_5_19.pdf",
+                            IsCopy = true,
+                            IsUpdated = false,
+                            IsVisible = false,
+                            RentalPricePerHour = 179.99m
+                        },
+                        new
+                        {
+                            Id = 20,
+                            DefaultId = 4,
+                            Floor = 1m,
+                            HallNr = 4,
+                            HallTypeId = 4,
+                            HallViewFileName = "sala_5_5_20.pdf",
+                            IsCopy = true,
+                            IsUpdated = false,
+                            IsVisible = false,
+                            RentalPricePerHour = 199.99m
                         });
                 });
 
@@ -1350,11 +1587,11 @@ namespace EventFlowAPI.DB.Migrations
                             MaxNumberOfSeatsColumns = 15m,
                             MaxNumberOfSeatsRows = 15m,
                             NumberOfSeats = 100m,
-                            StageLength = 4m,
-                            StageWidth = 20m,
-                            TotalArea = 800m,
-                            TotalLength = 20m,
-                            TotalWidth = 40m
+                            StageLength = 4.4m,
+                            StageWidth = 7m,
+                            TotalArea = 308m,
+                            TotalLength = 22m,
+                            TotalWidth = 14m
                         },
                         new
                         {
@@ -1363,9 +1600,9 @@ namespace EventFlowAPI.DB.Migrations
                             MaxNumberOfSeatsColumns = 10m,
                             MaxNumberOfSeatsRows = 15m,
                             NumberOfSeats = 150m,
-                            TotalArea = 150m,
-                            TotalLength = 15m,
-                            TotalWidth = 10m
+                            TotalArea = 198m,
+                            TotalLength = 22m,
+                            TotalWidth = 9m
                         },
                         new
                         {
@@ -1374,11 +1611,11 @@ namespace EventFlowAPI.DB.Migrations
                             MaxNumberOfSeatsColumns = 10m,
                             MaxNumberOfSeatsRows = 6m,
                             NumberOfSeats = 60m,
-                            StageLength = 4m,
-                            StageWidth = 5m,
-                            TotalArea = 80m,
-                            TotalLength = 10m,
-                            TotalWidth = 8m
+                            StageLength = 4.4m,
+                            StageWidth = 5.6m,
+                            TotalArea = 99m,
+                            TotalLength = 11m,
+                            TotalWidth = 9m
                         },
                         new
                         {
@@ -1387,11 +1624,11 @@ namespace EventFlowAPI.DB.Migrations
                             MaxNumberOfSeatsColumns = 10m,
                             MaxNumberOfSeatsRows = 10m,
                             NumberOfSeats = 100m,
-                            StageLength = 5m,
-                            StageWidth = 8m,
-                            TotalArea = 140m,
-                            TotalLength = 14m,
-                            TotalWidth = 10m
+                            StageLength = 6m,
+                            StageWidth = 7.2m,
+                            TotalArea = 153m,
+                            TotalLength = 17m,
+                            TotalWidth = 9m
                         },
                         new
                         {
@@ -1400,11 +1637,11 @@ namespace EventFlowAPI.DB.Migrations
                             MaxNumberOfSeatsColumns = 15m,
                             MaxNumberOfSeatsRows = 15m,
                             NumberOfSeats = 100m,
-                            StageLength = 4m,
-                            StageWidth = 20m,
-                            TotalArea = 800m,
-                            TotalLength = 20m,
-                            TotalWidth = 40m
+                            StageLength = 4.4m,
+                            StageWidth = 7m,
+                            TotalArea = 108m,
+                            TotalLength = 22m,
+                            TotalWidth = 14m
                         },
                         new
                         {
@@ -1413,9 +1650,9 @@ namespace EventFlowAPI.DB.Migrations
                             MaxNumberOfSeatsColumns = 10m,
                             MaxNumberOfSeatsRows = 15m,
                             NumberOfSeats = 150m,
-                            TotalArea = 150m,
-                            TotalLength = 15m,
-                            TotalWidth = 10m
+                            TotalArea = 198m,
+                            TotalLength = 22m,
+                            TotalWidth = 9m
                         },
                         new
                         {
@@ -1424,11 +1661,11 @@ namespace EventFlowAPI.DB.Migrations
                             MaxNumberOfSeatsColumns = 10m,
                             MaxNumberOfSeatsRows = 6m,
                             NumberOfSeats = 60m,
-                            StageLength = 4m,
-                            StageWidth = 5m,
-                            TotalArea = 80m,
-                            TotalLength = 10m,
-                            TotalWidth = 8m
+                            StageLength = 4.4m,
+                            StageWidth = 5.6m,
+                            TotalArea = 99m,
+                            TotalLength = 11m,
+                            TotalWidth = 9m
                         },
                         new
                         {
@@ -1437,11 +1674,11 @@ namespace EventFlowAPI.DB.Migrations
                             MaxNumberOfSeatsColumns = 10m,
                             MaxNumberOfSeatsRows = 10m,
                             NumberOfSeats = 100m,
-                            StageLength = 5m,
-                            StageWidth = 8m,
-                            TotalArea = 140m,
-                            TotalLength = 14m,
-                            TotalWidth = 10m
+                            StageLength = 6m,
+                            StageWidth = 7.2m,
+                            TotalArea = 153m,
+                            TotalLength = 17m,
+                            TotalWidth = 9m
                         },
                         new
                         {
@@ -1450,11 +1687,11 @@ namespace EventFlowAPI.DB.Migrations
                             MaxNumberOfSeatsColumns = 15m,
                             MaxNumberOfSeatsRows = 15m,
                             NumberOfSeats = 100m,
-                            StageLength = 4m,
-                            StageWidth = 20m,
-                            TotalArea = 800m,
-                            TotalLength = 20m,
-                            TotalWidth = 40m
+                            StageLength = 4.4m,
+                            StageWidth = 7m,
+                            TotalArea = 308m,
+                            TotalLength = 22m,
+                            TotalWidth = 14m
                         },
                         new
                         {
@@ -1463,9 +1700,9 @@ namespace EventFlowAPI.DB.Migrations
                             MaxNumberOfSeatsColumns = 10m,
                             MaxNumberOfSeatsRows = 15m,
                             NumberOfSeats = 150m,
-                            TotalArea = 150m,
-                            TotalLength = 15m,
-                            TotalWidth = 10m
+                            TotalArea = 198m,
+                            TotalLength = 22m,
+                            TotalWidth = 9m
                         },
                         new
                         {
@@ -1474,11 +1711,11 @@ namespace EventFlowAPI.DB.Migrations
                             MaxNumberOfSeatsColumns = 10m,
                             MaxNumberOfSeatsRows = 10m,
                             NumberOfSeats = 100m,
-                            StageLength = 5m,
-                            StageWidth = 8m,
-                            TotalArea = 140m,
-                            TotalLength = 14m,
-                            TotalWidth = 10m
+                            StageLength = 6m,
+                            StageWidth = 7.2m,
+                            TotalArea = 153m,
+                            TotalLength = 17m,
+                            TotalWidth = 9m
                         },
                         new
                         {
@@ -1487,11 +1724,11 @@ namespace EventFlowAPI.DB.Migrations
                             MaxNumberOfSeatsColumns = 15m,
                             MaxNumberOfSeatsRows = 15m,
                             NumberOfSeats = 100m,
-                            StageLength = 4m,
-                            StageWidth = 20m,
-                            TotalArea = 800m,
-                            TotalLength = 20m,
-                            TotalWidth = 40m
+                            StageLength = 4.4m,
+                            StageWidth = 7m,
+                            TotalArea = 308m,
+                            TotalLength = 22m,
+                            TotalWidth = 14m
                         },
                         new
                         {
@@ -1500,9 +1737,9 @@ namespace EventFlowAPI.DB.Migrations
                             MaxNumberOfSeatsColumns = 10m,
                             MaxNumberOfSeatsRows = 15m,
                             NumberOfSeats = 150m,
-                            TotalArea = 150m,
-                            TotalLength = 15m,
-                            TotalWidth = 10m
+                            TotalArea = 198m,
+                            TotalLength = 22m,
+                            TotalWidth = 9m
                         },
                         new
                         {
@@ -1511,11 +1748,11 @@ namespace EventFlowAPI.DB.Migrations
                             MaxNumberOfSeatsColumns = 10m,
                             MaxNumberOfSeatsRows = 6m,
                             NumberOfSeats = 60m,
-                            StageLength = 4m,
-                            StageWidth = 5m,
-                            TotalArea = 80m,
-                            TotalLength = 10m,
-                            TotalWidth = 8m
+                            StageLength = 4.4m,
+                            StageWidth = 5.6m,
+                            TotalArea = 99m,
+                            TotalLength = 11m,
+                            TotalWidth = 9m
                         },
                         new
                         {
@@ -1524,11 +1761,74 @@ namespace EventFlowAPI.DB.Migrations
                             MaxNumberOfSeatsColumns = 10m,
                             MaxNumberOfSeatsRows = 10m,
                             NumberOfSeats = 100m,
-                            StageLength = 5m,
-                            StageWidth = 8m,
-                            TotalArea = 140m,
-                            TotalLength = 14m,
-                            TotalWidth = 10m
+                            StageLength = 6m,
+                            StageWidth = 7.2m,
+                            TotalArea = 153m,
+                            TotalLength = 17m,
+                            TotalWidth = 9m
+                        },
+                        new
+                        {
+                            Id = 16,
+                            MaxNumberOfSeats = 60m,
+                            MaxNumberOfSeatsColumns = 10m,
+                            MaxNumberOfSeatsRows = 6m,
+                            NumberOfSeats = 60m,
+                            StageLength = 4.4m,
+                            StageWidth = 5.6m,
+                            TotalArea = 99m,
+                            TotalLength = 11m,
+                            TotalWidth = 9m
+                        },
+                        new
+                        {
+                            Id = 17,
+                            MaxNumberOfSeats = 150m,
+                            MaxNumberOfSeatsColumns = 10m,
+                            MaxNumberOfSeatsRows = 15m,
+                            NumberOfSeats = 150m,
+                            TotalArea = 198m,
+                            TotalLength = 22m,
+                            TotalWidth = 9m
+                        },
+                        new
+                        {
+                            Id = 18,
+                            MaxNumberOfSeats = 255m,
+                            MaxNumberOfSeatsColumns = 15m,
+                            MaxNumberOfSeatsRows = 15m,
+                            NumberOfSeats = 100m,
+                            StageLength = 4.4m,
+                            StageWidth = 7m,
+                            TotalArea = 308m,
+                            TotalLength = 22m,
+                            TotalWidth = 14m
+                        },
+                        new
+                        {
+                            Id = 19,
+                            MaxNumberOfSeats = 60m,
+                            MaxNumberOfSeatsColumns = 10m,
+                            MaxNumberOfSeatsRows = 6m,
+                            NumberOfSeats = 60m,
+                            StageLength = 4.4m,
+                            StageWidth = 5.6m,
+                            TotalArea = 99m,
+                            TotalLength = 11m,
+                            TotalWidth = 9m
+                        },
+                        new
+                        {
+                            Id = 20,
+                            MaxNumberOfSeats = 100m,
+                            MaxNumberOfSeatsColumns = 10m,
+                            MaxNumberOfSeatsRows = 10m,
+                            NumberOfSeats = 100m,
+                            StageLength = 6m,
+                            StageWidth = 7.2m,
+                            TotalArea = 153m,
+                            TotalLength = 17m,
+                            TotalWidth = 9m
                         });
                 });
 
@@ -1601,68 +1901,68 @@ namespace EventFlowAPI.DB.Migrations
                         {
                             Id = 1,
                             Duration = 28800L,
-                            EndDate = new DateTime(2025, 3, 3, 8, 0, 0, 0, DateTimeKind.Unspecified),
+                            EndDate = new DateTime(2025, 4, 19, 8, 0, 0, 0, DateTimeKind.Unspecified),
                             HallId = 12,
-                            HallRentGuid = new Guid("dc870197-f673-4261-8e01-d58ef9220fae"),
+                            HallRentGuid = new Guid("48972d7a-ab0d-4827-bdd6-2002dc1f1e08"),
                             HallRentPDFName = "wynajem_sali_1.pdf",
                             IsDeleted = false,
                             IsUpdated = false,
                             PaymentAmount = 899.99m,
-                            PaymentDate = new DateTime(2025, 2, 2, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            PaymentDate = new DateTime(2025, 3, 18, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             PaymentTypeId = 1,
-                            RentDate = new DateTime(2025, 2, 2, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            StartDate = new DateTime(2025, 3, 3, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            RentDate = new DateTime(2025, 3, 18, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            StartDate = new DateTime(2025, 4, 19, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             UserId = "4"
                         },
                         new
                         {
                             Id = 2,
                             Duration = 14400L,
-                            EndDate = new DateTime(2025, 3, 4, 4, 0, 0, 0, DateTimeKind.Unspecified),
+                            EndDate = new DateTime(2025, 4, 20, 4, 0, 0, 0, DateTimeKind.Unspecified),
                             HallId = 13,
-                            HallRentGuid = new Guid("11e60f61-ba77-4b97-b127-6c768b361561"),
+                            HallRentGuid = new Guid("3ad58762-60f0-4753-bdf7-c9c7e3eb775c"),
                             HallRentPDFName = "wynajem_sali_2.pdf",
                             IsDeleted = false,
                             IsUpdated = false,
                             PaymentAmount = 699.99m,
-                            PaymentDate = new DateTime(2025, 2, 2, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            PaymentDate = new DateTime(2025, 3, 18, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             PaymentTypeId = 1,
-                            RentDate = new DateTime(2025, 2, 2, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            StartDate = new DateTime(2025, 3, 4, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            RentDate = new DateTime(2025, 3, 18, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            StartDate = new DateTime(2025, 4, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             UserId = "3"
                         },
                         new
                         {
                             Id = 3,
                             Duration = 7200L,
-                            EndDate = new DateTime(2025, 3, 5, 2, 0, 0, 0, DateTimeKind.Unspecified),
+                            EndDate = new DateTime(2025, 4, 21, 2, 0, 0, 0, DateTimeKind.Unspecified),
                             HallId = 14,
-                            HallRentGuid = new Guid("78ffb2e2-9e20-4099-9979-85899dee9615"),
+                            HallRentGuid = new Guid("38daa558-0f6e-414a-913c-c500d41d5dc5"),
                             HallRentPDFName = "wynajem_sali_3.pdf",
                             IsDeleted = false,
                             IsUpdated = false,
                             PaymentAmount = 399.99m,
-                            PaymentDate = new DateTime(2025, 2, 2, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            PaymentDate = new DateTime(2025, 3, 18, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             PaymentTypeId = 1,
-                            RentDate = new DateTime(2025, 2, 2, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            StartDate = new DateTime(2025, 3, 5, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            RentDate = new DateTime(2025, 3, 18, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            StartDate = new DateTime(2025, 4, 21, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             UserId = "3"
                         },
                         new
                         {
                             Id = 4,
                             Duration = 3600L,
-                            EndDate = new DateTime(2025, 3, 6, 1, 0, 0, 0, DateTimeKind.Unspecified),
+                            EndDate = new DateTime(2025, 4, 22, 1, 0, 0, 0, DateTimeKind.Unspecified),
                             HallId = 15,
-                            HallRentGuid = new Guid("287c60ec-aa13-4a3b-9462-796ea454fcf2"),
+                            HallRentGuid = new Guid("e690b490-7387-490c-89df-bd9eaf2cc36b"),
                             HallRentPDFName = "wynajem_sali_4.pdf",
                             IsDeleted = false,
                             IsUpdated = false,
                             PaymentAmount = 150.99m,
-                            PaymentDate = new DateTime(2025, 2, 2, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            PaymentDate = new DateTime(2025, 3, 18, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             PaymentTypeId = 1,
-                            RentDate = new DateTime(2025, 2, 2, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            StartDate = new DateTime(2025, 3, 6, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            RentDate = new DateTime(2025, 3, 18, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            StartDate = new DateTime(2025, 4, 22, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             UserId = "2"
                         });
                 });
@@ -1761,7 +2061,7 @@ namespace EventFlowAPI.DB.Migrations
                         new
                         {
                             Id = 1,
-                            Description = "Nowa sala kinowa wyposażona w nowoczesne nagłośnienie i ekran",
+                            Description = "Nowoczesna sala kinowa, wyposażona w wysokiej jakości projektor oraz system nagłośnienia Dolby Digital. Idealna do projekcji filmów w różnych formatach, zapewniająca doskonałe wrażenia wizualne i dźwiękowe. Pomieszczenie jest przystosowane do projekcji 2D i 3D, z przestronnymi fotelami zapewniającymi komfort podczas długotrwałego seansu.",
                             HallTypeGuid = new Guid("00000000-0000-0000-0000-000000000000"),
                             IsDeleted = false,
                             IsSoftUpdated = false,
@@ -1772,7 +2072,7 @@ namespace EventFlowAPI.DB.Migrations
                         new
                         {
                             Id = 2,
-                            Description = "Nowa sala koncertowa wyposażona w najwyższej klasy nagłośnienie",
+                            Description = "Sala koncertowa o najwyższej jakości akustyce, przeznaczona do organizacji koncertów, recitali i występów muzycznych. Wyposażona w profesjonalny system nagłośnienia i adaptację akustyczną, która zapewnia doskonałe warunki dźwiękowe dla artystów oraz publiczności. Przestronny design, komfortowe siedzenia oraz nowoczesne oświetlenie sprawiają, że jest to idealne miejsce do wydarzeń muzycznych.",
                             HallTypeGuid = new Guid("00000000-0000-0000-0000-000000000000"),
                             IsDeleted = false,
                             IsSoftUpdated = false,
@@ -1783,7 +2083,7 @@ namespace EventFlowAPI.DB.Migrations
                         new
                         {
                             Id = 3,
-                            Description = "Opis sali teatralnej",
+                            Description = "Sala teatralna o wysokiej jakości akustyce i estetyce, przystosowana do organizacji spektakli teatralnych, przedstawień, recitalów oraz wydarzeń artystycznych. Wyposażona w profesjonalne oświetlenie sceniczne, nagłośnienie oraz przestronną scenę, która zapewnia doskonałą widoczność i akustykę. To przestrzeń, która sprzyja artystycznemu wyrazowi i tworzeniu niezapomnianych doznań dla widzów.",
                             HallTypeGuid = new Guid("00000000-0000-0000-0000-000000000000"),
                             IsDeleted = false,
                             IsSoftUpdated = false,
@@ -1794,7 +2094,7 @@ namespace EventFlowAPI.DB.Migrations
                         new
                         {
                             Id = 4,
-                            Description = "Opis sali wystawowa",
+                            Description = "Przestronna sala wystawowa dedykowana organizacji wystaw, targów i ekspozycji artystycznych. Zapewnia dużą powierzchnię do prezentacji dzieł sztuki, rzemiosła i innych ekspozycji. Zmodernizowane oświetlenie i możliwość aranżacji przestrzeni pozwalają na profesjonalne wyeksponowanie dzieł. Jest to przestrzeń elastyczna, doskonała do organizacji wydarzeń kulturalnych i wystaw artystycznych.",
                             HallTypeGuid = new Guid("00000000-0000-0000-0000-000000000000"),
                             IsDeleted = false,
                             IsSoftUpdated = false,
@@ -1805,13 +2105,24 @@ namespace EventFlowAPI.DB.Migrations
                         new
                         {
                             Id = 5,
-                            Description = "Sala ogólna",
+                            Description = "Sala ogólna to wszechstronna przestrzeń, która może być wykorzystana do różnorodnych wydarzeń, takich jak konferencje, szkolenia, spotkania biznesowe, czy kameralne wydarzenia kulturalne. Elastyczne ustawienie sali oraz nowoczesne wyposażenie audiowizualne sprawiają, że jest to idealne miejsce do organizacji wydarzeń o różnym charakterze. Wysoka jakość akustyki i komfortowe warunki zapewniają dogodną atmosferę.",
                             HallTypeGuid = new Guid("00000000-0000-0000-0000-000000000000"),
                             IsDeleted = false,
                             IsSoftUpdated = false,
                             IsUpdated = false,
                             Name = "Sala ogólna",
                             PhotoName = "ogolna.jpg"
+                        },
+                        new
+                        {
+                            Id = 6,
+                            Description = "Sala konferencyjna dedykowana organizacji spotkań biznesowych, konferencji, prezentacji i seminariów. Wyposażona w nowoczesny sprzęt audiowizualny, systemy do wideokonferencji oraz przestronną salę, która pomieści większą liczbę uczestników. Komfortowe, ergonomiczne fotele i stół konferencyjny sprzyjają profesjonalnym spotkaniom, a elastyczne ustawienie sali pozwala dostosować ją do różnych formatów spotkań.",
+                            HallTypeGuid = new Guid("00000000-0000-0000-0000-000000000000"),
+                            IsDeleted = false,
+                            IsSoftUpdated = false,
+                            IsUpdated = false,
+                            Name = "Sala konferencyjna",
+                            PhotoName = "konferencyjna.jpg"
                         });
                 });
 
@@ -1842,6 +2153,11 @@ namespace EventFlowAPI.DB.Migrations
                         },
                         new
                         {
+                            EquipmentId = 7,
+                            HallTypeId = 1
+                        },
+                        new
+                        {
                             EquipmentId = 2,
                             HallTypeId = 2
                         },
@@ -1852,8 +2168,93 @@ namespace EventFlowAPI.DB.Migrations
                         },
                         new
                         {
+                            EquipmentId = 5,
+                            HallTypeId = 2
+                        },
+                        new
+                        {
+                            EquipmentId = 7,
+                            HallTypeId = 2
+                        },
+                        new
+                        {
                             EquipmentId = 2,
                             HallTypeId = 3
+                        },
+                        new
+                        {
+                            EquipmentId = 7,
+                            HallTypeId = 3
+                        },
+                        new
+                        {
+                            EquipmentId = 9,
+                            HallTypeId = 3
+                        },
+                        new
+                        {
+                            EquipmentId = 1,
+                            HallTypeId = 4
+                        },
+                        new
+                        {
+                            EquipmentId = 7,
+                            HallTypeId = 4
+                        },
+                        new
+                        {
+                            EquipmentId = 10,
+                            HallTypeId = 4
+                        },
+                        new
+                        {
+                            EquipmentId = 11,
+                            HallTypeId = 4
+                        },
+                        new
+                        {
+                            EquipmentId = 1,
+                            HallTypeId = 5
+                        },
+                        new
+                        {
+                            EquipmentId = 5,
+                            HallTypeId = 5
+                        },
+                        new
+                        {
+                            EquipmentId = 6,
+                            HallTypeId = 5
+                        },
+                        new
+                        {
+                            EquipmentId = 7,
+                            HallTypeId = 5
+                        },
+                        new
+                        {
+                            EquipmentId = 1,
+                            HallTypeId = 6
+                        },
+                        new
+                        {
+                            EquipmentId = 5,
+                            HallTypeId = 6
+                        },
+                        new
+                        {
+                            EquipmentId = 6,
+                            HallTypeId = 6
+                        },
+                        new
+                        {
+                            EquipmentId = 7,
+                            HallTypeId = 6
+                        },
+                        new
+                        {
+                            EquipmentId = 8,
+                            HallTypeId = 6
                         });
                 });
 
@@ -1899,7 +2300,7 @@ namespace EventFlowAPI.DB.Migrations
                             Id = 1,
                             IsDeleted = false,
                             IsUpdated = false,
-                            MediaPatronGuid = new Guid("da1df267-ddde-4cfe-920c-695395641039"),
+                            MediaPatronGuid = new Guid("ae371ef5-1408-4a99-9df5-c02da3894a64"),
                             Name = "Gazeta Nowoczesna",
                             PhotoName = "gazeta_nowoczesna.png"
                         },
@@ -1908,7 +2309,7 @@ namespace EventFlowAPI.DB.Migrations
                             Id = 2,
                             IsDeleted = false,
                             IsUpdated = false,
-                            MediaPatronGuid = new Guid("7c5472ca-523b-448f-8954-53734e2e3e8b"),
+                            MediaPatronGuid = new Guid("1888ac98-9879-49d8-b5a0-a9bdedf65b79"),
                             Name = "Nowy świat TV",
                             PhotoName = "nowy_swiat.png"
                         },
@@ -1917,7 +2318,7 @@ namespace EventFlowAPI.DB.Migrations
                             Id = 3,
                             IsDeleted = false,
                             IsUpdated = false,
-                            MediaPatronGuid = new Guid("5d4b8e17-bebb-4f83-b966-f3291905a91d"),
+                            MediaPatronGuid = new Guid("21721629-b1aa-4fd0-8fce-689d78d6c326"),
                             Name = "Tygodnik Nowiny",
                             PhotoName = "tygodnik_nowiny.png"
                         });
@@ -1961,61 +2362,61 @@ namespace EventFlowAPI.DB.Migrations
                         new
                         {
                             Id = 1,
-                            LongDescription = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut id nibh ornare, luctus velit ac, feugiat turpis. Vestibulum fermentum placerat mi nec scelerisque. Ut id nibh ornare, luctus velit ac, feugiat turpis. Vestibulum fermentum. Vestibulum fermentum placerat mi nec. Ut id nibh ornare, luctus velit ac, feugiat turpis.Vestibulum fermentum. Vestibulum fermentum.",
-                            NewsGuid = new Guid("30a8de0d-855c-441d-a1c4-76182fb97f74"),
+                            LongDescription = "Finał konkursu artystycznego, który odbył się w naszym centrum, okazał się prawdziwym świętem sztuki. Udział wzięli artyści z różnych dziedzin: malarstwo, rzeźba, fotografia oraz sztuki wizualne. Każdy z uczestników miał okazję zaprezentować swoje dzieła przed szerszą publicznością, a także przed specjalnie powołaną komisją, składającą się z profesjonalistów z branży artystycznej. Zwycięzcy konkursu otrzymali nagrody pieniężne oraz profesjonalne wsparcie w dalszym rozwoju kariery artystycznej. Wydarzenie zakończyło się uroczystą galą, która na długo pozostanie w pamięci uczestników i widzów.",
+                            NewsGuid = new Guid("c771ea3f-aa24-45c9-9fde-76695d5eab1d"),
                             PhotoName = "konkurs_artystyczny.png",
-                            PublicationDate = new DateTime(2025, 2, 2, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            ShortDescription = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut id nibh ornare, luctus velit ac, feugiat turpis. Vestibulum fermentum placerat mi nec scelerisque. Ut id nibh ornare, luctus velit ac, feugiat turpis. Vestibulum fermentum. Vestibulum fermentum placerat mi nec. Ut id nibh ornare, luctus velit ac, feugiat turpis.Vestibulum fermentum. Vestibulum fermentum.",
+                            PublicationDate = new DateTime(2025, 3, 18, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            ShortDescription = "Z radością ogłaszamy finał naszego konkursu artystycznego, w którym uczestnicy rywalizowali w różnych kategoriach. Wydarzenie przyciągnęło wielu utalentowanych artystów. Zwycięzcy otrzymali cenne nagrody i wyróżnienia.",
                             Title = "Finał konkursu artystycznego"
                         },
                         new
                         {
                             Id = 2,
-                            LongDescription = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut id nibh ornare, luctus...",
-                            NewsGuid = new Guid("8e123c45-98fc-4868-af72-57764986de8f"),
+                            LongDescription = "Koncert zespołu Lunar Vibes, który odbył się w naszej sali koncertowej, przyciągnął rzeszę miłośników muzyki alternatywnej i elektronicznej. Zespół, znany z dynamicznych i innowacyjnych brzmień, zapewnił publiczności niezapomniane przeżycia muzyczne. Dźwięki, które łączyły różnorodne gatunki muzyczne, wprowadziły słuchaczy w trans, a energetyzujące występy artystów zapewniły fantastyczną atmosferę. W trakcie koncertu widzowie mogli usłyszeć zarówno starsze utwory zespołu, jak i nowości, które dopiero mają trafić na nadchodzący album. Zespół zagrał przed pełną salą, a po wydarzeniu odbył się kameralny after party, podczas którego fani mieli okazję porozmawiać z artystami. Koncert Lunar Vibes był jednym z najważniejszych wydarzeń muzycznych w tym roku.",
+                            NewsGuid = new Guid("94ab03cd-63d8-4516-a45b-990351680077"),
                             PhotoName = "koncert_lunar_vibes.png",
-                            PublicationDate = new DateTime(2025, 2, 2, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            ShortDescription = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut id nibh ornare, luctus...",
+                            PublicationDate = new DateTime(2025, 3, 18, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            ShortDescription = "Zespół Lunar Vibes zachwycił publiczność podczas swojego koncertu w naszej sali koncertowej. Przenoszący w inny wymiar dźwięk, energetyzujący występ, który zapisał się na stałe w pamięci uczestników.",
                             Title = "Relacja z koncertu zespołu Lunar Vibes"
                         },
                         new
                         {
                             Id = 3,
-                            LongDescription = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut id nibh ornare, luctus...",
-                            NewsGuid = new Guid("38f1dda7-2aa6-4d37-830c-60407ec30f6c"),
+                            LongDescription = "Z radością ogłaszamy zakończenie modernizacji naszej sali koncertowej. Dzięki inwestycjom w nowoczesne technologie, poprawiliśmy zarówno akustykę, jak i komfort naszych gości. Wymieniono systemy nagłośnienia i oświetlenia, a także dostosowano przestrzeń do większych wydarzeń, takich jak koncerty, festiwale muzyczne czy transmisje na żywo. Zwiększona pojemność sali oraz nowoczesne fotele zapewniają wygodę i komfort nawet podczas długotrwałych wydarzeń. Ponadto wprowadziliśmy innowacyjne rozwiązania z zakresu multimediów, dzięki czemu organizacja eventów o zróżnicowanej tematyce stała się jeszcze łatwiejsza. Od teraz, nasza sala koncertowa oferuje jeszcze lepsze warunki dla artystów i publiczności. Zapraszamy do odwiedzenia nowego, odmienionego wnętrza.",
+                            NewsGuid = new Guid("253bc760-25d9-43ef-89dc-28453c96ef9a"),
                             PhotoName = "modernizacja sali.png",
-                            PublicationDate = new DateTime(2025, 2, 2, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            ShortDescription = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut id nibh ornare, luctus...",
+                            PublicationDate = new DateTime(2025, 3, 18, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            ShortDescription = "Nasza sala koncertowa zyskała nowy wygląd i nowoczesne wyposażenie, które pozwoli na organizację jeszcze lepszych wydarzeń muzycznych. Zapraszamy do odwiedzenia odnowionego wnętrza.",
                             Title = "Modernizacja sali koncertowej"
                         },
                         new
                         {
                             Id = 4,
-                            LongDescription = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut id nibh ornare, luctus...",
-                            NewsGuid = new Guid("d96794a3-877b-4459-87ff-1caf28cd881a"),
+                            LongDescription = "Przygotowaliśmy wyjątkową ofertę dla naszych stałych i nowych gości. Tylko teraz oferujemy 20% zniżki na wszystkie karnety w sprzedaży. Karnet upoważnia do udziału w wydarzeniach organizowanych w naszym centrum przez najbliższy sezon. Oferujemy szeroką gamę wydarzeń, od koncertów, przez wystawy artystyczne, po spektakle teatralne. Zniżka dotyczy zarówno karnetów indywidualnych, jak i grupowych. To doskonała okazja, by zagwarantować sobie dostęp do najlepszych wydarzeń w atrakcyjnej cenie. Oferta jest ograniczona czasowo, dlatego warto się pospieszyć i skorzystać z tej wyjątkowej promocji, zanim będzie za późno.",
+                            NewsGuid = new Guid("457bb9e7-2489-4854-952c-b92c452a7e63"),
                             PhotoName = "znizka.png",
-                            PublicationDate = new DateTime(2025, 2, 2, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            ShortDescription = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut id nibh ornare, luctus...",
+                            PublicationDate = new DateTime(2025, 3, 18, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            ShortDescription = "Zachęcamy do zakupu karnetów na nadchodzące wydarzenia w naszym centrum. Tylko teraz oferujemy 20% zniżki na wszystkie karnety. To doskonała okazja, by nie przegapić żadnego z naszych wydarzeń.",
                             Title = "Zniżka 20% na zakup karnetów"
                         },
                         new
                         {
                             Id = 5,
-                            LongDescription = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut id nibh ornare, luctus...",
-                            NewsGuid = new Guid("17b8f15c-837d-4dea-b309-f2decf70394b"),
+                            LongDescription = "Noc Filmowa to wydarzenie, które przyciąga wszystkich miłośników dobrego kina. Podczas tego specjalnego wieczoru będziemy wyświetlać klasyki światowego kina, które na zawsze zapisały się w historii filmografii. Filmy będą prezentowane na dużym ekranie, a publiczność będzie miała okazję zobaczyć je w towarzystwie innych pasjonatów kina. Zadbaliśmy o wyjątkową atmosferę, w tym profesjonalne nagłośnienie i oświetlenie, by każda projekcja była niezapomnianym przeżyciem. To wydarzenie jest doskonałą okazją, by spędzić czas w gronie osób, które dzielą tę samą pasję do sztuki filmowej. Zapraszamy do wspólnego świętowania klasyki kina.",
+                            NewsGuid = new Guid("57da63cb-91af-4afb-9b3b-092f72620f75"),
                             PhotoName = "noc_filmowa.png",
-                            PublicationDate = new DateTime(2025, 2, 2, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            ShortDescription = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut id nibh ornare, luctus...",
+                            PublicationDate = new DateTime(2025, 3, 18, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            ShortDescription = "Zapraszamy na wyjątkowy wieczór z klasykami kina. Noc Filmowa to doskonała okazja, by obejrzeć kultowe filmy na dużym ekranie w towarzystwie innych miłośników kina.",
                             Title = "Noc Filmowa z Klasykami Kina"
                         },
                         new
                         {
                             Id = 6,
-                            LongDescription = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut id nibh ornare, luctus...",
-                            NewsGuid = new Guid("865ffa28-3d6f-48e3-9aca-68f31e0c0ee7"),
+                            LongDescription = "Wernisaż wystawy pt. 'Nowe inspiracje' to wydarzenie, które łączy w sobie różne formy sztuki współczesnej. Na wystawie zaprezentowane zostaną prace artystów z różnych dziedzin: malarstwo, fotografia, rzeźba oraz multimedia. Każdy z artystów pokaże swoje najnowsze dzieła, które są wynikiem ich poszukiwań i eksperymentów artystycznych. Wystawa daje możliwość zobaczenia sztuki w jej najnowszej odsłonie i odkrycia nowych, świeżych inspiracji. Wernisaż to doskonała okazja, by spotkać się z twórcami, porozmawiać o ich pracy i zbliżyć się do współczesnej sztuki. Wydarzenie odbędzie się w naszej przestronnej galerii, która doskonale nadaje się do prezentacji tego typu wystaw.",
+                            NewsGuid = new Guid("8bb51e9e-1807-48b8-b48b-5eb6cfa04980"),
                             PhotoName = "wernisaz.png",
-                            PublicationDate = new DateTime(2025, 2, 2, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            ShortDescription = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut id nibh ornare, luctus...",
+                            PublicationDate = new DateTime(2025, 3, 18, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            ShortDescription = "Zapraszamy na wernisaż wystawy 'Nowe inspiracje'. Artyści z różnych dziedzin sztuki zaprezentują swoje najnowsze prace. To doskonała okazja, by odkryć świeże spojrzenie na współczesną sztukę.",
                             Title = "Wernisaż: Nowe inspiracje"
                         });
                 });
@@ -2063,7 +2464,7 @@ namespace EventFlowAPI.DB.Migrations
                             IsDeleted = false,
                             IsUpdated = false,
                             Name = "EventFlow",
-                            OrganizerGuid = new Guid("b5e599e9-825c-4197-9ba8-93a0f57897da"),
+                            OrganizerGuid = new Guid("4656853b-fbf1-4407-8a15-9f60fe367343"),
                             PhotoName = "eventflow.png"
                         },
                         new
@@ -2072,7 +2473,7 @@ namespace EventFlowAPI.DB.Migrations
                             IsDeleted = false,
                             IsUpdated = false,
                             Name = "Snowflake",
-                            OrganizerGuid = new Guid("a9abdef2-d177-4aca-aaf7-3550b3470244"),
+                            OrganizerGuid = new Guid("175c000d-26c4-4519-b49d-c9d1d7935699"),
                             PhotoName = "snowflake.png"
                         },
                         new
@@ -2081,7 +2482,7 @@ namespace EventFlowAPI.DB.Migrations
                             IsDeleted = false,
                             IsUpdated = false,
                             Name = "Aura",
-                            OrganizerGuid = new Guid("77de8c0e-d4f4-49b1-b369-c0fc3d98cd86"),
+                            OrganizerGuid = new Guid("d044fdef-73a3-4f97-962f-d85e36760f4e"),
                             PhotoName = "aura.png"
                         });
                 });
@@ -2114,35 +2515,35 @@ namespace EventFlowAPI.DB.Migrations
                         {
                             Id = 1,
                             Name = "Basel",
-                            PartnerGuid = new Guid("87dddfa7-0768-4f9b-a320-3bebff702688"),
+                            PartnerGuid = new Guid("8e0ab6f0-ebbd-4d96-ae19-574b276e985c"),
                             PhotoName = "basel.png"
                         },
                         new
                         {
                             Id = 2,
                             Name = "Aura",
-                            PartnerGuid = new Guid("0bd88367-c450-48ca-b504-080783e17fbd"),
+                            PartnerGuid = new Guid("fa1fefc3-3a92-4162-a5cc-30aafea11323"),
                             PhotoName = "aura.png"
                         },
                         new
                         {
                             Id = 3,
                             Name = "Vision",
-                            PartnerGuid = new Guid("bebb64e1-54a2-406f-b94c-2022e2f19354"),
+                            PartnerGuid = new Guid("bb243a20-bf87-4534-b9b2-a994004f00c4"),
                             PhotoName = "vision.png"
                         },
                         new
                         {
                             Id = 4,
                             Name = "Snowflake",
-                            PartnerGuid = new Guid("8779459c-4f4b-49a3-a18e-d194809e4ab5"),
+                            PartnerGuid = new Guid("2a1dbe6b-42f3-4fec-ab63-dffba70184b7"),
                             PhotoName = "snowflake.png"
                         },
                         new
                         {
                             Id = 5,
                             Name = "Waveless",
-                            PartnerGuid = new Guid("8a496b2a-6f21-4c80-8cfa-9a66d61a7f3b"),
+                            PartnerGuid = new Guid("20f68122-1bdf-4881-8ce4-f808701648a5"),
                             PhotoName = "waveless.png"
                         });
                 });
@@ -2190,7 +2591,7 @@ namespace EventFlowAPI.DB.Migrations
                             IsDeleted = false,
                             IsUpdated = false,
                             Name = "PayU",
-                            PaymentTypeGuid = new Guid("9da251ca-e818-4987-91c3-61b45fb9317a"),
+                            PaymentTypeGuid = new Guid("2aa93a32-7232-48e7-a05b-8364c8aafffc"),
                             PhotoName = ""
                         },
                         new
@@ -2199,7 +2600,7 @@ namespace EventFlowAPI.DB.Migrations
                             IsDeleted = false,
                             IsUpdated = false,
                             Name = "Karnet",
-                            PaymentTypeGuid = new Guid("e3227eec-f00b-4bb7-9b82-4ebebe1713e5"),
+                            PaymentTypeGuid = new Guid("1938093d-7427-40e5-a736-c2aa4305dc16"),
                             PhotoName = ""
                         });
                 });
@@ -2288,16 +2689,16 @@ namespace EventFlowAPI.DB.Migrations
                         new
                         {
                             Id = 1,
-                            EndDate = new DateTime(2025, 3, 3, 1, 0, 0, 0, DateTimeKind.Unspecified),
+                            EndDate = new DateTime(2025, 4, 19, 1, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
                             IsFestivalReservation = false,
                             IsUpdated = false,
                             PaymentAmount = 24.99m,
-                            PaymentDate = new DateTime(2025, 2, 2, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            PaymentDate = new DateTime(2025, 3, 18, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             PaymentTypeId = 1,
-                            ReservationDate = new DateTime(2025, 2, 2, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            ReservationDate = new DateTime(2025, 3, 18, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             ReservationGuid = new Guid("53538b58-f885-4f4a-b675-a4aa4063ccf3"),
-                            StartDate = new DateTime(2025, 3, 3, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            StartDate = new DateTime(2025, 4, 19, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             TicketId = 1,
                             TicketPDFId = 1,
                             TotalAdditionalPaymentAmount = 2.5m,
@@ -2308,16 +2709,16 @@ namespace EventFlowAPI.DB.Migrations
                         new
                         {
                             Id = 2,
-                            EndDate = new DateTime(2025, 3, 4, 3, 0, 0, 0, DateTimeKind.Unspecified),
+                            EndDate = new DateTime(2025, 4, 20, 3, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
                             IsFestivalReservation = false,
                             IsUpdated = false,
                             PaymentAmount = 34.99m,
-                            PaymentDate = new DateTime(2025, 2, 2, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            PaymentDate = new DateTime(2025, 3, 18, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             PaymentTypeId = 1,
-                            ReservationDate = new DateTime(2025, 2, 2, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            ReservationDate = new DateTime(2025, 3, 18, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             ReservationGuid = new Guid("ed8b9230-223b-4609-8d13-aa6017edad09"),
-                            StartDate = new DateTime(2025, 3, 4, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            StartDate = new DateTime(2025, 4, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             TicketId = 2,
                             TicketPDFId = 2,
                             TotalAdditionalPaymentAmount = 0m,
@@ -2328,16 +2729,16 @@ namespace EventFlowAPI.DB.Migrations
                         new
                         {
                             Id = 3,
-                            EndDate = new DateTime(2025, 3, 5, 2, 0, 0, 0, DateTimeKind.Unspecified),
+                            EndDate = new DateTime(2025, 4, 21, 2, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
                             IsFestivalReservation = false,
                             IsUpdated = false,
                             PaymentAmount = 29.99m,
-                            PaymentDate = new DateTime(2025, 2, 2, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            PaymentDate = new DateTime(2025, 3, 18, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             PaymentTypeId = 1,
-                            ReservationDate = new DateTime(2025, 2, 2, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            ReservationDate = new DateTime(2025, 3, 18, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             ReservationGuid = new Guid("f9a076c4-3475-4a28-a60c-6e0e3c03731a"),
-                            StartDate = new DateTime(2025, 3, 5, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            StartDate = new DateTime(2025, 4, 21, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             TicketId = 3,
                             TicketPDFId = 3,
                             TotalAdditionalPaymentAmount = 7.5m,
@@ -2348,16 +2749,16 @@ namespace EventFlowAPI.DB.Migrations
                         new
                         {
                             Id = 4,
-                            EndDate = new DateTime(2025, 3, 6, 3, 0, 0, 0, DateTimeKind.Unspecified),
+                            EndDate = new DateTime(2025, 4, 22, 3, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
                             IsFestivalReservation = false,
                             IsUpdated = false,
                             PaymentAmount = 19.99m,
-                            PaymentDate = new DateTime(2025, 2, 2, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            PaymentDate = new DateTime(2025, 3, 18, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             PaymentTypeId = 1,
-                            ReservationDate = new DateTime(2025, 2, 2, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            ReservationDate = new DateTime(2025, 3, 18, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             ReservationGuid = new Guid("de1d6773-f027-4888-996a-0296e5c52708"),
-                            StartDate = new DateTime(2025, 3, 6, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            StartDate = new DateTime(2025, 4, 22, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             TicketId = 4,
                             TicketPDFId = 4,
                             TotalAdditionalPaymentAmount = 0m,
@@ -2368,16 +2769,16 @@ namespace EventFlowAPI.DB.Migrations
                         new
                         {
                             Id = 5,
-                            EndDate = new DateTime(2025, 3, 3, 1, 0, 0, 0, DateTimeKind.Unspecified),
+                            EndDate = new DateTime(2025, 4, 19, 1, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
                             IsFestivalReservation = true,
                             IsUpdated = false,
                             PaymentAmount = 19.99m,
-                            PaymentDate = new DateTime(2025, 2, 2, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            PaymentDate = new DateTime(2025, 3, 18, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             PaymentTypeId = 1,
-                            ReservationDate = new DateTime(2025, 2, 2, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            ReservationDate = new DateTime(2025, 3, 18, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             ReservationGuid = new Guid("0b74ec7b-933b-4163-afa5-e0997681dccd"),
-                            StartDate = new DateTime(2025, 3, 3, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            StartDate = new DateTime(2025, 4, 19, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             TicketId = 5,
                             TicketPDFId = 5,
                             TotalAdditionalPaymentAmount = 2m,
@@ -2388,16 +2789,16 @@ namespace EventFlowAPI.DB.Migrations
                         new
                         {
                             Id = 6,
-                            EndDate = new DateTime(2025, 4, 3, 1, 0, 0, 0, DateTimeKind.Unspecified),
+                            EndDate = new DateTime(2025, 5, 19, 1, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
                             IsFestivalReservation = true,
                             IsUpdated = false,
                             PaymentAmount = 19.99m,
-                            PaymentDate = new DateTime(2025, 2, 2, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            PaymentDate = new DateTime(2025, 3, 18, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             PaymentTypeId = 1,
-                            ReservationDate = new DateTime(2025, 2, 2, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            ReservationDate = new DateTime(2025, 3, 18, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             ReservationGuid = new Guid("0b74ec7b-933b-4163-afa5-e0997681dccd"),
-                            StartDate = new DateTime(2025, 4, 3, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            StartDate = new DateTime(2025, 5, 19, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             TicketId = 6,
                             TicketPDFId = 5,
                             TotalAdditionalPaymentAmount = 2m,
@@ -2408,16 +2809,16 @@ namespace EventFlowAPI.DB.Migrations
                         new
                         {
                             Id = 7,
-                            EndDate = new DateTime(2025, 3, 4, 3, 0, 0, 0, DateTimeKind.Unspecified),
+                            EndDate = new DateTime(2025, 4, 20, 3, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
                             IsFestivalReservation = true,
                             IsUpdated = false,
                             PaymentAmount = 29.99m,
-                            PaymentDate = new DateTime(2025, 2, 2, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            PaymentDate = new DateTime(2025, 3, 18, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             PaymentTypeId = 1,
-                            ReservationDate = new DateTime(2025, 2, 2, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            ReservationDate = new DateTime(2025, 3, 18, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             ReservationGuid = new Guid("806cade1-2685-43dc-8cfc-682fc4229db6"),
-                            StartDate = new DateTime(2025, 3, 4, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            StartDate = new DateTime(2025, 4, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             TicketId = 7,
                             TicketPDFId = 6,
                             TotalAdditionalPaymentAmount = 0m,
@@ -2428,16 +2829,16 @@ namespace EventFlowAPI.DB.Migrations
                         new
                         {
                             Id = 8,
-                            EndDate = new DateTime(2025, 4, 5, 2, 0, 0, 0, DateTimeKind.Unspecified),
+                            EndDate = new DateTime(2025, 5, 21, 2, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
                             IsFestivalReservation = true,
                             IsUpdated = false,
                             PaymentAmount = 29.99m,
-                            PaymentDate = new DateTime(2025, 2, 2, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            PaymentDate = new DateTime(2025, 3, 18, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             PaymentTypeId = 1,
-                            ReservationDate = new DateTime(2025, 2, 2, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            ReservationDate = new DateTime(2025, 3, 18, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             ReservationGuid = new Guid("806cade1-2685-43dc-8cfc-682fc4229db6"),
-                            StartDate = new DateTime(2025, 4, 5, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            StartDate = new DateTime(2025, 5, 21, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             TicketId = 8,
                             TicketPDFId = 6,
                             TotalAdditionalPaymentAmount = 0m,
@@ -3246,6 +3647,210 @@ namespace EventFlowAPI.DB.Migrations
                             Row = 1m,
                             SeatNr = 1m,
                             SeatTypeId = 3
+                        },
+                        new
+                        {
+                            Id = 49,
+                            Column = 1m,
+                            GridColumn = 1m,
+                            GridRow = 1m,
+                            HallId = 16,
+                            IsUpdated = false,
+                            Row = 1m,
+                            SeatNr = 1m,
+                            SeatTypeId = 3
+                        },
+                        new
+                        {
+                            Id = 50,
+                            Column = 2m,
+                            GridColumn = 2m,
+                            GridRow = 1m,
+                            HallId = 16,
+                            IsUpdated = false,
+                            Row = 1m,
+                            SeatNr = 2m,
+                            SeatTypeId = 3
+                        },
+                        new
+                        {
+                            Id = 51,
+                            Column = 3m,
+                            GridColumn = 3m,
+                            GridRow = 1m,
+                            HallId = 16,
+                            IsUpdated = false,
+                            Row = 1m,
+                            SeatNr = 3m,
+                            SeatTypeId = 3
+                        },
+                        new
+                        {
+                            Id = 52,
+                            Column = 4m,
+                            GridColumn = 4m,
+                            GridRow = 1m,
+                            HallId = 16,
+                            IsUpdated = false,
+                            Row = 1m,
+                            SeatNr = 4m,
+                            SeatTypeId = 3
+                        },
+                        new
+                        {
+                            Id = 53,
+                            Column = 1m,
+                            GridColumn = 1m,
+                            GridRow = 1m,
+                            HallId = 17,
+                            IsUpdated = false,
+                            Row = 1m,
+                            SeatNr = 1m,
+                            SeatTypeId = 2
+                        },
+                        new
+                        {
+                            Id = 54,
+                            Column = 2m,
+                            GridColumn = 2m,
+                            GridRow = 1m,
+                            HallId = 17,
+                            IsUpdated = false,
+                            Row = 1m,
+                            SeatNr = 2m,
+                            SeatTypeId = 2
+                        },
+                        new
+                        {
+                            Id = 55,
+                            Column = 3m,
+                            GridColumn = 3m,
+                            GridRow = 1m,
+                            HallId = 17,
+                            IsUpdated = false,
+                            Row = 1m,
+                            SeatNr = 3m,
+                            SeatTypeId = 1
+                        },
+                        new
+                        {
+                            Id = 56,
+                            Column = 4m,
+                            GridColumn = 4m,
+                            GridRow = 1m,
+                            HallId = 17,
+                            IsUpdated = false,
+                            Row = 1m,
+                            SeatNr = 4m,
+                            SeatTypeId = 2
+                        },
+                        new
+                        {
+                            Id = 57,
+                            Column = 1m,
+                            GridColumn = 1m,
+                            GridRow = 1m,
+                            HallId = 18,
+                            IsUpdated = false,
+                            Row = 1m,
+                            SeatNr = 1m,
+                            SeatTypeId = 1
+                        },
+                        new
+                        {
+                            Id = 58,
+                            Column = 2m,
+                            GridColumn = 2m,
+                            GridRow = 1m,
+                            HallId = 18,
+                            IsUpdated = false,
+                            Row = 1m,
+                            SeatNr = 2m,
+                            SeatTypeId = 1
+                        },
+                        new
+                        {
+                            Id = 59,
+                            Column = 3m,
+                            GridColumn = 3m,
+                            GridRow = 1m,
+                            HallId = 18,
+                            IsUpdated = false,
+                            Row = 1m,
+                            SeatNr = 3m,
+                            SeatTypeId = 1
+                        },
+                        new
+                        {
+                            Id = 60,
+                            Column = 4m,
+                            GridColumn = 4m,
+                            GridRow = 1m,
+                            HallId = 18,
+                            IsUpdated = false,
+                            Row = 1m,
+                            SeatNr = 4m,
+                            SeatTypeId = 1
+                        },
+                        new
+                        {
+                            Id = 61,
+                            Column = 1m,
+                            GridColumn = 1m,
+                            GridRow = 1m,
+                            HallId = 19,
+                            IsUpdated = false,
+                            Row = 1m,
+                            SeatNr = 1m,
+                            SeatTypeId = 3
+                        },
+                        new
+                        {
+                            Id = 62,
+                            Column = 2m,
+                            GridColumn = 2m,
+                            GridRow = 1m,
+                            HallId = 19,
+                            IsUpdated = false,
+                            Row = 1m,
+                            SeatNr = 2m,
+                            SeatTypeId = 3
+                        },
+                        new
+                        {
+                            Id = 63,
+                            Column = 3m,
+                            GridColumn = 3m,
+                            GridRow = 1m,
+                            HallId = 19,
+                            IsUpdated = false,
+                            Row = 1m,
+                            SeatNr = 3m,
+                            SeatTypeId = 3
+                        },
+                        new
+                        {
+                            Id = 64,
+                            Column = 4m,
+                            GridColumn = 4m,
+                            GridRow = 1m,
+                            HallId = 19,
+                            IsUpdated = false,
+                            Row = 1m,
+                            SeatNr = 4m,
+                            SeatTypeId = 3
+                        },
+                        new
+                        {
+                            Id = 65,
+                            Column = 1m,
+                            GridColumn = 1m,
+                            GridRow = 1m,
+                            HallId = 20,
+                            IsUpdated = false,
+                            Row = 1m,
+                            SeatNr = 1m,
+                            SeatTypeId = 3
                         });
                 });
 
@@ -3372,7 +3977,7 @@ namespace EventFlowAPI.DB.Migrations
                             IsUpdated = false,
                             Name = "Basel",
                             PhotoName = "basel.png",
-                            SponsorGuid = new Guid("b04fa0a0-4f67-4fce-85e6-cd6980814555")
+                            SponsorGuid = new Guid("423d7369-b70c-4471-97a8-968d001718a7")
                         },
                         new
                         {
@@ -3381,7 +3986,7 @@ namespace EventFlowAPI.DB.Migrations
                             IsUpdated = false,
                             Name = "Vision",
                             PhotoName = "vision.png",
-                            SponsorGuid = new Guid("c31b5336-1122-492d-985c-a4e22754f688")
+                            SponsorGuid = new Guid("6ba10301-43f6-4207-835c-15f03d7904c7")
                         },
                         new
                         {
@@ -3390,7 +3995,7 @@ namespace EventFlowAPI.DB.Migrations
                             IsUpdated = false,
                             Name = "Waveless",
                             PhotoName = "waveless.png",
-                            SponsorGuid = new Guid("14c560f7-aad1-4bf4-bba2-688514f2d24c")
+                            SponsorGuid = new Guid("ca9f16d2-cfa6-47dc-9aff-a0821ce6bf79")
                         });
                 });
 
@@ -3453,7 +4058,7 @@ namespace EventFlowAPI.DB.Migrations
                             IsDeleted = false,
                             IsUpdated = false,
                             Price = 34.99m,
-                            TicketTypeId = 2
+                            TicketTypeId = 1
                         },
                         new
                         {
@@ -3462,7 +4067,7 @@ namespace EventFlowAPI.DB.Migrations
                             IsDeleted = false,
                             IsUpdated = false,
                             Price = 29.99m,
-                            TicketTypeId = 3
+                            TicketTypeId = 1
                         },
                         new
                         {
@@ -3471,7 +4076,7 @@ namespace EventFlowAPI.DB.Migrations
                             IsDeleted = false,
                             IsUpdated = false,
                             Price = 19.99m,
-                            TicketTypeId = 3
+                            TicketTypeId = 1
                         },
                         new
                         {
@@ -3512,6 +4117,42 @@ namespace EventFlowAPI.DB.Migrations
                             IsUpdated = false,
                             Price = 29.99m,
                             TicketTypeId = 2
+                        },
+                        new
+                        {
+                            Id = 9,
+                            EventId = 5,
+                            IsDeleted = false,
+                            IsUpdated = false,
+                            Price = 24.99m,
+                            TicketTypeId = 1
+                        },
+                        new
+                        {
+                            Id = 10,
+                            EventId = 6,
+                            IsDeleted = false,
+                            IsUpdated = false,
+                            Price = 32.99m,
+                            TicketTypeId = 1
+                        },
+                        new
+                        {
+                            Id = 11,
+                            EventId = 7,
+                            IsDeleted = false,
+                            IsUpdated = false,
+                            Price = 34.99m,
+                            TicketTypeId = 1
+                        },
+                        new
+                        {
+                            Id = 12,
+                            EventId = 8,
+                            IsDeleted = false,
+                            IsUpdated = false,
+                            Price = 19.99m,
+                            TicketTypeId = 1
                         });
                 });
 
@@ -3798,7 +4439,7 @@ namespace EventFlowAPI.DB.Migrations
                         {
                             Id = "1",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "b375fe05-a127-4b83-903a-2a1fb68b7ae5",
+                            ConcurrencyStamp = "95ca56b0-be1b-4b9a-b9cb-77b705ab1bbc",
                             DateOfBirth = new DateTime(2000, 4, 3, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "admin@gmail.com",
                             EmailConfirmed = true,
@@ -3807,12 +4448,12 @@ namespace EventFlowAPI.DB.Migrations
                             Name = "Admin",
                             NormalizedEmail = "ADMIN@GMAIL.COM",
                             NormalizedUserName = "ADMIN@GMAIL.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAELs9StoAaXUqaZha/C0wY7wYDfUGNweEHXSSinz+BJPrOPXCNMt2ttXC7/z3J+UNIw==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEK4/hlBoE1k2Sdq8n2DYNHysLOR3Fg/7anvL/W7qoX0GxzJBNLQqG79m14mPJ6iwrw==",
                             PhoneNumberConfirmed = false,
                             PhotoName = "admin.jpg",
                             Provider = "APP",
-                            RegisteredDate = new DateTime(2025, 2, 2, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            SecurityStamp = "cb3d6f7b-e60e-4d4c-801f-71ac757a5e21",
+                            RegisteredDate = new DateTime(2025, 3, 18, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            SecurityStamp = "b0fcb126-8927-42fb-8d13-13c4f1681351",
                             Surname = "Admin",
                             TwoFactorEnabled = false,
                             UserName = "admin@gmail.com"
@@ -3821,7 +4462,7 @@ namespace EventFlowAPI.DB.Migrations
                         {
                             Id = "2",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "b43f5c0b-55db-45a9-919e-dcdd06481617",
+                            ConcurrencyStamp = "c79bc252-1135-418f-a752-59ea3ced3ad1",
                             DateOfBirth = new DateTime(1985, 2, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "mateusz.strapczuk2@gmail.com",
                             EmailConfirmed = true,
@@ -3830,12 +4471,12 @@ namespace EventFlowAPI.DB.Migrations
                             Name = "Mateusz2",
                             NormalizedEmail = "MATEUSZ.STRAPCZUK2@GMAIL.COM",
                             NormalizedUserName = "MATEUSZ.STRAPCZUK2@GMAIL.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEERfnGSAHONv7woZ1pTPsM7bgkKSLRw/oFL/iNoKuaTmijI61zr2KS4eVOW5qpsZyg==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEG6rZhspfbU8XJjYA5dsJzuNC6oO71cVoB6GJ3pm3voqJFOM7pvY0OsDo5PZDIuzxA==",
                             PhoneNumberConfirmed = false,
                             PhotoName = "user2.jpg",
                             Provider = "APP",
-                            RegisteredDate = new DateTime(2025, 2, 2, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            SecurityStamp = "44b3d131-f466-4f9e-93a0-98f42a1583c9",
+                            RegisteredDate = new DateTime(2025, 3, 18, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            SecurityStamp = "28db39ee-4875-4a8c-b689-02eabddb96aa",
                             Surname = "Strapczuk2",
                             TwoFactorEnabled = false,
                             UserName = "mateusz.strapczuk2@gmail.com"
@@ -3844,7 +4485,7 @@ namespace EventFlowAPI.DB.Migrations
                         {
                             Id = "3",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "fb368dd7-a4b7-482b-a559-c7cc570d0148",
+                            ConcurrencyStamp = "fdf14307-4b05-422d-b5ae-a8571afd609d",
                             DateOfBirth = new DateTime(1979, 12, 11, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "mateusz.strapczuk3@gmail.com",
                             EmailConfirmed = true,
@@ -3853,12 +4494,12 @@ namespace EventFlowAPI.DB.Migrations
                             Name = "Mateusz3",
                             NormalizedEmail = "MATEUSZ.STRAPCZUK3@GMAIL.COM",
                             NormalizedUserName = "MATEUSZ.STRAPCZUK3@GMAIL.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEFLgQD8os5R5DoIwjyJysloPf4ti0rNYNDnVI3LpPjtmPPwsm6vwcbmW36DEpGJmFg==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEAlgQ4Qs/GFmn3hHt58p/CNdbRcnd2+tGvTWqNDxznjanmwir/VeibWWI3B9jZhf8g==",
                             PhoneNumberConfirmed = false,
                             PhotoName = "user3.jpg",
                             Provider = "APP",
-                            RegisteredDate = new DateTime(2025, 2, 2, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            SecurityStamp = "c265f011-d9a4-4775-a040-b85f6c5d3633",
+                            RegisteredDate = new DateTime(2025, 3, 18, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            SecurityStamp = "959425f8-a938-433a-923e-d5d01925122c",
                             Surname = "Strapczuk3",
                             TwoFactorEnabled = false,
                             UserName = "mateusz.strapczuk3@gmail.com"
@@ -3867,7 +4508,7 @@ namespace EventFlowAPI.DB.Migrations
                         {
                             Id = "4",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "3a3e9943-6437-4c3c-8ab2-5f0458483c63",
+                            ConcurrencyStamp = "cbbf0722-3f05-411d-b87f-a05fe3726e3c",
                             DateOfBirth = new DateTime(1979, 12, 11, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "mateusz.strapczuk4@gmail.com",
                             EmailConfirmed = true,
@@ -3876,12 +4517,12 @@ namespace EventFlowAPI.DB.Migrations
                             Name = "Mateusz4",
                             NormalizedEmail = "MATEUSZ.STRAPCZUK4@GMAIL.COM",
                             NormalizedUserName = "MATEUSZ.STRAPCZUK4@GMAIL.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEA2rbfe7KUq56JHuVWnR0iG/oqtQ2Dmxb40JTHK4t2B4RjI0jq6UOxtCDHb150/JYQ==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEErLVney/2f4Wm11sn7nK8cNngA8P3qvHSertKvrBHNSE/000BYDaS+/F5tYAhMIFQ==",
                             PhoneNumberConfirmed = false,
                             PhotoName = "user4.jpg",
                             Provider = "APP",
-                            RegisteredDate = new DateTime(2025, 2, 2, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            SecurityStamp = "5ca28484-ad4c-4d5e-ad08-93884355fde9",
+                            RegisteredDate = new DateTime(2025, 3, 18, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            SecurityStamp = "9bd8c1e8-5875-4e50-876d-3a69c2fdc470",
                             Surname = "Strapczuk4",
                             TwoFactorEnabled = false,
                             UserName = "mateusz.strapczuk4@gmail.com"
@@ -3890,7 +4531,7 @@ namespace EventFlowAPI.DB.Migrations
                         {
                             Id = "5",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "b011c822-5ae1-4956-9a4b-3f075635b4a7",
+                            ConcurrencyStamp = "1a9d5c0a-7f87-4f87-bbfe-ea099479ac03",
                             DateOfBirth = new DateTime(1979, 12, 11, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "mateusz.strapczuk1@gmail.com",
                             EmailConfirmed = true,
@@ -3899,12 +4540,12 @@ namespace EventFlowAPI.DB.Migrations
                             Name = "Mateusz",
                             NormalizedEmail = "MATEUSZ.STRAPCZUK1@GMAIL.COM",
                             NormalizedUserName = "MATEUSZ.STRAPCZUK1@GMAIL.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEFlflb7lzGW/wQK19Vk6c7ejqr+wY+PkC94G6f/9emqTOC9puVFLpYEbG78XOytRfA==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEFjlpJmB1mkCX/au5X5r7DmJLIjfboZ0uKo0vyl9ZfqXDpEWpvdISbzfLhblOMN/uQ==",
                             PhoneNumberConfirmed = false,
                             PhotoName = "user5.jpg",
                             Provider = "APP",
-                            RegisteredDate = new DateTime(2025, 2, 2, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            SecurityStamp = "9c8ed61f-8797-43f6-ae4f-40cb2a7dbe2e",
+                            RegisteredDate = new DateTime(2025, 3, 18, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            SecurityStamp = "f1e975b0-0b98-4b68-8f3b-fbcb7a0c22f4",
                             Surname = "Strapczuk",
                             TwoFactorEnabled = false,
                             UserName = "mateusz.strapczuk1@gmail.com"

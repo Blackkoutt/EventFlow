@@ -9,9 +9,10 @@ import { Link } from "react-router-dom";
 
 interface EventCardProps {
   event: EventEntity;
+  isArchived?: boolean;
 }
 
-const EventCard = ({ event }: EventCardProps) => {
+const EventCard = ({ event, isArchived = false }: EventCardProps) => {
   const FormatEventDate = (): string[] => {
     const date = DateFormatter.FormatDate(event.start, DateFormat.DayDateTime).split(" ");
     return date;
@@ -44,7 +45,7 @@ const EventCard = ({ event }: EventCardProps) => {
         alt={`Zdjęcie wydarzenia ${event.title}`}
       />
       <div className="px-4 pb-6 flex flex-row justify-start items-end gap-5 w-full">
-        <div className="flex flex-col justify-center items-center gap-[14px] min-w-[180px]">
+        <div className="flex flex-col justify-start h-[100%] pt-16 items-center gap-[14px] min-w-[180px]">
           <div className="flex flex-row justify-center items-center gap-3">
             <FontAwesomeIcon
               icon={faLocationDot}
@@ -54,25 +55,29 @@ const EventCard = ({ event }: EventCardProps) => {
               Sala: nr {event.hall?.hallNr}
             </p>
           </div>
-          <div className="flex flex-row justify-center items-center gap-3">
-            <FontAwesomeIcon
-              icon={faTicket}
-              style={{ color: `${event.category?.color}`, width: "21px", height: "21px" }}
-            />
-            <p className="font-semibold text-[15px] text-center text-textPrimary">
-              Cena od: {Math.min(...event.tickets.map((ticket) => ticket.price))} zł
-            </p>
-          </div>
-          <div>
-            <Button
-              text="Kup bilet"
-              width={112}
-              height={38}
-              fontSize={14}
-              style={ButtonStyle.Default}
-              action={() => {}}
-            />
-          </div>
+          {!isArchived && (
+            <div className="flex flex-row justify-center items-center gap-3">
+              <FontAwesomeIcon
+                icon={faTicket}
+                style={{ color: `${event.category?.color}`, width: "21px", height: "21px" }}
+              />
+              <p className="font-semibold text-[15px] text-center text-textPrimary">
+                Cena od: {Math.min(...event.tickets.map((ticket) => ticket.price))} zł
+              </p>
+            </div>
+          )}
+          {!isArchived && (
+            <div>
+              <Button
+                text="Kup bilet"
+                width={112}
+                height={38}
+                fontSize={14}
+                style={ButtonStyle.Default}
+                action={() => {}}
+              />
+            </div>
+          )}
         </div>
         <div className="w-[1px] bg-black h-[120px]"></div>
         <div className="flex flex-col justify-start items-start gap-2 min-h-[170px]">

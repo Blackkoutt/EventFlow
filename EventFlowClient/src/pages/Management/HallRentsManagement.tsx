@@ -132,7 +132,7 @@ const HallRentsManagement = () => {
     onDownload,
     onModify,
     closeDialogsAndSetValuesToDefault,
-  } = useTable<HallRent[], HallRent>(items, cols, "rezerwacje_sal");
+  } = useTable<HallRent[], HallRent>(items, cols, "wynajmy_sal");
 
   const reloadItemsAfterSuccessDialog = () => {
     closeDialogsAndSetValuesToDefault();
@@ -182,7 +182,7 @@ const HallRentsManagement = () => {
         emptyMessage="Brak rezerwacji sal"
         header={
           <HeaderTemplate
-            headerText="Rezerwacje sal"
+            headerText="Wynajmy sal"
             includeCreate={false}
             menuElements={menuElements}
             globalFilterValue={globalFilterValue}
