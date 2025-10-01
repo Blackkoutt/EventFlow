@@ -1,4 +1,5 @@
-﻿using EventFlowAPI.Logic.DTO.RequestDto;
+﻿using EventFlowAPI.Controllers.BaseControllers;
+using EventFlowAPI.Logic.DTO.RequestDto;
 using EventFlowAPI.Logic.DTO.UpdateRequestDto;
 using EventFlowAPI.Logic.Identity.Helpers;
 using EventFlowAPI.Logic.Query;
@@ -11,7 +12,7 @@ namespace EventFlowAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class TicketTypesController(ITicketTypeService ticketTypeService) : ControllerBase
+    public class TicketTypesController(ITicketTypeService ticketTypeService) : BaseController
     {
         private readonly ITicketTypeService _ticketTypeService = ticketTypeService;
 
@@ -21,9 +22,8 @@ namespace EventFlowAPI.Controllers
         public async Task<IActionResult> GetTicketTypes([FromQuery] TicketTypeQuery query)
         {
             var result = await _ticketTypeService.GetAllAsync(query);
-            return result.IsSuccessful ? Ok(result.Value) : BadRequest(result.Error.Details);
+            return result.IsSuccessful ? Ok(result.Value) : HandleErrorResponse(result);
         }
-
 
         [HttpGet("{id:int}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -31,9 +31,8 @@ namespace EventFlowAPI.Controllers
         public async Task<IActionResult> GetTicketTypeById([FromRoute] int id)
         {
             var result = await _ticketTypeService.GetOneAsync(id);
-            return result.IsSuccessful ? Ok(result.Value) : BadRequest(result.Error.Details);
+            return result.IsSuccessful ? Ok(result.Value) : HandleErrorResponse(result);
         }
-
 
         [Authorize(Roles = nameof(Roles.Admin))]
         [HttpPost]
@@ -44,19 +43,10 @@ namespace EventFlowAPI.Controllers
         public async Task<IActionResult> CreateTicketType([FromBody] TicketTypeRequestDto ticketTypeReqestDto)
         {
             var result = await _ticketTypeService.AddAsync(ticketTypeReqestDto);
-            if (!result.IsSuccessful)
-            {
-                return result.Error.Details!.Code switch
-                {
-                    HttpStatusCode.BadRequest => BadRequest(result.Error.Details),
-                    HttpStatusCode.Unauthorized => Unauthorized(result.Error.Details),
-                    HttpStatusCode.Forbidden => StatusCode((int)HttpStatusCode.Forbidden, result.Error.Details),
-                    _ => StatusCode((int)HttpStatusCode.InternalServerError, result.Error.Details)
-                };
-            }
-            return CreatedAtAction(nameof(GetTicketTypeById), new { id = result.Value.Id }, result.Value);
+            return result.IsSuccessful 
+                ? CreatedAtAction(nameof(GetTicketTypeById), new { id = result.Value.Id }, result.Value)
+                : HandleErrorResponse(result);
         }
-
 
         [Authorize(Roles = nameof(Roles.Admin))]
         [HttpPut("{id:int}")]
@@ -67,19 +57,8 @@ namespace EventFlowAPI.Controllers
         public async Task<IActionResult> UpdateTicketType([FromRoute] int id, [FromBody] UpdateTicketTypeRequestDto ticketTypeReqestDto)
         {
             var result = await _ticketTypeService.UpdateAsync(id, ticketTypeReqestDto);
-            if (!result.IsSuccessful)
-            {
-                return result.Error.Details!.Code switch
-                {
-                    HttpStatusCode.BadRequest => BadRequest(result.Error.Details),
-                    HttpStatusCode.Unauthorized => Unauthorized(result.Error.Details),
-                    HttpStatusCode.Forbidden => StatusCode((int)HttpStatusCode.Forbidden, result.Error.Details),
-                    _ => StatusCode((int)HttpStatusCode.InternalServerError, result.Error.Details)
-                };
-            }
-            return NoContent();
+            return result.IsSuccessful ? NoContent() : HandleErrorResponse(result);
         }
-
 
         [Authorize(Roles = nameof(Roles.Admin))]
         [HttpDelete("{id:int}")]
@@ -90,17 +69,7 @@ namespace EventFlowAPI.Controllers
         public async Task<IActionResult> DeleteTicketType([FromRoute] int id)
         {
             var result = await _ticketTypeService.DeleteAsync(id);
-            if (!result.IsSuccessful)
-            {
-                return result.Error.Details!.Code switch
-                {
-                    HttpStatusCode.BadRequest => BadRequest(result.Error.Details),
-                    HttpStatusCode.Unauthorized => Unauthorized(result.Error.Details),
-                    HttpStatusCode.Forbidden => StatusCode((int)HttpStatusCode.Forbidden, result.Error.Details),
-                    _ => StatusCode((int)HttpStatusCode.InternalServerError, result.Error.Details)
-                };
-            }
-            return NoContent();
+            return result.IsSuccessful ? NoContent() : HandleErrorResponse(result);
         }
     }
 }

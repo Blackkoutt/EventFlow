@@ -1,4 +1,4 @@
-﻿using EventFlowAPI.Logic.Helpers.Enums;
+﻿using EventFlowAPI.Logic.Enums;
 using Microsoft.Extensions.Configuration;
 using SixLabors.Fonts;
 using SixLabors.ImageSharp;

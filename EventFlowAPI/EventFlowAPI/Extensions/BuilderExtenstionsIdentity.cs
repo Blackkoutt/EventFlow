@@ -1,8 +1,9 @@
 ﻿using EventFlowAPI.DB.Context;
 using EventFlowAPI.DB.Entities;
-using Microsoft.AspNetCore.Authentication.Facebook;
-using Microsoft.AspNetCore.Authentication.Google;
+using EventFlowAPI.Enums;
+using EventFlowAPI.Logic.Enums;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authentication.OAuth;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using Serilog;
@@ -21,11 +22,11 @@ namespace EventFlowAPI.Extensions
             .AddEntityFrameworkStores<APIContext>();
         }
         public static void AddAuthentication(this WebApplicationBuilder builder,
-            string jwtSettingsSection, string googleAuthSection, string facebookAuthSection)
+            AuthConfiguration jwtSettingsSection, AuthConfiguration googleAuthSection, AuthConfiguration facebookAuthSection)
         {
-            var jwtSettings = builder.Configuration.GetSection(jwtSettingsSection);
-            var googleSettings = builder.Configuration.GetSection(googleAuthSection);
-            var facebookSettings = builder.Configuration.GetSection(facebookAuthSection);
+            var jwtSettings = builder.Configuration.GetSection(jwtSettingsSection.ToString());
+            var googleSettings = builder.Configuration.GetSection(googleAuthSection.ToString());
+            var facebookSettings = builder.Configuration.GetSection(facebookAuthSection.ToString());
 
             builder.Services.AddAuthentication(options =>
             {
@@ -39,7 +40,7 @@ namespace EventFlowAPI.Extensions
                 {
                     OnMessageReceived = context =>
                     {
-                        var token = context.Request.Cookies["EventFlowJWTCookie"];
+                        var token = context.Request.Cookies[Cookie.EventFlowJWTCookie.ToString()];
                         if (!string.IsNullOrEmpty(token))
                         {
                             context.Token = token;
@@ -47,25 +48,15 @@ namespace EventFlowAPI.Extensions
                         return Task.CompletedTask;
                     }
                 };
-            })/*.AddCookie("CookieAuthentication", options =>
+            }).AddGoogle(options =>
             {
-                options.Cookie.HttpOnly = true;
-                options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
-                options.Cookie.Name = "jwt";
-                options.Cookie.SameSite = SameSiteMode.Strict;
-                options.Events.OnRedirectToLogin = context =>
-                {
-                    context.Response.StatusCode = 401;
-                    return Task.CompletedTask;
-                };
-            })*/.AddGoogle(options =>
-            {
-                options.GetGoogleOptions(googleSettings);
+                options.GetOAuthOptions(googleSettings);
+                options.SaveTokens = true;
             }) 
             .AddFacebook(options =>
-             {
-                 options.GetFacebookOptions(facebookSettings);
-             });
+            {
+                options.GetOAuthOptions(facebookSettings);
+            });
         }
         
         private static TokenValidationParameters GetJWTTokenOptions(IConfigurationSection jwtSettingsSection)
@@ -95,18 +86,11 @@ namespace EventFlowAPI.Extensions
                 RequiredLength = 5
             };
         }
-        private static FacebookOptions GetFacebookOptions(this FacebookOptions options, IConfigurationSection facebookSection)
+
+        private static OAuthOptions GetOAuthOptions(this OAuthOptions options, IConfigurationSection section)
         {
-            options.ClientId = facebookSection["AppId"]!;
-            options.ClientSecret = facebookSection["AppSecret"]!;
-            return options;
-        }
-        private static GoogleOptions GetGoogleOptions(this GoogleOptions options, IConfigurationSection googleSection)
-        {
-            options.ClientId = googleSection["clientId"]!;
-            options.ClientSecret = googleSection["clientSecret"]!;
-            options.SaveTokens = true;
-            //options.CallbackPath = "/api/auth/google-login";
+            options.ClientId = section["AppId"]!;
+            options.ClientSecret = section["AppSecret"]!;
             return options;
         }
     }

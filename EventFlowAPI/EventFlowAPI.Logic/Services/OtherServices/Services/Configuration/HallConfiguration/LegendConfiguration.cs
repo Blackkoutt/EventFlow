@@ -1,5 +1,5 @@
 ﻿using EventFlowAPI.DB.Entities;
-using EventFlowAPI.Logic.Helpers.Enums;
+using EventFlowAPI.Logic.Enums;
 using EventFlowAPI.Logic.Helpers.JpgOptions;
 using EventFlowAPI.Logic.Helpers.TicketOptions;
 using EventFlowAPI.Logic.Services.OtherServices.Interfaces;

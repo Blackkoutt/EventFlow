@@ -1,6 +1,6 @@
 ﻿
 using EventFlowAPI.Logic.Helpers;
-using EventFlowAPI.Logic.Helpers.Enums;
+using EventFlowAPI.Logic.Enums;
 using EventFlowAPI.Logic.Response;
 using System.Text.Json;
 

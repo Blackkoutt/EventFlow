@@ -1,29 +1,27 @@
+using EventFlowAPI.Enums;
 using EventFlowAPI.Extensions;
+using EventFlowAPI.Logic.Enums;
 using EventFlowAPI.Logic.Mapper.Profiles;
 using QuestPDF.Infrastructure;
 using Serilog;
 using System.Text.Json.Serialization;
 
-
 var builder = WebApplication.CreateBuilder(args);
-
 
 // Set QuestPDF License
 QuestPDF.Settings.License = LicenseType.Community;
 
 // Add connection to DB
-builder.AddConnectionToDB(connectionString: "MSSQLEventFlowDB");
+builder.AddConnectionToDB(ConnectionString.MSSQLEventFlowDB);
 
 // Add connection to Azure Blob Storage
-builder.AddConnectionToAzureBlobStorage(connectionString: "AzureBlobStorage");
+builder.AddConnectionToAzureBlobStorage(ConnectionString.AzureBlobStorage);
 
 // Add Identity
 builder.AddIdentity();
 
 // Add JWT Token, Google Auth and Facebook Auth
-builder.AddAuthentication(jwtSettingsSection: "JWTSettings",
-                          googleAuthSection: "Authentication:Google",
-                          facebookAuthSection: "Authentication:Facebook");
+builder.AddAuthentication(AuthConfiguration.JWTAuth, AuthConfiguration.GoogleAuth, AuthConfiguration.FacebookAuth);
 
 // Logger
 Log.Logger = new LoggerConfiguration().MinimumLevel.Information().WriteTo.Console().CreateLogger();
@@ -43,7 +41,6 @@ builder.Services.AddApplicationOtherServices();
 builder.Services.AddControllers().AddJsonOptions(options =>
 {
     options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
-    //options.JsonSerializerOptions.WriteIndented = true; // Optional: for better readability
 });
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerUI();
@@ -59,7 +56,6 @@ app.AddServicesTests();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-    //builder.Configuration.AddUserSecrets<Program>();
     app.UseSwagger();
     app.UseSwaggerUI();
 }
@@ -69,7 +65,7 @@ app.UseHttpsRedirection();
 app.AddApplicationMiddleware();
 app.UseSession();
 
-app.UseCors("AllowSpecificOrigins");
+app.UseCors(CORSPolicy.AllowSpecificOrigins);
 
 app.UseAuthentication();
 app.UseAuthorization();

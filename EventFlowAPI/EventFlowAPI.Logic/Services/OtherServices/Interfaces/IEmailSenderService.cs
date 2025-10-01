@@ -1,7 +1,7 @@
 ﻿using EventFlowAPI.DB.Entities;
+using EventFlowAPI.Logic.Enums;
 using EventFlowAPI.Logic.Errors;
 using EventFlowAPI.Logic.Helpers;
-using EventFlowAPI.Logic.Helpers.Enums;
 
 namespace EventFlowAPI.Logic.Services.OtherServices.Interfaces
 {

@@ -1,4 +1,4 @@
-﻿using EventFlowAPI.Logic.Helpers.Enums;
+﻿using EventFlowAPI.Logic.Enums;
 using EventFlowAPI.Logic.Helpers.PdfOptions.PdfTextOptions;
 using QuestPDF.Fluent;
 using QuestPDF.Infrastructure;

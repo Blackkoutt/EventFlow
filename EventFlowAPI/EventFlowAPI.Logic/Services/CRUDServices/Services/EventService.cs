@@ -12,12 +12,12 @@ using EventFlowAPI.Logic.UnitOfWork;
 using EventFlowAPI.Logic.Extensions;
 using EventFlowAPI.Logic.Identity.Helpers;
 using EventFlowAPI.Logic.Services.OtherServices.Interfaces;
-using EventFlowAPI.Logic.Helpers.Enums;
 using Microsoft.EntityFrameworkCore;
 using EventFlowAPI.Logic.DTO.UpdateRequestDto;
 using EventFlowAPI.Logic.DTO.Interfaces;
 using Microsoft.AspNetCore.Http;
 using EventFlowAPI.Logic.Identity.Services.Interfaces;
+using EventFlowAPI.Logic.Enums;
 
 namespace EventFlowAPI.Logic.Services.CRUDServices.Services
 {

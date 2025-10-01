@@ -1,4 +1,5 @@
-﻿using EventFlowAPI.Logic.DTO.Statistics.RequestDto;
+﻿using EventFlowAPI.Controllers.BaseControllers;
+using EventFlowAPI.Logic.DTO.Statistics.RequestDto;
 using EventFlowAPI.Logic.Helpers;
 using EventFlowAPI.Logic.Identity.Helpers;
 using EventFlowAPI.Logic.Services.OtherServices.Interfaces;
@@ -11,7 +12,7 @@ namespace EventFlowAPI.Controllers
     [ApiController]
     public class StatisticsController(
         IStatisticsService statisticsService, 
-        IFileService fileService) : ControllerBase
+        IFileService fileService) : BaseController
     {
         private readonly IStatisticsService _statisticsService = statisticsService;
         private readonly IFileService _fileService = fileService;
@@ -36,7 +37,6 @@ namespace EventFlowAPI.Controllers
         {
             var result = await _fileService.CreateStatisticsPDF(requestDto);
             return File(result.Bitmap, ContentType.PDF, result.FileName);
-
         }
     }
 }

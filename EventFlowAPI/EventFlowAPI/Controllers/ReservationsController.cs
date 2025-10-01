@@ -1,10 +1,9 @@
-﻿using EventFlowAPI.DB.Entities;
+﻿using EventFlowAPI.Controllers.BaseControllers;
+using EventFlowAPI.DB.Entities;
 using EventFlowAPI.Logic.DTO.RequestDto;
-using EventFlowAPI.Logic.Helpers.Enums;
-using EventFlowAPI.Logic.Identity.Helpers;
+using EventFlowAPI.Logic.Enums;
 using EventFlowAPI.Logic.Query;
 using EventFlowAPI.Logic.Services.CRUDServices.Interfaces;
-using EventFlowAPI.Logic.Services.CRUDServices.Services;
 using EventFlowAPI.Logic.Services.OtherServices.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -16,11 +15,10 @@ namespace EventFlowAPI.Controllers
     [ApiController]
     public class ReservationsController(
         IReservationService reservationService,
-        IFileService fileService) : ControllerBase
+        IFileService fileService) : BaseController
     {
         private readonly IReservationService _reservationService = reservationService;
         private readonly IFileService _fileService = fileService;
-
 
         //[Authorize]
         [HttpGet]
@@ -31,19 +29,8 @@ namespace EventFlowAPI.Controllers
         public async Task<IActionResult> GetReservations([FromQuery] ReservationQuery query)
         {
             var result = await _reservationService.GetAllAsync(query);
-            if (!result.IsSuccessful)
-            {
-                return result.Error.Details!.Code switch
-                {
-                    HttpStatusCode.BadRequest => BadRequest(result.Error.Details),
-                    HttpStatusCode.Unauthorized => Unauthorized(result.Error.Details),
-                    HttpStatusCode.Forbidden => StatusCode((int)HttpStatusCode.Forbidden, result.Error.Details),
-                    _ => StatusCode((int)HttpStatusCode.InternalServerError, result.Error.Details)
-                };
-            }
-            return Ok(result.Value);
+            return result.IsSuccessful ? Ok(result.Value) : HandleErrorResponse(result);
         }
-
 
         [Authorize]
         [HttpGet("{id:int}")]
@@ -54,19 +41,8 @@ namespace EventFlowAPI.Controllers
         public async Task<IActionResult> GetReservationById([FromRoute] int id)
         {
             var result = await _reservationService.GetOneAsync(id);
-            if (!result.IsSuccessful)
-            {
-                return result.Error.Details!.Code switch
-                {
-                    HttpStatusCode.BadRequest => BadRequest(result.Error.Details),
-                    HttpStatusCode.Unauthorized => Unauthorized(result.Error.Details),
-                    HttpStatusCode.Forbidden => StatusCode((int)HttpStatusCode.Forbidden, result.Error.Details),
-                    _ => StatusCode((int)HttpStatusCode.InternalServerError, result.Error.Details)
-                };
-            }
-            return Ok(result.Value);
+            return result.IsSuccessful ? Ok(result.Value) : HandleErrorResponse(result);
         }
-
 
         [Authorize]
         [HttpGet("{id:int}/jpg-tickets")]
@@ -77,19 +53,10 @@ namespace EventFlowAPI.Controllers
         public async Task<IActionResult> GetTicketsZIPByReservationId([FromRoute] int id)
         {
             var result = await _fileService.GetTicketsJPGsInZIPArchive(id);
-            if (!result.IsSuccessful)
-            {
-                return result.Error.Details!.Code switch
-                {
-                    HttpStatusCode.BadRequest => BadRequest(result.Error.Details),
-                    HttpStatusCode.Unauthorized => Unauthorized(result.Error.Details),
-                    HttpStatusCode.Forbidden => StatusCode((int)HttpStatusCode.Forbidden, result.Error.Details),
-                    _ => StatusCode((int)HttpStatusCode.InternalServerError, result.Error.Details)
-                };
-            }
-            return File(result.Value.Data, result.Value.ContentType, result.Value.FileName);
+            return result.IsSuccessful 
+                ? File(result.Value.Data, result.Value.ContentType, result.Value.FileName)
+                : HandleErrorResponse(result);
         }
-
 
         [Authorize]
         [HttpGet("{id:int}/pdf-ticket")]
@@ -100,18 +67,9 @@ namespace EventFlowAPI.Controllers
         public async Task<IActionResult> GetTicketPdfByReservationId([FromRoute] int id)
         {
             var result = await _fileService.GetFile<Reservation>(id, FileType.PDF, BlobContainer.TicketsPDF);
-            if (!result.IsSuccessful)
-            {
-                return result.Error.Details!.Code switch
-                {
-                    HttpStatusCode.BadRequest => BadRequest(result.Error.Details),
-                    HttpStatusCode.Unauthorized => Unauthorized(result.Error.Details),
-                    HttpStatusCode.Forbidden => StatusCode((int)HttpStatusCode.Forbidden, result.Error.Details),
-                    _ => StatusCode((int)HttpStatusCode.InternalServerError, result.Error.Details)
-                };
-            }
-            return File(result.Value.Data, result.Value.ContentType, result.Value.FileName);
-                
+            return result.IsSuccessful
+                ? File(result.Value.Data, result.Value.ContentType, result.Value.FileName)
+                : HandleErrorResponse(result);    
         }
 
         /// <summary>
@@ -140,17 +98,7 @@ namespace EventFlowAPI.Controllers
         public async Task<IActionResult> CreateReservation([FromBody] ReservationRequestDto? reservationReqestDto)
         {
             var result = await _reservationService.MakeReservation(reservationReqestDto);
-            if (!result.IsSuccessful)
-            {
-                return result.Error.Details!.Code switch
-                {
-                    HttpStatusCode.BadRequest => BadRequest(result.Error.Details),
-                    HttpStatusCode.Unauthorized => Unauthorized(result.Error.Details),
-                    HttpStatusCode.Forbidden => StatusCode((int)HttpStatusCode.Forbidden, result.Error.Details),
-                    _ => StatusCode((int)HttpStatusCode.InternalServerError, result.Error.Details)
-                };
-            }
-            return Ok(result.Value);
+            return result.IsSuccessful ? Ok(result.Value) : HandleErrorResponse(result);
         }
 
         [Authorize]
@@ -162,19 +110,8 @@ namespace EventFlowAPI.Controllers
         public async Task<IActionResult> CreateReservationTransaction([FromBody] ReservationRequestDto reservationReqestDto)
         {
             var result = await _reservationService.CreateReservationPayment(reservationReqestDto);
-            if (!result.IsSuccessful)
-            {
-                return result.Error.Details!.Code switch
-                {
-                    HttpStatusCode.BadRequest => BadRequest(result.Error.Details),
-                    HttpStatusCode.Unauthorized => Unauthorized(result.Error.Details),
-                    HttpStatusCode.Forbidden => StatusCode((int)HttpStatusCode.Forbidden, result.Error.Details),
-                    _ => StatusCode((int)HttpStatusCode.InternalServerError, result.Error.Details)
-                };
-            }
-            return Ok(result.Value);
+            return result.IsSuccessful ? Ok(result.Value) : HandleErrorResponse(result);
         }
-
 
         [Authorize]
         [HttpDelete("{id:int}")]
@@ -185,17 +122,7 @@ namespace EventFlowAPI.Controllers
         public async Task<IActionResult> DeleteReservation([FromRoute] int id)
         {
             var result = await _reservationService.DeleteAsync(id);
-            if (!result.IsSuccessful)
-            {
-                return result.Error.Details!.Code switch
-                {
-                    HttpStatusCode.BadRequest => BadRequest(result.Error.Details),
-                    HttpStatusCode.Unauthorized => Unauthorized(result.Error.Details),
-                    HttpStatusCode.Forbidden => StatusCode((int)HttpStatusCode.Forbidden, result.Error.Details),
-                    _ => StatusCode((int)HttpStatusCode.InternalServerError, result.Error.Details)
-                };
-            }
-            return NoContent();
+            return result.IsSuccessful ? NoContent() : HandleErrorResponse(result);
         }
     }
 }

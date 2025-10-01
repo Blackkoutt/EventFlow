@@ -1,8 +1,8 @@
 ﻿using EventFlowAPI.DB.Entities;
 using EventFlowAPI.Logic.DTO.Statistics.RequestDto;
 using EventFlowAPI.Logic.DTO.Statistics.ResponseDto;
+using EventFlowAPI.Logic.Enums;
 using EventFlowAPI.Logic.Helpers;
-using EventFlowAPI.Logic.Helpers.Enums;
 using EventFlowAPI.Logic.Services.OtherServices.Interfaces;
 using EventFlowAPI.Logic.UnitOfWork;
 using ScottPlot;

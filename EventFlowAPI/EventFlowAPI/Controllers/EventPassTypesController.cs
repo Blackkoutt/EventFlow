@@ -1,8 +1,8 @@
-﻿using EventFlowAPI.Logic.DTO.RequestDto;
+﻿using EventFlowAPI.Controllers.BaseControllers;
+using EventFlowAPI.Logic.DTO.RequestDto;
 using EventFlowAPI.Logic.DTO.UpdateRequestDto;
 using EventFlowAPI.Logic.Identity.Helpers;
 using EventFlowAPI.Logic.Query;
-using EventFlowAPI.Logic.Query.Abstract;
 using EventFlowAPI.Logic.Services.CRUDServices.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -12,7 +12,7 @@ namespace EventFlowAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class EventPassTypesController(IEventPassTypeService eventPassTypeService) : ControllerBase
+    public class EventPassTypesController(IEventPassTypeService eventPassTypeService) : BaseController
     {
         private readonly IEventPassTypeService _eventPassTypeService = eventPassTypeService;
 
@@ -22,7 +22,7 @@ namespace EventFlowAPI.Controllers
         public async Task<IActionResult> GetEventPassTypes([FromQuery] EventPassTypeQuery query)
         {
             var result = await _eventPassTypeService.GetAllAsync(query);
-            return result.IsSuccessful ? Ok(result.Value) : BadRequest(result.Error.Details);
+            return result.IsSuccessful ? Ok(result.Value) : HandleErrorResponse(result);
         }
 
 
@@ -32,7 +32,7 @@ namespace EventFlowAPI.Controllers
         public async Task<IActionResult> GetEventPassTypeById([FromRoute] int id)
         {
             var result = await _eventPassTypeService.GetOneAsync(id);
-            return result.IsSuccessful ? Ok(result.Value) : BadRequest(result.Error.Details);
+            return result.IsSuccessful ? Ok(result.Value) : HandleErrorResponse(result);
         }
 
 
@@ -45,19 +45,10 @@ namespace EventFlowAPI.Controllers
         public async Task<IActionResult> CreateEventPassType([FromBody] EventPassTypeRequestDto eventPassTypesReqestDto)
         {
             var result = await _eventPassTypeService.AddAsync(eventPassTypesReqestDto);
-            if (!result.IsSuccessful)
-            {
-                return result.Error.Details!.Code switch
-                {
-                    HttpStatusCode.BadRequest => BadRequest(result.Error.Details),
-                    HttpStatusCode.Unauthorized => Unauthorized(result.Error.Details),
-                    HttpStatusCode.Forbidden => StatusCode((int)HttpStatusCode.Forbidden, result.Error.Details),
-                    _ => StatusCode((int)HttpStatusCode.InternalServerError, result.Error.Details)
-                };
-            }
-            return CreatedAtAction(nameof(GetEventPassTypeById), new { id = result.Value.Id }, result.Value);
+            return result.IsSuccessful 
+                ? CreatedAtAction(nameof(GetEventPassTypeById), new { id = result.Value.Id }, result.Value) 
+                : HandleErrorResponse(result);
         }
-
 
         [Authorize(Roles = nameof(Roles.Admin))]
         [HttpPut("{id:int}")]
@@ -68,17 +59,7 @@ namespace EventFlowAPI.Controllers
         public async Task<IActionResult> UpdateEventPassType([FromRoute] int id, [FromBody] UpdateEventPassTypeRequestDto eventPassTypesReqestDto)
         {
             var result = await _eventPassTypeService.UpdateAsync(id, eventPassTypesReqestDto);
-            if (!result.IsSuccessful)
-            {
-                return result.Error.Details!.Code switch
-                {
-                    HttpStatusCode.BadRequest => BadRequest(result.Error.Details),
-                    HttpStatusCode.Unauthorized => Unauthorized(result.Error.Details),
-                    HttpStatusCode.Forbidden => StatusCode((int)HttpStatusCode.Forbidden, result.Error.Details),
-                    _ => StatusCode((int)HttpStatusCode.InternalServerError, result.Error.Details)
-                };
-            }
-            return NoContent();
+            return result.IsSuccessful ? NoContent() : HandleErrorResponse(result);
         }
 
 
@@ -92,18 +73,7 @@ namespace EventFlowAPI.Controllers
         public async Task<IActionResult> DeleteEventPassType([FromRoute] int id)
         {
             var result = await _eventPassTypeService.DeleteAsync(id);
-            if (!result.IsSuccessful)
-            {
-                return result.Error.Details!.Code switch
-                {
-                    HttpStatusCode.BadRequest => BadRequest(result.Error.Details),
-                    HttpStatusCode.Unauthorized => Unauthorized(result.Error.Details),
-                    HttpStatusCode.Forbidden => StatusCode((int)HttpStatusCode.Forbidden, result.Error.Details),
-                    HttpStatusCode.NotFound => NotFound(result.Error.Details),
-                    _ => StatusCode((int)HttpStatusCode.InternalServerError, result.Error.Details)
-                };
-            }
-            return NoContent();
+            return result.IsSuccessful ? NoContent() : HandleErrorResponse(result);
         }
     }
 }

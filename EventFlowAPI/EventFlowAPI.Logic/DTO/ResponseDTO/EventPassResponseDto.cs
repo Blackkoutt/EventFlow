@@ -1,5 +1,5 @@
 ﻿using EventFlowAPI.Logic.DTO.Abstract;
-using EventFlowAPI.Logic.Helpers.Enums;
+using EventFlowAPI.Logic.Enums;
 
 namespace EventFlowAPI.Logic.DTO.ResponseDto
 {

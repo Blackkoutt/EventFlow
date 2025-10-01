@@ -1,6 +1,6 @@
 ﻿using EventFlowAPI.Logic.DTO.RequestDto;
+using EventFlowAPI.Logic.Enums;
 using EventFlowAPI.Logic.Errors;
-using EventFlowAPI.Logic.Helpers.Enums;
 using EventFlowAPI.Logic.Helpers.PayU;
 using EventFlowAPI.Logic.ResultObject;
 using EventFlowAPI.Logic.Services.OtherServices.Interfaces;

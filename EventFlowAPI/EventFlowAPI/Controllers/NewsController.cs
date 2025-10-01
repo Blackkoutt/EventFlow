@@ -1,4 +1,5 @@
-﻿using EventFlowAPI.DB.Entities;
+﻿using EventFlowAPI.Controllers.BaseControllers;
+using EventFlowAPI.DB.Entities;
 using EventFlowAPI.Logic.DTO.RequestDto;
 using EventFlowAPI.Logic.DTO.UpdateRequestDto;
 using EventFlowAPI.Logic.Identity.Helpers;
@@ -15,7 +16,7 @@ namespace EventFlowAPI.Controllers
     [ApiController]
     public class NewsController(
         INewsService newsService,
-        IFileService fileService) : ControllerBase
+        IFileService fileService) : BaseController
     {
         private readonly INewsService _newsService = newsService;
         private readonly IFileService _fileService = fileService;
@@ -26,7 +27,7 @@ namespace EventFlowAPI.Controllers
         public async Task<IActionResult> GetNews([FromQuery] NewsQuery query)
         {
             var result = await _newsService.GetAllAsync(query);
-            return result.IsSuccessful ? Ok(result.Value) : BadRequest(result.Error.Details);
+            return result.IsSuccessful ? Ok(result.Value) : HandleErrorResponse(result);
         }
 
 
@@ -36,9 +37,8 @@ namespace EventFlowAPI.Controllers
         public async Task<IActionResult> GetNewsById([FromRoute] int id)
         {
             var result = await _newsService.GetOneAsync(id);
-            return result.IsSuccessful ? Ok(result.Value) : BadRequest(result.Error.Details);
+            return result.IsSuccessful ? Ok(result.Value) : HandleErrorResponse(result);
         }
-
 
         [Authorize(Roles = nameof(Roles.Admin))]
         [HttpPost]
@@ -49,20 +49,10 @@ namespace EventFlowAPI.Controllers
         public async Task<IActionResult> CreateNews([FromForm] NewsRequestDto newsReqestDto)
         {
             var result = await _newsService.AddAsync(newsReqestDto);
-            if (!result.IsSuccessful)
-            {
-                return result.Error.Details!.Code switch
-                {
-                    HttpStatusCode.BadRequest => BadRequest(result.Error.Details),
-                    HttpStatusCode.Unauthorized => Unauthorized(result.Error.Details),
-                    HttpStatusCode.Forbidden => StatusCode((int)HttpStatusCode.Forbidden, result.Error.Details),
-                    _ => StatusCode((int)HttpStatusCode.InternalServerError, result.Error.Details)
-                };
-            }
-            return CreatedAtAction(nameof(GetNewsById), new { id = result.Value.Id }, result.Value);
+            return result.IsSuccessful 
+                ? CreatedAtAction(nameof(GetNewsById), new { id = result.Value.Id }, result.Value)
+                : HandleErrorResponse(result);
         }
-
-
 
         [Authorize(Roles = nameof(Roles.Admin))]
         [HttpPut("{id:int}")]
@@ -73,19 +63,8 @@ namespace EventFlowAPI.Controllers
         public async Task<IActionResult> UpdateNews([FromRoute] int id, [FromForm] UpdateNewsRequestDto newsReqestDto)
         {
             var result = await _newsService.UpdateAsync(id, newsReqestDto);
-            if (!result.IsSuccessful)
-            {
-                return result.Error.Details!.Code switch
-                {
-                    HttpStatusCode.BadRequest => BadRequest(result.Error.Details),
-                    HttpStatusCode.Unauthorized => Unauthorized(result.Error.Details),
-                    HttpStatusCode.Forbidden => StatusCode((int)HttpStatusCode.Forbidden, result.Error.Details),
-                    _ => StatusCode((int)HttpStatusCode.InternalServerError, result.Error.Details)
-                };
-            }
-            return NoContent();
+            return result.IsSuccessful ? NoContent() : HandleErrorResponse(result);
         }
-
 
         [Authorize(Roles = nameof(Roles.Admin))]
         [HttpDelete("{id:int}")]
@@ -96,17 +75,7 @@ namespace EventFlowAPI.Controllers
         public async Task<IActionResult> DeleteNews([FromRoute] int id)
         {
             var result = await _newsService.DeleteAsync(id);
-            if (!result.IsSuccessful)
-            {
-                return result.Error.Details!.Code switch
-                {
-                    HttpStatusCode.BadRequest => BadRequest(result.Error.Details),
-                    HttpStatusCode.Unauthorized => Unauthorized(result.Error.Details),
-                    HttpStatusCode.Forbidden => StatusCode((int)HttpStatusCode.Forbidden, result.Error.Details),
-                    _ => StatusCode((int)HttpStatusCode.InternalServerError, result.Error.Details)
-                };
-            }
-            return NoContent();
+            return result.IsSuccessful ? NoContent() : HandleErrorResponse(result);
         }
 
         [HttpGet("{id:int}/image")]
@@ -115,15 +84,9 @@ namespace EventFlowAPI.Controllers
         public async Task<IActionResult> GetNewsImage([FromRoute] int id)
         {
             var result = await _fileService.ValidateAndGetEntityPhoto<News>(id);
-            if (!result.IsSuccessful)
-            {
-                return result.Error.Details!.Code switch
-                {
-                    HttpStatusCode.BadRequest => BadRequest(result.Error.Details),
-                    _ => StatusCode((int)HttpStatusCode.InternalServerError, result.Error.Details)
-                };
-            }
-            return File(result.Value.Data, result.Value.ContentType, result.Value.FileName);
+            return result.IsSuccessful 
+                ? File(result.Value.Data, result.Value.ContentType, result.Value.FileName)
+                : HandleErrorResponse(result);
         }
     }
 }

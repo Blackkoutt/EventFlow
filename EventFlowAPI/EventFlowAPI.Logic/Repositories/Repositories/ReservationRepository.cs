@@ -1,6 +1,6 @@
 ﻿using EventFlowAPI.DB.Context;
 using EventFlowAPI.DB.Entities;
-using EventFlowAPI.Logic.Helpers.Enums;
+using EventFlowAPI.Logic.Enums;
 using EventFlowAPI.Logic.Repositories.Interfaces;
 using EventFlowAPI.Logic.Repositories.Interfaces.BaseInterfaces;
 using EventFlowAPI.Logic.Repositories.Repositories.BaseRepositories;

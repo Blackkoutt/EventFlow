@@ -1,4 +1,5 @@
-﻿using EventFlowAPI.Logic.DTO.RequestDto;
+﻿using EventFlowAPI.Controllers.BaseControllers;
+using EventFlowAPI.Logic.DTO.RequestDto;
 using EventFlowAPI.Logic.DTO.UpdateRequestDto;
 using EventFlowAPI.Logic.Identity.Helpers;
 using EventFlowAPI.Logic.Query;
@@ -12,7 +13,7 @@ namespace EventFlowAPI.Controllers
     [Route("api/[controller]")]
     [ApiController]
     public class FAQController(
-        IFAQService faqService) : ControllerBase
+        IFAQService faqService) : BaseController
     {
         private readonly IFAQService _faqService = faqService;
 
@@ -22,7 +23,7 @@ namespace EventFlowAPI.Controllers
         public async Task<IActionResult> GetFAQs([FromQuery] FAQQuery query)
         {
             var result = await _faqService.GetAllAsync(query);
-            return result.IsSuccessful ? Ok(result.Value) : BadRequest(result.Error.Details);
+            return result.IsSuccessful ? Ok(result.Value) : HandleErrorResponse(result);
         }
 
 
@@ -32,7 +33,7 @@ namespace EventFlowAPI.Controllers
         public async Task<IActionResult> GetFAQsById([FromRoute] int id)
         {
             var result = await _faqService.GetOneAsync(id);
-            return result.IsSuccessful ? Ok(result.Value) : BadRequest(result.Error.Details);
+            return result.IsSuccessful ? Ok(result.Value) : HandleErrorResponse(result);
         }
 
 
@@ -45,20 +46,10 @@ namespace EventFlowAPI.Controllers
         public async Task<IActionResult> CreateFAQ([FromBody] FAQRequestDto faqReqestDto)
         {
             var result = await _faqService.AddAsync(faqReqestDto);
-            if (!result.IsSuccessful)
-            {
-                return result.Error.Details!.Code switch
-                {
-                    HttpStatusCode.BadRequest => BadRequest(result.Error.Details),
-                    HttpStatusCode.Unauthorized => Unauthorized(result.Error.Details),
-                    HttpStatusCode.Forbidden => StatusCode((int)HttpStatusCode.Forbidden, result.Error.Details),
-                    _ => StatusCode((int)HttpStatusCode.InternalServerError, result.Error.Details)
-                };
-            }
-            return CreatedAtAction(nameof(GetFAQsById), new { id = result.Value.Id }, result.Value);
+            return result.IsSuccessful  
+                ? CreatedAtAction(nameof(GetFAQsById), new { id = result.Value.Id }, result.Value) 
+                : HandleErrorResponse(result);
         }
-
-
 
         [Authorize(Roles = nameof(Roles.Admin))]
         [HttpPut("{id:int}")]
@@ -69,19 +60,8 @@ namespace EventFlowAPI.Controllers
         public async Task<IActionResult> UpdateFAQ([FromRoute] int id, [FromBody] UpdateFAQRequestDto faqReqestDto)
         {
             var result = await _faqService.UpdateAsync(id, faqReqestDto);
-            if (!result.IsSuccessful)
-            {
-                return result.Error.Details!.Code switch
-                {
-                    HttpStatusCode.BadRequest => BadRequest(result.Error.Details),
-                    HttpStatusCode.Unauthorized => Unauthorized(result.Error.Details),
-                    HttpStatusCode.Forbidden => StatusCode((int)HttpStatusCode.Forbidden, result.Error.Details),
-                    _ => StatusCode((int)HttpStatusCode.InternalServerError, result.Error.Details)
-                };
-            }
-            return NoContent();
+            return result.IsSuccessful ? NoContent() : HandleErrorResponse(result);            
         }
-
 
         [Authorize(Roles = nameof(Roles.Admin))]
         [HttpDelete("{id:int}")]
@@ -92,17 +72,7 @@ namespace EventFlowAPI.Controllers
         public async Task<IActionResult> DeleteFAQ([FromRoute] int id)
         {
             var result = await _faqService.DeleteAsync(id);
-            if (!result.IsSuccessful)
-            {
-                return result.Error.Details!.Code switch
-                {
-                    HttpStatusCode.BadRequest => BadRequest(result.Error.Details),
-                    HttpStatusCode.Unauthorized => Unauthorized(result.Error.Details),
-                    HttpStatusCode.Forbidden => StatusCode((int)HttpStatusCode.Forbidden, result.Error.Details),
-                    _ => StatusCode((int)HttpStatusCode.InternalServerError, result.Error.Details)
-                };
-            }
-            return NoContent();
+            return result.IsSuccessful ? NoContent() : HandleErrorResponse(result);
         }
     }
 }

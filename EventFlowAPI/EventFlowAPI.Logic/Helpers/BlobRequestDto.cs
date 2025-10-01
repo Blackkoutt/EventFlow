@@ -1,4 +1,4 @@
-﻿using EventFlowAPI.Logic.Helpers.Enums;
+﻿using EventFlowAPI.Logic.Enums;
 
 namespace EventFlowAPI.Logic.Helpers
 {

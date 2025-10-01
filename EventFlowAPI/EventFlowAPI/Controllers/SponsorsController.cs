@@ -1,14 +1,13 @@
-﻿using EventFlowAPI.DB.Entities;
+﻿using EventFlowAPI.Controllers.BaseControllers;
+using EventFlowAPI.DB.Entities;
 using EventFlowAPI.Logic.DTO.RequestDto;
 using EventFlowAPI.Logic.DTO.UpdateRequestDto;
 using EventFlowAPI.Logic.Identity.Helpers;
 using EventFlowAPI.Logic.Query;
-using EventFlowAPI.Logic.Query.Abstract;
 using EventFlowAPI.Logic.Services.CRUDServices.Interfaces;
 using EventFlowAPI.Logic.Services.OtherServices.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Net;
 
 namespace EventFlowAPI.Controllers
 {
@@ -16,7 +15,7 @@ namespace EventFlowAPI.Controllers
     [ApiController]
     public class SponsorsController(
         ISponsorService sponsorService,
-        IFileService fileService) : ControllerBase
+        IFileService fileService) : BaseController
     {
         private readonly ISponsorService _sponsorService = sponsorService;
         private readonly IFileService _fileService = fileService;
@@ -27,9 +26,8 @@ namespace EventFlowAPI.Controllers
         public async Task<IActionResult> GetSponsors([FromQuery] SponsorQuery query)
         {
             var result = await _sponsorService.GetAllAsync(query);
-            return result.IsSuccessful ? Ok(result.Value) : BadRequest(result.Error.Details);
+            return result.IsSuccessful ? Ok(result.Value) : HandleErrorResponse(result);
         }
-
 
         [HttpGet("{id:int}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -37,9 +35,8 @@ namespace EventFlowAPI.Controllers
         public async Task<IActionResult> GetSponsorById([FromRoute] int id)
         {
             var result = await _sponsorService.GetOneAsync(id);
-            return result.IsSuccessful ? Ok(result.Value) : BadRequest(result.Error.Details);
+            return result.IsSuccessful ? Ok(result.Value) : HandleErrorResponse(result);
         }
-
 
         [Authorize(Roles = nameof(Roles.Admin))]
         [HttpPost]
@@ -50,17 +47,9 @@ namespace EventFlowAPI.Controllers
         public async Task<IActionResult> CreateSponsor([FromForm] SponsorRequestDto sponsorReqestDto)
         {
             var result = await _sponsorService.AddAsync(sponsorReqestDto);
-            if (!result.IsSuccessful)
-            {
-                return result.Error.Details!.Code switch
-                {
-                    HttpStatusCode.BadRequest => BadRequest(result.Error.Details),
-                    HttpStatusCode.Unauthorized => Unauthorized(result.Error.Details),
-                    HttpStatusCode.Forbidden => StatusCode((int)HttpStatusCode.Forbidden, result.Error.Details),
-                    _ => StatusCode((int)HttpStatusCode.InternalServerError, result.Error.Details)
-                };
-            }
-            return CreatedAtAction(nameof(GetSponsorById), new { id = result.Value.Id }, result.Value);
+            return result.IsSuccessful 
+                ? CreatedAtAction(nameof(GetSponsorById), new { id = result.Value.Id }, result.Value) 
+                : HandleErrorResponse(result);
         }
 
 
@@ -73,19 +62,8 @@ namespace EventFlowAPI.Controllers
         public async Task<IActionResult> UpdateSponsor([FromRoute] int id, [FromForm] UpdateSponsorRequestDto sponsorReqestDto)
         {
             var result = await _sponsorService.UpdateAsync(id, sponsorReqestDto);
-            if (!result.IsSuccessful)
-            {
-                return result.Error.Details!.Code switch
-                {
-                    HttpStatusCode.BadRequest => BadRequest(result.Error.Details),
-                    HttpStatusCode.Unauthorized => Unauthorized(result.Error.Details),
-                    HttpStatusCode.Forbidden => StatusCode((int)HttpStatusCode.Forbidden, result.Error.Details),
-                    _ => StatusCode((int)HttpStatusCode.InternalServerError, result.Error.Details)
-                };
-            }
-            return NoContent();
+            return result.IsSuccessful ? NoContent() : HandleErrorResponse(result);
         }
-
 
         [Authorize(Roles = nameof(Roles.Admin))]
         [HttpDelete("{id:int}")]
@@ -96,17 +74,7 @@ namespace EventFlowAPI.Controllers
         public async Task<IActionResult> DeleteSponsor([FromRoute] int id)
         {
             var result = await _sponsorService.DeleteAsync(id);
-            if (!result.IsSuccessful)
-            {
-                return result.Error.Details!.Code switch
-                {
-                    HttpStatusCode.BadRequest => BadRequest(result.Error.Details),
-                    HttpStatusCode.Unauthorized => Unauthorized(result.Error.Details),
-                    HttpStatusCode.Forbidden => StatusCode((int)HttpStatusCode.Forbidden, result.Error.Details),
-                    _ => StatusCode((int)HttpStatusCode.InternalServerError, result.Error.Details)
-                };
-            }
-            return NoContent();
+            return result.IsSuccessful ? NoContent() : HandleErrorResponse(result);
         }
 
         [HttpGet("{id:int}/image")]
@@ -115,15 +83,9 @@ namespace EventFlowAPI.Controllers
         public async Task<IActionResult> GetEventImage([FromRoute] int id)
         {
             var result = await _fileService.ValidateAndGetEntityPhoto<Sponsor>(id);
-            if (!result.IsSuccessful)
-            {
-                return result.Error.Details!.Code switch
-                {
-                    HttpStatusCode.BadRequest => BadRequest(result.Error.Details),
-                    _ => StatusCode((int)HttpStatusCode.InternalServerError, result.Error.Details)
-                };
-            }
-            return File(result.Value.Data, result.Value.ContentType, result.Value.FileName);
+            return result.IsSuccessful
+                ? File(result.Value.Data, result.Value.ContentType, result.Value.FileName)
+                : HandleErrorResponse(result);
         }
     }
 }

@@ -1,5 +1,5 @@
-﻿using Azure.Core;
-using EventFlowAPI.DB.Entities;
+﻿using EventFlowAPI.DB.Entities;
+using EventFlowAPI.Logic.Enums;
 using EventFlowAPI.Logic.Errors;
 using EventFlowAPI.Logic.Identity.DTO.ResponseDto;
 using EventFlowAPI.Logic.Identity.Services.Interfaces;
@@ -20,9 +20,8 @@ namespace EventFlowAPI.Logic.Identity.Services.Services
         IHttpContextAccessor httpContextAccessor,
         IConfiguration configuration,
         IUnitOfWork unitOfWork,
-        IJWTGeneratorService jwtGeneratorService) : BaseExternalAuthService(userManager, httpContextAccessor, configuration, unitOfWork, jwtGeneratorService), IFacebookAuthService
+        IJWTGeneratorService jwtGeneratorService) : BaseExternalAuthService(userManager, httpContextAccessor, configuration, unitOfWork, jwtGeneratorService, AuthConfiguration.FacebookAuth), IFacebookAuthService
     {
-
 
         protected sealed override async Task<Result<ExternalLoginUserResponse>> GetInfoAboutUser(TokenResponse token)
         {
@@ -48,19 +47,13 @@ namespace EventFlowAPI.Logic.Identity.Services.Services
 
         protected sealed override HttpRequestMessage GetExchangeCodeForTokenRequest(string code)
         {
-            var request = _httpContextAccessor.HttpContext?.Request;
-            var baseURL = $"{request?.Scheme}://{request?.Host}";
-
-            //var redirectUri = $"{baseURL}/api/auth/facebook-login";
-            var redirectUri = $"http://localhost:5173/sign-in";     
-
             return new HttpRequestMessage(HttpMethod.Post, "https://graph.facebook.com/v10.0/oauth/access_token")
             {
                 Content = new FormUrlEncodedContent(new Dictionary<string, string>
                 {
-                    {"client_id", _configuration.GetSection("Authentication:Facebook")["AppId"]!},
-                    {"client_secret", _configuration.GetSection("Authentication:Facebook")["AppSecret"]!},
-                    {"redirect_uri", redirectUri},
+                    {"client_id", _appId},
+                    {"client_secret", _appSecret},
+                    {"redirect_uri", _redirectURI},
                     {"code", code},
                     {"grant_type", "authorization_code"}
                 })
@@ -69,22 +62,14 @@ namespace EventFlowAPI.Logic.Identity.Services.Services
 
         public sealed override string GetLinkToSigninPage()
         {
-            var appId = _configuration.GetSection("Authentication:Facebook")["AppId"]!;
-
-            var request = _httpContextAccessor.HttpContext?.Request;
-            var baseURL = $"{request?.Scheme}://{request?.Host}";
-
-            //var redirectURI = $"{baseURL}/api/auth/facebook-login";
-            var redirectURI = $"http://localhost:5173/sign-in";
-
             return $"https://www.facebook.com/v10.0/dialog/oauth?" +
-                   $"client_id={appId}" +
-                   $"&redirect_uri={UrlEncoder.Default.Encode(redirectURI)}" +
+                   $"client_id={_appId}" +
+                   $"&redirect_uri={UrlEncoder.Default.Encode(_redirectURI)}" +
                    $"&response_type=code" +
                    $"&scope=email,public_profile";
         }
 
 
-        protected sealed override string GetProviderName() => "FACEBOOK";
+        protected sealed override string GetProviderName() => ExternalAuthProvider.FACEBOOK.ToString();
     }
 }

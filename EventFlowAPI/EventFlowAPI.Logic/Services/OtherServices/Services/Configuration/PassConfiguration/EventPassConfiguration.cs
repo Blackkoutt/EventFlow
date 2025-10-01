@@ -1,6 +1,6 @@
 ﻿using EventFlowAPI.DB.Entities;
+using EventFlowAPI.Logic.Enums;
 using EventFlowAPI.Logic.Helpers;
-using EventFlowAPI.Logic.Helpers.Enums;
 using EventFlowAPI.Logic.Helpers.TicketOptions;
 using EventFlowAPI.Logic.Services.OtherServices.Interfaces;
 using EventFlowAPI.Logic.Services.OtherServices.Interfaces.Configuration.PassConfiguration;

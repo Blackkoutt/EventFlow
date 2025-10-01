@@ -1,5 +1,5 @@
-﻿using EventFlowAPI.Logic.Extensions;
-using EventFlowAPI.Logic.Helpers.Enums;
+﻿using EventFlowAPI.Logic.Enums;
+using EventFlowAPI.Logic.Extensions;
 using EventFlowAPI.Logic.Services.OtherServices.Interfaces;
 using Microsoft.Extensions.Configuration;
 using SixLabors.Fonts;

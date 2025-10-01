@@ -11,7 +11,6 @@ using EventFlowAPI.Logic.Services.CRUDServices.Services.BaseServices;
 using EventFlowAPI.Logic.UnitOfWork;
 using EventFlowAPI.Logic.Extensions;
 using EventFlowAPI.Logic.Services.OtherServices.Interfaces;
-using EventFlowAPI.Logic.Helpers.Enums;
 using EventFlowAPI.Logic.DTO.UpdateRequestDto;
 using EventFlowAPI.Logic.DTO.Interfaces;
 using EventFlowAPI.Logic.Identity.Services.Interfaces;
@@ -20,6 +19,7 @@ using EventFlowAPI.Logic.Services.OtherServices.Services;
 using Microsoft.AspNetCore.Http;
 using System.Text.Json;
 using Serilog;
+using EventFlowAPI.Logic.Enums;
 
 namespace EventFlowAPI.Logic.Services.CRUDServices.Services
 {

@@ -8,8 +8,8 @@ using EventFlowAPI.Logic.Helpers;
 using EventFlowAPI.Logic.Response;
 using EventFlowAPI.Logic.ResultObject;
 using EventFlowAPI.Logic.Services.OtherServices.Interfaces;
-using EventFlowAPI.Logic.Helpers.Enums;
 using EventFlowAPI.Logic.Extensions;
+using EventFlowAPI.Logic.Enums;
 
 namespace EventFlowAPI.Logic.Services.OtherServices.Services
 {

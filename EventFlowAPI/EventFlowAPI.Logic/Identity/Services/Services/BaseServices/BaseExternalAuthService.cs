@@ -1,4 +1,5 @@
 ﻿using EventFlowAPI.DB.Entities;
+using EventFlowAPI.Logic.Enums;
 using EventFlowAPI.Logic.Errors;
 using EventFlowAPI.Logic.Identity.DTO.RequestDto;
 using EventFlowAPI.Logic.Identity.DTO.ResponseDto;
@@ -18,8 +19,12 @@ namespace EventFlowAPI.Logic.Identity.Services.Services.BaseServices
         IHttpContextAccessor httpContextAccessor,
         IConfiguration configuration,
         IUnitOfWork unitOfWork,
-        IJWTGeneratorService jwtGeneratorService) : BaseAuthService(userManager, httpContextAccessor, configuration, unitOfWork, jwtGeneratorService)
+        IJWTGeneratorService jwtGeneratorService,
+        AuthConfiguration authConfiguration) : BaseAuthService(userManager, httpContextAccessor, configuration, unitOfWork, jwtGeneratorService)
     {
+        protected readonly string _appId = configuration.GetSection(authConfiguration.ToString())["AppId"]!;
+        protected readonly string _appSecret = configuration.GetSection(authConfiguration.ToString())["AppSecret"]!;
+        protected readonly string _redirectURI = $"http://localhost:5173/sign-in";
         public async Task<Result<LoginResponseDto>> Login(ExternalLoginRequest externalLoginRequest)
         {
             Console.WriteLine($"\n\n\n\n\n\n\n\n\nexternalCode {externalLoginRequest.Code}");

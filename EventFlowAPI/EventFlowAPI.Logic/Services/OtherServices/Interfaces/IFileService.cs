@@ -3,10 +3,10 @@ using EventFlowAPI.DB.Entities;
 using EventFlowAPI.Logic.Helpers;
 using EventFlowAPI.Logic.ResultObject;
 using EventFlowAPI.Logic.Errors;
-using EventFlowAPI.Logic.Helpers.Enums;
 using Microsoft.AspNetCore.Http;
 using EventFlowAPI.Logic.DTO.Statistics.RequestDto;
 using EventFlowAPI.Logic.Repositories.Interfaces;
+using EventFlowAPI.Logic.Enums;
 
 namespace EventFlowAPI.Logic.Services.OtherServices.Interfaces
 {

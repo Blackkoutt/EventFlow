@@ -1,9 +1,9 @@
-﻿using EventFlowAPI.Logic.Errors;
+﻿using EventFlowAPI.Controllers.BaseControllers;
+using EventFlowAPI.Logic.Errors;
 using EventFlowAPI.Logic.Identity.DTO.RequestDto;
 using EventFlowAPI.Logic.Identity.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Serilog;
 using System.Net;
 
 namespace EventFlowAPI.Controllers
@@ -13,7 +13,7 @@ namespace EventFlowAPI.Controllers
     public class AuthController(
         IAuthService authService,
         IGoogleAuthService googleAuthService,
-        IFacebookAuthService facebookAuthService) : ControllerBase
+        IFacebookAuthService facebookAuthService) : BaseController
     {
         private readonly IAuthService _authService = authService;
         private readonly IGoogleAuthService _googleAuthService = googleAuthService;
@@ -24,7 +24,6 @@ namespace EventFlowAPI.Controllers
         [Authorize]
         public async Task<IActionResult> ActivateUser()
         {
-            Log.Information("Hellolooo01");
             var verifyError = await _authService.VerifyUser();
             return verifyError == Error.None ? Ok() : BadRequest(verifyError);
         }
@@ -35,7 +34,6 @@ namespace EventFlowAPI.Controllers
         public IActionResult ValidateUser()
         {
             var userClaims = User.Claims.ToList();
-
             return Ok(new
             {
                 id = userClaims.FirstOrDefault(c => c.Type == "id")?.Value,
@@ -72,7 +70,7 @@ namespace EventFlowAPI.Controllers
         public async Task<IActionResult> RegisterUser([FromBody] UserRegisterRequestDto userRegisterRequestDto)
         {
             var result = await _authService.RegisterUser(userRegisterRequestDto);
-            return result.IsSuccessful ? Ok() : BadRequest(result.Error.Details);
+            return result.IsSuccessful ? Ok() : HandleErrorResponse(result);
         }
 
         /// <summary>
@@ -96,16 +94,7 @@ namespace EventFlowAPI.Controllers
         public async Task<IActionResult> Login([FromBody] LoginRequestDto loginRequestDto)
         {
             var result = await _authService.Login(loginRequestDto);
-            if (!result.IsSuccessful)
-            {
-                return result.Error.Details!.Code switch
-                {
-                    HttpStatusCode.BadRequest => BadRequest(result.Error.Details),
-                    HttpStatusCode.Unauthorized => Unauthorized(result.Error.Details),
-                    _ => StatusCode((int)HttpStatusCode.InternalServerError, result.Error.Details)
-                };
-            }
-            return Ok(result.Value);
+            return result.IsSuccessful ? Ok(result.Value) : HandleErrorResponse(result);
         }
 
         [HttpGet("signin-google")]
@@ -121,16 +110,7 @@ namespace EventFlowAPI.Controllers
         public async Task<IActionResult> LoginViaGoogle([FromBody] ExternalLoginRequest externalLoginRequest)
         {
             var result = await _googleAuthService.Login(externalLoginRequest);
-            if (!result.IsSuccessful)
-            {
-                return result.Error.Details!.Code switch
-                {
-                    HttpStatusCode.BadRequest => BadRequest(result.Error.Details),
-                    HttpStatusCode.Unauthorized => Unauthorized(result.Error.Details),
-                    _ => StatusCode((int)HttpStatusCode.InternalServerError, result.Error.Details)
-                };
-            }
-            return Ok(result.Value);
+            return result.IsSuccessful ? Ok(result.Value) : HandleErrorResponse(result);
         }
 
         [HttpPost("facebook-login")]
@@ -140,16 +120,7 @@ namespace EventFlowAPI.Controllers
         public async Task<IActionResult> LoginViaFacebook([FromBody] ExternalLoginRequest externalLoginRequest)
         {
             var result = await _facebookAuthService.Login(externalLoginRequest);
-            if (!result.IsSuccessful)
-            {
-                return result.Error.Details!.Code switch
-                {
-                    HttpStatusCode.BadRequest => BadRequest(result.Error.Details),
-                    HttpStatusCode.Unauthorized => Unauthorized(result.Error.Details),
-                    _ => StatusCode((int)HttpStatusCode.InternalServerError, result.Error.Details)
-                };
-            }
-            return Ok(result.Value);
+            return result.IsSuccessful ? Ok(result.Value) : HandleErrorResponse(result);
         }
     }
 }

@@ -1,16 +1,14 @@
-﻿using EventFlowAPI.DB.Entities;
+﻿using EventFlowAPI.Controllers.BaseControllers;
+using EventFlowAPI.DB.Entities;
 using EventFlowAPI.Logic.DTO.RequestDto;
 using EventFlowAPI.Logic.DTO.UpdateRequestDto;
-using EventFlowAPI.Logic.Helpers;
-using EventFlowAPI.Logic.Helpers.Enums;
+using EventFlowAPI.Logic.Enums;
 using EventFlowAPI.Logic.Identity.Helpers;
 using EventFlowAPI.Logic.Query;
 using EventFlowAPI.Logic.Services.CRUDServices.Interfaces;
 using EventFlowAPI.Logic.Services.OtherServices.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Serilog;
-using System.Net;
 
 namespace EventFlowAPI.Controllers
 {
@@ -18,7 +16,7 @@ namespace EventFlowAPI.Controllers
     [ApiController]
     public class EventPassesController(
         IEventPassService eventPassService,
-        IFileService fileService) : ControllerBase
+        IFileService fileService) : BaseController
     {
         private readonly IEventPassService _eventPassService = eventPassService;
         private readonly IFileService _fileService = fileService;
@@ -32,17 +30,7 @@ namespace EventFlowAPI.Controllers
         public async Task<IActionResult> GetEventPasses([FromQuery] EventPassQuery query)
         {
             var result = await _eventPassService.GetAllAsync(query);
-            if (!result.IsSuccessful)
-            {
-                return result.Error.Details!.Code switch
-                {
-                    HttpStatusCode.BadRequest => BadRequest(result.Error.Details),
-                    HttpStatusCode.Unauthorized => Unauthorized(result.Error.Details),
-                    HttpStatusCode.Forbidden => StatusCode((int)HttpStatusCode.Forbidden, result.Error.Details),
-                    _ => StatusCode((int)HttpStatusCode.InternalServerError, result.Error.Details)
-                };
-            }
-            return Ok(result.Value);
+            return result.IsSuccessful ? Ok(result.Value) : HandleErrorResponse(result);
         }
 
         [Authorize]
@@ -54,20 +42,8 @@ namespace EventFlowAPI.Controllers
         public async Task<IActionResult> GetEventPassById([FromRoute] int id)
         {
             var result = await _eventPassService.GetOneAsync(id);
-            if (!result.IsSuccessful)
-            {
-                return result.Error.Details!.Code switch
-                {
-                    HttpStatusCode.BadRequest => BadRequest(result.Error.Details),
-                    HttpStatusCode.Unauthorized => Unauthorized(result.Error.Details),
-                    HttpStatusCode.Forbidden => StatusCode((int)HttpStatusCode.Forbidden, result.Error.Details),
-                    _ => StatusCode((int)HttpStatusCode.InternalServerError, result.Error.Details)
-                };
-            }
-
-            return Ok(result.Value);
+            return result.IsSuccessful ? Ok(result.Value) : HandleErrorResponse(result);
         }
-
        
         [Authorize]
         [HttpPost]
@@ -77,18 +53,10 @@ namespace EventFlowAPI.Controllers
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<IActionResult> CreateEventPass()
         {
-            Log.Information("CreateEventPass");
             var result = await _eventPassService.BuyEventPass();
-            if (!result.IsSuccessful)
-            {
-                return result.Error.Details!.Code switch
-                {
-                    HttpStatusCode.BadRequest => BadRequest(result.Error.Details),
-                    HttpStatusCode.Unauthorized => Unauthorized(result.Error.Details),
-                    _ => StatusCode((int)HttpStatusCode.InternalServerError, result.Error.Details)
-                };
-            }
-            return CreatedAtAction(nameof(GetEventPassById), new { id = result.Value.Id }, result.Value);
+            return result.IsSuccessful 
+                ? CreatedAtAction(nameof(GetEventPassById), new { id = result.Value.Id }, result.Value) 
+                : HandleErrorResponse(result);
         }
 
         [Authorize(Roles = nameof(Roles.Admin))]
@@ -100,17 +68,7 @@ namespace EventFlowAPI.Controllers
         public async Task<IActionResult> CancelEventPass([FromRoute] int id)
         {
             var result = await _eventPassService.DeleteAsync(id);
-            if (!result.IsSuccessful)
-            {
-                return result.Error.Details!.Code switch
-                {
-                    HttpStatusCode.BadRequest => BadRequest(result.Error.Details),
-                    HttpStatusCode.Unauthorized => Unauthorized(result.Error.Details),
-                    HttpStatusCode.Forbidden => StatusCode((int)HttpStatusCode.Forbidden, result.Error.Details),
-                    _ => StatusCode((int)HttpStatusCode.InternalServerError, result.Error.Details)
-                };
-            }
-            return Ok(result.Value);
+            return result.IsSuccessful ? Ok(result.Value) : HandleErrorResponse(result);
         }
 
         [Authorize]
@@ -122,17 +80,7 @@ namespace EventFlowAPI.Controllers
         public async Task<IActionResult> CreateBuyPassTransaction([FromBody] EventPassRequestDto eventPassReqestDto)
         {
             var result = await _eventPassService.CreateBuyEventPassPayment(eventPassReqestDto);
-            if (!result.IsSuccessful)
-            {
-                return result.Error.Details!.Code switch
-                {
-                    HttpStatusCode.BadRequest => BadRequest(result.Error.Details),
-                    HttpStatusCode.Unauthorized => Unauthorized(result.Error.Details),
-                    HttpStatusCode.Forbidden => StatusCode((int)HttpStatusCode.Forbidden, result.Error.Details),
-                    _ => StatusCode((int)HttpStatusCode.InternalServerError, result.Error.Details)
-                };
-            }
-            return Ok(result.Value);
+            return result.IsSuccessful ? Ok(result.Value) : HandleErrorResponse(result);
         }
 
 
@@ -145,17 +93,7 @@ namespace EventFlowAPI.Controllers
         public async Task<IActionResult> CreateRenewPassTransaction([FromRoute] int id, [FromBody] UpdateEventPassRequestDto eventPassReqestDto)
         {
             var result = await _eventPassService.CreateRenewEventPassPayment(id , eventPassReqestDto);
-            if (!result.IsSuccessful)
-            {
-                return result.Error.Details!.Code switch
-                {
-                    HttpStatusCode.BadRequest => BadRequest(result.Error.Details),
-                    HttpStatusCode.Unauthorized => Unauthorized(result.Error.Details),
-                    HttpStatusCode.Forbidden => StatusCode((int)HttpStatusCode.Forbidden, result.Error.Details),
-                    _ => StatusCode((int)HttpStatusCode.InternalServerError, result.Error.Details)
-                };
-            }
-            return Ok(result.Value);
+            return result.IsSuccessful ? Ok(result.Value) : HandleErrorResponse(result);
         }
 
 
@@ -170,17 +108,7 @@ namespace EventFlowAPI.Controllers
         public async Task<IActionResult> RenewEventPass(/*[FromRoute] int id, [FromBody] UpdateEventPassRequestDto eventPassReqestDto*/)
         {
             var result = await _eventPassService.RenewEventPass();//.UpdateAsync(id, eventPassReqestDto);
-            if (!result.IsSuccessful)
-            {
-                return result.Error.Details!.Code switch
-                {
-                    HttpStatusCode.BadRequest => BadRequest(result.Error.Details),
-                    HttpStatusCode.Unauthorized => Unauthorized(result.Error.Details),
-                    HttpStatusCode.Forbidden => StatusCode((int)HttpStatusCode.Forbidden, result.Error.Details),
-                    _ => StatusCode((int)HttpStatusCode.InternalServerError, result.Error.Details)
-                };
-            }
-            return NoContent();
+            return result.IsSuccessful ? NoContent() : HandleErrorResponse(result);
         }
 
         [Authorize]
@@ -192,18 +120,9 @@ namespace EventFlowAPI.Controllers
         public async Task<IActionResult> GetEventPassPdfById([FromRoute] int id)
         {
             var result = await _fileService.GetFile<EventPass>(id, FileType.PDF, BlobContainer.EventPassesPDF);
-            if (!result.IsSuccessful)
-            {
-                return result.Error.Details!.Code switch
-                {
-                    HttpStatusCode.BadRequest => BadRequest(result.Error.Details),
-                    HttpStatusCode.Unauthorized => Unauthorized(result.Error.Details),
-                    HttpStatusCode.Forbidden => StatusCode((int)HttpStatusCode.Forbidden, result.Error.Details),
-                    _ => StatusCode((int)HttpStatusCode.InternalServerError, result.Error.Details)
-                };
-            }
-
-            return File(result.Value.Data, result.Value.ContentType, result.Value.FileName);
+            return result.IsSuccessful
+                ? File(result.Value.Data, result.Value.ContentType, result.Value.FileName) 
+                : HandleErrorResponse(result);
         }
 
         [Authorize]
@@ -215,17 +134,9 @@ namespace EventFlowAPI.Controllers
         public async Task<IActionResult> GetEventPassJpgById([FromRoute] int id)
         {
             var result = await _fileService.GetFile<EventPass>(id, FileType.JPEG, BlobContainer.EventPassesJPG);
-            if (!result.IsSuccessful)
-            {
-                return result.Error.Details!.Code switch
-                {
-                    HttpStatusCode.BadRequest => BadRequest(result.Error.Details),
-                    HttpStatusCode.Unauthorized => Unauthorized(result.Error.Details),
-                    HttpStatusCode.Forbidden => StatusCode((int)HttpStatusCode.Forbidden, result.Error.Details),
-                    _ => StatusCode((int)HttpStatusCode.InternalServerError, result.Error.Details)
-                };
-            }
-            return File(result.Value.Data, result.Value.ContentType, result.Value.FileName);
+            return result.IsSuccessful
+                ? File(result.Value.Data, result.Value.ContentType, result.Value.FileName)
+                : HandleErrorResponse(result);
         }
     }
 }

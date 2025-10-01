@@ -1,12 +1,10 @@
-﻿using EventFlowAPI.DB.Entities;
+﻿using EventFlowAPI.Controllers.BaseControllers;
+using EventFlowAPI.DB.Entities;
 using EventFlowAPI.Logic.DTO.RequestDto;
-using EventFlowAPI.Logic.Helpers.Enums;
-using EventFlowAPI.Logic.Identity.Helpers;
+using EventFlowAPI.Logic.Enums;
 using EventFlowAPI.Logic.Query;
 using EventFlowAPI.Logic.Services.CRUDServices.Interfaces;
-using EventFlowAPI.Logic.Services.CRUDServices.Services;
 using EventFlowAPI.Logic.Services.OtherServices.Interfaces;
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
@@ -19,7 +17,7 @@ namespace EventFlowAPI.Controllers
         IHallRentService hallRentService,
         IHallService hallService,
         IFileService fileService
-        ) : ControllerBase
+        ) : BaseController
     {
         private IHallRentService _hallRentService = hallRentService;
         private IHallService _hallService = hallService;
@@ -34,17 +32,7 @@ namespace EventFlowAPI.Controllers
         public async Task<IActionResult> GetHallRents([FromQuery] HallRentQuery query)
         {
             var result = await _hallRentService.GetAllAsync(query);
-            if (!result.IsSuccessful)
-            {
-                return result.Error.Details!.Code switch
-                {
-                    HttpStatusCode.BadRequest => BadRequest(result.Error.Details),
-                    HttpStatusCode.Unauthorized => Unauthorized(result.Error.Details),
-                    HttpStatusCode.Forbidden => StatusCode((int)HttpStatusCode.Forbidden, result.Error.Details),
-                    _ => StatusCode((int)HttpStatusCode.InternalServerError, result.Error.Details)
-                };
-            }
-            return Ok(result.Value);
+            return result.IsSuccessful ? Ok(result.Value) : HandleErrorResponse(result);
         }
 
 
@@ -57,17 +45,7 @@ namespace EventFlowAPI.Controllers
         public async Task<IActionResult> GetHallRentById([FromRoute] int id)
         {
             var result = await _hallRentService.GetOneAsync(id);
-            if (!result.IsSuccessful)
-            {
-                return result.Error.Details!.Code switch
-                {
-                    HttpStatusCode.BadRequest => BadRequest(result.Error.Details),
-                    HttpStatusCode.Unauthorized => Unauthorized(result.Error.Details),
-                    HttpStatusCode.Forbidden => StatusCode((int)HttpStatusCode.Forbidden, result.Error.Details),
-                    _ => StatusCode((int)HttpStatusCode.InternalServerError, result.Error.Details)
-                };
-            }
-            return Ok(result.Value);
+            return result.IsSuccessful ? Ok(result.Value) : HandleErrorResponse(result);
         }
 
 
@@ -98,17 +76,9 @@ namespace EventFlowAPI.Controllers
         public async Task<IActionResult> CreateHallRent()
         {
             var result = await _hallRentService.MakeRent();
-            if (!result.IsSuccessful)
-            {
-                return result.Error.Details!.Code switch
-                {
-                    HttpStatusCode.BadRequest => BadRequest(result.Error.Details),
-                    HttpStatusCode.Unauthorized => Unauthorized(result.Error.Details),
-                    HttpStatusCode.Forbidden => StatusCode((int)HttpStatusCode.Forbidden, result.Error.Details),
-                    _ => StatusCode((int)HttpStatusCode.InternalServerError, result.Error.Details)
-                };
-            }
-            return CreatedAtAction(nameof(GetHallRentById), new { id = result.Value.Id }, result.Value);
+            return result.IsSuccessful 
+                ? CreatedAtAction(nameof(GetHallRentById), new { id = result.Value.Id }, result.Value) 
+                : HandleErrorResponse(result);
         }
 
         [Authorize]
@@ -120,20 +90,8 @@ namespace EventFlowAPI.Controllers
         public async Task<IActionResult> CreateRentTransaction([FromBody] HallRentRequestDto hallRentReqestDto)
         {
             var result = await _hallRentService.CreateRentPayment(hallRentReqestDto);
-            if (!result.IsSuccessful)
-            {
-                return result.Error.Details!.Code switch
-                {
-                    HttpStatusCode.BadRequest => BadRequest(result.Error.Details),
-                    HttpStatusCode.Unauthorized => Unauthorized(result.Error.Details),
-                    HttpStatusCode.Forbidden => StatusCode((int)HttpStatusCode.Forbidden, result.Error.Details),
-                    _ => StatusCode((int)HttpStatusCode.InternalServerError, result.Error.Details)
-                };
-            }
-            return Ok(result.Value);
+            return result.IsSuccessful ? Ok(result.Value) : HandleErrorResponse(result);
         }
-
-
 
         /// <summary>
         /// 
@@ -192,17 +150,7 @@ namespace EventFlowAPI.Controllers
         public async Task<IActionResult> UpdateRentHall([FromRoute] int id, [FromBody] HallRent_HallRequestDto hallReqestDto)
         {
             var result = await _hallService.UpdateHallForRent(id, hallReqestDto);
-            if (!result.IsSuccessful)
-            {
-                return result.Error.Details!.Code switch
-                {
-                    HttpStatusCode.BadRequest => BadRequest(result.Error.Details),
-                    HttpStatusCode.Unauthorized => Unauthorized(result.Error.Details),
-                    HttpStatusCode.Forbidden => StatusCode((int)HttpStatusCode.Forbidden, result.Error.Details),
-                    _ => StatusCode((int)HttpStatusCode.InternalServerError, result.Error.Details)
-                };
-            }
-            return NoContent();
+            return result.IsSuccessful ? NoContent() : HandleErrorResponse(result);
         }
 
 
@@ -215,21 +163,10 @@ namespace EventFlowAPI.Controllers
         public async Task<IActionResult> GetPdfHallViewByHallRentId([FromRoute] int id)
         {
             var result = await _fileService.GetFile<HallRent>(id, FileType.PDF, BlobContainer.HallViewsPDF);
-            if (!result.IsSuccessful)
-            {
-                return result.Error.Details!.Code switch
-                {
-                    HttpStatusCode.BadRequest => BadRequest(result.Error.Details),
-                    HttpStatusCode.Unauthorized => Unauthorized(result.Error.Details),
-                    HttpStatusCode.Forbidden => StatusCode((int)HttpStatusCode.Forbidden, result.Error.Details),
-                    _ => StatusCode((int)HttpStatusCode.InternalServerError, result.Error.Details)
-                };
-            }
-            return File(result.Value.Data, result.Value.ContentType, result.Value.FileName);
-
+            return result.IsSuccessful 
+                ? File(result.Value.Data, result.Value.ContentType, result.Value.FileName) 
+                : HandleErrorResponse(result);
         }
-
-
 
         [Authorize]
         [HttpGet("{id:int}/pdf-invoice")]
@@ -240,18 +177,9 @@ namespace EventFlowAPI.Controllers
         public async Task<IActionResult> GetPdfInoviceByHallRentId([FromRoute] int id)
         {
             var result = await _fileService.GetFile<HallRent>(id, FileType.PDF, BlobContainer.HallRentsPDF);
-            if (!result.IsSuccessful)
-            {
-                return result.Error.Details!.Code switch
-                {
-                    HttpStatusCode.BadRequest => BadRequest(result.Error.Details),
-                    HttpStatusCode.Unauthorized => Unauthorized(result.Error.Details),
-                    HttpStatusCode.Forbidden => StatusCode((int)HttpStatusCode.Forbidden, result.Error.Details),
-                    _ => StatusCode((int)HttpStatusCode.InternalServerError, result.Error.Details)
-                };
-            }
-            return File(result.Value.Data, result.Value.ContentType, result.Value.FileName);
-
+            return result.IsSuccessful
+                ? File(result.Value.Data, result.Value.ContentType, result.Value.FileName)
+                : HandleErrorResponse(result);
         }
 
 
@@ -264,17 +192,7 @@ namespace EventFlowAPI.Controllers
         public async Task<IActionResult> DeleteHallRent([FromRoute] int id)
         {
             var result = await _hallRentService.DeleteAsync(id);
-            if (!result.IsSuccessful)
-            {
-                return result.Error.Details!.Code switch
-                {
-                    HttpStatusCode.BadRequest => BadRequest(result.Error.Details),
-                    HttpStatusCode.Unauthorized => Unauthorized(result.Error.Details),
-                    HttpStatusCode.Forbidden => StatusCode((int)HttpStatusCode.Forbidden, result.Error.Details),
-                    _ => StatusCode((int)HttpStatusCode.InternalServerError, result.Error.Details)
-                };
-            }
-            return NoContent();
+            return result.IsSuccessful ? NoContent() : HandleErrorResponse(result);
         }
     }
 }

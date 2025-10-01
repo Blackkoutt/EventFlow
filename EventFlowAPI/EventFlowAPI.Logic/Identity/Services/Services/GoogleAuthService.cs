@@ -1,4 +1,5 @@
 ﻿using EventFlowAPI.DB.Entities;
+using EventFlowAPI.Logic.Enums;
 using EventFlowAPI.Logic.Errors;
 using EventFlowAPI.Logic.Identity.DTO.ResponseDto;
 using EventFlowAPI.Logic.Identity.Services.Interfaces;
@@ -18,9 +19,8 @@ namespace EventFlowAPI.Logic.Identity.Services.Services
         IHttpContextAccessor httpContextAccessor,
         IConfiguration configuration,
         IUnitOfWork unitOfWork,
-        IJWTGeneratorService jwtGeneratorService) : BaseExternalAuthService(userManager, httpContextAccessor, configuration, unitOfWork, jwtGeneratorService), IGoogleAuthService
+        IJWTGeneratorService jwtGeneratorService) : BaseExternalAuthService(userManager, httpContextAccessor, configuration, unitOfWork, jwtGeneratorService, AuthConfiguration.GoogleAuth), IGoogleAuthService
     {
-
         protected sealed override async Task<Result<ExternalLoginUserResponse>> GetInfoAboutUser(DTO.ResponseDto.TokenResponse token)
         {
             var payload = await VerifyGoogleTokenAsync(token.Id_Token);
@@ -39,18 +39,10 @@ namespace EventFlowAPI.Logic.Identity.Services.Services
 
         public sealed override string GetLinkToSigninPage()
         {
-            var clientId = _configuration.GetSection("Authentication:Google")["clientId"]!;
-
-            var request = _httpContextAccessor.HttpContext?.Request;
-            var baseURL = $"{request?.Scheme}://{request?.Host}";
-
-            //var redirectURI = $"{baseURL}/api/auth/google-login";
-            var redirectURI = $"http://localhost:5173/sign-in";
-
             return $"https://accounts.google.com/o/oauth2/v2/auth?" +
                    $"response_type=code" +
-                   $"&client_id={clientId}" +
-                   $"&redirect_uri={UrlEncoder.Default.Encode(redirectURI)}" +
+                   $"&client_id={_appId}" +
+                   $"&redirect_uri={UrlEncoder.Default.Encode(_redirectURI)}" +
                    $"&scope=openid%20profile%20email";
         }
 
@@ -62,8 +54,8 @@ namespace EventFlowAPI.Logic.Identity.Services.Services
                 Content = new FormUrlEncodedContent(new Dictionary<string, string>
                 {
                     {"code", code},
-                    {"client_id", _configuration.GetSection("Authentication:Google")["clientId"]!},
-                    {"client_secret", _configuration.GetSection("Authentication:Google")["clientSecret"]!},
+                    {"client_id", _appId},
+                    {"client_secret", _appSecret},
                     {"redirect_uri", $"http://localhost:5173/sign-in"},
                     {"grant_type", "authorization_code"}
                 })
@@ -73,14 +65,12 @@ namespace EventFlowAPI.Logic.Identity.Services.Services
 
         private async Task<Payload> VerifyGoogleTokenAsync(string? idToken)
         {
-            var settings = new ValidationSettings
+            return await ValidateAsync(idToken, new ValidationSettings
             {
-                Audience = new List<string> { _configuration.GetSection("Authentication:Google")["clientId"]! }
-            };
-            return await ValidateAsync(idToken, settings);
+                Audience = new List<string> { _appId }
+            });
         }
 
-
-        protected sealed override string GetProviderName() => "GOOGLE";
+        protected sealed override string GetProviderName() => ExternalAuthProvider.GOOGLE.ToString();
     }
 }

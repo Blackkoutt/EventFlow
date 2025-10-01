@@ -1,9 +1,8 @@
-﻿using EventFlowAPI.DB.Entities;
+﻿using EventFlowAPI.Controllers.BaseControllers;
 using EventFlowAPI.Logic.DTO.RequestDto;
 using EventFlowAPI.Logic.Identity.Services.Interfaces;
 using EventFlowAPI.Logic.Query;
 using EventFlowAPI.Logic.Services.CRUDServices.Interfaces;
-using EventFlowAPI.Logic.Services.CRUDServices.Services;
 using EventFlowAPI.Logic.Services.OtherServices.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -16,7 +15,7 @@ namespace EventFlowAPI.Controllers
     public class UsersController(
         IUserService userService,
         IAuthService authService,
-        IFileService fileService) : ControllerBase
+        IFileService fileService) : BaseController
     {
         private readonly IAuthService _authService = authService;  
         private readonly IUserService _userService = userService;
@@ -28,7 +27,7 @@ namespace EventFlowAPI.Controllers
         public async Task<IActionResult> GetUsers([FromQuery] UserDataQuery query)
         {
             var result = await _userService.GetAllAsync(query);
-            return result.IsSuccessful ? Ok(result.Value) : BadRequest(result.Error.Details);
+            return result.IsSuccessful ? Ok(result.Value) : HandleErrorResponse(result);
         }
 
         [HttpGet("{id}")]
@@ -37,9 +36,8 @@ namespace EventFlowAPI.Controllers
         public async Task<IActionResult> GetUserById([FromRoute] string id)
         {
             var result = await _userService.GetOneAsync(id);
-            return result.IsSuccessful ? Ok(result.Value) : BadRequest(result.Error.Details);
+            return result.IsSuccessful ? Ok(result.Value) : HandleErrorResponse(result);
         }
-
 
         [HttpGet("info")]
         [Authorize]
@@ -50,17 +48,7 @@ namespace EventFlowAPI.Controllers
         public async Task<IActionResult> Info()
         {
             var result = await _authService.GetCurrentUser();
-            if (!result.IsSuccessful)
-            {
-                return result.Error.Details!.Code switch
-                {
-                    HttpStatusCode.BadRequest => BadRequest(result.Error.Details),
-                    HttpStatusCode.Unauthorized => Unauthorized(result.Error.Details),
-                    HttpStatusCode.Forbidden => StatusCode((int)HttpStatusCode.Forbidden, result.Error.Details),
-                    _ => StatusCode((int)HttpStatusCode.InternalServerError, result.Error.Details)
-                };
-            }
-            return Ok(result.Value);
+            return result.IsSuccessful ? Ok(result.Value) : HandleErrorResponse(result);
         }
 
         [HttpGet("info/image")]
@@ -71,17 +59,9 @@ namespace EventFlowAPI.Controllers
         public async Task<IActionResult> GetUserImage()
         {
             var result = await _userService.GetUserPhoto();
-            if (!result.IsSuccessful)
-            {
-                return result.Error.Details!.Code switch
-                {
-                    HttpStatusCode.BadRequest => BadRequest(result.Error.Details),
-                    HttpStatusCode.Unauthorized => Unauthorized(result.Error.Details),
-                    HttpStatusCode.Forbidden => StatusCode((int)HttpStatusCode.Forbidden, result.Error.Details),
-                    _ => StatusCode((int)HttpStatusCode.InternalServerError, result.Error.Details)
-                };
-            }
-            return File(result.Value.Data, result.Value.ContentType, result.Value.FileName);
+            return result.IsSuccessful 
+                ? File(result.Value.Data, result.Value.ContentType, result.Value.FileName) 
+                : HandleErrorResponse(result);
         }
 
         [HttpGet("{id}/image")]
@@ -90,15 +70,9 @@ namespace EventFlowAPI.Controllers
         public async Task<IActionResult> GetUserImageById([FromRoute] string id)
         {
             var result = await _fileService.GetUserPhoto(id);
-            if (!result.IsSuccessful)
-            {
-                return result.Error.Details!.Code switch
-                {
-                    HttpStatusCode.BadRequest => BadRequest(result.Error.Details),
-                    _ => StatusCode((int)HttpStatusCode.InternalServerError, result.Error.Details)
-                };
-            }
-            return File(result.Value.Data, result.Value.ContentType, result.Value.FileName);
+            return result.IsSuccessful
+                ? File(result.Value.Data, result.Value.ContentType, result.Value.FileName)
+                : HandleErrorResponse(result);
         }
 
         [HttpPut("info")]
@@ -109,17 +83,7 @@ namespace EventFlowAPI.Controllers
         public async Task<IActionResult> SetUserInfo([FromForm] UserDataRequestDto userDataRequestDto)
         {
             var result = await _userService.SetUserInfo(userDataRequestDto);
-            if (!result.IsSuccessful)
-            {
-                return result.Error.Details!.Code switch
-                {
-                    HttpStatusCode.BadRequest => BadRequest(result.Error.Details),
-                    HttpStatusCode.Unauthorized => Unauthorized(result.Error.Details),
-                    HttpStatusCode.Forbidden => StatusCode((int)HttpStatusCode.Forbidden, result.Error.Details),
-                    _ => StatusCode((int)HttpStatusCode.InternalServerError, result.Error.Details)
-                };
-            }
-            return NoContent();
+            return result.IsSuccessful ? NoContent() : HandleErrorResponse(result);
         }
     }
 }

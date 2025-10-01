@@ -1,6 +1,6 @@
 ﻿using EventFlowAPI.DB.Entities;
 using EventFlowAPI.Logic.DTO.Abstract;
-using EventFlowAPI.Logic.Helpers.Enums;
+using EventFlowAPI.Logic.Enums;
 using System.Text.Json.Serialization;
 
 namespace EventFlowAPI.Logic.DTO.ResponseDto

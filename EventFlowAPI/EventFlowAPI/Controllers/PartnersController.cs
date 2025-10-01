@@ -1,4 +1,5 @@
-﻿using EventFlowAPI.DB.Entities;
+﻿using EventFlowAPI.Controllers.BaseControllers;
+using EventFlowAPI.DB.Entities;
 using EventFlowAPI.Logic.DTO.RequestDto;
 using EventFlowAPI.Logic.DTO.UpdateRequestDto;
 using EventFlowAPI.Logic.Identity.Helpers;
@@ -13,9 +14,7 @@ namespace EventFlowAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class PartnersController(
-        IPartnerService partnerService,
-        IFileService fileService) : ControllerBase
+    public class PartnersController(IPartnerService partnerService, IFileService fileService) : BaseController
     {
         private readonly IPartnerService _partnerService = partnerService;
         private readonly IFileService _fileService = fileService;
@@ -26,9 +25,8 @@ namespace EventFlowAPI.Controllers
         public async Task<IActionResult> GetPartners([FromQuery] PartnerQuery query)
         {
             var result = await _partnerService.GetAllAsync(query);
-            return result.IsSuccessful ? Ok(result.Value) : BadRequest(result.Error.Details);
+            return result.IsSuccessful ? Ok(result.Value) : HandleErrorResponse(result);
         }
-
 
         [HttpGet("{id:int}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -36,9 +34,8 @@ namespace EventFlowAPI.Controllers
         public async Task<IActionResult> GetPartnerById([FromRoute] int id)
         {
             var result = await _partnerService.GetOneAsync(id);
-            return result.IsSuccessful ? Ok(result.Value) : BadRequest(result.Error.Details);
+            return result.IsSuccessful ? Ok(result.Value) : HandleErrorResponse(result);
         }
-
 
         [Authorize(Roles = nameof(Roles.Admin))]
         [HttpPost]
@@ -49,20 +46,10 @@ namespace EventFlowAPI.Controllers
         public async Task<IActionResult> CreatePartner([FromForm] PartnerRequestDto partnerReqestDto)
         {
             var result = await _partnerService.AddAsync(partnerReqestDto);
-            if (!result.IsSuccessful)
-            {
-                return result.Error.Details!.Code switch
-                {
-                    HttpStatusCode.BadRequest => BadRequest(result.Error.Details),
-                    HttpStatusCode.Unauthorized => Unauthorized(result.Error.Details),
-                    HttpStatusCode.Forbidden => StatusCode((int)HttpStatusCode.Forbidden, result.Error.Details),
-                    _ => StatusCode((int)HttpStatusCode.InternalServerError, result.Error.Details)
-                };
-            }
-            return CreatedAtAction(nameof(GetPartnerById), new { id = result.Value.Id }, result.Value);
+            return result.IsSuccessful 
+                ? CreatedAtAction(nameof(GetPartnerById), new { id = result.Value.Id }, result.Value)
+                : HandleErrorResponse(result);
         }
-
-
 
         [Authorize(Roles = nameof(Roles.Admin))]
         [HttpPut("{id:int}")]
@@ -73,19 +60,8 @@ namespace EventFlowAPI.Controllers
         public async Task<IActionResult> UpdatePartner([FromRoute] int id, [FromForm] UpdatePartnerRequestDto partnerReqestDto)
         {
             var result = await _partnerService.UpdateAsync(id, partnerReqestDto);
-            if (!result.IsSuccessful)
-            {
-                return result.Error.Details!.Code switch
-                {
-                    HttpStatusCode.BadRequest => BadRequest(result.Error.Details),
-                    HttpStatusCode.Unauthorized => Unauthorized(result.Error.Details),
-                    HttpStatusCode.Forbidden => StatusCode((int)HttpStatusCode.Forbidden, result.Error.Details),
-                    _ => StatusCode((int)HttpStatusCode.InternalServerError, result.Error.Details)
-                };
-            }
-            return NoContent();
+            return result.IsSuccessful ? NoContent() : HandleErrorResponse(result);
         }
-
 
         [Authorize(Roles = nameof(Roles.Admin))]
         [HttpDelete("{id:int}")]
@@ -96,17 +72,7 @@ namespace EventFlowAPI.Controllers
         public async Task<IActionResult> DeletePartner([FromRoute] int id)
         {
             var result = await _partnerService.DeleteAsync(id);
-            if (!result.IsSuccessful)
-            {
-                return result.Error.Details!.Code switch
-                {
-                    HttpStatusCode.BadRequest => BadRequest(result.Error.Details),
-                    HttpStatusCode.Unauthorized => Unauthorized(result.Error.Details),
-                    HttpStatusCode.Forbidden => StatusCode((int)HttpStatusCode.Forbidden, result.Error.Details),
-                    _ => StatusCode((int)HttpStatusCode.InternalServerError, result.Error.Details)
-                };
-            }
-            return NoContent();
+            return result.IsSuccessful ? NoContent() : HandleErrorResponse(result);
         }
 
         [HttpGet("{id:int}/image")]
@@ -115,15 +81,9 @@ namespace EventFlowAPI.Controllers
         public async Task<IActionResult> GetPartnerImage([FromRoute] int id)
         {
             var result = await _fileService.ValidateAndGetEntityPhoto<Partner>(id);
-            if (!result.IsSuccessful)
-            {
-                return result.Error.Details!.Code switch
-                {
-                    HttpStatusCode.BadRequest => BadRequest(result.Error.Details),
-                    _ => StatusCode((int)HttpStatusCode.InternalServerError, result.Error.Details)
-                };
-            }
-            return File(result.Value.Data, result.Value.ContentType, result.Value.FileName);
+            return result.IsSuccessful 
+                ? File(result.Value.Data, result.Value.ContentType, result.Value.FileName) 
+                : HandleErrorResponse(result);
         }
     }
 }

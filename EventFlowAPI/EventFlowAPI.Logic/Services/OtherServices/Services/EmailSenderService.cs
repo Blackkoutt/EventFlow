@@ -1,8 +1,8 @@
 ﻿using EventFlowAPI.DB.Entities;
 using EventFlowAPI.DB.Entities.Abstract;
+using EventFlowAPI.Logic.Enums;
 using EventFlowAPI.Logic.Errors;
 using EventFlowAPI.Logic.Helpers;
-using EventFlowAPI.Logic.Helpers.Enums;
 using EventFlowAPI.Logic.Services.OtherServices.Interfaces;
 using EventFlowAPI.Logic.Templates;
 using Microsoft.Extensions.Configuration;

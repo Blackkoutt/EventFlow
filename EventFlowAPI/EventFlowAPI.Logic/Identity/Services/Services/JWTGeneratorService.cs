@@ -17,7 +17,7 @@ namespace EventFlowAPI.Logic.Identity.Services.Services
         public JWTGeneratorService(IConfiguration configuration)
         {
             _configuration = configuration;
-            _jwtSettings = _configuration.GetSection("JWTSettings");
+            _jwtSettings = _configuration.GetSection("JWTAuth");
         }
 
         public string GenerateToken(User user, IList<string>? roles) 

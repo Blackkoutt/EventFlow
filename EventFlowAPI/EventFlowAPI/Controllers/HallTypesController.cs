@@ -1,4 +1,5 @@
-﻿using EventFlowAPI.DB.Entities;
+﻿using EventFlowAPI.Controllers.BaseControllers;
+using EventFlowAPI.DB.Entities;
 using EventFlowAPI.Logic.DTO.RequestDto;
 using EventFlowAPI.Logic.DTO.UpdateRequestDto;
 using EventFlowAPI.Logic.Identity.Helpers;
@@ -13,9 +14,7 @@ namespace EventFlowAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class HallTypesController(
-        IHallTypeService hallTypeService,
-        IFileService fileService) : ControllerBase
+    public class HallTypesController(IHallTypeService hallTypeService, IFileService fileService) : BaseController
     {
         private readonly IHallTypeService _hallTypeService = hallTypeService;
         private readonly IFileService _fileService = fileService;
@@ -26,7 +25,7 @@ namespace EventFlowAPI.Controllers
         public async Task<IActionResult> GetHallTypes([FromQuery] HallTypeQuery query)
         {
             var result = await _hallTypeService.GetAllAsync(query);
-            return result.IsSuccessful ? Ok(result.Value) : BadRequest(result.Error.Details);
+            return result.IsSuccessful ? Ok(result.Value) : HandleErrorResponse(result);
         }
 
 
@@ -36,7 +35,7 @@ namespace EventFlowAPI.Controllers
         public async Task<IActionResult> GetHallTypeById([FromRoute] int id)
         {
             var result = await _hallTypeService.GetOneAsync(id);
-            return result.IsSuccessful ? Ok(result.Value) : BadRequest(result.Error.Details);
+            return result.IsSuccessful ? Ok(result.Value) : HandleErrorResponse(result);
         }
 
 
@@ -49,17 +48,9 @@ namespace EventFlowAPI.Controllers
         public async Task<IActionResult> CreateHallType([FromForm] HallTypeRequestDto hallTypeReqestDto)
         {
             var result = await _hallTypeService.AddAsync(hallTypeReqestDto);
-            if (!result.IsSuccessful)
-            {
-                return result.Error.Details!.Code switch
-                {
-                    HttpStatusCode.BadRequest => BadRequest(result.Error.Details),
-                    HttpStatusCode.Unauthorized => Unauthorized(result.Error.Details),
-                    HttpStatusCode.Forbidden => StatusCode((int)HttpStatusCode.Forbidden, result.Error.Details),
-                    _ => StatusCode((int)HttpStatusCode.InternalServerError, result.Error.Details)
-                };
-            }
-            return CreatedAtAction(nameof(GetHallTypeById), new { id = result.Value.Id }, result.Value);
+            return result.IsSuccessful 
+                ? CreatedAtAction(nameof(GetHallTypeById), new { id = result.Value.Id }, result.Value) 
+                : HandleErrorResponse(result);
         }
 
 
@@ -72,17 +63,7 @@ namespace EventFlowAPI.Controllers
         public async Task<IActionResult> UpdateHallType([FromRoute] int id, [FromForm] UpdateHallTypeRequestDto hallTypeReqestDto)
         {
             var result = await _hallTypeService.UpdateAsync(id, hallTypeReqestDto);
-            if (!result.IsSuccessful)
-            {
-                return result.Error.Details!.Code switch
-                {
-                    HttpStatusCode.BadRequest => BadRequest(result.Error.Details),
-                    HttpStatusCode.Unauthorized => Unauthorized(result.Error.Details),
-                    HttpStatusCode.Forbidden => StatusCode((int)HttpStatusCode.Forbidden, result.Error.Details),
-                    _ => StatusCode((int)HttpStatusCode.InternalServerError, result.Error.Details)
-                };
-            }
-            return NoContent();
+            return result.IsSuccessful ? NoContent() : HandleErrorResponse(result);
         }
 
 
@@ -96,17 +77,7 @@ namespace EventFlowAPI.Controllers
         public async Task<IActionResult> DeleteHallType([FromRoute] int id)
         {
             var result = await _hallTypeService.DeleteAsync(id);
-            if (!result.IsSuccessful)
-            {
-                return result.Error.Details!.Code switch
-                {
-                    HttpStatusCode.BadRequest => BadRequest(result.Error.Details),
-                    HttpStatusCode.Unauthorized => Unauthorized(result.Error.Details),
-                    HttpStatusCode.Forbidden => StatusCode((int)HttpStatusCode.Forbidden, result.Error.Details),
-                    _ => StatusCode((int)HttpStatusCode.InternalServerError, result.Error.Details)
-                };
-            }
-            return NoContent();
+            return result.IsSuccessful ? NoContent() : HandleErrorResponse(result);
         }
 
         [HttpGet("{id:int}/image")]
@@ -115,15 +86,9 @@ namespace EventFlowAPI.Controllers
         public async Task<IActionResult> GetHallTypeImage([FromRoute] int id)
         {
             var result = await _fileService.ValidateAndGetEntityPhoto<HallType>(id);
-            if (!result.IsSuccessful)
-            {
-                return result.Error.Details!.Code switch
-                {
-                    HttpStatusCode.BadRequest => BadRequest(result.Error.Details),
-                    _ => StatusCode((int)HttpStatusCode.InternalServerError, result.Error.Details)
-                };
-            }
-            return File(result.Value.Data, result.Value.ContentType, result.Value.FileName);
+            return result.IsSuccessful
+                ? File(result.Value.Data, result.Value.ContentType, result.Value.FileName)
+                : HandleErrorResponse(result);
         }
     }
 }

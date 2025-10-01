@@ -1,7 +1,7 @@
 ﻿using EventFlowAPI.DB.Entities;
+using EventFlowAPI.Logic.Enums;
 using EventFlowAPI.Logic.Extensions.PdfBuilderExtensions;
 using EventFlowAPI.Logic.Helpers;
-using EventFlowAPI.Logic.Helpers.Enums;
 using EventFlowAPI.Logic.Helpers.PdfOptions;
 using EventFlowAPI.Logic.Helpers.PdfOptions.PdfCommonOptions;
 using EventFlowAPI.Logic.Helpers.PdfOptions.PdfContentOptions;
@@ -22,7 +22,7 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
 
         public async Task<byte[]> CreateStatisticsPdf(StatisticsToPDFDto statisticsToPDFDto)
         {
-            var logoSmall = await _assetService.GetPictureAsBitmap(Helpers.Enums.Picture.EventFlowLogo_Small, ImageFormat.PNG);
+            var logoSmall = await _assetService.GetPictureAsBitmap(Enums.Picture.EventFlowLogo_Small, ImageFormat.PNG);
             PageOptions pageOptions = new();
             CommonOptions commonOptions = new();
             HeaderOptions headerOptions = new();
@@ -121,7 +121,7 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
 
         public async Task<byte[]> CreateHallRentPdf(HallRent hallRent)
         {
-            var logoSmall = await _assetService.GetPictureAsBitmap(Helpers.Enums.Picture.EventFlowLogo_Small, ImageFormat.PNG);
+            var logoSmall = await _assetService.GetPictureAsBitmap(Enums.Picture.EventFlowLogo_Small, ImageFormat.PNG);
             var additionalServices = (await _unitOfWork.GetRepository<AdditionalServices>().GetAllAsync()).ToList();
 
             PageOptions pageOptions = new();
@@ -175,7 +175,7 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
 
         public async Task<byte[]> CreateHallViewPdf(byte[] hallBitmap, Hall hall, HallRent? hallRent = null, Event? eventEntity = null)
         {
-            var logoSmall = await _assetService.GetPictureAsBitmap(Helpers.Enums.Picture.EventFlowLogo_Small, ImageFormat.PNG);
+            var logoSmall = await _assetService.GetPictureAsBitmap(Enums.Picture.EventFlowLogo_Small, ImageFormat.PNG);
             var testJPG = await _assetService.GetOutputBitmap(TestsOutput.HallRent, ImageFormat.JPEG);
 
             PageOptions pageOptions = new();
@@ -224,7 +224,7 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
 
         public async Task<byte[]> CreateEventPassPdf(EventPass eventPass, byte[] eventPassJPGBitmap, EventPassType? oldEventPassType)
         {
-            var logoSmall = await _assetService.GetPictureAsBitmap(Helpers.Enums.Picture.EventFlowLogo_Small, ImageFormat.PNG);
+            var logoSmall = await _assetService.GetPictureAsBitmap(Enums.Picture.EventFlowLogo_Small, ImageFormat.PNG);
             var eventPassTypes = (await _unitOfWork.GetRepository<EventPassType>().GetAllAsync()).ToList();   
 
             PageOptions pageOptions = new();
@@ -298,7 +298,7 @@ namespace EventFlowAPI.Logic.Services.OtherServices.Services
         { 
             var seatTypes = (await _unitOfWork.GetRepository<SeatType>().GetAllAsync()).ToList();
             var ticketsForEventOrFestival = await GetTicketsForEventOrFestival(reservation);
-            var logoSmall = await _assetService.GetPictureAsBitmap(Helpers.Enums.Picture.EventFlowLogo_Small, ImageFormat.PNG);
+            var logoSmall = await _assetService.GetPictureAsBitmap(Enums.Picture.EventFlowLogo_Small, ImageFormat.PNG);
 
             PageOptions pageOptions = new();
             HeaderOptions headerOptions = new();
