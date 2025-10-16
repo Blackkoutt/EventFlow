@@ -1,10 +1,10 @@
 # <img width="369" height="66" alt="logo" src="https://github.com/user-attachments/assets/af60ea02-3591-4189-a66a-c09c283b7c8d" />
 # 📑 Table Of Content
 
-- [General info](#general-info)
-- [Technologies](#technologies)
-- [External Integrations](#integrations)
-- [Getting Started](#getting-started)
+- [ℹ️ General info](#general-info)
+- [🧰 Technologies](#technologies)
+- [🧩 External Integrations](#integrations)
+- [🚀 Getting Started](#getting-started)
 
 <h1 id="general-info"></h1>
   
