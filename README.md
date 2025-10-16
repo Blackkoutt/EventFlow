@@ -5,9 +5,13 @@
 - [Technologies](#technologies)
 - [External Integrations](#integrations)
 - [Getting Started](#getting-started)
+
+<h1 id="general-info"></h1>
   
 # ℹ️ General info
 EventFlow is a web application that streamlines the management of cultural events covering everything from event planning to ticket distribution. It also allows users to purchase tickets, rent halls, and buy event passes.
+
+<h1 id="technologies"></h1>
 
 # 🧰 Technologies  
 Project is created with:
@@ -40,6 +44,8 @@ Project is created with:
   </a>
 </p>
 
+<h1 id="integrations"></h1>
+
 # 🧩 External Integrations
 Project uses the following external integrations:
 - **PayU API** <img width="90" alt="image" src="https://github.com/user-attachments/assets/758a2cc3-b205-408c-89b4-2adb7086beb6" /> 
@@ -47,6 +53,7 @@ Project uses the following external integrations:
 - **Google and Facebook OAuth** <img width="60" alt="image" src="https://github.com/user-attachments/assets/079a360e-ac70-420c-a02b-42ffaac6d268" /> <img width="60" alt="image" src="https://github.com/user-attachments/assets/716d2acf-f7a8-44e9-9eb0-b6be42775ad2" />
 
 <h1 id="getting-started"></h1>
+
 # 🚀 Getting Started
 
 ### 📥 Clone the Repository
