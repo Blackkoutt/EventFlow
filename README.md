@@ -46,6 +46,7 @@ Project uses the following external integrations:
 - **Azure Blob Storage** <img width="70" alt="image" src="https://github.com/user-attachments/assets/1ad239b4-1097-4f97-9ffd-86caaa0f29b8" />
 - **Google and Facebook OAuth** <img width="60" alt="image" src="https://github.com/user-attachments/assets/079a360e-ac70-420c-a02b-42ffaac6d268" /> <img width="60" alt="image" src="https://github.com/user-attachments/assets/716d2acf-f7a8-44e9-9eb0-b6be42775ad2" />
 
+<h1 id="getting-started"></h1>
 # 🚀 Getting Started
 
 ### 📥 Clone the Repository
