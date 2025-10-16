@@ -1,10 +1,10 @@
 # <img width="369" height="66" alt="logo" src="https://github.com/user-attachments/assets/af60ea02-3591-4189-a66a-c09c283b7c8d" />
 # 📑 Table Of Content
 
-- [ℹ️ General info](#general-info)
-- [🧰 Technologies](#technologies)
-- [🧩 External Integrations](#integrations)
-- [🚀 Getting Started](#getting-started)
+- [ℹ️ General info](#ℹ️-general-info)
+- [🧰 Technologies](#🧰-technologies)
+- [🧩 External Integrations](#🧩-integrations)
+- [🚀 Getting Started](#🚀-getting-started)
   
 # ℹ️ General info
 EventFlow is a web application that streamlines the management of cultural events covering everything from event planning to ticket distribution. It also allows users to purchase tickets, rent halls, and buy event passes.
